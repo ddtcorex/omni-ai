@@ -1,4 +1,13 @@
 import { addToHistory } from "../lib/history.js";
+import {
+  quickAsk,
+  improveText,
+  translateText,
+  explainText,
+  summarizeText,
+  generateReply,
+  emojifyText,
+} from "../lib/ai-service.js";
 
 /**
  * Omni AI - Service Worker
@@ -340,9 +349,6 @@ async function revokeToken(token) {
 // Action Handlers
 // ============================================
 
-const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
-const DEFAULT_MODEL = "gemini-2.0-flash";
-
 /**
  * Handle quick ask
  */
@@ -351,20 +357,7 @@ async function handleQuickAsk(payload) {
 
   console.log("[Omni AI] Quick Ask:", query, "Preset:", preset);
 
-  const apiKey = await getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "API key not configured. Please add your Gemini API key in Settings.",
-    );
-  }
-
-  const prompt = `You are a helpful AI assistant. Context: ${preset}.
-
-Question: ${query}
-
-Answer:`;
-
-  const response = await callGeminiAPI(prompt, apiKey);
+  const response = await quickAsk(query, preset);
 
   // Send response to content script if in active tab
   try {
@@ -414,13 +407,6 @@ async function handleWritingAction(payload) {
 
   console.log("[Omni AI] Writing Action:", action, "Preset:", preset);
 
-  const apiKey = await getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "API key not configured. Please add your Gemini API key in Settings.",
-    );
-  }
-
   // Get selected text from active tab if not provided
   let selectedText = text;
   if (!selectedText) {
@@ -440,8 +426,7 @@ async function handleWritingAction(payload) {
     throw new Error("No text selected. Please select some text first.");
   }
 
-  const prompt = getWritingActionPrompt(action, selectedText, preset);
-  const result = await callGeminiAPI(prompt, apiKey);
+  const result = await improveText(selectedText, action, preset);
 
   // Send result to content script
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -484,13 +469,6 @@ async function handleQuickAction(payload) {
 
   console.log("[Omni AI] Quick Action:", action, "Preset:", preset);
 
-  const apiKey = await getApiKey();
-  if (!apiKey) {
-    throw new Error(
-      "API key not configured. Please add your Gemini API key in Settings.",
-    );
-  }
-
   // Get selected text from active tab if not provided
   let selectedText = text;
   if (!selectedText) {
@@ -510,8 +488,38 @@ async function handleQuickAction(payload) {
     throw new Error("No text selected. Please select some text first.");
   }
 
-  const prompt = getQuickActionPrompt(action, selectedText, preset, options);
-  const result = await callGeminiAPI(prompt, apiKey);
+  let result;
+  switch (action) {
+    case "translate":
+      result = await translateText(selectedText, options.targetLanguage);
+      break;
+    case "summarize":
+      result = await summarizeText(selectedText, options);
+      break;
+    case "reply":
+      result = await generateReply(selectedText, preset, options.tone);
+      break;
+    case "emojify":
+      result = await emojifyText(selectedText);
+      break;
+    default:
+      // Fallback to improveText (covers rephrase, etc if passed here) or error
+      if (
+        [
+          "grammar",
+          "rephrase",
+          "tone",
+          "concise",
+          "expand",
+          "clarity",
+        ].includes(action)
+      ) {
+        result = await improveText(selectedText, action, preset);
+      } else {
+        // If unknown, try generic generic generate? Or error.
+        throw new Error(`Unknown action: ${action}`);
+      }
+  }
 
   // Send result to content script
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -556,24 +564,23 @@ async function processSelectedText(tabId, text, action) {
     text.substring(0, 50) + "...",
   );
 
-  const apiKey = await getApiKey();
-  if (!apiKey) {
-    chrome.tabs.sendMessage(tabId, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        original: text,
-        result:
-          "Error: API key not configured. Please add your Gemini API key in Settings.",
-        error: true,
-      },
-    });
-    return;
-  }
+  console.log(
+    "[Omni AI] Processing selected text:",
+    action,
+    text.substring(0, 50) + "...",
+  );
 
   try {
-    const prompt = getContextMenuPrompt(action, text);
-    const result = await callGeminiAPI(prompt, apiKey);
+    let result;
+    if (action === "improve") {
+      result = await improveText(text, "clarity", "general");
+    } else if (action === "explain") {
+      result = await explainText(text);
+    } else if (action === "translate") {
+      result = await translateText(text, "en");
+    } else {
+      result = await improveText(text, action, "general");
+    }
 
     chrome.tabs.sendMessage(tabId, {
       type: "SHOW_RESULT",
@@ -608,125 +615,6 @@ async function processSelectedText(tabId, text, action) {
 // Prompt Builders
 // ============================================
 
-function getWritingActionPrompt(action, text, context) {
-  const contextDescriptions = {
-    email: "professional email communication",
-    chat: "casual chat messaging",
-    social: "social media posts",
-    technical: "technical documentation",
-    academic: "formal academic writing",
-  };
-
-  const contextDesc = contextDescriptions[context] || "general writing";
-
-  const prompts = {
-    grammar: `Fix all grammar, spelling, and punctuation errors in the following text. Preserve the original meaning and style. Context: ${contextDesc}. Only output the corrected text, nothing else.
-
-Text:
-${text}
-
-Corrected text:`,
-
-    clarity: `Improve the clarity and readability of the following text while maintaining the original meaning. Context: ${contextDesc}. Only output the improved text, nothing else.
-
-Text:
-${text}
-
-Improved text:`,
-
-    tone: `Rewrite the following text with a more professional tone while keeping the same meaning. Context: ${contextDesc}. Only output the rewritten text, nothing else.
-
-Text:
-${text}
-
-Rewritten text:`,
-
-    concise: `Make the following text more concise by removing unnecessary words and redundancy while preserving all key information. Context: ${contextDesc}. Only output the concise text, nothing else.
-
-Text:
-${text}
-
-Concise text:`,
-
-    expand: `Expand the following text by adding more detail, context, and depth while maintaining the original message. Context: ${contextDesc}. Only output the expanded text, nothing else.
-
-Text:
-${text}
-
-Expanded text:`,
-
-    rephrase: `Rephrase the following text using different words and sentence structures while keeping the same meaning. Context: ${contextDesc}. Only output the rephrased text, nothing else.
-
-Text:
-${text}
-
-Rephrased text:`,
-  };
-
-  return prompts[action] || prompts.grammar;
-}
-
-function getQuickActionPrompt(action, text, context, options = {}) {
-  const prompts = {
-    translate: `Translate the following text to ${options.targetLanguage || "English"}. Only output the translation, nothing else.
-
-Text:
-${text}
-
-Translation:`,
-
-    summarize: `Summarize the following text in a concise manner. Focus on key points and main ideas. Only output the summary, nothing else.
-
-Text:
-${text}
-
-Summary:`,
-
-    reply: `Generate a professional reply to the following ${context} message. Only output the reply, nothing else.
-
-Message:
-${text}
-
-Reply:`,
-
-    emojify: `Add relevant and appropriate emojis throughout the following text to make it more expressive. Don't overdo it. Only output the emojified text, nothing else.
-
-Text:
-${text}
-
-Emojified text:`,
-  };
-
-  return prompts[action] || prompts.translate;
-}
-
-function getContextMenuPrompt(action, text) {
-  const prompts = {
-    improve: `Improve the following text by fixing any grammar or spelling errors and enhancing clarity. Only output the improved text.
-
-Text:
-${text}
-
-Improved text:`,
-
-    explain: `Explain the following text in simple, easy-to-understand terms. Break down any complex concepts.
-
-Text:
-${text}
-
-Explanation:`,
-
-    translate: `Translate the following text to English. Only output the translation.
-
-Text:
-${text}
-
-Translation:`,
-  };
-
-  return prompts[action] || prompts.improve;
-}
-
 // ============================================
 // Utilities
 // ============================================
@@ -737,55 +625,6 @@ Translation:`,
 async function getApiKey() {
   const result = await chrome.storage.local.get("apiKey");
   return result.apiKey || "";
-}
-
-/**
- * Call Gemini API
- */
-async function callGeminiAPI(prompt, apiKey, options = {}) {
-  const {
-    model = DEFAULT_MODEL,
-    maxTokens = 8192,
-    temperature = 0.7,
-  } = options;
-
-  if (!apiKey) {
-    throw new Error("API key not configured");
-  }
-
-  const url = `${GEMINI_API_BASE}/models/${model}:generateContent?key=${apiKey}`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        maxOutputTokens: maxTokens,
-        temperature,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.error?.message || `API error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    throw new Error("Empty response from API");
-  }
-
-  return text;
 }
 
 console.log("[Omni AI] Service worker loaded");
