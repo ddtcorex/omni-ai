@@ -1,191 +1,293 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Omni AI - Settings</title>
-  <link rel="stylesheet" href="options.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="options-container">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-content">
-        <div class="logo">
-          <img src="../assets/icons/icon-48.png" alt="Omni AI" class="logo-icon">
-          <div class="logo-text">
-            <h1>Omni AI</h1>
-            <span class="version">v0.1.0</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omni AI - Settings</title>
+    <link rel="stylesheet" href="options.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="options-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">
+            <img
+              src="../assets/icons/icon-48.png"
+              alt="Omni AI"
+              class="logo-icon"
+            />
+            <div class="logo-text">
+              <h1>Omni AI</h1>
+              <span class="version">v0.1.0</span>
+            </div>
           </div>
+          <p class="tagline">Your AI-powered writing assistant</p>
         </div>
-        <p class="tagline">Your AI-powered writing assistant</p>
-      </div>
-    </header>
+      </header>
 
-    <!-- Main Content -->
-    <main class="main">
-      <!-- API Configuration -->
-      <section class="settings-section">
-        <h2 class="section-title">
-          <span class="section-icon">🔑</span>
-          API Configuration
-        </h2>
-        <div class="setting-card">
-          <div class="setting-item">
-            <label class="setting-label" for="apiKey">
-              <span class="label-text">Gemini API Key</span>
-              <span class="label-hint">Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></span>
-            </label>
-            <div class="input-group">
-              <input 
-                type="password" 
-                id="apiKey" 
-                class="setting-input" 
-                placeholder="Enter your Gemini API key..."
+      <!-- Main Content -->
+      <main class="main">
+        <!-- API Configuration -->
+        <section class="settings-section">
+          <h2 class="section-title">
+            <span class="section-icon">🔑</span>
+            __MSG_settings_title__
+          </h2>
+          <div class="setting-card">
+            <div class="setting-item">
+              <label class="setting-label" for="apiKey">
+                <span class="label-text">__MSG_settings_apiKey__</span>
+                <span class="label-hint">__MSG_settings_apiKeyHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="apiKey"
+                  class="setting-input"
+                  placeholder="Enter your Gemini API key..."
+                />
+                <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                    ></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Preferences -->
+        <section class="settings-section">
+          <h2 class="section-title">
+            <span class="section-icon">⚙️</span>
+            __MSG_settings_title__
+          </h2>
+          <div class="setting-card">
+            <div class="setting-item">
+              <label class="setting-label">
+                <span class="label-text">__MSG_settings_defaultPreset__</span>
+                <span class="label-hint"
+                  >Default context preset for writing improvements</span
+                >
+              </label>
+              <select id="defaultPreset" class="setting-select">
+                <option value="email">📧 __MSG_preset_email__</option>
+                <option value="chat">💬 __MSG_preset_chat__</option>
+                <option value="social">🐦 __MSG_preset_social__</option>
+                <option value="technical">📝 __MSG_preset_technical__</option>
+                <option value="academic">📚 __MSG_preset_academic__</option>
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">
+                <span class="label-text">__MSG_settings_language__</span>
+                <span class="label-hint"
+                  >Default language for translations</span
+                >
+              </label>
+              <select id="defaultLanguage" class="setting-select">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="zh">Chinese</option>
+                <option value="vi">Vietnamese</option>
+              </select>
+            </div>
+
+            <div class="setting-item setting-toggle">
+              <label class="setting-label">
+                <span class="label-text">Auto-close popup</span>
+                <span class="label-hint"
+                  >Close popup after action is completed</span
+                >
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="autoClose" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-item setting-toggle">
+              <label class="setting-label">
+                <span class="label-text">Show notifications</span>
+                <span class="label-hint"
+                  >Display notifications for completed actions</span
+                >
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="showNotifications" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- Keyboard Shortcuts -->
+        <section class="settings-section">
+          <h2 class="section-title">
+            <span class="section-icon">⌨️</span>
+            Keyboard Shortcuts
+          </h2>
+          <div class="setting-card">
+            <div class="shortcuts-list">
+              <div class="shortcut-item">
+                <span class="shortcut-action">__MSG_popup_title__</span>
+                <kbd class="shortcut-keys">Ctrl + Shift + O</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span class="shortcut-action">__MSG_action_grammar__</span>
+                <kbd class="shortcut-keys">Ctrl + Shift + G</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span class="shortcut-action">__MSG_action_rephrase__</span>
+                <kbd class="shortcut-keys">Ctrl + Shift + R</kbd>
+              </div>
+              <div class="shortcut-item">
+                <span class="shortcut-action">__MSG_popup_quickAsk__</span>
+                <kbd class="shortcut-keys">Ctrl + Shift + A</kbd>
+              </div>
+            </div>
+            <p class="shortcuts-hint">
+              <a href="chrome://extensions/shortcuts" id="shortcutsLink"
+                >Customize shortcuts in Chrome settings</a
               >
-              <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+            </p>
+          </div>
+        </section>
+
+        <!-- Usage History -->
+        <section class="settings-section">
+          <h2 class="section-title">
+            <span class="section-icon">📊</span>
+            Usage History
+          </h2>
+          <div class="setting-card">
+            <div id="historyStats" class="history-stats">
+              <div class="stat-item">
+                <span class="stat-value" id="statTotalActions">0</span>
+                <span class="stat-label">Actions</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value" id="statWordsProcessed">0</span>
+                <span class="stat-label">Words Processed</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value" id="statWordsGenerated">0</span>
+                <span class="stat-label">Words Generated</span>
+              </div>
+            </div>
+
+            <div class="history-actions">
+              <button id="refreshHistory" class="text-btn">Refresh</button>
+              <button id="clearHistory" class="text-btn danger">
+                Clear History
               </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- Preferences -->
-      <section class="settings-section">
-        <h2 class="section-title">
-          <span class="section-icon">⚙️</span>
-          Preferences
-        </h2>
-        <div class="setting-card">
-          <div class="setting-item">
-            <label class="setting-label">
-              <span class="label-text">Default Context</span>
-              <span class="label-hint">Default context preset for writing improvements</span>
-            </label>
-            <select id="defaultPreset" class="setting-select">
-              <option value="email">📧 Email</option>
-              <option value="chat">💬 Chat</option>
-              <option value="social">🐦 Social</option>
-              <option value="technical">📝 Technical</option>
-              <option value="academic">📚 Academic</option>
-            </select>
-          </div>
-
-          <div class="setting-item">
-            <label class="setting-label">
-              <span class="label-text">Translation Language</span>
-              <span class="label-hint">Default language for translations</span>
-            </label>
-            <select id="defaultLanguage" class="setting-select">
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="it">Italian</option>
-              <option value="pt">Portuguese</option>
-              <option value="ja">Japanese</option>
-              <option value="ko">Korean</option>
-              <option value="zh">Chinese</option>
-              <option value="vi">Vietnamese</option>
-            </select>
-          </div>
-
-          <div class="setting-item setting-toggle">
-            <label class="setting-label">
-              <span class="label-text">Auto-close popup</span>
-              <span class="label-hint">Close popup after action is completed</span>
-            </label>
-            <label class="switch">
-              <input type="checkbox" id="autoClose">
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item setting-toggle">
-            <label class="setting-label">
-              <span class="label-text">Show notifications</span>
-              <span class="label-hint">Display notifications for completed actions</span>
-            </label>
-            <label class="switch">
-              <input type="checkbox" id="showNotifications" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <!-- Keyboard Shortcuts -->
-      <section class="settings-section">
-        <h2 class="section-title">
-          <span class="section-icon">⌨️</span>
-          Keyboard Shortcuts
-        </h2>
-        <div class="setting-card">
-          <div class="shortcuts-list">
-            <div class="shortcut-item">
-              <span class="shortcut-action">Open Omni AI</span>
-              <kbd class="shortcut-keys">Ctrl + Shift + O</kbd>
-            </div>
-            <div class="shortcut-item">
-              <span class="shortcut-action">Improve selected text</span>
-              <kbd class="shortcut-keys">Right-click → Context Menu</kbd>
+            <div id="historyList" class="history-list">
+              <!-- History items will be injected here -->
+              <div class="empty-state">No history yet</div>
             </div>
           </div>
-          <p class="shortcuts-hint">
-            <a href="chrome://extensions/shortcuts" id="shortcutsLink">Customize shortcuts in Chrome settings</a>
-          </p>
-        </div>
-      </section>
+        </section>
 
-      <!-- About -->
-      <section class="settings-section">
-        <h2 class="section-title">
-          <span class="section-icon">ℹ️</span>
-          About
-        </h2>
-        <div class="setting-card about-card">
-          <p>Omni AI is an all-in-one AI writing assistant powered by Google Gemini.</p>
-          <div class="about-links">
-            <a href="https://github.com/ddtcorex/omni-ai" target="_blank" class="about-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              GitHub
-            </a>
-            <a href="https://github.com/ddtcorex/omni-ai/issues" target="_blank" class="about-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              Report Issue
-            </a>
+        <!-- About -->
+        <section class="settings-section">
+          <h2 class="section-title">
+            <span class="section-icon">ℹ️</span>
+            About
+          </h2>
+          <div class="setting-card about-card">
+            <p>__MSG_extDescription__</p>
+            <div class="about-links">
+              <a
+                href="https://github.com/ddtcorex/omni-ai"
+                target="_blank"
+                class="about-link"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  />
+                </svg>
+                GitHub
+              </a>
+              <a
+                href="https://github.com/ddtcorex/omni-ai/issues"
+                target="_blank"
+                class="about-link"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Report Issue
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <button id="saveBtn" class="save-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        Save Settings
-      </button>
-      <span id="saveStatus" class="save-status"></span>
-    </footer>
-  </div>
+      <!-- Footer -->
+      <footer class="footer">
+        <button id="saveBtn" class="save-btn">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+            ></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          __MSG_settings_save__
+        </button>
 
-  <script src="options.js"></script>
-</body>
+        <span id="saveStatus" class="save-status"></span>
+      </footer>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
 </html>

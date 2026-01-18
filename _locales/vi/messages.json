@@ -1,0 +1,166 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Trợ lý AI đa năng với Google Gemini - Cải thiện văn bản, thao tác nhanh và tiện ích thông minh",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "popup_quickAsk": {
+    "message": "Hỏi Omni AI bất cứ điều gì...",
+    "description": "Quick ask placeholder"
+  },
+  "popup_context": {
+    "message": "Ngữ cảnh",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Cải thiện văn bản",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Thao tác nhanh",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "Email",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Mạng xã hội",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Kỹ thuật",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Học thuật",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Sửa ngữ pháp",
+    "description": "Grammar action"
+  },
+  "action_clarity": {
+    "message": "Rõ ràng hơn",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Đổi giọng văn",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Ngắn gọn",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Mở rộng",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Diễn đạt lại",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Dịch",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Tóm tắt",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Trả lời",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Thêm emoji",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Sẵn sàng",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Đang xử lý...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Lỗi",
+    "description": "Status error"
+  },
+  "auth_signIn": {
+    "message": "Đăng nhập",
+    "description": "Sign in button"
+  },
+  "auth_signOut": {
+    "message": "Đăng xuất",
+    "description": "Sign out button"
+  },
+  "settings_title": {
+    "message": "Cài đặt",
+    "description": "Settings page title"
+  },
+  "settings_apiKey": {
+    "message": "Khóa API Gemini",
+    "description": "API key label"
+  },
+  "settings_apiKeyHint": {
+    "message": "Lấy khóa API từ Google AI Studio",
+    "description": "API key hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Ngữ cảnh mặc định",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Ngôn ngữ dịch",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Lưu cài đặt",
+    "description": "Save button"
+  },
+  "settings_saved": {
+    "message": "Đã lưu cài đặt!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Sao chép",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Thay thế",
+    "description": "Replace button"
+  },
+  "contextMenu_improve": {
+    "message": "Cải thiện với Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Giải thích với Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Dịch với Omni AI",
+    "description": "Context menu translate"
+  },
+  "error_noApiKey": {
+    "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API Gemini trong Cài đặt.",
+    "description": "No API key error"
+  },
+  "error_noSelection": {
+    "message": "Chưa chọn văn bản. Vui lòng chọn văn bản trước.",
+    "description": "No selection error"
+  }
+}

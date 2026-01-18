@@ -17,7 +17,7 @@ let isOverlayVisible = false;
  * Initialize content script
  */
 function init() {
-  console.log('[Omni AI] Content script loaded');
+  console.log("[Omni AI] Content script loaded");
   setupMessageListener();
   setupSelectionListener();
 }
@@ -28,22 +28,27 @@ function init() {
 function setupMessageListener() {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.type) {
-      case 'GET_SELECTION':
+      case "GET_SELECTION":
         sendResponse({ selection: getSelectedText() });
         break;
 
-      case 'SHOW_RESULT':
+      case "SHOW_RESULT":
         showResultOverlay(message.payload);
         sendResponse({ success: true });
         break;
 
-      case 'REPLACE_SELECTION':
+      case "REPLACE_SELECTION":
         replaceSelectedText(message.payload.text);
         sendResponse({ success: true });
         break;
 
+      case "SHOW_QUICK_ASK_OVERLAY":
+        showQuickAskOverlay();
+        sendResponse({ success: true });
+        break;
+
       default:
-        sendResponse({ success: false, error: 'Unknown message type' });
+        sendResponse({ success: false, error: "Unknown message type" });
     }
   });
 }
@@ -52,21 +57,10 @@ function setupMessageListener() {
  * Set up selection change listener
  */
 function setupSelectionListener() {
-  document.addEventListener('mouseup', (e) => {
+  document.addEventListener("mouseup", (e) => {
     // Hide overlay if clicking outside
     if (overlay && !overlay.contains(e.target)) {
       hideOverlay();
-    }
-  });
-
-  // Listen for keyboard shortcut (Ctrl/Cmd + Shift + O)
-  document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'O') {
-      const selection = getSelectedText();
-      if (selection) {
-        e.preventDefault();
-        showQuickActionMenu(selection);
-      }
     }
   });
 }
@@ -80,7 +74,7 @@ function setupSelectionListener() {
  */
 function getSelectedText() {
   const selection = window.getSelection();
-  return selection ? selection.toString().trim() : '';
+  return selection ? selection.toString().trim() : "";
 }
 
 /**
@@ -94,11 +88,15 @@ function replaceSelectedText(newText) {
   const activeElement = document.activeElement;
 
   // Handle input/textarea elements
-  if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+  if (
+    activeElement &&
+    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
+  ) {
     const start = activeElement.selectionStart;
     const end = activeElement.selectionEnd;
     const value = activeElement.value;
-    activeElement.value = value.substring(0, start) + newText + value.substring(end);
+    activeElement.value =
+      value.substring(0, start) + newText + value.substring(end);
     activeElement.setSelectionRange(start, start + newText.length);
   } else if (activeElement && activeElement.isContentEditable) {
     // Handle contenteditable elements
@@ -116,9 +114,9 @@ function replaceSelectedText(newText) {
  */
 function showResultOverlay(payload) {
   const { action, original, result } = payload;
-  
+
   hideOverlay();
-  
+
   overlay = createOverlayElement();
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
@@ -139,13 +137,104 @@ function showResultOverlay(payload) {
 
   document.body.appendChild(overlay);
   positionOverlay();
-  
+
   // Event listeners
-  overlay.querySelector('#omniAiClose').addEventListener('click', hideOverlay);
-  overlay.querySelector('#omniAiCopy').addEventListener('click', () => copyToClipboard(result));
-  overlay.querySelector('#omniAiReplace').addEventListener('click', () => {
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  overlay
+    .querySelector("#omniAiCopy")
+    .addEventListener("click", () => copyToClipboard(result));
+  overlay.querySelector("#omniAiReplace").addEventListener("click", () => {
     replaceSelectedText(result);
     hideOverlay();
+  });
+
+  isOverlayVisible = true;
+}
+
+/**
+ * Show quick ask overlay
+ */
+function showQuickAskOverlay() {
+  hideOverlay();
+
+  overlay = createOverlayElement();
+  overlay.innerHTML = `
+    <div class="omni-ai-overlay-header">
+      <div class="omni-ai-overlay-title">
+        <span class="omni-ai-icon">💬</span>
+        <span>Omni AI - Quick Ask</span>
+      </div>
+      <button class="omni-ai-close-btn" id="omniAiClose">×</button>
+    </div>
+    <div class="omni-ai-overlay-content">
+      <textarea id="omniAiInput" class="omni-ai-input" placeholder="Ask anything... (Press Enter to send)" rows="3"></textarea>
+      <div id="omniAiLoading" class="omni-ai-loading hidden">Processing...</div>
+      <div id="omniAiQuickResult" class="omni-ai-result hidden"></div>
+    </div>
+    <div class="omni-ai-overlay-footer">
+      <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn">Ask</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  positionOverlay();
+
+  const input = overlay.querySelector("#omniAiInput");
+  const askBtn = overlay.querySelector("#omniAiAskBtn");
+  const loading = overlay.querySelector("#omniAiLoading");
+  const resultDiv = overlay.querySelector("#omniAiQuickResult");
+  const closeBtn = overlay.querySelector("#omniAiClose");
+
+  input.focus();
+
+  closeBtn.addEventListener("click", hideOverlay);
+
+  const handleAsk = async () => {
+    const query = input.value.trim();
+    if (!query) return;
+
+    input.classList.add("hidden");
+    askBtn.classList.add("hidden");
+    loading.classList.remove("hidden");
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        type: "QUICK_ASK",
+        payload: { query, preset: "general" },
+      });
+
+      loading.classList.add("hidden");
+      resultDiv.classList.remove("hidden");
+
+      if (response.success) {
+        resultDiv.textContent = response.data.response;
+        // Switch footer to copy button
+        askBtn.textContent = "Copy";
+        askBtn.classList.remove("hidden");
+        askBtn.id = "omniAiCopyResult";
+
+        // Remove old listener, add new one
+        const newFooterBtn = askBtn.cloneNode(true);
+        askBtn.parentNode.replaceChild(newFooterBtn, askBtn);
+        newFooterBtn.addEventListener("click", () =>
+          copyToClipboard(response.data.response),
+        );
+      } else {
+        resultDiv.textContent = "Error: " + (response.error || "Unknown error");
+      }
+    } catch (e) {
+      loading.classList.add("hidden");
+      resultDiv.textContent = "Error: " + e.message;
+      resultDiv.classList.remove("hidden");
+    }
+  };
+
+  askBtn.addEventListener("click", handleAsk);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleAsk();
+    }
   });
 
   isOverlayVisible = true;
@@ -156,16 +245,16 @@ function showResultOverlay(payload) {
  */
 function showQuickActionMenu(selection) {
   // TODO: Implement quick action floating menu
-  console.log('[Omni AI] Quick action for:', selection.substring(0, 50));
+  console.log("[Omni AI] Quick action for:", selection.substring(0, 50));
 }
 
 /**
  * Create overlay element
  */
 function createOverlayElement() {
-  const el = document.createElement('div');
-  el.className = 'omni-ai-overlay';
-  el.id = 'omniAiOverlay';
+  const el = document.createElement("div");
+  el.className = "omni-ai-overlay";
+  el.id = "omniAiOverlay";
   return el;
 }
 
@@ -178,15 +267,15 @@ function positionOverlay() {
   const selection = window.getSelection();
   if (!selection.rangeCount) {
     // Center on screen if no selection
-    overlay.style.top = '50%';
-    overlay.style.left = '50%';
-    overlay.style.transform = 'translate(-50%, -50%)';
+    overlay.style.top = "50%";
+    overlay.style.left = "50%";
+    overlay.style.transform = "translate(-50%, -50%)";
     return;
   }
 
   const range = selection.getRangeAt(0);
   const rect = range.getBoundingClientRect();
-  
+
   let top = rect.bottom + window.scrollY + 10;
   let left = rect.left + window.scrollX;
 
@@ -223,18 +312,18 @@ function hideOverlay() {
  */
 function formatActionName(action) {
   const names = {
-    improve: 'Improved',
-    explain: 'Explanation',
-    translate: 'Translation',
-    grammar: 'Grammar Fixed',
-    clarity: 'Clarity Improved',
-    tone: 'Tone Changed',
-    concise: 'Made Concise',
-    expand: 'Expanded',
-    rephrase: 'Rephrased',
-    summarize: 'Summary',
-    reply: 'Suggested Reply',
-    emojify: 'Emojified',
+    improve: "Improved",
+    explain: "Explanation",
+    translate: "Translation",
+    grammar: "Grammar Fixed",
+    clarity: "Clarity Improved",
+    tone: "Tone Changed",
+    concise: "Made Concise",
+    expand: "Expanded",
+    rephrase: "Rephrased",
+    summarize: "Summary",
+    reply: "Suggested Reply",
+    emojify: "Emojified",
   };
   return names[action] || action;
 }
@@ -243,7 +332,7 @@ function formatActionName(action) {
  * Escape HTML
  */
 function escapeHtml(text) {
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
@@ -254,9 +343,9 @@ function escapeHtml(text) {
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard!');
+    showToast("Copied to clipboard!");
   } catch (err) {
-    console.error('[Omni AI] Copy failed:', err);
+    console.error("[Omni AI] Copy failed:", err);
   }
 }
 
@@ -264,14 +353,14 @@ async function copyToClipboard(text) {
  * Show toast notification
  */
 function showToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'omni-ai-toast';
+  const toast = document.createElement("div");
+  toast.className = "omni-ai-toast";
   toast.textContent = message;
   document.body.appendChild(toast);
-  
-  setTimeout(() => toast.classList.add('omni-ai-toast-visible'), 10);
+
+  setTimeout(() => toast.classList.add("omni-ai-toast-visible"), 10);
   setTimeout(() => {
-    toast.classList.remove('omni-ai-toast-visible');
+    toast.classList.remove("omni-ai-toast-visible");
     setTimeout(() => toast.remove(), 300);
   }, 2000);
 }
