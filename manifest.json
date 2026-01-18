@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Omni AI",
-  "version": "0.1.0",
-  "description": "All-in-One AI Assistant powered by Google Gemini - Writing enhancement, quick actions, and smart utilities",
+  "name": "__MSG_extName__",
+  "version": "1.0.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
   "author": "ddtcorex",
   "homepage_url": "https://github.com/ddtcorex/omni-ai",
 
@@ -19,7 +20,7 @@
       "48": "assets/icons/icon-48.png",
       "128": "assets/icons/icon-128.png"
     },
-    "default_title": "Omni AI - Your AI Writing Assistant"
+    "default_title": "__MSG_extName__"
   },
 
   "background": {
@@ -51,7 +52,28 @@
         "default": "Ctrl+Shift+O",
         "mac": "Command+Shift+O"
       },
-      "description": "Open Omni AI popup"
+      "description": "__MSG_popup_title__"
+    },
+    "quick_fix_grammar": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+G",
+        "mac": "Command+Shift+G"
+      },
+      "description": "__MSG_action_grammar__"
+    },
+    "quick_rephrase": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+R",
+        "mac": "Command+Shift+R"
+      },
+      "description": "__MSG_action_rephrase__"
+    },
+    "quick_ask": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "__MSG_popup_quickAsk__"
     }
   },
 

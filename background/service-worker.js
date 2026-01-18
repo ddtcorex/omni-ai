@@ -1,3 +1,5 @@
+import { addToHistory } from "../lib/history.js";
+
 /**
  * Omni AI - Service Worker
  * Background script handling API calls, context menus, and message passing
@@ -28,6 +30,36 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 /**
+ * Handle keyboard commands
+ */
+chrome.commands.onCommand.addListener(async (command) => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) return;
+
+  if (command === "quick_ask") {
+    // Open popup not strictly possible via command unless action button,
+    // but message sending to content script works
+    chrome.tabs.sendMessage(tab.id, { type: "SHOW_QUICK_ASK_OVERLAY" });
+    return;
+  }
+
+  // Handle other commands via selected text
+  const response = await chrome.tabs.sendMessage(tab.id, {
+    type: "GET_SELECTION",
+  });
+
+  if (response?.selection) {
+    let action;
+    if (command === "quick_fix_grammar") action = "grammar";
+    if (command === "quick_rephrase") action = "rephrase";
+
+    if (action) {
+      processSelectedText(tab.id, response.selection, action);
+    }
+  }
+});
+
+/**
  * Initialize default settings
  */
 async function initializeSettings() {
@@ -35,7 +67,7 @@ async function initializeSettings() {
     apiKey: "",
     currentPreset: "email",
     customPrompts: [],
-    history: [],
+    // history managed by lib/history.js
     settings: {
       theme: "dark",
       autoClose: false,
@@ -354,6 +386,23 @@ Answer:`;
     console.log("[Omni AI] Could not send to content script:", e);
   }
 
+  // Return response
+  try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    await addToHistory({
+      action: "quick_ask",
+      inputText: query,
+      outputText: response,
+      preset,
+      site: tab?.url || "popup",
+    });
+  } catch (e) {
+    console.error("[Omni AI] Failed to save history:", e);
+  }
+
   return { response };
 }
 
@@ -405,6 +454,23 @@ async function handleWritingAction(payload) {
         result,
       },
     });
+  }
+
+  // Save to history
+  try {
+    const [historyTab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    await addToHistory({
+      action,
+      inputText: selectedText,
+      outputText: result,
+      preset,
+      site: historyTab?.url || "unknown",
+    });
+  } catch (e) {
+    console.error("[Omni AI] Failed to save history:", e);
   }
 
   return { response: result };
@@ -460,6 +526,23 @@ async function handleQuickAction(payload) {
     });
   }
 
+  // Save to history
+  try {
+    const [historyTab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    await addToHistory({
+      action,
+      inputText: selectedText,
+      outputText: result,
+      preset,
+      site: historyTab?.url || "unknown",
+    });
+  } catch (e) {
+    console.error("[Omni AI] Failed to save history:", e);
+  }
+
   return { response: result };
 }
 
@@ -499,6 +582,14 @@ async function processSelectedText(tabId, text, action) {
         original: text,
         result,
       },
+    });
+    // Save to history
+    await addToHistory({
+      action,
+      inputText: text,
+      outputText: result,
+      preset: "context-menu",
+      site: "context-menu",
     });
   } catch (error) {
     chrome.tabs.sendMessage(tabId, {

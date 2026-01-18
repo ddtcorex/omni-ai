@@ -1,0 +1,166 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "All-in-One AI Assistant powered by Google Gemini - Writing enhancement, quick actions, and smart utilities",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "popup_quickAsk": {
+    "message": "Ask Omni AI anything...",
+    "description": "Quick ask placeholder"
+  },
+  "popup_context": {
+    "message": "Context",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Improve Writing",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Quick Actions",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "Email",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Social",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Technical",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Academic",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Fix Grammar",
+    "description": "Grammar action"
+  },
+  "action_clarity": {
+    "message": "Improve Clarity",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Change Tone",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Make Concise",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Expand",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Rephrase",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Translate",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Summarize",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Reply",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Emojify",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Ready",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Processing...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Error",
+    "description": "Status error"
+  },
+  "auth_signIn": {
+    "message": "Sign in",
+    "description": "Sign in button"
+  },
+  "auth_signOut": {
+    "message": "Sign out",
+    "description": "Sign out button"
+  },
+  "settings_title": {
+    "message": "Settings",
+    "description": "Settings page title"
+  },
+  "settings_apiKey": {
+    "message": "Gemini API Key",
+    "description": "API key label"
+  },
+  "settings_apiKeyHint": {
+    "message": "Get your API key from Google AI Studio",
+    "description": "API key hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Default Context",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Translation Language",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Save Settings",
+    "description": "Save button"
+  },
+  "settings_saved": {
+    "message": "Settings saved!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Copy",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Replace",
+    "description": "Replace button"
+  },
+  "contextMenu_improve": {
+    "message": "Improve with Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Explain with Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Translate with Omni AI",
+    "description": "Context menu translate"
+  },
+  "error_noApiKey": {
+    "message": "API key not configured. Please add your Gemini API key in Settings.",
+    "description": "No API key error"
+  },
+  "error_noSelection": {
+    "message": "No text selected. Please select some text first.",
+    "description": "No selection error"
+  }
+}

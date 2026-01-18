@@ -9,15 +9,15 @@ const elements = {
   quickAskInput: document.getElementById("quickAskInput"),
   askBtn: document.getElementById("askBtn"),
   settingsBtn: document.getElementById("settingsBtn"),
-  
+
   // Presets & Actions
   presetChips: document.querySelectorAll(".preset-chip"),
   actionBtns: document.querySelectorAll(".action-btn"),
   quickActionBtns: document.querySelectorAll(".quick-action-btn"),
-  
+
   // Status
   status: document.getElementById("status"),
-  
+
   // Auth
   userSection: document.getElementById("userSection"),
   signInBtn: document.getElementById("signInBtn"),
@@ -40,10 +40,22 @@ let currentUser = null;
  * Initialize popup
  */
 async function init() {
+  localizeDOM();
   setupEventListeners();
   await loadSavedPreset();
   await loadAuthState();
   focusInput();
+}
+
+/**
+ * Localize the DOM
+ */
+function localizeDOM() {
+  // Localize specific attributes that aren't handled by __MSG_key__ in HTML
+  document.title = chrome.i18n.getMessage("popup_title");
+  elements.quickAskInput.placeholder = chrome.i18n.getMessage("popup_quickAsk");
+
+  // Localize other dynamic elements if needed
 }
 
 /**
@@ -116,20 +128,20 @@ async function loadAuthState() {
  */
 async function handleSignIn() {
   try {
-    updateStatus("Signing in...", "processing");
-    
+    updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
+
     const response = await chrome.runtime.sendMessage({ type: "SIGN_IN" });
-    
+
     if (response.success) {
       setSignedInState(response.user);
-      updateStatus("Ready", "success");
+      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
     } else {
-      updateStatus("Sign in failed", "error");
+      updateStatus(chrome.i18n.getMessage("status_error"), "error");
       console.error("Sign in failed:", response.error);
     }
   } catch (error) {
     console.error("Sign in error:", error);
-    updateStatus("Sign in failed", "error");
+    updateStatus(chrome.i18n.getMessage("status_error"), "error");
   }
 }
 
@@ -139,20 +151,20 @@ async function handleSignIn() {
 async function handleSignOut() {
   try {
     closeUserDropdown();
-    updateStatus("Signing out...", "processing");
-    
+    updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
+
     const response = await chrome.runtime.sendMessage({ type: "SIGN_OUT" });
-    
+
     if (response.success) {
       setSignedOutState();
-      updateStatus("Ready", "success");
+      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
     } else {
-      updateStatus("Sign out failed", "error");
+      updateStatus(chrome.i18n.getMessage("status_error"), "error");
       console.error("Sign out failed:", response.error);
     }
   } catch (error) {
     console.error("Sign out error:", error);
-    updateStatus("Sign out failed", "error");
+    updateStatus(chrome.i18n.getMessage("status_error"), "error");
   }
 }
 
@@ -161,15 +173,15 @@ async function handleSignOut() {
  */
 function setSignedInState(user) {
   currentUser = user;
-  
+
   // Hide sign in button
   elements.signInBtn.classList.add("hidden");
-  
+
   // Show user info
   elements.userInfo.classList.remove("hidden");
   elements.userAvatar.src = user.picture || getDefaultAvatar(user.name);
   elements.userAvatar.alt = user.name;
-  
+
   // Update dropdown
   elements.dropdownAvatar.src = user.picture || getDefaultAvatar(user.name);
   elements.userName.textContent = user.name;
@@ -181,10 +193,10 @@ function setSignedInState(user) {
  */
 function setSignedOutState() {
   currentUser = null;
-  
+
   // Show sign in button
   elements.signInBtn.classList.remove("hidden");
-  
+
   // Hide user info
   elements.userInfo.classList.add("hidden");
   closeUserDropdown();
@@ -232,7 +244,7 @@ async function handleQuickAsk() {
   if (!query || isProcessing) return;
 
   setProcessing(true);
-  updateStatus("Processing...", "processing");
+  updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -241,15 +253,15 @@ async function handleQuickAsk() {
     });
 
     if (response.success) {
-      updateStatus("Ready", "success");
+      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
       elements.quickAskInput.value = "";
     } else {
-      updateStatus("Error", "error");
+      updateStatus(chrome.i18n.getMessage("status_error"), "error");
       console.error("Quick Ask failed:", response.error);
     }
   } catch (error) {
     console.error("Quick Ask error:", error);
-    updateStatus("Error", "error");
+    updateStatus(chrome.i18n.getMessage("status_error"), "error");
   } finally {
     setProcessing(false);
   }
@@ -272,7 +284,7 @@ async function handleAction(action) {
   if (isProcessing) return;
 
   setProcessing(true);
-  updateStatus("Processing...", "processing");
+  updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -281,14 +293,14 @@ async function handleAction(action) {
     });
 
     if (response.success) {
-      updateStatus("Ready", "success");
+      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
     } else {
-      updateStatus("Error", "error");
+      updateStatus(chrome.i18n.getMessage("status_error"), "error");
       console.error("Action failed:", response.error);
     }
   } catch (error) {
     console.error("Action error:", error);
-    updateStatus("Error", "error");
+    updateStatus(chrome.i18n.getMessage("status_error"), "error");
   } finally {
     setProcessing(false);
   }
@@ -301,7 +313,7 @@ async function handleQuickAction(action) {
   if (isProcessing) return;
 
   setProcessing(true);
-  updateStatus("Processing...", "processing");
+  updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -310,14 +322,14 @@ async function handleQuickAction(action) {
     });
 
     if (response.success) {
-      updateStatus("Ready", "success");
+      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
     } else {
-      updateStatus("Error", "error");
+      updateStatus(chrome.i18n.getMessage("status_error"), "error");
       console.error("Quick action failed:", response.error);
     }
   } catch (error) {
     console.error("Quick action error:", error);
-    updateStatus("Error", "error");
+    updateStatus(chrome.i18n.getMessage("status_error"), "error");
   } finally {
     setProcessing(false);
   }

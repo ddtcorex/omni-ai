@@ -12,11 +12,16 @@
   background: linear-gradient(145deg, #1a1a24 0%, #0f0f14 100%);
   border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 12px;
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.05),
     0 0 60px rgba(139, 92, 246, 0.1);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-size: 14px;
   color: #f8fafc;
   overflow: hidden;
@@ -145,7 +150,12 @@
   border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 8px;
   color: #f8fafc;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-size: 13px;
   font-weight: 500;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
@@ -175,4 +185,37 @@
 
 .omni-ai-overlay-content::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* Quick Ask Elements */
+.omni-ai-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 14px;
+  resize: none;
+  margin-bottom: 8px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.omni-ai-input:focus {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.omni-ai-loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 20px;
+  font-style: italic;
+}
+
+.hidden {
+  display: none !important;
 }
