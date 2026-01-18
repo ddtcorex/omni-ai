@@ -564,12 +564,6 @@ async function processSelectedText(tabId, text, action) {
     text.substring(0, 50) + "...",
   );
 
-  console.log(
-    "[Omni AI] Processing selected text:",
-    action,
-    text.substring(0, 50) + "...",
-  );
-
   try {
     let result;
     if (action === "improve") {

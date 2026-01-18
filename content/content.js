@@ -8,6 +8,7 @@
 // ============================================
 let overlay = null;
 let isOverlayVisible = false;
+let lastSelection = null; // Store { element, start, end, range, isInput, text }
 
 // ============================================
 // Initialization
@@ -67,8 +68,8 @@ function setupSelectionListener() {
 
     // 2. Handle text selection for Quick Actions
     setTimeout(() => {
+      const text = getSelectedText();
       const selection = window.getSelection();
-      const text = selection ? selection.toString().trim() : "";
 
       if (text.length > 0 && !isOverlayVisible) {
         showQuickActionButton(selection);
@@ -234,33 +235,86 @@ function showQuickActionMenu(text, anchorRect = null) {
  * Get currently selected text
  */
 function getSelectedText() {
+  const activeElement = document.activeElement;
+
+  // Handle Input/Textarea
+  if (
+    activeElement &&
+    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
+  ) {
+    try {
+      const start = activeElement.selectionStart;
+      const end = activeElement.selectionEnd;
+      const text = activeElement.value.substring(start, end);
+
+      if (text) {
+        lastSelection = {
+          element: activeElement,
+          start,
+          end,
+          isInput: true,
+          text: text,
+        };
+        return text;
+      }
+    } catch (e) {
+      console.warn("[Omni AI] Failed to get selection from input:", e);
+    }
+  }
+
+  // Handle standard document selection
   const selection = window.getSelection();
-  return selection ? selection.toString().trim() : "";
+  const text = selection ? selection.toString().trim() : "";
+
+  if (text && selection.rangeCount > 0) {
+    lastSelection = {
+      element: activeElement,
+      range: selection.getRangeAt(0).cloneRange(),
+      isInput: false,
+      text: text,
+    };
+  }
+
+  return text;
 }
 
 /**
  * Replace selected text with new text
  */
 function replaceSelectedText(newText) {
-  const selection = window.getSelection();
-  if (!selection.rangeCount) return;
+  // Use lastSelection if available, fallback to current
+  const target = lastSelection;
 
-  const range = selection.getRangeAt(0);
-  const activeElement = document.activeElement;
+  if (target && target.isInput && target.element) {
+    const el = target.element;
+    const value = el.value;
+    const start = target.start;
+    const end = target.end;
 
-  // Handle input/textarea elements
-  if (
-    activeElement &&
-    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
-  ) {
-    const start = activeElement.selectionStart;
-    const end = activeElement.selectionEnd;
-    const value = activeElement.value;
-    activeElement.value =
-      value.substring(0, start) + newText + value.substring(end);
-    activeElement.setSelectionRange(start, start + newText.length);
-  } else if (activeElement && activeElement.isContentEditable) {
-    // Handle contenteditable elements
+    el.value = value.substring(0, start) + newText + value.substring(end);
+    el.setSelectionRange(start, start + newText.length);
+    el.focus();
+
+    // Trigger input events for frameworks
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  } else if (target && !target.isInput && target.range) {
+    const range = target.range;
+    range.deleteContents();
+    const textNode = document.createTextNode(newText);
+    range.insertNode(textNode);
+
+    // Restore selection to the new text
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.selectNode(textNode);
+    selection.addRange(newRange);
+  } else {
+    // Fallback for immediate selection (standard)
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
     range.deleteContents();
     range.insertNode(document.createTextNode(newText));
   }
@@ -301,10 +355,25 @@ function showResultOverlay(payload) {
 
   // Event listeners
   overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
-  overlay
-    .querySelector("#omniAiCopy")
-    .addEventListener("click", () => copyToClipboard(result));
-  overlay.querySelector("#omniAiReplace").addEventListener("click", () => {
+
+  const copyBtn = overlay.querySelector("#omniAiCopy");
+  const replaceBtn = overlay.querySelector("#omniAiReplace");
+
+  // Prevent focus loss on mousedown
+  [copyBtn, replaceBtn].forEach((btn) => {
+    btn.addEventListener("mousedown", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    });
+  });
+
+  copyBtn.addEventListener("click", () => copyToClipboard(result));
+
+  replaceBtn.addEventListener("click", () => {
+    console.log(
+      "[Omni AI] Replace clicked, using lastSelection:",
+      lastSelection,
+    );
     replaceSelectedText(result);
     hideOverlay();
   });
