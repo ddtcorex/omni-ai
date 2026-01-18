@@ -122,11 +122,17 @@ function showQuickActionButton(selection) {
     e.preventDefault();
     e.stopPropagation();
 
+    console.log("[Omni AI] Quick Action Button clicked");
+
+    // Capture position before removing button
+    const rect = quickActionBtn.getBoundingClientRect();
+
     // Show the full action menu
-    showQuickActionMenu(selection.toString());
+    showQuickActionMenu(selection.toString(), rect);
   });
 
   document.body.appendChild(quickActionBtn);
+  console.log("[Omni AI] Quick Action Button shown");
 }
 
 /**
@@ -142,7 +148,11 @@ function hideQuickActionButton() {
 /**
  * Show quick action menu
  */
-function showQuickActionMenu(text) {
+function showQuickActionMenu(text, anchorRect = null) {
+  console.log(
+    "[Omni AI] Showing menu for text:",
+    text.substring(0, 20) + "...",
+  );
   hideQuickActionButton();
 
   // Show a mini overlay with actions
@@ -163,7 +173,9 @@ function showQuickActionMenu(text) {
   `;
 
   document.body.appendChild(overlay);
-  positionOverlay();
+
+  // Position using the anchor rect if provided
+  positionOverlay(anchorRect);
 
   overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
 
@@ -171,6 +183,7 @@ function showQuickActionMenu(text) {
   buttons.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const action = btn.dataset.action;
+      console.log("[Omni AI] Menu action selected:", action);
       if (action === "ask") {
         showQuickAskOverlay(); // Switch to Ask overlay
         // Pre-fill prompt maybe?
@@ -203,6 +216,7 @@ function showQuickActionMenu(text) {
             showToast("Error: " + response.error);
           }
         } catch (err) {
+          console.error(err);
           showToast("Error: " + err.message);
         }
       }
@@ -390,9 +404,66 @@ function showQuickAskOverlay() {
 /**
  * Show quick action menu
  */
-function showQuickActionMenu(selection) {
-  // TODO: Implement quick action floating menu
-  console.log("[Omni AI] Quick action for:", selection.substring(0, 50));
+function showQuickActionMenu(text, anchorRect = null) {
+  hideQuickActionButton();
+
+  // Show a mini overlay with actions
+  overlay = createOverlayElement();
+  overlay.innerHTML = `
+    <div class="omni-ai-overlay-header">
+       <div class="omni-ai-overlay-title">Omni AI Actions</div>
+       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
+    </div>
+    <div class="omni-ai-overlay-content omni-ai-menu-content">
+       <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
+       <button class="omni-ai-menu-item" data-action="rephrase">🔄 Rephrase</button>
+       <button class="omni-ai-menu-item" data-action="summarize">📋 Summarize</button>
+       <button class="omni-ai-menu-item" data-action="tone">🎭 Change Tone</button>
+       <div class="omni-ai-menu-divider"></div>
+       <button class="omni-ai-menu-item" data-action="ask">💬 Ask AI...</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Position using the anchor rect if provided
+  positionOverlay(anchorRect);
+
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+
+  const buttons = overlay.querySelectorAll(".omni-ai-menu-item");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const action = btn.dataset.action;
+      if (action === "ask") {
+        showQuickAskOverlay();
+      } else {
+        hideOverlay();
+        try {
+          showToast("Processing...");
+
+          const response = await chrome.runtime.sendMessage({
+            type: "WRITING_ACTION",
+            payload: { action, preset: "general", text },
+          });
+
+          if (response.success) {
+            showResultOverlay({
+              action,
+              original: text,
+              result: response.data.response || response.data,
+            });
+          } else {
+            showToast("Error: " + response.error);
+          }
+        } catch (err) {
+          showToast("Error: " + err.message);
+        }
+      }
+    });
+  });
+
+  isOverlayVisible = true;
 }
 
 /**
@@ -408,35 +479,63 @@ function createOverlayElement() {
 /**
  * Position overlay near selection
  */
-function positionOverlay() {
+/**
+ * Position overlay near selection or anchor
+ */
+function positionOverlay(anchorRect = null) {
   if (!overlay) return;
 
-  const selection = window.getSelection();
-  if (!selection.rangeCount) {
-    // Center on screen if no selection
+  let rect;
+
+  if (anchorRect) {
+    rect = anchorRect;
+  } else {
+    // Fallback to selection
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      rect = selection.getRangeAt(0).getBoundingClientRect();
+    }
+  }
+
+  if (!rect) {
+    console.log("[Omni AI] No anchor/selection, centering overlay fixed");
+    // Center on screen if no selection/anchor
+    overlay.style.position = "fixed";
     overlay.style.top = "50%";
     overlay.style.left = "50%";
     overlay.style.transform = "translate(-50%, -50%)";
     return;
   }
 
-  const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
+  // Ensure we use absolute positioning relative to document
+  overlay.style.position = "absolute";
+  overlay.style.transform = "none";
 
-  let top = rect.bottom + window.scrollY + 10;
+  const toggleScroll = window.scrollY; // Document scroll
+
+  let top = rect.bottom + toggleScroll + 10;
   let left = rect.left + window.scrollX;
 
   // Ensure overlay stays within viewport
   const overlayRect = overlay.getBoundingClientRect();
-  if (left + overlayRect.width > window.innerWidth) {
-    left = window.innerWidth - overlayRect.width - 20;
+  const viewportWidth = window.innerWidth;
+
+  // Check right edge
+  if (left + overlayRect.width > viewportWidth) {
+    left = viewportWidth - overlayRect.width - 20;
   }
-  if (top + overlayRect.height > window.innerHeight + window.scrollY) {
-    top = rect.top + window.scrollY - overlayRect.height - 10;
+
+  // Check bottom edge (if falls off screen, move above)
+  const realTopRelativeToViewport = top - toggleScroll;
+  if (realTopRelativeToViewport + overlayRect.height > window.innerHeight) {
+    // Flip to above
+    top = rect.top + toggleScroll - overlayRect.height - 10;
   }
 
   overlay.style.top = `${top}px`;
   overlay.style.left = `${left}px`;
+
+  console.log(`[Omni AI] Overlay positioned at ${top}, ${left}`);
 }
 
 /**
