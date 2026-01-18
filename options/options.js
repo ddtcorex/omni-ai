@@ -9,6 +9,8 @@ import { getStats, resetStats } from "../lib/history.js";
 const elements = {
   apiKey: document.getElementById("apiKey"),
   apiModel: document.getElementById("apiModel"),
+  groqApiKey: document.getElementById("groqApiKey"),
+  groqKeyGroup: document.getElementById("groqKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   defaultPreset: document.getElementById("defaultPreset"),
   defaultLanguage: document.getElementById("defaultLanguage"),
@@ -38,6 +40,7 @@ async function init() {
   await loadSettings();
   await loadStats();
   setupEventListeners();
+  updateModelVisibility(); // Initial check
 }
 
 /**
@@ -102,6 +105,9 @@ async function loadStats() {
  * Set up event listeners
  */
 function setupEventListeners() {
+  // Model change listener
+  elements.apiModel.addEventListener("change", updateModelVisibility);
+
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener("click", toggleApiKeyVisibility);
 
@@ -129,6 +135,7 @@ function setupEventListeners() {
   // Auto-save on change (optional)
   const inputs = [
     elements.apiKey,
+    elements.groqApiKey,
     elements.apiModel,
     elements.defaultPreset,
     elements.defaultLanguage,
@@ -137,9 +144,10 @@ function setupEventListeners() {
   ];
 
   inputs.forEach((input) => {
-    input.addEventListener("change", () => {
-      // Debounce auto-save if desired
-    });
+    if (input)
+      input.addEventListener("change", () => {
+        // Debounce auto-save if desired
+      });
   });
 }
 
@@ -164,10 +172,29 @@ function toggleApiKeyVisibility() {
     `;
   }
 }
+
+/**
+ * Update model visibility based on selection
+ */
+function updateModelVisibility() {
+  const model = elements.apiModel.value;
+  // If model is Groq, show Groq key input, hide Gemini hint implicitly (or just show it below)
+  // Actually we have separate groups.
+  // Note: I need to toggle visibility of the Gemini API Key group if I want to be clean, but user might want both set.
+  // For now, let's just show Groq Key if Groq selected.
+
+  if (model.startsWith("groq-")) {
+    elements.groqKeyGroup.classList.remove("hidden");
+  } else {
+    elements.groqKeyGroup.classList.add("hidden");
+  }
+}
+
 async function loadSettings() {
   try {
     const result = await chrome.storage.local.get([
       "apiKey",
+      "groqApiKey",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
@@ -175,9 +202,10 @@ async function loadSettings() {
     ]);
 
     // API Key
-    if (result.apiKey) {
-      elements.apiKey.value = result.apiKey;
-    }
+    if (result.apiKey) elements.apiKey.value = result.apiKey;
+
+    // Groq API Key
+    if (result.groqApiKey) elements.groqApiKey.value = result.groqApiKey;
 
     // API Model
     if (result.apiModel) {
@@ -186,10 +214,12 @@ async function loadSettings() {
       elements.apiModel.value = "gemini-1.5-flash"; // Default
     }
 
+    // Trigger visibility update
+    updateModelVisibility();
+
     // Default Preset
-    if (result.currentPreset) {
+    if (result.currentPreset)
       elements.defaultPreset.value = result.currentPreset;
-    }
 
     // Default Language
     if (result.defaultLanguage) {
@@ -216,6 +246,7 @@ async function saveSettings() {
   try {
     const settings = {
       apiKey: elements.apiKey.value.trim(),
+      groqApiKey: elements.groqApiKey.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
       defaultLanguage: elements.defaultLanguage.value,

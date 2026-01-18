@@ -77,16 +77,35 @@
                 <span class="label-hint">__MSG_settings_modelHint__</span>
               </label>
               <select id="apiModel" class="setting-select">
-                <option value="gemini-2.0-flash">
-                  Gemini 2.0 Flash (Fastest)
-                </option>
                 <option value="gemini-1.5-flash">
                   Gemini 1.5 Flash (Free Tier)
                 </option>
                 <option value="gemini-1.5-pro">
                   Gemini 1.5 Pro (Best Quality)
                 </option>
+                <option value="gemini-2.0-flash">
+                  Gemini 2.0 Flash (Fastest)
+                </option>
+                <option value="groq-llama3">Groq - Llama 3 (Free/Fast)</option>
+                <option value="groq-mixtral">
+                  Groq - Mixtral (Free/Smart)
+                </option>
               </select>
+            </div>
+
+            <div class="setting-item hidden" id="groqKeyGroup">
+              <label class="setting-label" for="groqApiKey">
+                <span class="label-text">Groq API Key</span>
+                <span class="label-hint">Get free key at console.groq.com</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="groqApiKey"
+                  class="setting-input"
+                  placeholder="gsk_..."
+                />
+              </div>
             </div>
           </div>
         </section>
