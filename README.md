@@ -50,7 +50,7 @@ Omni AI uses Google Sign-In for seamless authentication, keeping your settings s
 
 ```bash
 # Clone the repository
-git clone https://github.com/KaiDo92/omni-ai.git
+git clone https://github.com/ddtcorex/omni-ai.git
 cd omni-ai
 
 # Load in Chrome
@@ -99,7 +99,7 @@ omni-ai/
 
 ## 📋 Roadmap
 
-See [GitHub Issues](https://github.com/KaiDo92/omni-ai/issues) for detailed roadmap.
+See [GitHub Issues](https://github.com/ddtcorex/omni-ai/issues) for detailed roadmap.
 
 ### Milestones
 
@@ -114,4 +114,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-Made with ❤️ by [KaiDo92](https://github.com/KaiDo92)
+Made with ❤️ by [ddtcorex](https://github.com/ddtcorex)
