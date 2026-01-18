@@ -44,9 +44,41 @@ async function init() {
  */
 function localizeDOM() {
   document.title = chrome.i18n.getMessage("settings_title") + " - Omni AI";
-  elements.apiKey.placeholder = "Enter your Gemini API key..."; // Keep or localize if needed
+  if (elements.apiKey) {
+    elements.apiKey.placeholder = "Enter your Gemini API key..."; // Or localize
+  }
 
-  // Dynamic translations set in HTML via __MSG_key__
+  // Localize text content in body
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false,
+  );
+
+  let node;
+  while ((node = walker.nextNode())) {
+    const text = node.nodeValue;
+    if (text.includes("__MSG_")) {
+      node.nodeValue = text.replace(/__MSG_(\w+)__/g, (match, key) => {
+        return chrome.i18n.getMessage(key) || match;
+      });
+    }
+  }
+
+  // Localize attributes
+  const elementsWithAttributes = document.querySelectorAll('[title*="__MSG_"]');
+  elementsWithAttributes.forEach((el) => {
+    const title = el.getAttribute("title");
+    if (title && title.includes("__MSG_")) {
+      el.setAttribute(
+        "title",
+        title.replace(/__MSG_(\w+)__/g, (match, key) => {
+          return chrome.i18n.getMessage(key) || match;
+        }),
+      );
+    }
+  });
 }
 
 /**

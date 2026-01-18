@@ -51,11 +51,44 @@ async function init() {
  * Localize the DOM
  */
 function localizeDOM() {
-  // Localize specific attributes that aren't handled by __MSG_key__ in HTML
+  // Localize specific attributes
   document.title = chrome.i18n.getMessage("popup_title");
-  elements.quickAskInput.placeholder = chrome.i18n.getMessage("popup_quickAsk");
+  if (elements.quickAskInput) {
+    elements.quickAskInput.placeholder =
+      chrome.i18n.getMessage("popup_quickAsk");
+  }
 
-  // Localize other dynamic elements if needed
+  // Localize text content in body
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false,
+  );
+
+  let node;
+  while ((node = walker.nextNode())) {
+    const text = node.nodeValue;
+    if (text.includes("__MSG_")) {
+      node.nodeValue = text.replace(/__MSG_(\w+)__/g, (match, key) => {
+        return chrome.i18n.getMessage(key) || match;
+      });
+    }
+  }
+
+  // Localize attributes (if any, e.g. title)
+  const elementsWithAttributes = document.querySelectorAll('[title*="__MSG_"]');
+  elementsWithAttributes.forEach((el) => {
+    const title = el.getAttribute("title");
+    if (title && title.includes("__MSG_")) {
+      el.setAttribute(
+        "title",
+        title.replace(/__MSG_(\w+)__/g, (match, key) => {
+          return chrome.i18n.getMessage(key) || match;
+        }),
+      );
+    }
+  });
 }
 
 /**
