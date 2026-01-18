@@ -123,6 +123,24 @@ omni-ai/
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome! Whether it's fixing a bug, adding a new feature, or improving documentation:
+
+1. **Fork** the repository.
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`.
+3. **Commit your changes**: `git commit -m 'feat: add amazing feature'`.
+4. **Push to the branch**: `git push origin feature/amazing-feature`.
+5. **Open a Pull Request**.
+
+### Coding Guidelines
+
+- Use **Vanilla JavaScript** (ES6+). Avoid adding external frameworks or heavy libraries.
+- Maintain the **CSS Variable** system for styling.
+- Ensure any new AI providers follow the existing pattern in `lib/providers/`.
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
