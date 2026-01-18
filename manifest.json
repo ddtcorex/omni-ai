@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "Omni AI",
+  "version": "0.1.0",
+  "description": "All-in-One AI Assistant powered by Google Gemini - Writing enhancement, quick actions, and smart utilities",
+  "author": "ddtcorex",
+  "homepage_url": "https://github.com/ddtcorex/omni-ai",
+
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "48": "assets/icons/icon-48.png",
+      "128": "assets/icons/icon-128.png"
+    },
+    "default_title": "Omni AI - Your AI Writing Assistant"
+  },
+
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"],
+      "css": ["content/overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "permissions": ["storage", "activeTab", "contextMenus", "identity"],
+
+  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
+
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "Command+Shift+O"
+      },
+      "description": "Open Omni AI popup"
+    }
+  },
+
+  "oauth2": {
+    "client_id": "YOUR_CLIENT_ID.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+
+  "key": "DEVELOPMENT_KEY_PLACEHOLDER"
+}
