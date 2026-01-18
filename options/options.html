@@ -120,7 +120,24 @@
             </div>
 
             <!-- Antigravity Info -->
+            <!-- Antigravity Info & Settings -->
             <div class="setting-item hidden" id="antigravityInfoGroup">
+              <label class="setting-label" for="antigravityToken">
+                <span class="label-text">Manual Access Token (Optional)</span>
+                <span class="label-hint"
+                  >Paste a working gcloud/init token here if default auth
+                  fails.</span
+                >
+              </label>
+              <div class="input-group" style="margin-bottom: 12px">
+                <input
+                  type="password"
+                  id="antigravityToken"
+                  class="setting-input"
+                  placeholder="Paste OAuth token (ya29...)"
+                />
+              </div>
+
               <div
                 class="info-box"
                 style="
@@ -152,11 +169,12 @@
                       d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
                     ></path>
                   </svg>
-                  <span style="font-weight: 600">Authentication Required</span>
+                  <span style="font-weight: 600">Authentication</span>
                 </div>
                 <p style="font-size: 0.9em; opacity: 0.9; margin: 0">
-                  Antigravity providers use your Google account. Please use the
-                  "Sign In" button in the extension popup to authenticate.
+                  Default: Uses Extension Sign-In. <br />If you get Request Had
+                  Insufficient Credentials / 403, try pasting a valid token
+                  above.
                 </p>
               </div>
             </div>

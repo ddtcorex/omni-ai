@@ -13,6 +13,7 @@ const elements = {
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
   antigravityInfoGroup: document.getElementById("antigravityInfoGroup"),
+  antigravityToken: document.getElementById("antigravityToken"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   defaultPreset: document.getElementById("defaultPreset"),
   defaultLanguage: document.getElementById("defaultLanguage"),
@@ -204,7 +205,9 @@ async function loadSettings() {
   try {
     const result = await chrome.storage.local.get([
       "apiKey",
+      "apiKey",
       "groqApiKey",
+      "antigravityToken",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
@@ -216,6 +219,10 @@ async function loadSettings() {
 
     // Groq API Key
     if (result.groqApiKey) elements.groqApiKey.value = result.groqApiKey;
+
+    // Antigravity Token
+    if (result.antigravityToken)
+      elements.antigravityToken.value = result.antigravityToken;
 
     // API Model
     if (result.apiModel) {
@@ -257,6 +264,7 @@ async function saveSettings() {
     const settings = {
       apiKey: elements.apiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
+      antigravityToken: elements.antigravityToken.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
       defaultLanguage: elements.defaultLanguage.value,
