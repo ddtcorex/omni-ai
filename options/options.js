@@ -9,8 +9,10 @@ import { getStats, resetStats } from "../lib/history.js";
 const elements = {
   apiKey: document.getElementById("apiKey"),
   apiModel: document.getElementById("apiModel"),
+  geminiKeyGroup: document.getElementById("geminiKeyGroup"),
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
+  antigravityInfoGroup: document.getElementById("antigravityInfoGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   defaultPreset: document.getElementById("defaultPreset"),
   defaultLanguage: document.getElementById("defaultLanguage"),
@@ -178,22 +180,23 @@ function toggleApiKeyVisibility() {
  */
 function updateModelVisibility() {
   const model = elements.apiModel.value;
-  // If model is Groq, show Groq key input, hide Gemini hint implicitly (or just show it below)
-  // Actually we have separate groups.
-  // Note: I need to toggle visibility of the Gemini API Key group if I want to be clean, but user might want both set.
-  // For now, let's just show Groq Key if Groq selected.
 
-  // Groq
+  // Hide all by default
+  if (elements.geminiKeyGroup) elements.geminiKeyGroup.classList.add("hidden");
+  if (elements.groqKeyGroup) elements.groqKeyGroup.classList.add("hidden");
+  if (elements.antigravityInfoGroup)
+    elements.antigravityInfoGroup.classList.add("hidden");
+
+  // Show based on selection
   if (model.startsWith("groq-")) {
-    elements.groqKeyGroup.classList.remove("hidden");
+    if (elements.groqKeyGroup) elements.groqKeyGroup.classList.remove("hidden");
+  } else if (model.startsWith("antigravity-")) {
+    if (elements.antigravityInfoGroup)
+      elements.antigravityInfoGroup.classList.remove("hidden");
   } else {
-    elements.groqKeyGroup.classList.add("hidden");
-  }
-
-  // Antigravity (No specific settings needed here, relies on OAuth)
-  if (model.startsWith("antigravity-")) {
-    // Ensure Groq is hidden
-    elements.groqKeyGroup.classList.add("hidden");
+    // Default to Gemini (or explicit "gemini-")
+    if (elements.geminiKeyGroup)
+      elements.geminiKeyGroup.classList.remove("hidden");
   }
 }
 
