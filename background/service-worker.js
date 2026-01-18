@@ -28,13 +28,10 @@ const GEMINI_API_ENDPOINT =
  * Handle extension installation
  */
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log("[Omni AI] Extension installed:", details.reason);
-
   if (details.reason === "install") {
     initializeSettings();
     createContextMenus();
   } else if (details.reason === "update") {
-    console.log("[Omni AI] Updated from version:", details.previousVersion);
   }
 });
 
@@ -87,8 +84,6 @@ async function initializeSettings() {
   const existing = await chrome.storage.local.get(null);
   const merged = { ...defaults, ...existing };
   await chrome.storage.local.set(merged);
-
-  console.log("[Omni AI] Settings initialized");
 }
 
 /**
@@ -112,8 +107,6 @@ function createContextMenus() {
     title: "Translate with Omni AI",
     contexts: ["selection"],
   });
-
-  console.log("[Omni AI] Context menus created");
 }
 
 // ============================================
@@ -124,8 +117,6 @@ function createContextMenus() {
  * Handle messages from popup and content scripts
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("[Omni AI] Received message:", message.type);
-
   switch (message.type) {
     // Authentication
     case "SIGN_IN":
@@ -230,7 +221,6 @@ async function handleSignIn() {
     const userInfo = await fetchUserInfo(token);
     await saveUserInfo(userInfo);
 
-    console.log("[Omni AI] Sign in successful:", userInfo.email);
     return userInfo;
   } catch (error) {
     console.error("[Omni AI] Sign in failed:", error);
@@ -254,8 +244,6 @@ async function handleSignOut() {
 
     // Clear user info from storage
     await chrome.storage.sync.remove("user");
-
-    console.log("[Omni AI] Sign out successful");
   } catch (error) {
     console.error("[Omni AI] Sign out failed:", error);
     throw error;
@@ -355,8 +343,6 @@ async function revokeToken(token) {
 async function handleQuickAsk(payload) {
   const { query, preset } = payload;
 
-  console.log("[Omni AI] Quick Ask:", query, "Preset:", preset);
-
   const response = await quickAsk(query, preset);
 
   // Send response to content script if in active tab
@@ -375,9 +361,7 @@ async function handleQuickAsk(payload) {
         },
       });
     }
-  } catch (e) {
-    console.log("[Omni AI] Could not send to content script:", e);
-  }
+  } catch (e) {}
 
   // Return response
   try {
@@ -404,8 +388,6 @@ async function handleQuickAsk(payload) {
  */
 async function handleWritingAction(payload) {
   const { action, preset, text } = payload;
-
-  console.log("[Omni AI] Writing Action:", action, "Preset:", preset);
 
   // Get selected text from active tab if not provided
   let selectedText = text;
@@ -466,8 +448,6 @@ async function handleWritingAction(payload) {
  */
 async function handleQuickAction(payload) {
   const { action, preset, text, options = {} } = payload;
-
-  console.log("[Omni AI] Quick Action:", action, "Preset:", preset);
 
   // Get selected text from active tab if not provided
   let selectedText = text;
@@ -558,12 +538,6 @@ async function handleQuickAction(payload) {
  * Process selected text from context menu
  */
 async function processSelectedText(tabId, text, action) {
-  console.log(
-    "[Omni AI] Processing selected text:",
-    action,
-    text.substring(0, 50) + "...",
-  );
-
   try {
     let result;
     if (action === "improve") {
@@ -620,5 +594,3 @@ async function getApiKey() {
   const result = await chrome.storage.local.get("apiKey");
   return result.apiKey || "";
 }
-
-console.log("[Omni AI] Service worker loaded");

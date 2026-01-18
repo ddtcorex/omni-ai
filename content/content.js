@@ -18,7 +18,6 @@ let lastSelection = null; // Store { element, start, end, range, isInput, text }
  * Initialize content script
  */
 function init() {
-  console.log("[Omni AI] Content script loaded");
   setupMessageListener();
   setupSelectionListener();
 }
@@ -123,8 +122,6 @@ function showQuickActionButton(selection) {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("[Omni AI] Quick Action Button clicked");
-
     // Capture position before removing button
     const rect = quickActionBtn.getBoundingClientRect();
 
@@ -133,7 +130,6 @@ function showQuickActionButton(selection) {
   });
 
   document.body.appendChild(quickActionBtn);
-  console.log("[Omni AI] Quick Action Button shown");
 }
 
 /**
@@ -150,10 +146,6 @@ function hideQuickActionButton() {
  * Show quick action menu
  */
 function showQuickActionMenu(text, anchorRect = null) {
-  console.log(
-    "[Omni AI] Showing menu for text:",
-    text.substring(0, 20) + "...",
-  );
   hideQuickActionButton();
 
   // Show a mini overlay with actions
@@ -184,7 +176,7 @@ function showQuickActionMenu(text, anchorRect = null) {
   buttons.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const action = btn.dataset.action;
-      console.log("[Omni AI] Menu action selected:", action);
+
       if (action === "ask") {
         showQuickAskOverlay(); // Switch to Ask overlay
         // Pre-fill prompt maybe?
@@ -370,10 +362,6 @@ function showResultOverlay(payload) {
   copyBtn.addEventListener("click", () => copyToClipboard(result));
 
   replaceBtn.addEventListener("click", () => {
-    console.log(
-      "[Omni AI] Replace clicked, using lastSelection:",
-      lastSelection,
-    );
     replaceSelectedText(result);
     hideOverlay();
   });
@@ -567,7 +555,6 @@ function positionOverlay(anchorRect = null) {
   }
 
   if (!rect) {
-    console.log("[Omni AI] No anchor/selection, centering overlay fixed");
     // Center on screen if no selection/anchor
     overlay.style.position = "fixed";
     overlay.style.top = "50%";
@@ -603,8 +590,6 @@ function positionOverlay(anchorRect = null) {
 
   overlay.style.top = `${top}px`;
   overlay.style.left = `${left}px`;
-
-  console.log(`[Omni AI] Overlay positioned at ${top}, ${left}`);
 }
 
 /**

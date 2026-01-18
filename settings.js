@@ -265,7 +265,6 @@ async function saveSettings() {
     await chrome.storage.local.set(settings);
 
     showSaveStatus(chrome.i18n.getMessage("settings_saved"), "success");
-    console.log("[Omni AI] Settings saved:", settings);
   } catch (error) {
     console.error("Failed to save settings:", error);
     showSaveStatus("Failed to save", "error");
