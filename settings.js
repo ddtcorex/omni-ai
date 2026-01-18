@@ -1,4 +1,4 @@
-import { getStats, resetStats } from "../lib/history.js";
+import { getStats, resetStats } from "./lib/history.js";
 
 /**
  * Omni AI - Options Page Script
