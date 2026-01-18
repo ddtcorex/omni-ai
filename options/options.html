@@ -61,14 +61,6 @@
                 <option value="groq-mixtral">
                   Groq - Mixtral (Free/Smart)
                 </option>
-                <optgroup label="Antigravity (Requires Sign-In)">
-                  <option value="antigravity-claude-sonnet-4-5">
-                    Claude Sonnet 4.5
-                  </option>
-                  <option value="antigravity-gemini-3-pro-high">
-                    Gemini 3 Pro High
-                  </option>
-                </optgroup>
               </select>
             </div>
 
@@ -116,81 +108,6 @@
                   class="setting-input"
                   placeholder="gsk_..."
                 />
-              </div>
-            </div>
-
-            <!-- Antigravity Info -->
-            <!-- Antigravity Info & Settings -->
-            <div class="setting-item hidden" id="antigravityInfoGroup">
-              <label class="setting-label" for="antigravityEndpoint">
-                <span class="label-text">Gateway Endpoint (Optional)</span>
-                <span class="label-hint"
-                  >Default: https://cloudcode-pa.googleapis.com...</span
-                >
-              </label>
-              <div class="input-group" style="margin-bottom: 12px">
-                <input
-                  type="text"
-                  id="antigravityEndpoint"
-                  class="setting-input"
-                  placeholder="https://cloudcode-pa.googleapis.com/v1internal:generateContent"
-                />
-              </div>
-
-              <label class="setting-label" for="antigravityToken">
-                <span class="label-text">Manual Access Token (Optional)</span>
-                <span class="label-hint"
-                  >Paste a working gcloud/init token here if default auth
-                  fails.</span
-                >
-              </label>
-              <div class="input-group" style="margin-bottom: 12px">
-                <input
-                  type="password"
-                  id="antigravityToken"
-                  class="setting-input"
-                  placeholder="Paste OAuth token (ya29...)"
-                />
-              </div>
-
-              <div
-                class="info-box"
-                style="
-                  padding: 12px;
-                  background: rgba(139, 92, 246, 0.1);
-                  border-radius: 8px;
-                  border: 1px solid rgba(139, 92, 246, 0.2);
-                  width: 100%;
-                "
-              >
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin-bottom: 4px;
-                    color: var(--primary);
-                  "
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-                    ></path>
-                  </svg>
-                  <span style="font-weight: 600">Authentication</span>
-                </div>
-                <p style="font-size: 0.9em; opacity: 0.9; margin: 0">
-                  Default: Uses Extension Sign-In. <br />If you get Request Had
-                  Insufficient Credentials / 403, try pasting a valid token
-                  above.
-                </p>
               </div>
             </div>
           </div>

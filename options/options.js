@@ -12,9 +12,7 @@ const elements = {
   geminiKeyGroup: document.getElementById("geminiKeyGroup"),
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
-  antigravityInfoGroup: document.getElementById("antigravityInfoGroup"),
-  antigravityEndpoint: document.getElementById("antigravityEndpoint"),
-  antigravityToken: document.getElementById("antigravityToken"),
+  groqKeyGroup: document.getElementById("groqKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   defaultPreset: document.getElementById("defaultPreset"),
   defaultLanguage: document.getElementById("defaultLanguage"),
@@ -186,15 +184,10 @@ function updateModelVisibility() {
   // Hide all by default
   if (elements.geminiKeyGroup) elements.geminiKeyGroup.classList.add("hidden");
   if (elements.groqKeyGroup) elements.groqKeyGroup.classList.add("hidden");
-  if (elements.antigravityInfoGroup)
-    elements.antigravityInfoGroup.classList.add("hidden");
 
   // Show based on selection
   if (model.startsWith("groq-")) {
     if (elements.groqKeyGroup) elements.groqKeyGroup.classList.remove("hidden");
-  } else if (model.startsWith("antigravity-")) {
-    if (elements.antigravityInfoGroup)
-      elements.antigravityInfoGroup.classList.remove("hidden");
   } else {
     // Default to Gemini (or explicit "gemini-")
     if (elements.geminiKeyGroup)
@@ -208,8 +201,6 @@ async function loadSettings() {
       "apiKey",
       "apiKey",
       "groqApiKey",
-      "antigravityToken",
-      "antigravityEndpoint",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
@@ -221,12 +212,6 @@ async function loadSettings() {
 
     // Groq API Key
     if (result.groqApiKey) elements.groqApiKey.value = result.groqApiKey;
-
-    // Antigravity Token & Endpoint
-    if (result.antigravityToken)
-      elements.antigravityToken.value = result.antigravityToken;
-    if (result.antigravityEndpoint)
-      elements.antigravityEndpoint.value = result.antigravityEndpoint;
 
     // API Model
     if (result.apiModel) {
@@ -268,8 +253,6 @@ async function saveSettings() {
     const settings = {
       apiKey: elements.apiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
-      antigravityToken: elements.antigravityToken.value.trim(),
-      antigravityEndpoint: elements.antigravityEndpoint.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
       defaultLanguage: elements.defaultLanguage.value,
