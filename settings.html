@@ -67,7 +67,38 @@
             <!-- Gemini API Key -->
             <div class="setting-item" id="geminiKeyGroup">
               <label class="setting-label" for="apiKey">
-                <span class="label-text">__MSG_settings_apiKey__</span>
+                <div class="label-header">
+                  <span class="label-text">__MSG_settings_apiKey__</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>Get Gemini API Key</p>
+                      <ol>
+                        <li>
+                          Go to
+                          <a
+                            href="https://aistudio.google.com/app/apikey"
+                            target="_blank"
+                            >Google AI Studio</a
+                          >
+                        </li>
+                        <li>Click <strong>Create API Key</strong></li>
+                        <li>Copy key to clipboard</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
                 <span class="label-hint">__MSG_settings_apiKeyHint__</span>
               </label>
               <div class="input-group">
@@ -98,7 +129,38 @@
             <!-- Groq API Key -->
             <div class="setting-item hidden" id="groqKeyGroup">
               <label class="setting-label" for="groqApiKey">
-                <span class="label-text">Groq API Key</span>
+                <div class="label-header">
+                  <span class="label-text">Groq API Key</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>Get Groq API Key</p>
+                      <ol>
+                        <li>
+                          Go to
+                          <a
+                            href="https://console.groq.com/keys"
+                            target="_blank"
+                            >Groq Console</a
+                          >
+                        </li>
+                        <li>Sign up or Log in</li>
+                        <li>Create new API Key</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
                 <span class="label-hint">Get free key at console.groq.com</span>
               </label>
               <div class="input-group">
