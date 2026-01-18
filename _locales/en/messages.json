@@ -119,6 +119,14 @@
     "message": "Get your API key from Google AI Studio",
     "description": "API key hint"
   },
+  "settings_model": {
+    "message": "AI Model",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Select the Gemini model to use",
+    "description": "AI model hint"
+  },
   "settings_defaultPreset": {
     "message": "Default Context",
     "description": "Default preset label"
