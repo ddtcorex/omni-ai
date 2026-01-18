@@ -109,20 +109,20 @@ function showQuickActionButton(selection) {
   quickActionBtn.style.top = `${top}px`;
   quickActionBtn.style.left = `${left}px`;
 
-  // Prevent button from closing itself immediately
+  // Prevent button from closing itself immediately or triggering document listeners
+  // Also preventDefault on mousedown to avoid stealing focus from text input
   quickActionBtn.addEventListener("mousedown", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+  quickActionBtn.addEventListener("mouseup", (e) => e.stopPropagation());
+
+  quickActionBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Show the full action menu or defaulting to Quick Ask/Fix?
-    // For now, let's open the Quick Ask overlay pre-filled or special menu?
-    // Let's perform "Improve Writing" -> "Grammar" as default or show menu?
-
-    // Design choice: Open a mini menu.
-    // specific implementation: trigger a context menu simulation or just 'Grammar'
-    // Let's trigger "Grammar Fix" immediately for now or show a menu.
-    // Better: Show a menu of options (Grammar, Rephrase, etc.)
-
+    // Show the full action menu
     showQuickActionMenu(selection.toString());
   });
 
