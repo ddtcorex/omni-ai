@@ -183,9 +183,16 @@ function updateModelVisibility() {
   // Note: I need to toggle visibility of the Gemini API Key group if I want to be clean, but user might want both set.
   // For now, let's just show Groq Key if Groq selected.
 
+  // Groq
   if (model.startsWith("groq-")) {
     elements.groqKeyGroup.classList.remove("hidden");
   } else {
+    elements.groqKeyGroup.classList.add("hidden");
+  }
+
+  // Antigravity (No specific settings needed here, relies on OAuth)
+  if (model.startsWith("antigravity-")) {
+    // Ensure Groq is hidden
     elements.groqKeyGroup.classList.add("hidden");
   }
 }

@@ -39,7 +39,11 @@
 
   "permissions": ["storage", "activeTab", "contextMenus", "identity"],
 
-  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://cloudcode-pa.googleapis.com/*",
+    "https://daily-cloudcode-pa.sandbox.googleapis.com/*"
+  ],
 
   "options_ui": {
     "page": "options/options.html",
@@ -81,7 +85,10 @@
     "client_id": "923297272333-ho5udq7phe9mplbdd43s4m8c58aa0k9b.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile"
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/cclog",
+      "https://www.googleapis.com/auth/experimentsandconfigs"
     ]
   },
 
