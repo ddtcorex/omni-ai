@@ -308,43 +308,159 @@ async function revokeToken(token) {
 // Action Handlers
 // ============================================
 
+const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
+const DEFAULT_MODEL = "gemini-2.0-flash";
+
 /**
  * Handle quick ask
  */
 async function handleQuickAsk(payload) {
   const { query, preset } = payload;
 
-  // TODO: Implement Gemini API call
   console.log("[Omni AI] Quick Ask:", query, "Preset:", preset);
 
-  // Placeholder response
-  return { response: "API integration coming soon!" };
+  const apiKey = await getApiKey();
+  if (!apiKey) {
+    throw new Error(
+      "API key not configured. Please add your Gemini API key in Settings.",
+    );
+  }
+
+  const prompt = `You are a helpful AI assistant. Context: ${preset}.
+
+Question: ${query}
+
+Answer:`;
+
+  const response = await callGeminiAPI(prompt, apiKey);
+
+  // Send response to content script if in active tab
+  try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (tab?.id) {
+      chrome.tabs.sendMessage(tab.id, {
+        type: "SHOW_RESULT",
+        payload: {
+          action: "quick_ask",
+          original: query,
+          result: response,
+        },
+      });
+    }
+  } catch (e) {
+    console.log("[Omni AI] Could not send to content script:", e);
+  }
+
+  return { response };
 }
 
 /**
  * Handle writing action
  */
 async function handleWritingAction(payload) {
-  const { action, preset } = payload;
+  const { action, preset, text } = payload;
 
-  // Get selected text from active tab
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  // TODO: Get selection from content script and process
   console.log("[Omni AI] Writing Action:", action, "Preset:", preset);
 
-  return { response: "Writing action processed!" };
+  const apiKey = await getApiKey();
+  if (!apiKey) {
+    throw new Error(
+      "API key not configured. Please add your Gemini API key in Settings.",
+    );
+  }
+
+  // Get selected text from active tab if not provided
+  let selectedText = text;
+  if (!selectedText) {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (tab?.id) {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        type: "GET_SELECTION",
+      });
+      selectedText = response?.selection;
+    }
+  }
+
+  if (!selectedText) {
+    throw new Error("No text selected. Please select some text first.");
+  }
+
+  const prompt = getWritingActionPrompt(action, selectedText, preset);
+  const result = await callGeminiAPI(prompt, apiKey);
+
+  // Send result to content script
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) {
+    chrome.tabs.sendMessage(tab.id, {
+      type: "SHOW_RESULT",
+      payload: {
+        action,
+        original: selectedText,
+        result,
+      },
+    });
+  }
+
+  return { response: result };
 }
 
 /**
  * Handle quick action
  */
 async function handleQuickAction(payload) {
-  const { action, preset } = payload;
+  const { action, preset, text, options = {} } = payload;
 
   console.log("[Omni AI] Quick Action:", action, "Preset:", preset);
 
-  return { response: "Quick action processed!" };
+  const apiKey = await getApiKey();
+  if (!apiKey) {
+    throw new Error(
+      "API key not configured. Please add your Gemini API key in Settings.",
+    );
+  }
+
+  // Get selected text from active tab if not provided
+  let selectedText = text;
+  if (!selectedText) {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (tab?.id) {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        type: "GET_SELECTION",
+      });
+      selectedText = response?.selection;
+    }
+  }
+
+  if (!selectedText && action !== "quick_ask") {
+    throw new Error("No text selected. Please select some text first.");
+  }
+
+  const prompt = getQuickActionPrompt(action, selectedText, preset, options);
+  const result = await callGeminiAPI(prompt, apiKey);
+
+  // Send result to content script
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) {
+    chrome.tabs.sendMessage(tab.id, {
+      type: "SHOW_RESULT",
+      payload: {
+        action,
+        original: selectedText,
+        result,
+      },
+    });
+  }
+
+  return { response: result };
 }
 
 /**
@@ -357,15 +473,167 @@ async function processSelectedText(tabId, text, action) {
     text.substring(0, 50) + "...",
   );
 
-  // TODO: Send to Gemini API and return result to content script
-  chrome.tabs.sendMessage(tabId, {
-    type: "SHOW_RESULT",
-    payload: {
-      action,
-      original: text,
-      result: "Processed result will appear here!",
-    },
-  });
+  const apiKey = await getApiKey();
+  if (!apiKey) {
+    chrome.tabs.sendMessage(tabId, {
+      type: "SHOW_RESULT",
+      payload: {
+        action,
+        original: text,
+        result:
+          "Error: API key not configured. Please add your Gemini API key in Settings.",
+        error: true,
+      },
+    });
+    return;
+  }
+
+  try {
+    const prompt = getContextMenuPrompt(action, text);
+    const result = await callGeminiAPI(prompt, apiKey);
+
+    chrome.tabs.sendMessage(tabId, {
+      type: "SHOW_RESULT",
+      payload: {
+        action,
+        original: text,
+        result,
+      },
+    });
+  } catch (error) {
+    chrome.tabs.sendMessage(tabId, {
+      type: "SHOW_RESULT",
+      payload: {
+        action,
+        original: text,
+        result: `Error: ${error.message}`,
+        error: true,
+      },
+    });
+  }
+}
+
+// ============================================
+// Prompt Builders
+// ============================================
+
+function getWritingActionPrompt(action, text, context) {
+  const contextDescriptions = {
+    email: "professional email communication",
+    chat: "casual chat messaging",
+    social: "social media posts",
+    technical: "technical documentation",
+    academic: "formal academic writing",
+  };
+
+  const contextDesc = contextDescriptions[context] || "general writing";
+
+  const prompts = {
+    grammar: `Fix all grammar, spelling, and punctuation errors in the following text. Preserve the original meaning and style. Context: ${contextDesc}. Only output the corrected text, nothing else.
+
+Text:
+${text}
+
+Corrected text:`,
+
+    clarity: `Improve the clarity and readability of the following text while maintaining the original meaning. Context: ${contextDesc}. Only output the improved text, nothing else.
+
+Text:
+${text}
+
+Improved text:`,
+
+    tone: `Rewrite the following text with a more professional tone while keeping the same meaning. Context: ${contextDesc}. Only output the rewritten text, nothing else.
+
+Text:
+${text}
+
+Rewritten text:`,
+
+    concise: `Make the following text more concise by removing unnecessary words and redundancy while preserving all key information. Context: ${contextDesc}. Only output the concise text, nothing else.
+
+Text:
+${text}
+
+Concise text:`,
+
+    expand: `Expand the following text by adding more detail, context, and depth while maintaining the original message. Context: ${contextDesc}. Only output the expanded text, nothing else.
+
+Text:
+${text}
+
+Expanded text:`,
+
+    rephrase: `Rephrase the following text using different words and sentence structures while keeping the same meaning. Context: ${contextDesc}. Only output the rephrased text, nothing else.
+
+Text:
+${text}
+
+Rephrased text:`,
+  };
+
+  return prompts[action] || prompts.grammar;
+}
+
+function getQuickActionPrompt(action, text, context, options = {}) {
+  const prompts = {
+    translate: `Translate the following text to ${options.targetLanguage || "English"}. Only output the translation, nothing else.
+
+Text:
+${text}
+
+Translation:`,
+
+    summarize: `Summarize the following text in a concise manner. Focus on key points and main ideas. Only output the summary, nothing else.
+
+Text:
+${text}
+
+Summary:`,
+
+    reply: `Generate a professional reply to the following ${context} message. Only output the reply, nothing else.
+
+Message:
+${text}
+
+Reply:`,
+
+    emojify: `Add relevant and appropriate emojis throughout the following text to make it more expressive. Don't overdo it. Only output the emojified text, nothing else.
+
+Text:
+${text}
+
+Emojified text:`,
+  };
+
+  return prompts[action] || prompts.translate;
+}
+
+function getContextMenuPrompt(action, text) {
+  const prompts = {
+    improve: `Improve the following text by fixing any grammar or spelling errors and enhancing clarity. Only output the improved text.
+
+Text:
+${text}
+
+Improved text:`,
+
+    explain: `Explain the following text in simple, easy-to-understand terms. Break down any complex concepts.
+
+Text:
+${text}
+
+Explanation:`,
+
+    translate: `Translate the following text to English. Only output the translation.
+
+Text:
+${text}
+
+Translation:`,
+  };
+
+  return prompts[action] || prompts.improve;
 }
 
 // ============================================
@@ -383,12 +651,20 @@ async function getApiKey() {
 /**
  * Call Gemini API
  */
-async function callGeminiAPI(prompt, apiKey) {
+async function callGeminiAPI(prompt, apiKey, options = {}) {
+  const {
+    model = DEFAULT_MODEL,
+    maxTokens = 8192,
+    temperature = 0.7,
+  } = options;
+
   if (!apiKey) {
     throw new Error("API key not configured");
   }
 
-  const response = await fetch(`${GEMINI_API_ENDPOINT}?key=${apiKey}`, {
+  const url = `${GEMINI_API_BASE}/models/${model}:generateContent?key=${apiKey}`;
+
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -399,15 +675,26 @@ async function callGeminiAPI(prompt, apiKey) {
           parts: [{ text: prompt }],
         },
       ],
+      generationConfig: {
+        maxOutputTokens: maxTokens,
+        temperature,
+      },
     }),
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error?.message || `API error: ${response.status}`);
   }
 
   const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error("Empty response from API");
+  }
+
+  return text;
 }
 
 console.log("[Omni AI] Service worker loaded");
