@@ -122,6 +122,21 @@
             <!-- Antigravity Info -->
             <!-- Antigravity Info & Settings -->
             <div class="setting-item hidden" id="antigravityInfoGroup">
+              <label class="setting-label" for="antigravityEndpoint">
+                <span class="label-text">Gateway Endpoint (Optional)</span>
+                <span class="label-hint"
+                  >Default: https://cloudcode-pa.googleapis.com...</span
+                >
+              </label>
+              <div class="input-group" style="margin-bottom: 12px">
+                <input
+                  type="text"
+                  id="antigravityEndpoint"
+                  class="setting-input"
+                  placeholder="https://cloudcode-pa.googleapis.com/v1internal:generateContent"
+                />
+              </div>
+
               <label class="setting-label" for="antigravityToken">
                 <span class="label-text">Manual Access Token (Optional)</span>
                 <span class="label-hint"

@@ -13,6 +13,7 @@ const elements = {
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
   antigravityInfoGroup: document.getElementById("antigravityInfoGroup"),
+  antigravityEndpoint: document.getElementById("antigravityEndpoint"),
   antigravityToken: document.getElementById("antigravityToken"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   defaultPreset: document.getElementById("defaultPreset"),
@@ -208,6 +209,7 @@ async function loadSettings() {
       "apiKey",
       "groqApiKey",
       "antigravityToken",
+      "antigravityEndpoint",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
@@ -220,9 +222,11 @@ async function loadSettings() {
     // Groq API Key
     if (result.groqApiKey) elements.groqApiKey.value = result.groqApiKey;
 
-    // Antigravity Token
+    // Antigravity Token & Endpoint
     if (result.antigravityToken)
       elements.antigravityToken.value = result.antigravityToken;
+    if (result.antigravityEndpoint)
+      elements.antigravityEndpoint.value = result.antigravityEndpoint;
 
     // API Model
     if (result.apiModel) {
@@ -265,6 +269,7 @@ async function saveSettings() {
       apiKey: elements.apiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
       antigravityToken: elements.antigravityToken.value.trim(),
+      antigravityEndpoint: elements.antigravityEndpoint.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
       defaultLanguage: elements.defaultLanguage.value,
