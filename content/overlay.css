@@ -219,3 +219,76 @@
 .hidden {
   display: none !important;
 }
+
+/* Floating Quick Action Button */
+.omni-ai-quick-btn {
+  position: absolute;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: omniAiPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.omni-ai-quick-btn:hover {
+  transform: scale(1.15);
+}
+
+.omni-ai-icon-small {
+  font-size: 16px;
+  line-height: 1;
+}
+
+@keyframes omniAiPopIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Menu Items */
+.omni-ai-menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.omni-ai-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.omni-ai-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.omni-ai-menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}

@@ -53,16 +53,163 @@ function setupMessageListener() {
   });
 }
 
+let quickActionBtn = null;
+
 /**
  * Set up selection change listener
  */
 function setupSelectionListener() {
   document.addEventListener("mouseup", (e) => {
-    // Hide overlay if clicking outside
+    // 1. Handle existing overlay closing
     if (overlay && !overlay.contains(e.target)) {
       hideOverlay();
     }
+
+    // 2. Handle text selection for Quick Actions
+    setTimeout(() => {
+      const selection = window.getSelection();
+      const text = selection ? selection.toString().trim() : "";
+
+      if (text.length > 0 && !isOverlayVisible) {
+        showQuickActionButton(selection);
+      } else {
+        hideQuickActionButton();
+      }
+    }, 10);
   });
+
+  // Also hide on keydown to avoid annoyance while typing if selection clears
+  document.addEventListener("keydown", () => {
+    if (quickActionBtn) hideQuickActionButton();
+  });
+}
+
+/**
+ * Show floating quick action button
+ */
+function showQuickActionButton(selection) {
+  if (quickActionBtn) hideQuickActionButton();
+
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+
+  if (rect.width === 0 && rect.height === 0) return; // invisible selection
+
+  quickActionBtn = document.createElement("button");
+  quickActionBtn.className = "omni-ai-quick-btn";
+  quickActionBtn.innerHTML = `
+    <span class="omni-ai-icon-small">✨</span>
+  `;
+  quickActionBtn.title = "Omni AI Actions";
+
+  // Calculate position (top-right of selection)
+  const top = rect.top + window.scrollY - 30;
+  const left = rect.right + window.scrollX + 5;
+
+  quickActionBtn.style.top = `${top}px`;
+  quickActionBtn.style.left = `${left}px`;
+
+  // Prevent button from closing itself immediately
+  quickActionBtn.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Show the full action menu or defaulting to Quick Ask/Fix?
+    // For now, let's open the Quick Ask overlay pre-filled or special menu?
+    // Let's perform "Improve Writing" -> "Grammar" as default or show menu?
+
+    // Design choice: Open a mini menu.
+    // specific implementation: trigger a context menu simulation or just 'Grammar'
+    // Let's trigger "Grammar Fix" immediately for now or show a menu.
+    // Better: Show a menu of options (Grammar, Rephrase, etc.)
+
+    showQuickActionMenu(selection.toString());
+  });
+
+  document.body.appendChild(quickActionBtn);
+}
+
+/**
+ * Hide floating quick action button
+ */
+function hideQuickActionButton() {
+  if (quickActionBtn) {
+    quickActionBtn.remove();
+    quickActionBtn = null;
+  }
+}
+
+/**
+ * Show quick action menu
+ */
+function showQuickActionMenu(text) {
+  hideQuickActionButton();
+
+  // Show a mini overlay with actions
+  overlay = createOverlayElement();
+  overlay.innerHTML = `
+    <div class="omni-ai-overlay-header">
+       <div class="omni-ai-overlay-title">Omni AI Actions</div>
+       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
+    </div>
+    <div class="omni-ai-overlay-content omni-ai-menu-content">
+       <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
+       <button class="omni-ai-menu-item" data-action="rephrase">🔄 Rephrase</button>
+       <button class="omni-ai-menu-item" data-action="summarize">📋 Summarize</button>
+       <button class="omni-ai-menu-item" data-action="tone">🎭 Change Tone</button>
+       <div class="omni-ai-menu-divider"></div>
+       <button class="omni-ai-menu-item" data-action="ask">💬 Ask AI...</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  positionOverlay();
+
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+
+  const buttons = overlay.querySelectorAll(".omni-ai-menu-item");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const action = btn.dataset.action;
+      if (action === "ask") {
+        showQuickAskOverlay(); // Switch to Ask overlay
+        // Pre-fill prompt maybe?
+      } else {
+        // Execute action
+        hideOverlay();
+        // Send message
+        // We need to show loading state...
+        // Actually, let's reuse showResultOverlay logic but valid flow is:
+        // 1. Send request
+        // 2. Show result
+
+        // Trigger background action
+        try {
+          // Show loading toast?
+          showToast("Processing...");
+
+          const response = await chrome.runtime.sendMessage({
+            type: "WRITING_ACTION",
+            payload: { action, preset: "general", text }, // Pass text explicitly if needed, but background gets selection
+          });
+
+          if (response.success) {
+            showResultOverlay({
+              action,
+              original: text,
+              result: response.data.response || response.data,
+            });
+          } else {
+            showToast("Error: " + response.error);
+          }
+        } catch (err) {
+          showToast("Error: " + err.message);
+        }
+      }
+    });
+  });
+
+  isOverlayVisible = true;
 }
 
 // ============================================
