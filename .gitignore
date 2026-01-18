@@ -29,3 +29,5 @@ npm-debug.log*
 # Chrome extension dev
 *.pem
 *.crx
+key.pem
+extension_info.json
