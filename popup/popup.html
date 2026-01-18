@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=400, initial-scale=1.0" />
+    <title>Omni AI</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="popup-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <img
+            src="../assets/icons/icon-48.png"
+            alt="Omni AI"
+            class="logo-icon"
+          />
+          <span class="logo-text">Omni AI</span>
+        </div>
+        <button id="settingsBtn" class="icon-btn" title="Settings">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Quick Ask Section -->
+      <section class="quick-ask">
+        <div class="input-wrapper">
+          <textarea
+            id="quickAskInput"
+            placeholder="Ask Omni AI anything..."
+            rows="2"
+          ></textarea>
+          <button id="askBtn" class="ask-btn" title="Ask AI">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Context Presets -->
+      <section class="presets">
+        <h3 class="section-title">Context</h3>
+        <div class="preset-chips">
+          <button class="preset-chip active" data-preset="email">
+            <span class="chip-icon">📧</span>
+            <span>Email</span>
+          </button>
+          <button class="preset-chip" data-preset="chat">
+            <span class="chip-icon">💬</span>
+            <span>Chat</span>
+          </button>
+          <button class="preset-chip" data-preset="social">
+            <span class="chip-icon">🐦</span>
+            <span>Social</span>
+          </button>
+          <button class="preset-chip" data-preset="technical">
+            <span class="chip-icon">📝</span>
+            <span>Technical</span>
+          </button>
+          <button class="preset-chip" data-preset="academic">
+            <span class="chip-icon">📚</span>
+            <span>Academic</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Writing Actions -->
+      <section class="actions">
+        <h3 class="section-title">Improve Writing</h3>
+        <div class="action-grid">
+          <button class="action-btn" data-action="grammar">
+            <span class="action-icon">✏️</span>
+            <span class="action-label">Fix Grammar</span>
+          </button>
+          <button class="action-btn" data-action="clarity">
+            <span class="action-icon">💡</span>
+            <span class="action-label">Improve Clarity</span>
+          </button>
+          <button class="action-btn" data-action="tone">
+            <span class="action-icon">🎭</span>
+            <span class="action-label">Change Tone</span>
+          </button>
+          <button class="action-btn" data-action="concise">
+            <span class="action-icon">📐</span>
+            <span class="action-label">Make Concise</span>
+          </button>
+          <button class="action-btn" data-action="expand">
+            <span class="action-icon">📖</span>
+            <span class="action-label">Expand</span>
+          </button>
+          <button class="action-btn" data-action="rephrase">
+            <span class="action-icon">🔄</span>
+            <span class="action-label">Rephrase</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="quick-action-row">
+          <button class="quick-action-btn" data-action="translate">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2v3M22 22l-5-10-5 10M14 18h6"
+              ></path>
+            </svg>
+            <span>Translate</span>
+          </button>
+          <button class="quick-action-btn" data-action="summarize">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="21" y1="10" x2="3" y2="10"></line>
+              <line x1="21" y1="6" x2="3" y2="6"></line>
+              <line x1="21" y1="14" x2="3" y2="14"></line>
+              <line x1="21" y1="18" x2="10" y2="18"></line>
+            </svg>
+            <span>Summarize</span>
+          </button>
+          <button class="quick-action-btn" data-action="reply">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="9 17 4 12 9 7"></polyline>
+              <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <span>Reply</span>
+          </button>
+          <button class="quick-action-btn" data-action="emojify">
+            <span class="emoji-icon">😊</span>
+            <span>Emojify</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <span class="version">v0.1.0</span>
+        <span class="status" id="status">
+          <span class="status-dot"></span>
+          Ready
+        </span>
+      </footer>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
