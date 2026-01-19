@@ -79,9 +79,50 @@ function setupSelectionListener() {
     }, 10);
   });
 
-  // Also hide on keydown to avoid annoyance while typing if selection clears
-  document.addEventListener("keydown", () => {
-    if (quickActionBtn) hideQuickActionButton();
+  // Handle Ctrl+A (Select All)
+  document.addEventListener("keydown", (e) => {
+    // Ctrl+A or Cmd+A
+    if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+      setTimeout(() => {
+        const text = getSelectedText();
+        const selection = window.getSelection();
+        const activeElement = document.activeElement;
+
+        // Show button for input/textarea with Ctrl+A
+        if (text.length > 0 && !isOverlayVisible) {
+          if (activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")) {
+            showQuickActionButtonForInput(activeElement);
+          } else {
+            showQuickActionButton(selection);
+          }
+        }
+      }, 10);
+    } else {
+      // Hide on other keydown to avoid annoyance while typing
+      if (quickActionBtn) hideQuickActionButton();
+    }
+  });
+
+  // Handle typing in input/textarea (debounced)
+  let typingTimer;
+  const typingDelay = 1000; // Show button 1 second after user stops typing
+
+  document.addEventListener("input", (e) => {
+    const target = e.target;
+    
+    // Only for input/textarea
+    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+      clearTimeout(typingTimer);
+      hideQuickActionButton();
+      
+      // Show button after user stops typing
+      typingTimer = setTimeout(() => {
+        const value = target.value.trim();
+        if (value.length > 0 && !isOverlayVisible) {
+          showQuickActionButtonForInput(target);
+        }
+      }, typingDelay);
+    }
   });
 }
 
@@ -129,6 +170,52 @@ function showQuickActionButton(selection) {
 
     // Show the full action menu
     showQuickActionMenu(selection.toString(), rect);
+  });
+
+  document.body.appendChild(quickActionBtn);
+}
+
+/**
+ * Show floating quick action button for input/textarea
+ */
+function showQuickActionButtonForInput(inputElement) {
+  if (quickActionBtn) hideQuickActionButton();
+
+  const rect = inputElement.getBoundingClientRect();
+
+  quickActionBtn = document.createElement("button");
+  quickActionBtn.className = "omni-ai-quick-btn";
+  updateOverlayTheme(quickActionBtn);
+  quickActionBtn.innerHTML = `
+    <span class="omni-ai-icon-small">✨</span>
+  `;
+  quickActionBtn.title = "Omni AI Actions";
+
+  // Position at top-right of input field
+  const top = rect.top + window.scrollY - 30;
+  const left = rect.right + window.scrollX + 5;
+
+  quickActionBtn.style.top = `${top}px`;
+  quickActionBtn.style.left = `${left}px`;
+
+  // Prevent button from closing itself
+  quickActionBtn.addEventListener("mousedown", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+  quickActionBtn.addEventListener("mouseup", (e) => e.stopPropagation());
+
+  quickActionBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Get text from input (selection or full value)
+    const text = getSelectedText() || inputElement.value.trim();
+    const btnRect = quickActionBtn.getBoundingClientRect();
+
+    // Show the full action menu
+    showQuickActionMenu(text, btnRect);
   });
 
   document.body.appendChild(quickActionBtn);
