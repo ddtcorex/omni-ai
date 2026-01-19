@@ -460,13 +460,14 @@ async function updateLanguageLabels() {
   const primaryName = languageNames[primaryLanguage] || primaryLanguage;
   const translationName = languageNames[defaultLanguage] || defaultLanguage;
 
+  const primaryIcon = primaryLanguage === 'vi' ? '🇻🇳' : '🌐';
+  const translationIcon = '🌎';
+
   const labelPrimary = document.getElementById("labelTranslatePrimary");
   const labelDefault = document.getElementById("labelTranslateDefault");
-  const labelConvert = document.getElementById("labelConvert");
 
-  if (labelPrimary) labelPrimary.textContent = `To ${primaryName}`;
-  if (labelDefault) labelDefault.textContent = `To ${translationName}`;
-  if (labelConvert) labelConvert.textContent = `${primaryName} → ${translationName}`;
+  if (labelPrimary) labelPrimary.textContent = `${primaryIcon} To ${primaryName}`;
+  if (labelDefault) labelDefault.textContent = `${translationIcon} To ${translationName}`;
 }
 
 // Initialize when DOM is ready
