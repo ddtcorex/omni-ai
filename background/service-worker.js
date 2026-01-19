@@ -424,21 +424,23 @@ async function handleWritingAction(payload) {
   }
 
   // Save to history
-  try {
-    const [historyTab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    await addToHistory({
-      action,
-      inputText: selectedText,
-      outputText: result,
-      preset,
-      site: historyTab?.url || "unknown",
-    });
-  } catch (e) {
-    console.error("[Omni AI] Failed to save history:", e);
-  }
+  (async () => {
+    try {
+      const [historyTab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      await addToHistory({
+        action,
+        inputText: selectedText,
+        outputText: result,
+        preset,
+        site: historyTab?.url || "unknown",
+      });
+    } catch (e) {
+      console.error("[Omni AI] Failed to save history:", e);
+    }
+  })();
 
   return { response: result };
 }
@@ -515,21 +517,23 @@ async function handleQuickAction(payload) {
   }
 
   // Save to history
-  try {
-    const [historyTab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    await addToHistory({
-      action,
-      inputText: selectedText,
-      outputText: result,
-      preset,
-      site: historyTab?.url || "unknown",
-    });
-  } catch (e) {
-    console.error("[Omni AI] Failed to save history:", e);
-  }
+  (async () => {
+    try {
+      const [historyTab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      await addToHistory({
+        action,
+        inputText: selectedText,
+        outputText: result,
+        preset,
+        site: historyTab?.url || "unknown",
+      });
+    } catch (e) {
+      console.error("[Omni AI] Failed to save history:", e);
+    }
+  })();
 
   return { response: result };
 }
