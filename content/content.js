@@ -270,8 +270,6 @@ async function showQuickActionMenu(text, anchorRect = null) {
          <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_primary">To ${primaryName}</button>
          <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_default">To ${translationName}</button>
        </div>
-       <button class="omni-ai-menu-item" data-action="translate_default">🔄 Convert ${primaryName} → ${translationName}</button>
-       
        <div class="omni-ai-menu-divider"></div>
        <div class="omni-ai-menu-group-title">Writing</div>
        <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
