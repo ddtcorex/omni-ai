@@ -325,31 +325,68 @@ function showResultOverlay(payload) {
   hideOverlay();
 
   overlay = createOverlayElement();
-  overlay.innerHTML = `
-    <div class="omni-ai-overlay-header">
-      <div class="omni-ai-overlay-title">
-        <span class="omni-ai-icon">✨</span>
-        <span>Omni AI - ${formatActionName(action)}</span>
-      </div>
-      <button class="omni-ai-close-btn" id="omniAiClose">×</button>
-    </div>
-    <div class="omni-ai-overlay-content">
-      <div class="omni-ai-result">${escapeHtml(result)}</div>
-    </div>
-    <div class="omni-ai-overlay-footer">
-      <button class="omni-ai-btn omni-ai-btn-secondary" id="omniAiCopy">Copy</button>
-      <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiReplace">Replace</button>
-    </div>
-  `;
+
+  // Header
+  const header = document.createElement("div");
+  header.className = "omni-ai-overlay-header";
+
+  const title = document.createElement("div");
+  title.className = "omni-ai-overlay-title";
+
+  const iconSpan = document.createElement("span");
+  iconSpan.className = "omni-ai-icon";
+  iconSpan.textContent = "✨";
+
+  const titleSpan = document.createElement("span");
+  titleSpan.textContent = `Omni AI - ${formatActionName(action)}`;
+
+  title.appendChild(iconSpan);
+  title.appendChild(titleSpan);
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "omni-ai-close-btn";
+  closeBtn.id = "omniAiClose";
+  closeBtn.textContent = "×";
+
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+
+  // Content
+  const content = document.createElement("div");
+  content.className = "omni-ai-overlay-content";
+
+  const resultDiv = document.createElement("div");
+  resultDiv.className = "omni-ai-result";
+  resultDiv.textContent = result;
+
+  content.appendChild(resultDiv);
+
+  // Footer
+  const footer = document.createElement("div");
+  footer.className = "omni-ai-overlay-footer";
+
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "omni-ai-btn omni-ai-btn-secondary";
+  copyBtn.id = "omniAiCopy";
+  copyBtn.textContent = "Copy";
+
+  const replaceBtn = document.createElement("button");
+  replaceBtn.className = "omni-ai-btn omni-ai-btn-primary";
+  replaceBtn.id = "omniAiReplace";
+  replaceBtn.textContent = "Replace";
+
+  footer.appendChild(copyBtn);
+  footer.appendChild(replaceBtn);
+
+  overlay.appendChild(header);
+  overlay.appendChild(content);
+  overlay.appendChild(footer);
 
   document.body.appendChild(overlay);
   positionOverlay();
 
   // Event listeners
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
-
-  const copyBtn = overlay.querySelector("#omniAiCopy");
-  const replaceBtn = overlay.querySelector("#omniAiReplace");
+  closeBtn.addEventListener("click", hideOverlay);
 
   // Prevent focus loss on mousedown
   [copyBtn, replaceBtn].forEach((btn) => {
