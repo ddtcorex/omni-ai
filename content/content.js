@@ -180,25 +180,15 @@ function showQuickActionMenu(text, anchorRect = null) {
       const action = btn.dataset.action;
 
       if (action === "ask") {
-        showQuickAskOverlay(); // Switch to Ask overlay
-        // Pre-fill prompt maybe?
+        showQuickAskOverlay();
       } else {
-        // Execute action
-        hideOverlay();
-        // Send message
-        // We need to show loading state...
-        // Actually, let's reuse showResultOverlay logic but valid flow is:
-        // 1. Send request
-        // 2. Show result
-
-        // Trigger background action
+        // Show loading in same overlay - no flashing!
+        showLoadingInOverlay(action);
+        
         try {
-          // Show loading toast?
-          showToast("Processing...");
-
-          const response = await chrome.runtime.sendMessage({
+          const response = await sendMessageToBackground({
             type: "WRITING_ACTION",
-            payload: { action, preset: "general", text }, // Pass text explicitly if needed, but background gets selection
+            payload: { action, preset: "general", text },
           });
 
           if (response.success) {
@@ -208,11 +198,10 @@ function showQuickActionMenu(text, anchorRect = null) {
               result: response.data.response || response.data,
             });
           } else {
-            showToast("Error: " + response.error);
+            showErrorInOverlay(response.error);
           }
         } catch (err) {
-          console.error(err);
-          showToast("Error: " + err.message);
+          showErrorInOverlay(err.message);
         }
       }
     });
@@ -518,10 +507,8 @@ function showQuickActionMenu(text, anchorRect = null) {
       if (action === "ask") {
         showQuickAskOverlay();
       } else {
-        hideOverlay();
+        showLoadingInOverlay(action);
         try {
-          showToast("Processing...");
-
           const response = await sendMessageToBackground({
             type: "WRITING_ACTION",
             payload: { action, preset: "general", text },
@@ -534,10 +521,10 @@ function showQuickActionMenu(text, anchorRect = null) {
               result: response.data.response || response.data,
             });
           } else {
-            showToast("Error: " + response.error);
+            showErrorInOverlay(response.error);
           }
         } catch (err) {
-          showToast("Error: " + err.message);
+          showErrorInOverlay(err.message);
         }
       }
     });
@@ -650,6 +637,39 @@ function formatActionName(action) {
     emojify: "Emojified",
   };
   return names[action] || action;
+}
+
+/**
+ * Show loading state in current overlay
+ */
+function showLoadingInOverlay(action) {
+  if (!overlay) return;
+  
+  const content = overlay.querySelector('.omni-ai-overlay-content');
+  if (content) {
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; padding: 20px; justify-content: center;">
+        <div style="width: 20px; height: 20px; border: 2px solid rgba(139, 92, 246, 0.3); border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <span style="color: var(--ai-text-secondary); font-size: 13px;">Processing...</span>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Show error in current overlay
+ */
+function showErrorInOverlay(errorMessage) {
+  if (!overlay) return;
+  
+  const content = overlay.querySelector('.omni-ai-overlay-content');
+  if (content) {
+    content.innerHTML = `
+      <div style="padding: 12px; color: #ef4444; font-size: 13px;">
+        Error: ${escapeHtml(errorMessage)}
+      </div>
+    `;
+  }
 }
 
 /**
