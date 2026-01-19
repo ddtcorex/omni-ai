@@ -67,8 +67,21 @@ function setupSelectionListener() {
 
     // 2. Handle text selection for Quick Actions
     setTimeout(() => {
-      const text = getSelectedText();
+      // Optimization: Check for selection existence before processing expensive logic
+      const activeElement = document.activeElement;
+      const isInput =
+        activeElement &&
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA");
       const selection = window.getSelection();
+
+      // If not an input and no selection range (collapsed), we can skip string processing
+      if (!isInput && (!selection || selection.isCollapsed)) {
+        if (quickActionBtn) hideQuickActionButton();
+        return;
+      }
+
+      const text = getSelectedText();
 
       if (text.length > 0 && !isOverlayVisible) {
         showQuickActionButton(selection);
