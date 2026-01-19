@@ -364,21 +364,24 @@ async function handleQuickAsk(payload) {
   } catch (e) {}
 
   // Return response
-  try {
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    await addToHistory({
-      action: "quick_ask",
-      inputText: query,
-      outputText: response,
-      preset,
-      site: tab?.url || "popup",
-    });
-  } catch (e) {
-    console.error("[Omni AI] Failed to save history:", e);
-  }
+  // Fire and forget - don't block response
+  (async () => {
+    try {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      await addToHistory({
+        action: "quick_ask",
+        inputText: query,
+        outputText: response,
+        preset,
+        site: tab?.url || "popup",
+      });
+    } catch (e) {
+      console.error("[Omni AI] Failed to save history:", e);
+    }
+  })();
 
   return { response };
 }
@@ -424,21 +427,24 @@ async function handleWritingAction(payload) {
   }
 
   // Save to history
-  try {
-    const [historyTab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    await addToHistory({
-      action,
-      inputText: selectedText,
-      outputText: result,
-      preset,
-      site: historyTab?.url || "unknown",
-    });
-  } catch (e) {
-    console.error("[Omni AI] Failed to save history:", e);
-  }
+  // Fire and forget - don't block response
+  (async () => {
+    try {
+      const [historyTab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      await addToHistory({
+        action,
+        inputText: selectedText,
+        outputText: result,
+        preset,
+        site: historyTab?.url || "unknown",
+      });
+    } catch (e) {
+      console.error("[Omni AI] Failed to save history:", e);
+    }
+  })();
 
   return { response: result };
 }
@@ -515,21 +521,24 @@ async function handleQuickAction(payload) {
   }
 
   // Save to history
-  try {
-    const [historyTab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    await addToHistory({
-      action,
-      inputText: selectedText,
-      outputText: result,
-      preset,
-      site: historyTab?.url || "unknown",
-    });
-  } catch (e) {
-    console.error("[Omni AI] Failed to save history:", e);
-  }
+  // Fire and forget - don't block response
+  (async () => {
+    try {
+      const [historyTab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      await addToHistory({
+        action,
+        inputText: selectedText,
+        outputText: result,
+        preset,
+        site: historyTab?.url || "unknown",
+      });
+    } catch (e) {
+      console.error("[Omni AI] Failed to save history:", e);
+    }
+  })();
 
   return { response: result };
 }
