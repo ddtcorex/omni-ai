@@ -334,9 +334,13 @@ function replaceSelectedText(newText) {
 function showResultOverlay(payload) {
   const { action, original, result } = payload;
 
-  hideOverlay();
+  // Update existing overlay if present, otherwise create new
+  if (!overlay) {
+    overlay = createOverlayElement();
+    document.body.appendChild(overlay);
+  }
 
-  overlay = createOverlayElement();
+  // Update overlay content
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
       <div class="omni-ai-overlay-title">
@@ -354,7 +358,6 @@ function showResultOverlay(payload) {
     </div>
   `;
 
-  document.body.appendChild(overlay);
   positionOverlay();
 
   // Event listeners
