@@ -529,7 +529,7 @@ function showQuickAskOverlay(initialValue = "") {
       </div>
       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
     </div>
-    <div class="omni-ai-overlay-content" style="padding: 16px;">
+    <div class="omni-ai-overlay-content">
       ${contextHtml}
       <textarea id="omniAiInput" class="omni-ai-input" placeholder="What would you like to know or do with this?..."></textarea>
       <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">
@@ -538,7 +538,7 @@ function showQuickAskOverlay(initialValue = "") {
       </div>
       <div id="omniAiQuickResult" class="omni-ai-result omni-ai-hidden"></div>
     </div>
-    <div class="omni-ai-overlay-footer" style="padding: 12px 16px;">
+    <div class="omni-ai-overlay-footer">
       <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn" style="height: 38px; font-size: 13px;">Send Request</button>
     </div>
   `;
@@ -730,9 +730,9 @@ function showLoadingInOverlay(action) {
   const content = overlay.querySelector('.omni-ai-overlay-content');
   if (content) {
     content.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px; padding: 20px; justify-content: center;">
-        <div style="width: 20px; height: 20px; border: 2px solid rgba(139, 92, 246, 0.3); border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-        <span style="color: var(--ai-text-secondary); font-size: 13px;">Processing...</span>
+      <div class="omni-ai-loading">
+        <div class="omni-ai-spinner"></div>
+        <span>Processing...</span>
       </div>
     `;
   }
