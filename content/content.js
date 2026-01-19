@@ -74,7 +74,15 @@ function setupSelectionListener() {
       if (text.length > 0 && !isOverlayVisible) {
         showQuickActionButton(selection);
       } else {
-        hideQuickActionButton();
+        // Only hide if not in an input with content
+        const activeElement = document.activeElement;
+        const isInInputWithContent = (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA") && activeElement.value.trim().length > 0;
+        
+        if (!isInInputWithContent) {
+          hideQuickActionButton();
+        } else {
+          showQuickActionButtonForInput(activeElement);
+        }
       }
     }, 10);
   });
@@ -105,23 +113,31 @@ function setupSelectionListener() {
 
   // Handle typing in input/textarea (debounced)
   let typingTimer;
-  const typingDelay = 1000; // Show button 1 second after user stops typing
+  const typingDelay = 500; // Show faster
+
+  const checkInputAndShow = (target) => {
+    const value = target.value.trim();
+    if (value.length > 0 && !isOverlayVisible) {
+      showQuickActionButtonForInput(target);
+    }
+  };
 
   document.addEventListener("input", (e) => {
     const target = e.target;
-    
-    // Only for input/textarea
     if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
       clearTimeout(typingTimer);
       hideQuickActionButton();
       
-      // Show button after user stops typing
       typingTimer = setTimeout(() => {
-        const value = target.value.trim();
-        if (value.length > 0 && !isOverlayVisible) {
-          showQuickActionButtonForInput(target);
-        }
+        checkInputAndShow(target);
       }, typingDelay);
+    }
+  });
+
+  document.addEventListener("focusin", (e) => {
+    const target = e.target;
+    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+      checkInputAndShow(target);
     }
   });
 }
@@ -192,8 +208,19 @@ function showQuickActionButtonForInput(inputElement) {
   quickActionBtn.title = "Omni AI Actions";
 
   // Position at top-right of input field
-  const top = rect.top + window.scrollY - 30;
-  const left = rect.right + window.scrollX + 5;
+  // If we have space, put it outside-right. If not, put it inside-right top.
+  let top = rect.top + window.scrollY - 8; // Slightly above the top line
+  let left = rect.right + window.scrollX - 25; // Inside the right edge by default to be safe
+
+  // If there is enough room on the right, put it outside
+  if (rect.right + 40 < window.innerWidth) {
+    left = rect.right + window.scrollX + 8;
+  }
+
+  // Ensure it doesn't go off the top of the page
+  if (top < window.scrollY + 10) {
+    top = rect.top + window.scrollY + 5;
+  }
 
   quickActionBtn.style.top = `${top}px`;
   quickActionBtn.style.left = `${left}px`;
