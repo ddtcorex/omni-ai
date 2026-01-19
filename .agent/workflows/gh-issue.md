@@ -23,6 +23,8 @@ gh issue create --title "<title>" --body "<body>" --label "<labels>" --milestone
 // turbo
 
 ```bash
+git checkout develop
+git pull origin develop
 git checkout -b feature/<issue-number>-<short-description>
 ```
 
@@ -49,7 +51,7 @@ git push -u origin feature/<issue-number>-<short-description>
 ## 7. Create PR
 
 ```bash
-gh pr create --title "<title>" --body "Closes #<issue-number>" --assignee @me
+gh pr create --title "<title>" --body "Closes #<issue-number>" --base develop --assignee @me
 ```
 
 ## 8. Review & Merge
