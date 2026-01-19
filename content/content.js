@@ -531,7 +531,7 @@ function showQuickAskOverlay(initialValue = "") {
     </div>
     <div class="omni-ai-overlay-content" style="padding: 16px;">
       ${contextHtml}
-      <textarea id="omniAiInput" class="omni-ai-input" placeholder="What would you like to know or do with this?..." rows="4"></textarea>
+      <textarea id="omniAiInput" class="omni-ai-input" placeholder="What would you like to know or do with this?..."></textarea>
       <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">
         <div class="omni-ai-spinner"></div>
         Processing...

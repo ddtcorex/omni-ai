@@ -239,20 +239,28 @@
 /* Quick Ask Elements */
 .omni-ai-input {
   width: 100%;
+  min-height: 120px;
   box-sizing: border-box;
-  background: var(--ai-bg-glass);
-  border: 1px solid var(--ai-border-color);
-  border-radius: 10px;
-  padding: 14px;
+  background: var(--ai-card-bg);
+  border: 1px solid var(--ai-card-border);
+  border-radius: 12px;
+  padding: 16px;
   color: var(--ai-text-primary);
   font-family: inherit;
   font-size: 14px;
-  line-height: 1.5;
-  resize: none;
+  line-height: 1.6;
+  resize: vertical; /* Allow vertical resizing if needed */
   margin: 0;
   outline: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.omni-ai-input:hover {
+  background: var(--ai-bg-glass-heavy);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
 .omni-ai-input:focus {
@@ -261,6 +269,11 @@
   box-shadow:
     0 0 0 3px rgba(139, 92, 246, 0.15),
     inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.omni-ai-input::placeholder {
+  color: var(--ai-text-secondary);
+  opacity: 0.6;
 }
 
 .omni-ai-context-badge {
