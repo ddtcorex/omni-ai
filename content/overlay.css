@@ -333,8 +333,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
   border: none;
   border-radius: 50%;
@@ -349,7 +349,7 @@
 }
 
 .omni-ai-icon-small {
-  font-size: 16px;
+  font-size: 12px;
   line-height: 1;
 }
 
