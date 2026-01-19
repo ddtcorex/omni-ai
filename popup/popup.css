@@ -111,6 +111,7 @@ body {
   width: 24px;
   height: 24px;
   border-radius: var(--radius-sm);
+  object-fit: contain;
 }
 
 .logo-text {

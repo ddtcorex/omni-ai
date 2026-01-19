@@ -15,11 +15,7 @@
 
   "action": {
     "default_popup": "popup/popup.html",
-    "default_icon": {
-      "16": "assets/icons/icon-16.png",
-      "48": "assets/icons/icon-48.png",
-      "128": "assets/icons/icon-128.png"
-    },
+    "default_icon": "assets/icons/logo.svg",
     "default_title": "__MSG_extName__"
   },
 
@@ -39,9 +35,7 @@
 
   "permissions": ["storage", "activeTab", "contextMenus", "identity"],
 
-  "host_permissions": [
-    "https://generativelanguage.googleapis.com/*"
-  ],
+  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
 
   "options_ui": {
     "page": "settings.html",
