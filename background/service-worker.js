@@ -7,6 +7,9 @@ import {
   summarizeText,
   generateReply,
   emojifyText,
+  generateReply,
+  emojifyText,
+  generateContent
 } from "../lib/ai-service.js";
 
 /**
@@ -171,6 +174,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "GET_API_KEY":
       getApiKey()
         .then((key) => sendResponse({ success: true, apiKey: key }))
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message }),
+        );
+    case "VALIDATE_CONFIG":
+      handleValidateConfig(message.payload)
+        .then((result) => sendResponse({ success: true, data: result }))
         .catch((error) =>
           sendResponse({ success: false, error: error.message }),
         );
@@ -532,6 +541,26 @@ async function handleQuickAction(payload) {
   }
 
   return { response: result };
+}
+
+/**
+ * Handle configuration validation
+ */
+async function handleValidateConfig(payload) {
+  const { model, key } = payload;
+  
+  if (!key) throw new Error("API Key is missing");
+  
+  // Test with a simple prompt
+  const testPrompt = "Hello. Respond with 'OK'.";
+  
+  const result = await generateContent(testPrompt, {
+    model: model,
+    apiKey: key, // Explicit override
+    maxTokens: 5
+  });
+  
+  return { valid: true, response: result };
 }
 
 /**

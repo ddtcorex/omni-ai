@@ -1,5 +1,6 @@
 import { getStats, resetStats } from "./lib/history.js";
 import { initTheme, getThemePreference, setThemePreference, applyTheme } from "./lib/theme-manager.js";
+import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 /**
  * Omni AI - Options Page Script
@@ -8,12 +9,14 @@ import { initTheme, getThemePreference, setThemePreference, applyTheme } from ".
 
 // DOM Elements
 const elements = {
-  apiKey: document.getElementById("apiKey"),
+  apiKey: document.getElementById("apiKey"), // Google Key
   apiModel: document.getElementById("apiModel"),
-  geminiKeyGroup: document.getElementById("geminiKeyGroup"),
+  googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
+  validateBtn: document.getElementById("validateBtn"),
+  validationStatus: document.getElementById("validationStatus"),
   // Theme
   themeSelector: document.getElementById("themeSelector"),
   // Preferences
@@ -43,10 +46,33 @@ let isApiKeyVisible = false;
 async function init() {
   await initTheme(); // Initialize theme
   localizeDOM();
+  populateModelSelect();
   await loadSettings();
   await loadStats();
   setupEventListeners();
   updateModelVisibility(); // Initial check
+}
+
+/**
+ * Populate AI Models dropdown
+ */
+function populateModelSelect() {
+  const select = elements.apiModel;
+  select.innerHTML = ''; // Clear existing
+
+  Object.values(AI_PROVIDERS).forEach(provider => {
+    const group = document.createElement('optgroup');
+    group.label = provider.name;
+    
+    provider.models.forEach(model => {
+      const option = document.createElement('option');
+      option.value = model.id;
+      option.textContent = model.name;
+      group.appendChild(option);
+    });
+    
+    select.appendChild(group);
+  });
 }
 
 /**
@@ -121,6 +147,11 @@ function setupEventListeners() {
     });
   }
 
+  // Validate button
+  if (elements.validateBtn) {
+    elements.validateBtn.addEventListener("click", validateConfiguration);
+  }
+
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener("click", toggleApiKeyVisibility);
 
@@ -190,20 +221,78 @@ function toggleApiKeyVisibility() {
  * Update model visibility based on selection
  */
 function updateModelVisibility() {
-  const model = elements.apiModel.value;
+  const modelId = elements.apiModel.value;
+  const provider = getProviderByModel(modelId);
 
-  // Hide all by default
-  if (elements.geminiKeyGroup) elements.geminiKeyGroup.classList.add("hidden");
-  if (elements.groqKeyGroup) elements.groqKeyGroup.classList.add("hidden");
+  // Hide all groups first
+  const groups = document.querySelectorAll('.setting-item[data-provider]');
+  groups.forEach(el => el.classList.add('hidden'));
 
-  // Show based on selection
-  if (model.startsWith("groq-")) {
-    if (elements.groqKeyGroup) elements.groqKeyGroup.classList.remove("hidden");
-  } else {
-    // Default to Gemini (or explicit "gemini-")
-    if (elements.geminiKeyGroup)
-      elements.geminiKeyGroup.classList.remove("hidden");
+  if (provider) {
+    // Show matching group based on data-provider attribute
+    const activeGroup = document.querySelector(`.setting-item[data-provider="${provider.id}"]`);
+    if (activeGroup) {
+      activeGroup.classList.remove('hidden');
+    }
   }
+}
+
+/**
+ * Validate current configuration
+ */
+async function validateConfiguration() {
+  const modelId = elements.apiModel.value;
+  const provider = getProviderByModel(modelId);
+  if (!provider) return;
+
+  // Get the Key
+  let apiKey = '';
+  if (provider.id === 'google') {
+    apiKey = elements.apiKey.value.trim();
+  } else if (provider.id === 'groq') {
+    apiKey = elements.groqApiKey.value.trim();
+  }
+
+  if (!apiKey) {
+    showValidationStatus('Please enter an API Key first.', 'error');
+    return;
+  }
+
+  showValidationStatus('Validating...', 'processing');
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "VALIDATE_CONFIG",
+      payload: { provider: provider.id, model: modelId, key: apiKey }
+    });
+
+    if (response.success) {
+      showValidationStatus('Configuration is valid! ✅', 'success');
+    } else {
+      showValidationStatus(`Error: ${response.error}`, 'error');
+    }
+  } catch (err) {
+    showValidationStatus(`Connection check failed: ${err.message}`, 'error');
+  }
+}
+
+/**
+ * Show validation status
+ */
+function showValidationStatus(message, type) {
+  const el = elements.validationStatus;
+  if (!el) return;
+  el.textContent = message;
+  
+  if (type === 'processing') {
+    el.style.color = 'var(--text-secondary)';
+  } else if (type === 'success') {
+    el.style.color = 'var(--success)';
+  } else {
+    el.style.color = 'var(--error)';
+  }
+  
+  el.classList.add('visible');
 }
 
 async function loadSettings() {
