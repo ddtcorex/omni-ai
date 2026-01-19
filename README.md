@@ -33,7 +33,8 @@ Dedicated tools for specific needs:
 
 ### 🌍 Instant Translation & Explanation
 
-- **Translate** - Supports 10+ languages including Spanish, French, German, Japanese, Chinese, and Vietnamese.
+- **Translate** - Supports 10+ languages including Spanish, French, German, Japanese, and Chinese.
+- **Primary Language** - Set your native language (e.g., Vietnamese) for one-click instant translations.
 - **Explain** - Simplifies difficult concepts, technical jargon, or complex paragraphs.
 
 ### 📊 Dashboard & Usage Statistics
@@ -58,10 +59,12 @@ Track your productivity with the new **Usage Dashboard**:
 ### Development Mode
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/ddtcorex/omni-ai.git
    cd omni-ai
    ```
+
 2. **Setup in Chrome**:
    - Open Chrome and go to `chrome://extensions`.
    - Toggle **Developer mode** in the top right.
@@ -74,8 +77,8 @@ Track your productivity with the new **Usage Dashboard**:
 
 To use Omni AI, you need your own API keys. The extension supports:
 
-1.  **Google Gemini**: Get your free API key at [Google AI Studio](https://aistudio.google.com/app/apikey).
-2.  **Groq**: Get a high-speed API key at [Groq Console](https://console.groq.com/keys).
+1. **Google Gemini**: Get your free API key at [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. **Groq**: Get a high-speed API key at [Groq Console](https://console.groq.com/keys).
 
 Enter your keys in the **Settings** page accessible via the extension icon or right-click menu.
 
