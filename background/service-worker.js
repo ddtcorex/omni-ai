@@ -364,21 +364,20 @@ async function handleQuickAsk(payload) {
   } catch (e) {}
 
   // Return response
-  try {
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    await addToHistory({
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  }).then(([tab]) => {
+    return addToHistory({
       action: "quick_ask",
       inputText: query,
       outputText: response,
       preset,
       site: tab?.url || "popup",
     });
-  } catch (e) {
+  }).catch((e) => {
     console.error("[Omni AI] Failed to save history:", e);
-  }
+  });
 
   return { response };
 }
