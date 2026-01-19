@@ -259,6 +259,7 @@ async function validateConfiguration() {
   }
 
   showValidationStatus('Validating...', 'processing');
+  setButtonLoading(true);
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -266,13 +267,39 @@ async function validateConfiguration() {
       payload: { provider: provider.id, model: modelId, key: apiKey }
     });
 
+    setButtonLoading(false);
+
     if (response.success) {
-      showValidationStatus('Configuration is valid! ✅', 'success');
+      showValidationStatus('Configuration valid! ready to generate.', 'success');
     } else {
       showValidationStatus(`Error: ${response.error}`, 'error');
     }
   } catch (err) {
+    setButtonLoading(false);
     showValidationStatus(`Connection check failed: ${err.message}`, 'error');
+  }
+}
+
+/**
+ * Set button loading state
+ */
+function setButtonLoading(isLoading) {
+  const btn = elements.validateBtn;
+  if (!btn) return;
+  
+  if (isLoading) {
+    btn.classList.add('loading');
+    btn.disabled = true;
+    const svg = btn.querySelector('svg');
+    if (svg) svg.classList.add('validate-spinner');
+    // Change icon to refresh/spinner
+    btn.querySelector('span').textContent = "Checking...";
+  } else {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    const svg = btn.querySelector('svg');
+    if (svg) svg.classList.remove('validate-spinner');
+    btn.querySelector('span').textContent = "Validate Configuration";
   }
 }
 
@@ -282,17 +309,25 @@ async function validateConfiguration() {
 function showValidationStatus(message, type) {
   const el = elements.validationStatus;
   if (!el) return;
-  el.textContent = message;
   
-  if (type === 'processing') {
-    el.style.color = 'var(--text-secondary)';
-  } else if (type === 'success') {
-    el.style.color = 'var(--success)';
-  } else {
-    el.style.color = 'var(--error)';
+  // Reset classes
+  el.className = 'validation-message visible';
+  el.classList.add(type);
+  
+  // Icon based on type
+  let icon = '';
+  if (type === 'success') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  else if (type === 'error') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+  else if (type === 'processing') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+
+  el.innerHTML = `${icon}<span>${message}</span>`;
+  
+  // Auto hide after 5s if success
+  if (type === 'success') {
+    setTimeout(() => {
+      el.classList.remove('visible');
+    }, 5000);
   }
-  
-  el.classList.add('visible');
 }
 
 async function loadSettings() {
