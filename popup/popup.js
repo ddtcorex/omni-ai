@@ -3,6 +3,8 @@
  * Handles UI interactions, authentication, and communicates with the service worker
  */
 
+import { initTheme } from '../lib/theme-manager.js';
+
 // DOM Elements
 const elements = {
   // Quick Ask
@@ -40,6 +42,7 @@ let currentUser = null;
  * Initialize popup
  */
 async function init() {
+  await initTheme(); // Initialize theme
   localizeDOM();
   setupEventListeners();
   await loadSavedPreset();
