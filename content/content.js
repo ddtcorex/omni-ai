@@ -236,6 +236,7 @@ function hideQuickActionButton() {
  */
 async function showQuickActionMenu(text, anchorRect = null) {
   hideQuickActionButton();
+  hideOverlay(); // Ensure previous overlay is removed
 
   // Fetch languages for button labels
   const { primaryLanguage = "vi", defaultLanguage = "en" } = await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
@@ -269,6 +270,8 @@ async function showQuickActionMenu(text, anchorRect = null) {
          <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_primary">To ${primaryName}</button>
          <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_default">To ${translationName}</button>
        </div>
+       <button class="omni-ai-menu-item" data-action="translate_default">🔄 Convert ${primaryName} → ${translationName}</button>
+       
        <div class="omni-ai-menu-divider"></div>
        <div class="omni-ai-menu-group-title">Writing</div>
        <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
@@ -299,8 +302,12 @@ async function showQuickActionMenu(text, anchorRect = null) {
         showLoadingInOverlay(action);
         
         try {
+          // Select correct background handler
+          const isQuickAction = ["summarize", "translate_primary", "translate_default", "translate"].includes(action);
+          const type = isQuickAction ? "QUICK_ACTION" : "WRITING_ACTION";
+
           const response = await sendMessageToBackground({
-            type: "WRITING_ACTION",
+            type,
             payload: { action, preset: "general", text },
           });
 
@@ -586,68 +593,6 @@ function showQuickAskOverlay() {
   isOverlayVisible = true;
 }
 
-/**
- * Show quick action menu
- */
-function showQuickActionMenu(text, anchorRect = null) {
-  hideQuickActionButton();
-
-  // Show a mini overlay with actions
-  overlay = createOverlayElement();
-  overlay.innerHTML = `
-    <div class="omni-ai-overlay-header">
-       <div class="omni-ai-overlay-title">Omni AI Actions</div>
-       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
-    </div>
-    <div class="omni-ai-overlay-content omni-ai-menu-content">
-       <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
-       <button class="omni-ai-menu-item" data-action="rephrase">🔄 Rephrase</button>
-       <button class="omni-ai-menu-item" data-action="summarize">📋 Summarize</button>
-       <button class="omni-ai-menu-item" data-action="tone">🎭 Change Tone</button>
-       <div class="omni-ai-menu-divider"></div>
-       <button class="omni-ai-menu-item" data-action="ask">💬 Ask AI...</button>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  // Position using the anchor rect if provided
-  positionOverlay(anchorRect);
-
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
-
-  const buttons = overlay.querySelectorAll(".omni-ai-menu-item");
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const action = btn.dataset.action;
-      if (action === "ask") {
-        showQuickAskOverlay();
-      } else {
-        showLoadingInOverlay(action);
-        try {
-          const response = await sendMessageToBackground({
-            type: "WRITING_ACTION",
-            payload: { action, preset: "general", text },
-          });
-
-          if (response.success) {
-            showResultOverlay({
-              action,
-              original: text,
-              result: response.data.response || response.data,
-            });
-          } else {
-            showErrorInOverlay(response.error);
-          }
-        } catch (err) {
-          showErrorInOverlay(err.message);
-        }
-      }
-    });
-  });
-
-  isOverlayVisible = true;
-}
 
 /**
  * Create overlay element

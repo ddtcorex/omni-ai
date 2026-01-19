@@ -462,9 +462,11 @@ async function updateLanguageLabels() {
 
   const labelPrimary = document.getElementById("labelTranslatePrimary");
   const labelDefault = document.getElementById("labelTranslateDefault");
+  const labelConvert = document.getElementById("labelConvert");
 
   if (labelPrimary) labelPrimary.textContent = `To ${primaryName}`;
   if (labelDefault) labelDefault.textContent = `To ${translationName}`;
+  if (labelConvert) labelConvert.textContent = `${primaryName} → ${translationName}`;
 }
 
 // Initialize when DOM is ready
