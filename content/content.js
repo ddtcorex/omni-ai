@@ -98,6 +98,7 @@ function showQuickActionButton(selection) {
 
   quickActionBtn = document.createElement("button");
   quickActionBtn.className = "omni-ai-quick-btn";
+  updateOverlayTheme(quickActionBtn);
   quickActionBtn.innerHTML = `
     <span class="omni-ai-icon-small">✨</span>
   `;
@@ -387,8 +388,8 @@ function showQuickAskOverlay() {
     </div>
     <div class="omni-ai-overlay-content">
       <textarea id="omniAiInput" class="omni-ai-input" placeholder="Ask anything... (Press Enter to send)" rows="3"></textarea>
-      <div id="omniAiLoading" class="omni-ai-loading hidden">Processing...</div>
-      <div id="omniAiQuickResult" class="omni-ai-result hidden"></div>
+      <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">Processing...</div>
+      <div id="omniAiQuickResult" class="omni-ai-result omni-ai-hidden"></div>
     </div>
     <div class="omni-ai-overlay-footer">
       <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn">Ask</button>
@@ -412,9 +413,9 @@ function showQuickAskOverlay() {
     const query = input.value.trim();
     if (!query) return;
 
-    input.classList.add("hidden");
-    askBtn.classList.add("hidden");
-    loading.classList.remove("hidden");
+    input.classList.add("omni-ai-hidden");
+    askBtn.classList.add("omni-ai-hidden");
+    loading.classList.remove("omni-ai-hidden");
 
     try {
       const response = await chrome.runtime.sendMessage({
@@ -422,14 +423,14 @@ function showQuickAskOverlay() {
         payload: { query, preset: "general" },
       });
 
-      loading.classList.add("hidden");
-      resultDiv.classList.remove("hidden");
+      loading.classList.add("omni-ai-hidden");
+      resultDiv.classList.remove("omni-ai-hidden");
 
       if (response.success) {
         resultDiv.textContent = response.data.response;
         // Switch footer to copy button
         askBtn.textContent = "Copy";
-        askBtn.classList.remove("hidden");
+        askBtn.classList.remove("omni-ai-hidden");
         askBtn.id = "omniAiCopyResult";
 
         // Remove old listener, add new one
@@ -442,9 +443,9 @@ function showQuickAskOverlay() {
         resultDiv.textContent = "Error: " + (response.error || "Unknown error");
       }
     } catch (e) {
-      loading.classList.add("hidden");
+      loading.classList.add("omni-ai-hidden");
       resultDiv.textContent = "Error: " + e.message;
-      resultDiv.classList.remove("hidden");
+      resultDiv.classList.remove("omni-ai-hidden");
     }
   };
 
@@ -657,6 +658,7 @@ async function copyToClipboard(text) {
 function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "omni-ai-toast";
+  updateOverlayTheme(toast);
   toast.textContent = message;
   document.body.appendChild(toast);
 
@@ -674,23 +676,35 @@ function initTheme() {
   // Initial load
   chrome.storage.sync.get("omni_ai_theme", (result) => {
     currentTheme = result.omni_ai_theme || "system";
-    if (overlay) updateOverlayTheme(overlay);
+    updateAllThemes();
   });
 
   // Listen for changes
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "sync" && changes.omni_ai_theme) {
       currentTheme = changes.omni_ai_theme.newValue;
-      if (overlay) updateOverlayTheme(overlay);
+      updateAllThemes();
     }
   });
 
   // Listen for system changes
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-    if (currentTheme === "system" && overlay) {
-      updateOverlayTheme(overlay);
+    if (currentTheme === "system") {
+      updateAllThemes();
     }
   });
+}
+
+/**
+ * Update theme for all active elements
+ */
+function updateAllThemes() {
+  if (overlay) updateOverlayTheme(overlay);
+  if (quickActionBtn) updateOverlayTheme(quickActionBtn);
+  // Toast is updated on creation, but if we wanted to update live toasts we'd need to track them.
+  // Given their short life, it's probably fine to let existing ones fade out with old theme, 
+  // but let's be thorough if there are any.
+  document.querySelectorAll('.omni-ai-toast').forEach(updateOverlayTheme);
 }
 
 /**
