@@ -477,9 +477,21 @@ async function handleQuickAction(payload) {
 
   let result;
   switch (action) {
-    case "translate":
-      result = await translateText(selectedText, options.targetLanguage);
+    case "translate": {
+      const { defaultLanguage } = await chrome.storage.local.get("defaultLanguage");
+      result = await translateText(selectedText, options.targetLanguage || defaultLanguage || "en");
       break;
+    }
+    case "translate_primary": {
+      const { primaryLanguage } = await chrome.storage.local.get("primaryLanguage");
+      result = await translateText(selectedText, primaryLanguage || "vi");
+      break;
+    }
+    case "translate_default": {
+      const { defaultLanguage } = await chrome.storage.local.get("defaultLanguage");
+      result = await translateText(selectedText, defaultLanguage || "en");
+      break;
+    }
     case "summarize":
       result = await summarizeText(selectedText, options);
       break;

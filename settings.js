@@ -21,6 +21,7 @@ const elements = {
   themeSelector: document.getElementById("themeSelector"),
   // Preferences
   defaultPreset: document.getElementById("defaultPreset"),
+  primaryLanguage: document.getElementById("primaryLanguage"),
   defaultLanguage: document.getElementById("defaultLanguage"),
   autoClose: document.getElementById("autoClose"),
   showNotifications: document.getElementById("showNotifications"),
@@ -182,6 +183,7 @@ function setupEventListeners() {
     elements.groqApiKey,
     elements.apiModel,
     elements.defaultPreset,
+    elements.primaryLanguage,
     elements.defaultLanguage,
     elements.autoClose,
     elements.showNotifications,
@@ -367,6 +369,13 @@ async function loadSettings() {
     if (result.currentPreset)
       elements.defaultPreset.value = result.currentPreset;
 
+    // Primary Language
+    if (result.primaryLanguage) {
+      elements.primaryLanguage.value = result.primaryLanguage;
+    } else {
+      elements.primaryLanguage.value = "vi"; // Default to Vietnamese
+    }
+
     // Default Language
     if (result.defaultLanguage) {
       elements.defaultLanguage.value = result.defaultLanguage;
@@ -395,6 +404,7 @@ async function saveSettings() {
       groqApiKey: elements.groqApiKey.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
+      primaryLanguage: elements.primaryLanguage.value,
       defaultLanguage: elements.defaultLanguage.value,
       settings: {
         autoClose: elements.autoClose.checked,

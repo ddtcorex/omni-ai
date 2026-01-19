@@ -338,3 +338,25 @@
   background: var(--ai-border-color);
   margin: 4px 0;
 }
+
+.omni-ai-menu-group-title {
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ai-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.omni-ai-menu-row {
+  display: flex;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.omni-ai-menu-item-half {
+  flex: 1;
+  justify-content: center;
+  font-size: 12px;
+  padding: 6px 4px;
+}

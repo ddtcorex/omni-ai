@@ -216,20 +216,17 @@
       <section class="quick-actions">
         <h3 class="section-title">__MSG_popup_quickActions__</h3>
         <div class="quick-action-row">
-          <button class="quick-action-btn" data-action="translate">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2v3M22 22l-5-10-5 10M14 18h6"
-              ></path>
+          <button class="quick-action-btn" data-action="translate_primary" id="btnTranslatePrimary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2v3M22 22l-5-10-5 10M14 18h6"></path>
             </svg>
-            <span>__MSG_action_translate__</span>
+            <span id="labelTranslatePrimary">To Primary</span>
+          </button>
+          <button class="quick-action-btn" data-action="translate_default" id="btnTranslateDefault">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2v3M22 22l-5-10-5 10M14 18h6"></path>
+            </svg>
+            <span id="labelTranslateDefault">To Translation</span>
           </button>
           <button class="quick-action-btn" data-action="summarize">
             <svg

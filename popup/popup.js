@@ -47,6 +47,7 @@ async function init() {
   setupEventListeners();
   await loadSavedPreset();
   await loadAuthState();
+  await updateLanguageLabels();
   focusInput();
 }
 
@@ -435,6 +436,35 @@ async function loadSavedPreset() {
  */
 function focusInput() {
   setTimeout(() => elements.quickAskInput.focus(), 100);
+}
+
+/**
+ * Update translation language labels
+ */
+async function updateLanguageLabels() {
+  const { primaryLanguage = "vi", defaultLanguage = "en" } = await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
+  
+  const languageNames = {
+    en: "English",
+    vi: "Vietnamese",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    it: "Italian",
+    pt: "Portuguese",
+    ja: "Japanese",
+    ko: "Korean",
+    zh: "Chinese"
+  };
+
+  const primaryName = languageNames[primaryLanguage] || primaryLanguage;
+  const translationName = languageNames[defaultLanguage] || defaultLanguage;
+
+  const labelPrimary = document.getElementById("labelTranslatePrimary");
+  const labelDefault = document.getElementById("labelTranslateDefault");
+
+  if (labelPrimary) labelPrimary.textContent = `To ${primaryName}`;
+  if (labelDefault) labelDefault.textContent = `To ${translationName}`;
 }
 
 // Initialize when DOM is ready

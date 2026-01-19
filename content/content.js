@@ -234,8 +234,27 @@ function hideQuickActionButton() {
 /**
  * Show quick action menu
  */
-function showQuickActionMenu(text, anchorRect = null) {
+async function showQuickActionMenu(text, anchorRect = null) {
   hideQuickActionButton();
+
+  // Fetch languages for button labels
+  const { primaryLanguage = "vi", defaultLanguage = "en" } = await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
+  
+  const languageNames = {
+    en: "English",
+    vi: "Vietnamese",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    it: "Italian",
+    pt: "Portuguese",
+    ja: "Japanese",
+    ko: "Korean",
+    zh: "Chinese"
+  };
+
+  const primaryName = languageNames[primaryLanguage] || primaryLanguage;
+  const translationName = languageNames[defaultLanguage] || defaultLanguage;
 
   // Show a mini overlay with actions
   overlay = createOverlayElement();
@@ -245,6 +264,13 @@ function showQuickActionMenu(text, anchorRect = null) {
        <button class="omni-ai-close-btn" id="omniAiClose">×</button>
     </div>
     <div class="omni-ai-overlay-content omni-ai-menu-content">
+       <div class="omni-ai-menu-group-title">Translation</div>
+       <div class="omni-ai-menu-row">
+         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_primary">To ${primaryName}</button>
+         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_default">To ${translationName}</button>
+       </div>
+       <div class="omni-ai-menu-divider"></div>
+       <div class="omni-ai-menu-group-title">Writing</div>
        <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
        <button class="omni-ai-menu-item" data-action="rephrase">🔄 Rephrase</button>
        <button class="omni-ai-menu-item" data-action="summarize">📋 Summarize</button>
