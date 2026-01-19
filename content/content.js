@@ -659,8 +659,17 @@ function createOverlayElement() {
 /**
  * Position overlay near selection or anchor
  */
+/**
+ * Position overlay near selection or anchor
+ */
 function positionOverlay(anchorRect = null) {
   if (!overlay) return;
+
+  // Add scroll listener to close overlay on scroll to prevent detachment
+  if (!overlay.dataset.scrollListenerAttached) {
+    window.addEventListener('scroll', hideOverlay, { capture: true, passive: true });
+    overlay.dataset.scrollListenerAttached = 'true';
+  }
 
   let rect;
 
@@ -679,36 +688,55 @@ function positionOverlay(anchorRect = null) {
     overlay.style.position = "fixed";
     overlay.style.top = "50%";
     overlay.style.left = "50%";
+    overlay.style.bottom = "auto";
     overlay.style.transform = "translate(-50%, -50%)";
+    overlay.style.maxHeight = "90vh";
     return;
   }
 
-  // Ensure we use absolute positioning relative to document
-  overlay.style.position = "absolute";
+  // Use Fixed Positioning for reliability
+  overlay.style.position = "fixed";
   overlay.style.transform = "none";
 
-  const toggleScroll = window.scrollY; // Document scroll
-
-  let top = rect.bottom + toggleScroll + 10;
-  let left = rect.left + window.scrollX;
-
-  // Ensure overlay stays within viewport
-  const overlayRect = overlay.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  // Get natural dimensions (clone to measure or just use current if visible)
+  const overlayRect = overlay.getBoundingClientRect();
+
+  const spaceBelow = viewportHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  
+  // Decide vertical placement
+  // Prefer below if it fits or has substantially more space
+  const useBelow = spaceBelow >= overlayRect.height || spaceBelow >= spaceAbove;
+
+  if (useBelow) {
+    overlay.style.top = `${rect.bottom + 10}px`;
+    overlay.style.bottom = "auto";
+    // Adjust max-height to fit in available space below
+    const availableHeight = spaceBelow - 20; // 20px padding
+    overlay.style.maxHeight = `${Math.min(availableHeight, viewportHeight * 0.9)}px`;
+  } else {
+    overlay.style.bottom = `${viewportHeight - rect.top + 10}px`;
+    overlay.style.top = "auto";
+    // Adjust max-height to fit in available space above
+    const availableHeight = spaceAbove - 20;
+    overlay.style.maxHeight = `${Math.min(availableHeight, viewportHeight * 0.9)}px`;
+  }
+
+  // Horizontal Positioning
+  let left = rect.left;
 
   // Check right edge
   if (left + overlayRect.width > viewportWidth) {
     left = viewportWidth - overlayRect.width - 20;
   }
-
-  // Check bottom edge (if falls off screen, move above)
-  const realTopRelativeToViewport = top - toggleScroll;
-  if (realTopRelativeToViewport + overlayRect.height > window.innerHeight) {
-    // Flip to above
-    top = rect.top + toggleScroll - overlayRect.height - 10;
+  
+  // Check left edge
+  if (left < 20) {
+    left = 20;
   }
 
-  overlay.style.top = `${top}px`;
   overlay.style.left = `${left}px`;
 }
 
@@ -717,6 +745,10 @@ function positionOverlay(anchorRect = null) {
  */
 function hideOverlay() {
   if (overlay) {
+    // Remove scroll listener
+    if (overlay.dataset.scrollListenerAttached) {
+      window.removeEventListener('scroll', hideOverlay, { capture: true, passive: true });
+    }
     overlay.remove();
     overlay = null;
   }
