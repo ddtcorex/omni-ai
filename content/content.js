@@ -239,20 +239,41 @@ function getSelectedText() {
     try {
       const start = activeElement.selectionStart;
       const end = activeElement.selectionEnd;
-      const text = activeElement.value.substring(start, end);
+      
+      // Check if there's actually a selection
+      if (start !== undefined && end !== undefined && start !== end) {
+        const text = activeElement.value.substring(start, end);
 
-      if (text) {
-        lastSelection = {
-          element: activeElement,
-          start,
-          end,
-          isInput: true,
-          text: text,
-        };
-        return text;
+        if (text) {
+          lastSelection = {
+            element: activeElement,
+            start,
+            end,
+            isInput: true,
+            text: text,
+          };
+          return text;
+        }
       }
     } catch (e) {
       console.warn("[Omni AI] Failed to get selection from input:", e);
+    }
+  }
+
+  // Handle contenteditable elements
+  if (activeElement && activeElement.isContentEditable) {
+    const selection = window.getSelection();
+    const text = selection ? selection.toString().trim() : "";
+    
+    if (text && selection.rangeCount > 0) {
+      lastSelection = {
+        element: activeElement,
+        range: selection.getRangeAt(0).cloneRange(),
+        isInput: false,
+        isContentEditable: true,
+        text: text,
+      };
+      return text;
     }
   }
 
