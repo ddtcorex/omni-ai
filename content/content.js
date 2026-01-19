@@ -418,7 +418,7 @@ function showQuickAskOverlay() {
     loading.classList.remove("omni-ai-hidden");
 
     try {
-      const response = await chrome.runtime.sendMessage({
+      const response = await sendMessageToBackground({
         type: "QUICK_ASK",
         payload: { query, preset: "general" },
       });
@@ -501,7 +501,7 @@ function showQuickActionMenu(text, anchorRect = null) {
         try {
           showToast("Processing...");
 
-          const response = await chrome.runtime.sendMessage({
+          const response = await sendMessageToBackground({
             type: "WRITING_ACTION",
             payload: { action, preset: "general", text },
           });
@@ -667,6 +667,22 @@ function showToast(message) {
     toast.classList.remove("omni-ai-toast-visible");
     setTimeout(() => toast.remove(), 300);
   }, 2000);
+}
+
+/**
+ * Safe wrapper for sendMessage to handle invalid context
+ */
+async function sendMessageToBackground(message) {
+  try {
+    return await chrome.runtime.sendMessage(message);
+  } catch (error) {
+    if (error.message.includes("Extension context invalidated")) {
+      showToast("Omni AI updated. Please reload the page.");
+      // Stop further execution which might depend on response
+      throw new Error("Extension context invalidated");
+    }
+    throw error;
+  }
 }
 
 /**
