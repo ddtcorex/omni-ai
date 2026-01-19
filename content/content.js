@@ -708,6 +708,8 @@ function formatActionName(action) {
     improve: "Improved",
     explain: "Explanation",
     translate: "Translation",
+    translate_primary: "Primary Language",
+    translate_default: "Translation Language",
     grammar: "Grammar Fixed",
     clarity: "Clarity Improved",
     tone: "Tone Changed",
@@ -717,6 +719,7 @@ function formatActionName(action) {
     summarize: "Summary",
     reply: "Suggested Reply",
     emojify: "Emojified",
+    quick_ask: "Quick Ask",
   };
   return names[action] || action;
 }
