@@ -3,6 +3,8 @@
  * Handles UI interactions, authentication, and communicates with the service worker
  */
 
+import { initTheme } from '../lib/theme-manager.js';
+
 // DOM Elements
 const elements = {
   // Quick Ask
@@ -40,10 +42,12 @@ let currentUser = null;
  * Initialize popup
  */
 async function init() {
+  await initTheme(); // Initialize theme
   localizeDOM();
   setupEventListeners();
   await loadSavedPreset();
   await loadAuthState();
+  await updateLanguageLabels();
   focusInput();
 }
 
@@ -432,6 +436,38 @@ async function loadSavedPreset() {
  */
 function focusInput() {
   setTimeout(() => elements.quickAskInput.focus(), 100);
+}
+
+/**
+ * Update translation language labels
+ */
+async function updateLanguageLabels() {
+  const { primaryLanguage = "vi", defaultLanguage = "en" } = await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
+  
+  const languageNames = {
+    en: "English",
+    vi: "Vietnamese",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    it: "Italian",
+    pt: "Portuguese",
+    ja: "Japanese",
+    ko: "Korean",
+    zh: "Chinese"
+  };
+
+  const primaryName = languageNames[primaryLanguage] || primaryLanguage;
+  const translationName = languageNames[defaultLanguage] || defaultLanguage;
+
+  const primaryIcon = primaryLanguage === 'vi' ? '🇻🇳' : '🌐';
+  const translationIcon = '🌎';
+
+  const labelPrimary = document.getElementById("labelTranslatePrimary");
+  const labelDefault = document.getElementById("labelTranslateDefault");
+
+  if (labelPrimary) labelPrimary.textContent = `${primaryIcon} To ${primaryName}`;
+  if (labelDefault) labelDefault.textContent = `${translationIcon} To ${translationName}`;
 }
 
 // Initialize when DOM is ready

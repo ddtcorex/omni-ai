@@ -7,6 +7,7 @@ import {
   summarizeText,
   generateReply,
   emojifyText,
+  generateContent
 } from "../lib/ai-service.js";
 
 /**
@@ -171,6 +172,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "GET_API_KEY":
       getApiKey()
         .then((key) => sendResponse({ success: true, apiKey: key }))
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message }),
+        );
+    case "VALIDATE_CONFIG":
+      handleValidateConfig(message.payload)
+        .then((result) => sendResponse({ success: true, data: result }))
         .catch((error) =>
           sendResponse({ success: false, error: error.message }),
         );
@@ -470,11 +477,26 @@ async function handleQuickAction(payload) {
 
   let result;
   switch (action) {
-    case "translate":
-      result = await translateText(selectedText, options.targetLanguage);
+    case "translate": {
+      const { defaultLanguage } = await chrome.storage.local.get("defaultLanguage");
+      result = await translateText(selectedText, options.targetLanguage || defaultLanguage || "en");
       break;
+    }
+    case "translate_primary": {
+      const { primaryLanguage } = await chrome.storage.local.get("primaryLanguage");
+      result = await translateText(selectedText, primaryLanguage || "vi");
+      break;
+    }
+    case "translate_default": {
+      const { defaultLanguage } = await chrome.storage.local.get("defaultLanguage");
+      result = await translateText(selectedText, defaultLanguage || "en");
+      break;
+    }
     case "summarize":
       result = await summarizeText(selectedText, options);
+      break;
+    case "explain":
+      result = await explainText(selectedText);
       break;
     case "reply":
       result = await generateReply(selectedText, preset, options.tone);
@@ -532,6 +554,26 @@ async function handleQuickAction(payload) {
   }
 
   return { response: result };
+}
+
+/**
+ * Handle configuration validation
+ */
+async function handleValidateConfig(payload) {
+  const { model, key } = payload;
+  
+  if (!key) throw new Error("API Key is missing");
+  
+  // Test with a simple prompt
+  const testPrompt = "Hello. Respond with 'OK'.";
+  
+  const result = await generateContent(testPrompt, {
+    model: model,
+    apiKey: key, // Explicit override
+    maxTokens: 5
+  });
+  
+  return { valid: true, response: result };
 }
 
 /**

@@ -1,4 +1,6 @@
 import { getStats, resetStats } from "./lib/history.js";
+import { initTheme, getThemePreference, setThemePreference, applyTheme } from "./lib/theme-manager.js";
+import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 /**
  * Omni AI - Options Page Script
@@ -7,14 +9,19 @@ import { getStats, resetStats } from "./lib/history.js";
 
 // DOM Elements
 const elements = {
-  apiKey: document.getElementById("apiKey"),
+  apiKey: document.getElementById("apiKey"), // Google Key
   apiModel: document.getElementById("apiModel"),
-  geminiKeyGroup: document.getElementById("geminiKeyGroup"),
+  googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
-  groqKeyGroup: document.getElementById("groqKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
+  validateBtn: document.getElementById("validateBtn"),
+  validationStatus: document.getElementById("validationStatus"),
+  // Theme
+  themeSelector: document.getElementById("themeSelector"),
+  // Preferences
   defaultPreset: document.getElementById("defaultPreset"),
+  primaryLanguage: document.getElementById("primaryLanguage"),
   defaultLanguage: document.getElementById("defaultLanguage"),
   autoClose: document.getElementById("autoClose"),
   showNotifications: document.getElementById("showNotifications"),
@@ -38,11 +45,35 @@ let isApiKeyVisible = false;
  * Initialize options page
  */
 async function init() {
+  await initTheme(); // Initialize theme
   localizeDOM();
+  populateModelSelect();
   await loadSettings();
   await loadStats();
   setupEventListeners();
   updateModelVisibility(); // Initial check
+}
+
+/**
+ * Populate AI Models dropdown
+ */
+function populateModelSelect() {
+  const select = elements.apiModel;
+  select.innerHTML = ''; // Clear existing
+
+  Object.values(AI_PROVIDERS).forEach(provider => {
+    const group = document.createElement('optgroup');
+    group.label = provider.name;
+    
+    provider.models.forEach(model => {
+      const option = document.createElement('option');
+      option.value = model.id;
+      option.textContent = model.name;
+      group.appendChild(option);
+    });
+    
+    select.appendChild(group);
+  });
 }
 
 /**
@@ -110,6 +141,18 @@ function setupEventListeners() {
   // Model change listener
   elements.apiModel.addEventListener("change", updateModelVisibility);
 
+  // Theme preview listener
+  if (elements.themeSelector) {
+    elements.themeSelector.addEventListener("change", (e) => {
+      applyTheme(e.target.value);
+    });
+  }
+
+  // Validate button
+  if (elements.validateBtn) {
+    elements.validateBtn.addEventListener("click", validateConfiguration);
+  }
+
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener("click", toggleApiKeyVisibility);
 
@@ -140,6 +183,7 @@ function setupEventListeners() {
     elements.groqApiKey,
     elements.apiModel,
     elements.defaultPreset,
+    elements.primaryLanguage,
     elements.defaultLanguage,
     elements.autoClose,
     elements.showNotifications,
@@ -179,19 +223,112 @@ function toggleApiKeyVisibility() {
  * Update model visibility based on selection
  */
 function updateModelVisibility() {
-  const model = elements.apiModel.value;
+  const modelId = elements.apiModel.value;
+  const provider = getProviderByModel(modelId);
 
-  // Hide all by default
-  if (elements.geminiKeyGroup) elements.geminiKeyGroup.classList.add("hidden");
-  if (elements.groqKeyGroup) elements.groqKeyGroup.classList.add("hidden");
+  // Hide all groups first
+  const groups = document.querySelectorAll('.setting-item[data-provider]');
+  groups.forEach(el => el.classList.add('hidden'));
 
-  // Show based on selection
-  if (model.startsWith("groq-")) {
-    if (elements.groqKeyGroup) elements.groqKeyGroup.classList.remove("hidden");
+  if (provider) {
+    // Show matching group based on data-provider attribute
+    const activeGroup = document.querySelector(`.setting-item[data-provider="${provider.id}"]`);
+    if (activeGroup) {
+      activeGroup.classList.remove('hidden');
+    }
+  }
+}
+
+/**
+ * Validate current configuration
+ */
+async function validateConfiguration() {
+  const modelId = elements.apiModel.value;
+  const provider = getProviderByModel(modelId);
+  if (!provider) return;
+
+  // Get the Key
+  let apiKey = '';
+  if (provider.id === 'google') {
+    apiKey = elements.apiKey.value.trim();
+  } else if (provider.id === 'groq') {
+    apiKey = elements.groqApiKey.value.trim();
+  }
+
+  if (!apiKey) {
+    showValidationStatus('Please enter an API Key first.', 'error');
+    return;
+  }
+
+  showValidationStatus('Validating...', 'processing');
+  setButtonLoading(true);
+
+  try {
+    const response = await chrome.runtime.sendMessage({
+      type: "VALIDATE_CONFIG",
+      payload: { provider: provider.id, model: modelId, key: apiKey }
+    });
+
+    setButtonLoading(false);
+
+    if (response.success) {
+      showValidationStatus('Configuration valid! ready to generate.', 'success');
+    } else {
+      showValidationStatus(`Error: ${response.error}`, 'error');
+    }
+  } catch (err) {
+    setButtonLoading(false);
+    showValidationStatus(`Connection check failed: ${err.message}`, 'error');
+  }
+}
+
+/**
+ * Set button loading state
+ */
+function setButtonLoading(isLoading) {
+  const btn = elements.validateBtn;
+  if (!btn) return;
+  
+  if (isLoading) {
+    btn.classList.add('loading');
+    btn.disabled = true;
+    const svg = btn.querySelector('svg');
+    if (svg) svg.classList.add('validate-spinner');
+    // Change icon to refresh/spinner
+    btn.querySelector('span').textContent = "Checking...";
   } else {
-    // Default to Gemini (or explicit "gemini-")
-    if (elements.geminiKeyGroup)
-      elements.geminiKeyGroup.classList.remove("hidden");
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    const svg = btn.querySelector('svg');
+    if (svg) svg.classList.remove('validate-spinner');
+    btn.querySelector('span').textContent = "Validate Configuration";
+  }
+}
+
+/**
+ * Show validation status
+ */
+function showValidationStatus(message, type) {
+  const el = elements.validationStatus;
+  if (!el) return;
+  
+  // Reset classes
+  el.className = 'validation-message visible';
+  el.classList.add(type);
+  
+  // Icon based on type
+  let icon = '';
+  if (type === 'success') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  else if (type === 'error') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+  else if (type === 'processing') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+
+  el.innerHTML = `${icon}<span>${message}</span>`;
+  
+  // Auto hide after 5s if success
+  if (type === 'success') {
+    setTimeout(() => {
+      el.classList.remove('visible');
+    }, 5000);
   }
 }
 
@@ -199,13 +336,18 @@ async function loadSettings() {
   try {
     const result = await chrome.storage.local.get([
       "apiKey",
-      "apiKey",
       "groqApiKey",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
       "settings",
     ]);
+
+    // Load Theme Preference (from Sync)
+    const theme = await getThemePreference();
+    if (elements.themeSelector) {
+      elements.themeSelector.value = theme;
+    }
 
     // API Key
     if (result.apiKey) elements.apiKey.value = result.apiKey;
@@ -226,6 +368,13 @@ async function loadSettings() {
     // Default Preset
     if (result.currentPreset)
       elements.defaultPreset.value = result.currentPreset;
+
+    // Primary Language
+    if (result.primaryLanguage) {
+      elements.primaryLanguage.value = result.primaryLanguage;
+    } else {
+      elements.primaryLanguage.value = "vi"; // Default to Vietnamese
+    }
 
     // Default Language
     if (result.defaultLanguage) {
@@ -255,12 +404,18 @@ async function saveSettings() {
       groqApiKey: elements.groqApiKey.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
+      primaryLanguage: elements.primaryLanguage.value,
       defaultLanguage: elements.defaultLanguage.value,
       settings: {
         autoClose: elements.autoClose.checked,
         showNotifications: elements.showNotifications.checked,
       },
     };
+
+    // Save Theme (Sync)
+    if (elements.themeSelector) {
+      await setThemePreference(elements.themeSelector.value);
+    }
 
     await chrome.storage.local.set(settings);
 

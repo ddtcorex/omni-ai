@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main Logo Group -->
+  <g>
+    <!-- Right Side: The 'O' / Pen Body -->
+    <path d="M256 80 C353 80 432 159 432 256 C432 353 353 432 256 432 C200 432 150 405 120 365" stroke="url(#logo-gradient)" stroke-width="36" stroke-linecap="round" fill="none" />
+    
+    <!-- Left Side: Brain Contours -->
+    <path d="M256 80 C200 80 150 110 120 160" stroke="url(#logo-gradient)" stroke-width="36" stroke-linecap="round" fill="none" />
+    <path d="M120 160 C80 140 40 160 40 210 C40 240 60 260 85 260" stroke="url(#logo-gradient)" stroke-width="32" stroke-linecap="round" fill="none" />
+    <path d="M85 260 C60 270 45 300 45 330 C45 380 90 410 130 410" stroke="url(#logo-gradient)" stroke-width="32" stroke-linecap="round" fill="none" />
+    <path d="M130 410 C160 432 205 445 256 432" stroke="url(#logo-gradient)" stroke-width="32" stroke-linecap="round" fill="none" />
+    
+    <!-- Pen Nib -->
+    <path d="M432 256 L470 295 L432 355 L394 295 Z" fill="url(#logo-gradient)" />
+    <rect x="428" y="256" width="8" height="60" rx="4" fill="#0B0F19" />
+    
+    <!-- Brain Internal Connections -->
+    <path d="M150 190 Q200 160 256 180" stroke="url(#logo-gradient)" stroke-width="12" stroke-opacity="0.7" stroke-linecap="round" fill="none" />
+    <path d="M130 265 Q185 250 256 265" stroke="url(#logo-gradient)" stroke-width="12" stroke-opacity="0.7" stroke-linecap="round" fill="none" />
+    <path d="M160 340 Q210 370 256 345" stroke="url(#logo-gradient)" stroke-width="12" stroke-opacity="0.7" stroke-linecap="round" fill="none" />
+  </g>
+</svg>
