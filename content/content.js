@@ -662,12 +662,30 @@ function createOverlayElement() {
 /**
  * Position overlay near selection or anchor
  */
+// Store the handler reference so we can remove it later
+let scrollHandler = null;
+
+/**
+ * Handle window scroll events
+ */
+function handleWindowScroll(e) {
+  // Ignore scroll events originating from within the overlay
+  if (overlay && overlay.contains(e.target)) {
+    return;
+  }
+  hideOverlay();
+}
+
+/**
+ * Position overlay near selection or anchor
+ */
 function positionOverlay(anchorRect = null) {
   if (!overlay) return;
 
   // Add scroll listener to close overlay on scroll to prevent detachment
   if (!overlay.dataset.scrollListenerAttached) {
-    window.addEventListener('scroll', hideOverlay, { capture: true, passive: true });
+    scrollHandler = handleWindowScroll;
+    window.addEventListener('scroll', scrollHandler, { capture: true, passive: true });
     overlay.dataset.scrollListenerAttached = 'true';
   }
 
@@ -746,8 +764,10 @@ function positionOverlay(anchorRect = null) {
 function hideOverlay() {
   if (overlay) {
     // Remove scroll listener
-    if (overlay.dataset.scrollListenerAttached) {
-      window.removeEventListener('scroll', hideOverlay, { capture: true, passive: true });
+    if (overlay.dataset.scrollListenerAttached && scrollHandler) {
+      window.removeEventListener('scroll', scrollHandler, { capture: true, passive: true });
+      overlay.dataset.scrollListenerAttached = '';
+      scrollHandler = null;
     }
     overlay.remove();
     overlay = null;
