@@ -8,7 +8,7 @@
 let overlay = null;
 let isOverlayVisible = false;
 let lastSelection = null; // Store { element, start, end, range, isInput, text }
-let currentTheme = 'system';
+let currentTheme = "system";
 
 // ============================================
 // Initialization
@@ -76,8 +76,11 @@ function setupSelectionListener() {
       } else {
         // Only hide if not in an input with content
         const activeElement = document.activeElement;
-        const isInInputWithContent = (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA") && activeElement.value.trim().length > 0;
-        
+        const isInInputWithContent =
+          (activeElement.tagName === "INPUT" ||
+            activeElement.tagName === "TEXTAREA") &&
+          activeElement.value.trim().length > 0;
+
         if (!isInInputWithContent) {
           hideQuickActionButton();
         } else {
@@ -98,7 +101,11 @@ function setupSelectionListener() {
 
         // Show button for input/textarea with Ctrl+A
         if (text.length > 0 && !isOverlayVisible) {
-          if (activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")) {
+          if (
+            activeElement &&
+            (activeElement.tagName === "INPUT" ||
+              activeElement.tagName === "TEXTAREA")
+          ) {
             showQuickActionButtonForInput(activeElement);
           } else {
             showQuickActionButton(selection);
@@ -127,7 +134,7 @@ function setupSelectionListener() {
     if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
       clearTimeout(typingTimer);
       hideQuickActionButton();
-      
+
       typingTimer = setTimeout(() => {
         checkInputAndShow(target);
       }, typingDelay);
@@ -261,13 +268,18 @@ function hideQuickActionButton() {
 /**
  * Show quick action menu
  */
-async function showQuickActionMenu(text, anchorRect = null) {
+async function showQuickActionMenu(
+  text,
+  anchorRect = null,
+  lockedPosition = null,
+) {
   hideQuickActionButton();
   hideOverlay(); // Ensure previous overlay is removed
 
   // Fetch languages for button labels
-  const { primaryLanguage = "vi", defaultLanguage = "en" } = await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
-  
+  const { primaryLanguage = "vi", defaultLanguage = "en" } =
+    await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
+
   const languageNames = {
     en: "English",
     vi: "Vietnamese",
@@ -278,14 +290,14 @@ async function showQuickActionMenu(text, anchorRect = null) {
     pt: "Portuguese",
     ja: "Japanese",
     ko: "Korean",
-    zh: "Chinese"
+    zh: "Chinese",
   };
 
   const primaryName = languageNames[primaryLanguage] || primaryLanguage;
   const translationName = languageNames[defaultLanguage] || defaultLanguage;
 
-  const primaryIcon = primaryLanguage === 'vi' ? '🇻🇳' : '🌐';
-  const translationIcon = '🌎';
+  const primaryIcon = primaryLanguage === "vi" ? "🇻🇳" : "🌐";
+  const translationIcon = "🌎";
 
   // Show a mini overlay with actions
   overlay = createOverlayElement();
@@ -314,8 +326,8 @@ async function showQuickActionMenu(text, anchorRect = null) {
 
   document.body.appendChild(overlay);
 
-  // Position using the anchor rect if provided
-  positionOverlay(anchorRect);
+  // Position using the anchor rect or locked position
+  positionOverlay(anchorRect, lockedPosition);
 
   overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
 
@@ -327,12 +339,21 @@ async function showQuickActionMenu(text, anchorRect = null) {
       if (action === "ask") {
         showQuickAskOverlay(text);
       } else {
+        // Capture absolute position before any changes
+        const lockedRect = overlay.getBoundingClientRect();
+
         // Show loading in same overlay - no flashing!
         showLoadingInOverlay(action);
-        
+
         try {
           // Select correct background handler
-          const isQuickAction = ["summarize", "explain", "translate_primary", "translate_default", "translate"].includes(action);
+          const isQuickAction = [
+            "summarize",
+            "explain",
+            "translate_primary",
+            "translate_default",
+            "translate",
+          ].includes(action);
           const type = isQuickAction ? "QUICK_ACTION" : "WRITING_ACTION";
 
           const response = await sendMessageToBackground({
@@ -341,11 +362,14 @@ async function showQuickActionMenu(text, anchorRect = null) {
           });
 
           if (response.success) {
-            showResultOverlay({
-              action,
-              original: text,
-              result: response.data.response || response.data,
-            });
+            showResultOverlay(
+              {
+                action,
+                original: text,
+                result: response.data.response || response.data,
+              },
+              lockedRect,
+            );
           } else {
             showErrorInOverlay(response.error);
           }
@@ -377,7 +401,7 @@ function getSelectedText() {
     try {
       const start = activeElement.selectionStart;
       const end = activeElement.selectionEnd;
-      
+
       // Check if there's actually a selection
       if (start !== undefined && end !== undefined && start !== end) {
         const text = activeElement.value.substring(start, end);
@@ -402,7 +426,7 @@ function getSelectedText() {
   if (activeElement && activeElement.isContentEditable) {
     const selection = window.getSelection();
     const text = selection ? selection.toString().trim() : "";
-    
+
     if (text && selection.rangeCount > 0) {
       lastSelection = {
         element: activeElement,
@@ -480,7 +504,7 @@ function replaceSelectedText(newText) {
 /**
  * Show result overlay
  */
-function showResultOverlay(payload) {
+function showResultOverlay(payload, lockedRect = null) {
   const { action, original, result } = payload;
 
   // Update existing overlay if present, otherwise create new
@@ -492,9 +516,14 @@ function showResultOverlay(payload) {
   // Update overlay content
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
-      <div class="omni-ai-overlay-title">
-        <span class="omni-ai-icon">✨</span>
-        <span>Omni AI - ${formatActionName(action)}</span>
+      <div class="omni-ai-row" style="display: flex; align-items: center;">
+        <button class="omni-ai-icon-btn" id="omniAiBack" title="Back" style="background: none; border: none; cursor: pointer; font-size: 16px; margin-right: 8px; padding: 0 4px; color: inherit; display: flex; align-items: center;">
+          <span style="font-size: 18px; line-height: 1;">‹</span>
+        </button>
+        <div class="omni-ai-overlay-title">
+          <span class="omni-ai-icon">✨</span>
+          <span>Omni AI - ${formatActionName(action)}</span>
+        </div>
       </div>
       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
     </div>
@@ -507,10 +536,18 @@ function showResultOverlay(payload) {
     </div>
   `;
 
-  positionOverlay();
+  positionOverlay(null, lockedRect);
 
   // Event listeners
   overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+
+  // Back button listener
+  overlay.querySelector("#omniAiBack").addEventListener("click", () => {
+    // Capture current position before going back
+    const currentLockedRect = overlay.getBoundingClientRect();
+    // Re-open menu with original text and locked position
+    showQuickActionMenu(original, null, currentLockedRect);
+  });
 
   const copyBtn = overlay.querySelector("#omniAiCopy");
   const replaceBtn = overlay.querySelector("#omniAiReplace");
@@ -540,8 +577,8 @@ function showQuickAskOverlay(initialValue = "") {
   hideOverlay();
 
   overlay = createOverlayElement();
-  
-  const contextHtml = initialValue 
+
+  const contextHtml = initialValue
     ? `<div class="omni-ai-context-badge">
          <span>✨ Context:</span>
          <span class="omni-ai-context-text">${initialValue}</span>
@@ -589,12 +626,14 @@ function showQuickAskOverlay(initialValue = "") {
 
     // Capture the text we're asking about (if any)
     const contextText = initialValue;
-    const fullQuery = contextText ? `Context: ${contextText}\n\nQuestion: ${query}` : query;
+    const fullQuery = contextText
+      ? `Context: ${contextText}\n\nQuestion: ${query}`
+      : query;
 
     input.classList.add("omni-ai-hidden");
     const badge = overlay.querySelector(".omni-ai-context-badge");
     if (badge) badge.classList.add("omni-ai-hidden");
-    
+
     askBtn.classList.add("omni-ai-hidden");
     loading.classList.remove("omni-ai-hidden");
 
@@ -641,7 +680,6 @@ function showQuickAskOverlay(initialValue = "") {
   isOverlayVisible = true;
 }
 
-
 /**
  * Create overlay element
  */
@@ -679,14 +717,42 @@ function handleWindowScroll(e) {
 /**
  * Position overlay near selection or anchor
  */
-function positionOverlay(anchorRect = null) {
+function positionOverlay(anchorRect = null, lockedPosition = null) {
   if (!overlay) return;
 
   // Add scroll listener to close overlay on scroll to prevent detachment
   if (!overlay.dataset.scrollListenerAttached) {
     scrollHandler = handleWindowScroll;
-    window.addEventListener('scroll', scrollHandler, { capture: true, passive: true });
-    overlay.dataset.scrollListenerAttached = 'true';
+    window.addEventListener("scroll", scrollHandler, {
+      capture: true,
+      passive: true,
+    });
+    overlay.dataset.scrollListenerAttached = "true";
+  }
+
+  // Handle locked position (Smart Anchoring)
+  if (lockedPosition) {
+    const isBottomAnchored =
+      overlay.style.bottom && overlay.style.bottom !== "auto";
+
+    overlay.style.position = "fixed";
+    overlay.style.transform = "none";
+
+    if (isBottomAnchored) {
+      // Keep bottom anchor - expand upwards
+      const bottomVal = parseFloat(overlay.style.bottom) || 0;
+      const availableHeight = window.innerHeight - bottomVal - 20; // 20px top margin
+      overlay.style.maxHeight = `${Math.min(availableHeight, window.innerHeight * 0.9)}px`;
+    } else {
+      // Top anchor - expand downwards
+      overlay.style.top = `${lockedPosition.top}px`;
+      overlay.style.left = `${lockedPosition.left}px`;
+      overlay.style.bottom = "auto";
+
+      const availableHeight = window.innerHeight - lockedPosition.top - 20; // 20px bottom margin
+      overlay.style.maxHeight = `${Math.min(availableHeight, window.innerHeight * 0.9)}px`;
+    }
+    return;
   }
 
   let rect;
@@ -723,7 +789,7 @@ function positionOverlay(anchorRect = null) {
 
   const spaceBelow = viewportHeight - rect.bottom;
   const spaceAbove = rect.top;
-  
+
   // Decide vertical placement
   // Prefer below if it fits or has substantially more space
   const useBelow = spaceBelow >= overlayRect.height || spaceBelow >= spaceAbove;
@@ -749,7 +815,7 @@ function positionOverlay(anchorRect = null) {
   if (left + overlayRect.width > viewportWidth) {
     left = viewportWidth - overlayRect.width - 20;
   }
-  
+
   // Check left edge
   if (left < 20) {
     left = 20;
@@ -765,8 +831,11 @@ function hideOverlay() {
   if (overlay) {
     // Remove scroll listener
     if (overlay.dataset.scrollListenerAttached && scrollHandler) {
-      window.removeEventListener('scroll', scrollHandler, { capture: true, passive: true });
-      overlay.dataset.scrollListenerAttached = '';
+      window.removeEventListener("scroll", scrollHandler, {
+        capture: true,
+        passive: true,
+      });
+      overlay.dataset.scrollListenerAttached = "";
       scrollHandler = null;
     }
     overlay.remove();
@@ -808,8 +877,8 @@ function formatActionName(action) {
  */
 function showLoadingInOverlay(action) {
   if (!overlay) return;
-  
-  const content = overlay.querySelector('.omni-ai-overlay-content');
+
+  const content = overlay.querySelector(".omni-ai-overlay-content");
   if (content) {
     content.innerHTML = `
       <div class="omni-ai-loading">
@@ -825,8 +894,8 @@ function showLoadingInOverlay(action) {
  */
 function showErrorInOverlay(errorMessage) {
   if (!overlay) return;
-  
-  const content = overlay.querySelector('.omni-ai-overlay-content');
+
+  const content = overlay.querySelector(".omni-ai-overlay-content");
   if (content) {
     content.innerHTML = `
       <div style="padding: 12px; color: #ef4444; font-size: 13px;">
@@ -909,11 +978,13 @@ function initTheme() {
   });
 
   // Listen for system changes
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-    if (currentTheme === "system") {
-      updateAllThemes();
-    }
-  });
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      if (currentTheme === "system") {
+        updateAllThemes();
+      }
+    });
 }
 
 /**
@@ -923,9 +994,9 @@ function updateAllThemes() {
   if (overlay) updateOverlayTheme(overlay);
   if (quickActionBtn) updateOverlayTheme(quickActionBtn);
   // Toast is updated on creation, but if we wanted to update live toasts we'd need to track them.
-  // Given their short life, it's probably fine to let existing ones fade out with old theme, 
+  // Given their short life, it's probably fine to let existing ones fade out with old theme,
   // but let's be thorough if there are any.
-  document.querySelectorAll('.omni-ai-toast').forEach(updateOverlayTheme);
+  document.querySelectorAll(".omni-ai-toast").forEach(updateOverlayTheme);
 }
 
 /**
