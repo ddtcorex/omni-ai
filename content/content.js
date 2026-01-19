@@ -275,6 +275,7 @@ async function showQuickActionMenu(text, anchorRect = null) {
        <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
        <button class="omni-ai-menu-item" data-action="rephrase">🔄 Rephrase</button>
        <button class="omni-ai-menu-item" data-action="summarize">📋 Summarize</button>
+       <button class="omni-ai-menu-item" data-action="explain">🔍 Explain</button>
        <button class="omni-ai-menu-item" data-action="tone">🎭 Change Tone</button>
        <div class="omni-ai-menu-divider"></div>
        <button class="omni-ai-menu-item" data-action="ask">💬 Ask AI...</button>
@@ -301,7 +302,7 @@ async function showQuickActionMenu(text, anchorRect = null) {
         
         try {
           // Select correct background handler
-          const isQuickAction = ["summarize", "translate_primary", "translate_default", "translate"].includes(action);
+          const isQuickAction = ["summarize", "explain", "translate_primary", "translate_default", "translate"].includes(action);
           const type = isQuickAction ? "QUICK_ACTION" : "WRITING_ACTION";
 
           const response = await sendMessageToBackground({

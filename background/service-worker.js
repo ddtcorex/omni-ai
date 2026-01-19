@@ -495,6 +495,9 @@ async function handleQuickAction(payload) {
     case "summarize":
       result = await summarizeText(selectedText, options);
       break;
+    case "explain":
+      result = await explainText(selectedText);
+      break;
     case "reply":
       result = await generateReply(selectedText, preset, options.tone);
       break;
