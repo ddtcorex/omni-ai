@@ -240,22 +240,50 @@
 .omni-ai-input {
   width: 100%;
   box-sizing: border-box;
-  background: var(--ai-card-bg);
-  border: 1px solid var(--ai-card-border);
-  border-radius: 8px;
-  padding: 12px;
+  background: var(--ai-bg-glass);
+  border: 1px solid var(--ai-border-color);
+  border-radius: 10px;
+  padding: 14px;
   color: var(--ai-text-primary);
   font-family: inherit;
   font-size: 14px;
+  line-height: 1.5;
   resize: none;
-  margin-bottom: 8px;
+  margin: 0;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .omni-ai-input:focus {
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: #8b5cf6;
   background: var(--ai-bg-glass-heavy);
+  box-shadow:
+    0 0 0 3px rgba(139, 92, 246, 0.15),
+    inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.omni-ai-context-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 4px;
+  font-size: 11px;
+  color: #8b5cf6;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.omni-ai-context-text {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.8;
+  font-weight: 400;
 }
 
 .omni-ai-loading {
@@ -263,6 +291,22 @@
   color: var(--ai-text-secondary);
   padding: 20px;
   font-style: italic;
+}
+
+.omni-ai-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(139, 92, 246, 0.1);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: omniAiSpin 0.8s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes omniAiSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .omni-ai-hidden {

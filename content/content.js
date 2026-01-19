@@ -44,7 +44,7 @@ function setupMessageListener() {
         break;
 
       case "SHOW_QUICK_ASK_OVERLAY":
-        showQuickAskOverlay();
+        showQuickAskOverlay(getSelectedText());
         sendResponse({ success: true });
         break;
 
@@ -298,7 +298,7 @@ async function showQuickActionMenu(text, anchorRect = null) {
       const action = btn.dataset.action;
 
       if (action === "ask") {
-        showQuickAskOverlay();
+        showQuickAskOverlay(text);
       } else {
         // Show loading in same overlay - no flashing!
         showLoadingInOverlay(action);
@@ -509,25 +509,37 @@ function showResultOverlay(payload) {
 /**
  * Show quick ask overlay
  */
-function showQuickAskOverlay() {
+function showQuickAskOverlay(initialValue = "") {
   hideOverlay();
 
   overlay = createOverlayElement();
+  
+  const contextHtml = initialValue 
+    ? `<div class="omni-ai-context-badge">
+         <span>✨ Context:</span>
+         <span class="omni-ai-context-text">${initialValue}</span>
+       </div>`
+    : "";
+
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
       <div class="omni-ai-overlay-title">
         <span class="omni-ai-icon">💬</span>
-        <span>Omni AI - Quick Ask</span>
+        <span>Quick Ask</span>
       </div>
       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
     </div>
-    <div class="omni-ai-overlay-content">
-      <textarea id="omniAiInput" class="omni-ai-input" placeholder="Ask anything... (Press Enter to send)" rows="3"></textarea>
-      <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">Processing...</div>
+    <div class="omni-ai-overlay-content" style="padding: 16px;">
+      ${contextHtml}
+      <textarea id="omniAiInput" class="omni-ai-input" placeholder="What would you like to know or do with this?..." rows="4"></textarea>
+      <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">
+        <div class="omni-ai-spinner"></div>
+        Processing...
+      </div>
       <div id="omniAiQuickResult" class="omni-ai-result omni-ai-hidden"></div>
     </div>
-    <div class="omni-ai-overlay-footer">
-      <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn">Ask</button>
+    <div class="omni-ai-overlay-footer" style="padding: 12px 16px;">
+      <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn" style="height: 38px; font-size: 13px;">Send Request</button>
     </div>
   `;
 
@@ -548,14 +560,21 @@ function showQuickAskOverlay() {
     const query = input.value.trim();
     if (!query) return;
 
+    // Capture the text we're asking about (if any)
+    const contextText = initialValue;
+    const fullQuery = contextText ? `Context: ${contextText}\n\nQuestion: ${query}` : query;
+
     input.classList.add("omni-ai-hidden");
+    const badge = overlay.querySelector(".omni-ai-context-badge");
+    if (badge) badge.classList.add("omni-ai-hidden");
+    
     askBtn.classList.add("omni-ai-hidden");
     loading.classList.remove("omni-ai-hidden");
 
     try {
       const response = await sendMessageToBackground({
         type: "QUICK_ASK",
-        payload: { query, preset: "general" },
+        payload: { query: fullQuery, preset: "general" },
       });
 
       loading.classList.add("omni-ai-hidden");
