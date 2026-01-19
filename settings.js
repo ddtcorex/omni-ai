@@ -1,4 +1,5 @@
 import { getStats, resetStats } from "./lib/history.js";
+import { initTheme, getThemePreference, setThemePreference, applyTheme } from "./lib/theme-manager.js";
 
 /**
  * Omni AI - Options Page Script
@@ -12,8 +13,10 @@ const elements = {
   geminiKeyGroup: document.getElementById("geminiKeyGroup"),
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
-  groqKeyGroup: document.getElementById("groqKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
+  // Theme
+  themeSelector: document.getElementById("themeSelector"),
+  // Preferences
   defaultPreset: document.getElementById("defaultPreset"),
   defaultLanguage: document.getElementById("defaultLanguage"),
   autoClose: document.getElementById("autoClose"),
@@ -38,6 +41,7 @@ let isApiKeyVisible = false;
  * Initialize options page
  */
 async function init() {
+  await initTheme(); // Initialize theme
   localizeDOM();
   await loadSettings();
   await loadStats();
@@ -109,6 +113,13 @@ async function loadStats() {
 function setupEventListeners() {
   // Model change listener
   elements.apiModel.addEventListener("change", updateModelVisibility);
+
+  // Theme preview listener
+  if (elements.themeSelector) {
+    elements.themeSelector.addEventListener("change", (e) => {
+      applyTheme(e.target.value);
+    });
+  }
 
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener("click", toggleApiKeyVisibility);
@@ -199,13 +210,18 @@ async function loadSettings() {
   try {
     const result = await chrome.storage.local.get([
       "apiKey",
-      "apiKey",
       "groqApiKey",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
       "settings",
     ]);
+
+    // Load Theme Preference (from Sync)
+    const theme = await getThemePreference();
+    if (elements.themeSelector) {
+      elements.themeSelector.value = theme;
+    }
 
     // API Key
     if (result.apiKey) elements.apiKey.value = result.apiKey;
@@ -261,6 +277,11 @@ async function saveSettings() {
         showNotifications: elements.showNotifications.checked,
       },
     };
+
+    // Save Theme (Sync)
+    if (elements.themeSelector) {
+      await setThemePreference(elements.themeSelector.value);
+    }
 
     await chrome.storage.local.set(settings);
 

@@ -5,10 +5,10 @@
 
 // ============================================
 // State
-// ============================================
 let overlay = null;
 let isOverlayVisible = false;
 let lastSelection = null; // Store { element, start, end, range, isInput, text }
+let currentTheme = 'system';
 
 // ============================================
 // Initialization
@@ -20,6 +20,7 @@ let lastSelection = null; // Store { element, start, end, range, isInput, text }
 function init() {
   setupMessageListener();
   setupSelectionListener();
+  initTheme();
 }
 
 /**
@@ -530,6 +531,7 @@ function createOverlayElement() {
   const el = document.createElement("div");
   el.className = "omni-ai-overlay";
   el.id = "omniAiOverlay";
+  updateOverlayTheme(el);
   return el;
 }
 
@@ -663,6 +665,50 @@ function showToast(message) {
     toast.classList.remove("omni-ai-toast-visible");
     setTimeout(() => toast.remove(), 300);
   }, 2000);
+}
+
+/**
+ * Initialize theme
+ */
+function initTheme() {
+  // Initial load
+  chrome.storage.sync.get("omni_ai_theme", (result) => {
+    currentTheme = result.omni_ai_theme || "system";
+    if (overlay) updateOverlayTheme(overlay);
+  });
+
+  // Listen for changes
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.omni_ai_theme) {
+      currentTheme = changes.omni_ai_theme.newValue;
+      if (overlay) updateOverlayTheme(overlay);
+    }
+  });
+
+  // Listen for system changes
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if (currentTheme === "system" && overlay) {
+      updateOverlayTheme(overlay);
+    }
+  });
+}
+
+/**
+ * Update overlay theme class
+ */
+function updateOverlayTheme(el) {
+  let isLight = false;
+  if (currentTheme === "light") {
+    isLight = true;
+  } else if (currentTheme === "system") {
+    isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  if (isLight) {
+    el.classList.add("omni-ai-light-mode");
+  } else {
+    el.classList.remove("omni-ai-light-mode");
+  }
 }
 
 // Initialize
