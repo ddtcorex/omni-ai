@@ -4,7 +4,10 @@
    ============================================ */
 
 /* Overlay Container */
-.omni-ai-overlay {
+/* Shared Theme Variables */
+.omni-ai-overlay,
+.omni-ai-toast,
+.omni-ai-quick-btn {
   --ai-bg-start: #1a1a24;
   --ai-bg-end: #0f0f14;
   --ai-text-primary: #f8fafc;
@@ -16,7 +19,26 @@
   --ai-card-bg: rgba(255, 255, 255, 0.05); /* For inputs */
   --ai-card-border: rgba(255, 255, 255, 0.1);
   --ai-shadow: rgba(0, 0, 0, 0.5);
+}
 
+.omni-ai-overlay.omni-ai-light-mode,
+.omni-ai-toast.omni-ai-light-mode,
+.omni-ai-quick-btn.omni-ai-light-mode {
+  --ai-bg-start: #ffffff;
+  --ai-bg-end: #f8fafc;
+  --ai-text-primary: #0f172a;
+  --ai-text-secondary: #64748b;
+  --ai-border-color: rgba(0, 0, 0, 0.08);
+  --ai-bg-glass: rgba(0, 0, 0, 0.03);
+  --ai-bg-glass-heavy: rgba(0, 0, 0, 0.06);
+  --ai-bg-glass-hover: rgba(0, 0, 0, 0.08);
+  --ai-card-bg: rgba(0, 0, 0, 0.04);
+  --ai-card-border: rgba(0, 0, 0, 0.1);
+  --ai-shadow: rgba(0, 0, 0, 0.15);
+}
+
+/* Overlay Container */
+.omni-ai-overlay {
   position: absolute;
   z-index: 2147483647;
   min-width: 320px;
@@ -42,20 +64,6 @@
   color: var(--ai-text-primary);
   overflow: hidden;
   animation: omniAiFadeIn 0.2s ease-out;
-}
-
-.omni-ai-overlay.omni-ai-light-mode {
-  --ai-bg-start: #ffffff;
-  --ai-bg-end: #f8fafc;
-  --ai-text-primary: #0f172a;
-  --ai-text-secondary: #64748b;
-  --ai-border-color: rgba(0, 0, 0, 0.08);
-  --ai-bg-glass: rgba(0, 0, 0, 0.03);
-  --ai-bg-glass-heavy: rgba(0, 0, 0, 0.06);
-  --ai-bg-glass-hover: rgba(0, 0, 0, 0.08);
-  --ai-card-bg: rgba(0, 0, 0, 0.04);
-  --ai-card-border: rgba(0, 0, 0, 0.1);
-  --ai-shadow: rgba(0, 0, 0, 0.15);
 }
 
 @keyframes omniAiFadeIn {
@@ -250,7 +258,7 @@
   font-style: italic;
 }
 
-.hidden {
+.omni-ai-hidden {
   display: none !important;
 }
 
