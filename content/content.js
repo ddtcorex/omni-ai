@@ -257,6 +257,9 @@ async function showQuickActionMenu(text, anchorRect = null) {
   const primaryName = languageNames[primaryLanguage] || primaryLanguage;
   const translationName = languageNames[defaultLanguage] || defaultLanguage;
 
+  const primaryIcon = primaryLanguage === 'vi' ? '🇻🇳' : '🌐';
+  const translationIcon = '🌎';
+
   // Show a mini overlay with actions
   overlay = createOverlayElement();
   overlay.innerHTML = `
@@ -267,8 +270,8 @@ async function showQuickActionMenu(text, anchorRect = null) {
     <div class="omni-ai-overlay-content omni-ai-menu-content">
        <div class="omni-ai-menu-group-title">Translation</div>
        <div class="omni-ai-menu-row">
-         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_primary">To ${primaryName}</button>
-         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_default">To ${translationName}</button>
+         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_primary">${primaryIcon} To ${primaryName}</button>
+         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_default">${translationIcon} To ${translationName}</button>
        </div>
        <div class="omni-ai-menu-divider"></div>
        <div class="omni-ai-menu-group-title">Writing</div>
