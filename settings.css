@@ -880,3 +880,7 @@ input:focus + .slider {
   color: var(--accent-purple);
   border: 1px solid rgba(139, 92, 246, 0.2);
 }
+/* Utilities */
+.hidden {
+  display: none !important;
+}
