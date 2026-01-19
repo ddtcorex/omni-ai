@@ -23,6 +23,8 @@ gh issue create --title "<title>" --body "<body>" --label "<labels>" --milestone
 // turbo
 
 ```bash
+git checkout develop
+git pull origin develop
 git checkout -b feature/<issue-number>-<short-description>
 ```
 
@@ -40,6 +42,8 @@ git checkout -b feature/<issue-number>-<short-description>
 
 ## 6. Commit & Push
 
+> **STOP:** You MUST ask for user approval before running these commands.
+
 ```bash
 git add .
 git commit -m "feat: <description> (#<issue-number>)"
@@ -48,11 +52,15 @@ git push -u origin feature/<issue-number>-<short-description>
 
 ## 7. Create PR
 
+> **STOP:** You MUST ask for user approval before creating the PR.
+
 ```bash
-gh pr create --title "<title>" --body "Closes #<issue-number>" --assignee @me
+gh pr create --title "<title>" --body "Closes #<issue-number>" --base develop --assignee @me
 ```
 
 ## 8. Review & Merge
+
+> **STOP:** You MUST ask for user approval before merging.
 
 - Address review comments
 - Squash and merge when approved

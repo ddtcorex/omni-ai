@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-19
+
+### 🛠 Changed
+
+- **Visual Polish**: Updated popup animation to match the floating icon's "pop-in" effect for a seamless experience.
+- **UI Refinement**: Resized floating icon to 22px and restored its rounded shape.
+- **Content Display**: Limited result popup height to 400px with automatic scrolling for better usability on small screens.
+
+### 🐛 Fixed
+
+- **Scroll Behavior**: Fixed issue where scrolling inside long content would accidentally close the popup.
+- **Popup Positioning**: Fixed positioning logic to prevent the popup from being cut off by the screen edges and switched to fixed positioning for better stability.
+
 ## [1.0.0] - 2026-01-19
 
 Initial stable release of Omni AI.

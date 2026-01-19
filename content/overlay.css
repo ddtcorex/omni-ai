@@ -66,7 +66,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: omniAiFadeIn 0.2s ease-out;
+  animation: omniAiPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: center center;
 }
 
 @keyframes omniAiFadeIn {
@@ -128,6 +129,7 @@
   padding: 12px 16px;
   overflow-y: auto;
   flex: 1;
+  max-height: 400px; /* Reasonable limit for long content */
 }
 
 .omni-ai-result {
@@ -333,8 +335,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  box-sizing: border-box;
   background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
   border: none;
   border-radius: 50%;
@@ -349,7 +353,7 @@
 }
 
 .omni-ai-icon-small {
-  font-size: 16px;
+  font-size: 12px;
   line-height: 1;
 }
 
