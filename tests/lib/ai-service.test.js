@@ -1,4 +1,4 @@
-import { generateContent, improveText } from '../../lib/ai-service';
+import { generateContent, improveText, _resetCacheForTests } from '../../lib/ai-service';
 import * as Providers from '../../lib/providers/index';
 
 jest.mock('../../lib/providers/index', () => ({
@@ -14,6 +14,7 @@ describe('AI Service', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    if (_resetCacheForTests) _resetCacheForTests();
     store = {};
 
     Providers.getProvider.mockReturnValue(mockProvider);
