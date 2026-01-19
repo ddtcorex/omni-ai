@@ -7,8 +7,6 @@ import {
   summarizeText,
   generateReply,
   emojifyText,
-  generateReply,
-  emojifyText,
   generateContent
 } from "../lib/ai-service.js";
 
