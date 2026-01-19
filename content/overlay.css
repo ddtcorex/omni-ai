@@ -128,6 +128,7 @@
   padding: 12px 16px;
   overflow-y: auto;
   flex: 1;
+  max-height: 400px; /* Reasonable limit for long content */
 }
 
 .omni-ai-result {
