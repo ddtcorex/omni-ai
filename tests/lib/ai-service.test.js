@@ -70,9 +70,9 @@ describe('AI Service', () => {
     }));
   });
 
-  it('generateContent uses Groq if model starts with groq-', async () => {
+  it('generateContent uses Groq if model is a known Groq model', async () => {
     store['groqApiKey'] = 'groq-key';
-    store['apiModel'] = 'groq-llama-3';
+    store['apiModel'] = 'groq-mixtral';
 
     mockProvider.generateContent.mockResolvedValue('Groq Response');
 
@@ -81,11 +81,11 @@ describe('AI Service', () => {
     // Wait, the code says:
     // const activeModel = model === DEFAULT_MODEL ? storedModel || DEFAULT_MODEL : model;
 
-    // So if I pass 'groq-llama-3' in options
-    const result = await generateContent('Test', { model: 'groq-llama-3' });
+    // So if I pass 'groq-mixtral' in options
+    const result = await generateContent('Test', { model: 'groq-mixtral' });
 
     expect(result).toBe('Groq Response');
-    expect(Providers.getProvider).toHaveBeenCalledWith('groq-llama-3');
+    expect(Providers.getProvider).toHaveBeenCalledWith('groq-mixtral');
     expect(mockProvider.generateContent).toHaveBeenCalledWith('Test', expect.objectContaining({
         apiKey: 'groq-key'
     }));
@@ -105,6 +105,6 @@ describe('AI Service', () => {
 
   it('throws error if API key is missing', async () => {
       // No keys in store
-      await expect(generateContent('Test')).rejects.toThrow('Gemini API key not configured');
+      await expect(generateContent('Test')).rejects.toThrow('API key not configured for gemini-1.5-flash');
   });
 });

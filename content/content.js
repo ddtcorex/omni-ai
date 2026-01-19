@@ -5,10 +5,10 @@
 
 // ============================================
 // State
-// ============================================
 let overlay = null;
 let isOverlayVisible = false;
 let lastSelection = null; // Store { element, start, end, range, isInput, text }
+let currentTheme = 'system';
 
 // ============================================
 // Initialization
@@ -20,6 +20,7 @@ let lastSelection = null; // Store { element, start, end, range, isInput, text }
 function init() {
   setupMessageListener();
   setupSelectionListener();
+  initTheme();
 }
 
 /**
@@ -97,6 +98,7 @@ function showQuickActionButton(selection) {
 
   quickActionBtn = document.createElement("button");
   quickActionBtn.className = "omni-ai-quick-btn";
+  updateOverlayTheme(quickActionBtn);
   quickActionBtn.innerHTML = `
     <span class="omni-ai-icon-small">✨</span>
   `;
@@ -237,20 +239,41 @@ function getSelectedText() {
     try {
       const start = activeElement.selectionStart;
       const end = activeElement.selectionEnd;
-      const text = activeElement.value.substring(start, end);
 
-      if (text) {
-        lastSelection = {
-          element: activeElement,
-          start,
-          end,
-          isInput: true,
-          text: text,
-        };
-        return text;
+      // Check if there's actually a selection
+      if (start !== undefined && end !== undefined && start !== end) {
+        const text = activeElement.value.substring(start, end);
+
+        if (text) {
+          lastSelection = {
+            element: activeElement,
+            start,
+            end,
+            isInput: true,
+            text: text,
+          };
+          return text;
+        }
       }
     } catch (e) {
       console.warn("[Omni AI] Failed to get selection from input:", e);
+    }
+  }
+
+  // Handle contenteditable elements
+  if (activeElement && activeElement.isContentEditable) {
+    const selection = window.getSelection();
+    const text = selection ? selection.toString().trim() : "";
+
+    if (text && selection.rangeCount > 0) {
+      lastSelection = {
+        element: activeElement,
+        range: selection.getRangeAt(0).cloneRange(),
+        isInput: false,
+        isContentEditable: true,
+        text: text,
+      };
+      return text;
     }
   }
 
@@ -386,8 +409,8 @@ function showQuickAskOverlay() {
     </div>
     <div class="omni-ai-overlay-content">
       <textarea id="omniAiInput" class="omni-ai-input" placeholder="Ask anything... (Press Enter to send)" rows="3"></textarea>
-      <div id="omniAiLoading" class="omni-ai-loading hidden">Processing...</div>
-      <div id="omniAiQuickResult" class="omni-ai-result hidden"></div>
+      <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">Processing...</div>
+      <div id="omniAiQuickResult" class="omni-ai-result omni-ai-hidden"></div>
     </div>
     <div class="omni-ai-overlay-footer">
       <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn">Ask</button>
@@ -411,24 +434,24 @@ function showQuickAskOverlay() {
     const query = input.value.trim();
     if (!query) return;
 
-    input.classList.add("hidden");
-    askBtn.classList.add("hidden");
-    loading.classList.remove("hidden");
+    input.classList.add("omni-ai-hidden");
+    askBtn.classList.add("omni-ai-hidden");
+    loading.classList.remove("omni-ai-hidden");
 
     try {
-      const response = await chrome.runtime.sendMessage({
+      const response = await sendMessageToBackground({
         type: "QUICK_ASK",
         payload: { query, preset: "general" },
       });
 
-      loading.classList.add("hidden");
-      resultDiv.classList.remove("hidden");
+      loading.classList.add("omni-ai-hidden");
+      resultDiv.classList.remove("omni-ai-hidden");
 
       if (response.success) {
         resultDiv.textContent = response.data.response;
         // Switch footer to copy button
         askBtn.textContent = "Copy";
-        askBtn.classList.remove("hidden");
+        askBtn.classList.remove("omni-ai-hidden");
         askBtn.id = "omniAiCopyResult";
 
         // Remove old listener, add new one
@@ -441,9 +464,9 @@ function showQuickAskOverlay() {
         resultDiv.textContent = "Error: " + (response.error || "Unknown error");
       }
     } catch (e) {
-      loading.classList.add("hidden");
+      loading.classList.add("omni-ai-hidden");
       resultDiv.textContent = "Error: " + e.message;
-      resultDiv.classList.remove("hidden");
+      resultDiv.classList.remove("omni-ai-hidden");
     }
   };
 
@@ -499,7 +522,7 @@ function showQuickActionMenu(text, anchorRect = null) {
         try {
           showToast("Processing...");
 
-          const response = await chrome.runtime.sendMessage({
+          const response = await sendMessageToBackground({
             type: "WRITING_ACTION",
             payload: { action, preset: "general", text },
           });
@@ -530,6 +553,7 @@ function createOverlayElement() {
   const el = document.createElement("div");
   el.className = "omni-ai-overlay";
   el.id = "omniAiOverlay";
+  updateOverlayTheme(el);
   return el;
 }
 
@@ -655,6 +679,7 @@ async function copyToClipboard(text) {
 function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "omni-ai-toast";
+  updateOverlayTheme(toast);
   toast.textContent = message;
   document.body.appendChild(toast);
 
@@ -663,6 +688,78 @@ function showToast(message) {
     toast.classList.remove("omni-ai-toast-visible");
     setTimeout(() => toast.remove(), 300);
   }, 2000);
+}
+
+/**
+ * Safe wrapper for sendMessage to handle invalid context
+ */
+async function sendMessageToBackground(message) {
+  try {
+    return await chrome.runtime.sendMessage(message);
+  } catch (error) {
+    if (error.message.includes("Extension context invalidated")) {
+      showToast("Omni AI updated. Please reload the page.");
+      // Stop further execution which might depend on response
+      throw new Error("Extension context invalidated");
+    }
+    throw error;
+  }
+}
+
+/**
+ * Initialize theme
+ */
+function initTheme() {
+  // Initial load
+  chrome.storage.sync.get("omni_ai_theme", (result) => {
+    currentTheme = result.omni_ai_theme || "system";
+    updateAllThemes();
+  });
+
+  // Listen for changes
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.omni_ai_theme) {
+      currentTheme = changes.omni_ai_theme.newValue;
+      updateAllThemes();
+    }
+  });
+
+  // Listen for system changes
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if (currentTheme === "system") {
+      updateAllThemes();
+    }
+  });
+}
+
+/**
+ * Update theme for all active elements
+ */
+function updateAllThemes() {
+  if (overlay) updateOverlayTheme(overlay);
+  if (quickActionBtn) updateOverlayTheme(quickActionBtn);
+  // Toast is updated on creation, but if we wanted to update live toasts we'd need to track them.
+  // Given their short life, it's probably fine to let existing ones fade out with old theme,
+  // but let's be thorough if there are any.
+  document.querySelectorAll('.omni-ai-toast').forEach(updateOverlayTheme);
+}
+
+/**
+ * Update overlay theme class
+ */
+function updateOverlayTheme(el) {
+  let isLight = false;
+  if (currentTheme === "light") {
+    isLight = true;
+  } else if (currentTheme === "system") {
+    isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  if (isLight) {
+    el.classList.add("omni-ai-light-mode");
+  } else {
+    el.classList.remove("omni-ai-light-mode");
+  }
 }
 
 // Initialize
