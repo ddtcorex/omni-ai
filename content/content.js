@@ -337,7 +337,8 @@ async function showQuickActionMenu(
       const action = btn.dataset.action;
 
       if (action === "ask") {
-        showQuickAskOverlay(text);
+        const lockedRect = overlay.getBoundingClientRect();
+        showQuickAskOverlay(text, lockedRect, text);
       } else {
         // Capture absolute position before any changes
         const lockedRect = overlay.getBoundingClientRect();
@@ -573,10 +574,22 @@ function showResultOverlay(payload, lockedRect = null) {
 /**
  * Show quick ask overlay
  */
-function showQuickAskOverlay(initialValue = "") {
-  hideOverlay();
-
-  overlay = createOverlayElement();
+/**
+ * Show quick ask overlay
+ */
+function showQuickAskOverlay(
+  initialValue = "",
+  lockedRect = null,
+  originalText = null,
+) {
+  // Reuse existing overlay to prevent flickering/jumping
+  // This preserves the current position strategy (top vs bottom anchor) naturally
+  if (!overlay) {
+    overlay = createOverlayElement();
+    document.body.appendChild(overlay);
+    // Only calculate position if it's a fresh overlay
+    positionOverlay(null, lockedRect);
+  }
 
   const contextHtml = initialValue
     ? `<div class="omni-ai-context-badge">
@@ -587,9 +600,14 @@ function showQuickAskOverlay(initialValue = "") {
 
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
-      <div class="omni-ai-overlay-title">
-        <span class="omni-ai-icon">💬</span>
-        <span>Quick Ask</span>
+      <div class="omni-ai-row" style="display: flex; align-items: center;">
+        <button class="omni-ai-icon-btn" id="omniAiBack" title="Back" style="background: none; border: none; cursor: pointer; font-size: 16px; margin-right: 8px; padding: 0 4px; color: inherit; display: flex; align-items: center;">
+          <span style="font-size: 18px; line-height: 1;">‹</span>
+        </button>
+        <div class="omni-ai-overlay-title">
+          <span class="omni-ai-icon">💬</span>
+          <span>Quick Ask</span>
+        </div>
       </div>
       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
     </div>
@@ -607,8 +625,16 @@ function showQuickAskOverlay(initialValue = "") {
     </div>
   `;
 
-  document.body.appendChild(overlay);
-  positionOverlay();
+  const backBtn = overlay.querySelector("#omniAiBack");
+  if (originalText !== null) {
+    backBtn.addEventListener("click", () => {
+      const currentLockedRect = overlay.getBoundingClientRect();
+      showQuickActionMenu(originalText, null, currentLockedRect);
+    });
+  } else {
+    // If no original text (e.g. direct invoke?), hide back button
+    backBtn.style.display = "none";
+  }
 
   const input = overlay.querySelector("#omniAiInput");
   const askBtn = overlay.querySelector("#omniAiAskBtn");
