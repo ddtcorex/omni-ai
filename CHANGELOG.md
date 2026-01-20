@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-01-20
+
+### 🐛 Fixed
+
+- **Settings Logic**: Fixed issue where `primaryLanguage` was not persisting correctly.
+- **Shortcut Behavior**: Corrected `Alt+T` to translate text to Primary Language (defaulting to Vietnamese).
+- **Settings Cleanup**: Removed unimplemented "Auto-close" and "Notifications" toggles.
+
+### 🛠 Changed
+
+- **UI Sync**: Synchronized the order of "Translation Language" dropdown to match "Primary Language".
+- **Defaults**: Explicitly set Primary Language default to Vietnamese.
+
 ## [1.3.0] - 2026-01-20
 
 ### ✨ Added

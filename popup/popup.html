@@ -18,11 +18,7 @@
       <!-- Header -->
       <header class="header">
         <div class="logo">
-          <img
-            src="../assets/icons/logo.svg"
-            alt="Omni AI"
-            class="logo-icon"
-          />
+          <img src="../assets/icons/logo.svg" alt="Omni AI" class="logo-icon" />
           <span class="logo-text">__MSG_popup_title__</span>
         </div>
 
@@ -154,25 +150,79 @@
         </div>
       </section>
 
+      <!-- Quick Ask Result Section (Hidden by default) -->
+      <section class="quick-ask-result hidden" id="quickAskResult">
+        <div class="result-header">
+          <button id="resultBackBtn" class="result-back-btn" title="Back">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <span class="result-title">AI Response</span>
+        </div>
+        <div class="result-content" id="resultContent">
+          <!-- AI response will be inserted here -->
+        </div>
+        <div class="result-footer">
+          <button id="copyResultBtn" class="result-action-btn secondary">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              ></path>
+            </svg>
+            <span>Copy</span>
+          </button>
+          <button id="newQuestionBtn" class="result-action-btn primary">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>New Question</span>
+          </button>
+        </div>
+      </section>
+
       <!-- Context Presets -->
       <section class="presets">
         <h3 class="section-title">__MSG_popup_context__</h3>
         <div class="preset-chips">
-          <button class="preset-chip active" data-preset="email">
-            <span class="chip-icon">📧</span>
-            <span>__MSG_preset_email__</span>
-          </button>
-          <button class="preset-chip" data-preset="chat">
+          <button class="preset-chip active" data-preset="chat">
             <span class="chip-icon">💬</span>
             <span>__MSG_preset_chat__</span>
           </button>
-          <button class="preset-chip" data-preset="social">
-            <span class="chip-icon">🐦</span>
-            <span>__MSG_preset_social__</span>
+          <button class="preset-chip" data-preset="email">
+            <span class="chip-icon">📧</span>
+            <span>__MSG_preset_email__</span>
           </button>
           <button class="preset-chip" data-preset="technical">
             <span class="chip-icon">📝</span>
             <span>__MSG_preset_technical__</span>
+          </button>
+          <button class="preset-chip" data-preset="social">
+            <span class="chip-icon">🐦</span>
+            <span>__MSG_preset_social__</span>
           </button>
           <button class="preset-chip" data-preset="academic">
             <span class="chip-icon">📚</span>
@@ -216,10 +266,18 @@
       <section class="quick-actions">
         <h3 class="section-title">__MSG_popup_quickActions__</h3>
         <div class="quick-action-row">
-          <button class="quick-action-btn" data-action="translate_primary" id="btnTranslatePrimary">
+          <button
+            class="quick-action-btn"
+            data-action="translate_primary"
+            id="btnTranslatePrimary"
+          >
             <span id="labelTranslatePrimary">To Primary</span>
           </button>
-          <button class="quick-action-btn" data-action="translate_default" id="btnTranslateDefault">
+          <button
+            class="quick-action-btn"
+            data-action="translate_default"
+            id="btnTranslateDefault"
+          >
             <span id="labelTranslateDefault">To Translation</span>
           </button>
 
@@ -254,7 +312,14 @@
             <span>__MSG_action_reply__</span>
           </button>
           <button class="quick-action-btn" data-action="explain">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               <line x1="11" y1="8" x2="11" y2="14"></line>
@@ -271,7 +336,7 @@
 
       <!-- Footer -->
       <footer class="footer">
-        <span class="version">v1.0.0</span>
+        <span class="version">v1.3.1</span>
         <span class="status" id="status">
           <span class="status-dot"></span>
           __MSG_status_ready__
