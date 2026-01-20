@@ -2,7 +2,7 @@
 
 > 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini and Groq (Llama 3/Mixtral).
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/ddtcorex/omni-ai)
+[![Version](https://img.shields.io/badge/version-1.3.1-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
@@ -86,10 +86,10 @@ Enter your keys in the **Settings** page accessible via the extension icon or ri
 
 ## ⌨️ Keyboard Shortcuts
 
-- **Open Settings**: `Ctrl + Shift + O`
-- **Quick Ask**: `Ctrl + Shift + A`
-- **Fix Grammar**: `Ctrl + Shift + G`
-- **Rephrase**: `Ctrl + Shift + R`
+- **Open Popup**: `Alt + O`
+- **Quick Ask**: `Alt + A`
+- **Rephrase**: `Alt + R`
+- **Translate**: `Alt + T`
 
 ---
 
