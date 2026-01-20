@@ -56,41 +56,98 @@ Track your productivity with the new **Usage Dashboard**:
 
 ## 🚀 Installation
 
-### Development Mode
+### 1. Clone the repository
 
-1. **Clone the repository**:
+```bash
+git clone https://github.com/ddtcorex/omni-ai.git
+cd omni-ai
+```
 
-   ```bash
-   git clone https://github.com/ddtcorex/omni-ai.git
-   cd omni-ai
-   ```
+### 2. Load into Chrome
 
-2. **Setup in Chrome**:
-   - Open Chrome and go to `chrome://extensions`.
-   - Toggle **Developer mode** in the top right.
-   - Click **Load unpacked**.
-   - Select the `omni-ai` project folder.
+1. Open Chrome and navigate to `chrome://extensions`.
+2. Enable **Developer mode** (top right toggle).
+3. Click **Load unpacked**.
+4. Select the `omni-ai` directory.
 
 ---
 
-## ⚙️ Configuration
+## 🔑 Configuration
 
-To use Omni AI, you need your own API keys. The extension supports:
+### 1. AI Provider Configuration (Required)
 
-1. **Google Gemini**: Get your free API key at [Google AI Studio](https://aistudio.google.com/app/apikey).
-2. **Groq**: Get a high-speed API key at [Groq Console](https://console.groq.com/keys).
-3. **OpenAI**: Get your API key at [OpenAI Platform](https://platform.openai.com/api-keys).
+You can choose between Google Gemini, Groq, or OpenAI as your AI provider.
 
-Enter your keys in the **Settings** page accessible via the extension icon or right-click menu.
+#### Option A: Google Gemini
+
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey).
+2. Create a new API key.
+3. In Omni AI, go to **Settings** > **AI Provider** and select **Google Gemini**.
+4. Paste your key and save.
+
+#### Option B: Groq (Llama 3 / Mixtral)
+
+1. Go to [Groq Console](https://console.groq.com/keys).
+2. Create a new API Key.
+3. In Omni AI, select **Groq** as the provider.
+4. Paste your key `gsk_...` and save.
+
+#### Option C: OpenAI (GPT-3.5 / GPT-4)
+
+1. Go to [OpenAI Platform](https://platform.openai.com/api-keys).
+2. Create a new API Key.
+3. In Omni AI, select **OpenAI** as the provider.
+4. Paste your key `sk-...` and save.
+
+### 2. Google Sign-In (Optional)
+
+To use the personalization features (syncing settings across devices), you need to configure OAuth.
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project.
+3. Navigate to **APIs & Services > Credentials**.
+4. Create **OAuth client ID** > **Chrome extension**.
+5. Detailed steps can be found in the [Chrome Identity API docs](https://developer.chrome.com/docs/extensions/reference/identity/).
+6. Copy the `client_id` and paste it into `manifest.json`:
+   ```json
+   "oauth2": {
+     "client_id": "YOUR_NEW_CLIENT_ID.apps.googleusercontent.com",
+     ...
+   }
+   ```
+7. (Recommended) Copy the `key` from the Developer Dashboard to `manifest.json` to keep the extension ID stable.
 
 ---
 
 ## ⌨️ Keyboard Shortcuts
 
-- **Open Popup**: `Alt + O`
-- **Quick Ask**: `Alt + A`
-- **Rephrase**: `Alt + R`
-- **Translate**: `Alt + T`
+| Shortcut | Action                                       |
+| :------- | :------------------------------------------- |
+| `Alt+O`  | Open Omni AI Popup                           |
+| `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page) |
+| `Alt+R`  | Rephrase (on selected text)                  |
+| `Alt+T`  | Translate to Primary Language                |
+
+_Shortcuts can be customized in `chrome://extensions/shortcuts`_
+
+---
+
+## 🌍 Multilingual Support
+
+Omni AI currently supports 10 languages:
+
+- 🇺🇸 English
+- 🇻🇳 Vietnamese (Default)
+- 🇪🇸 Spanish
+- 🇫🇷 French
+- 🇩🇪 German
+- 🇮🇹 Italian
+- 🇵🇹 Portuguese
+- 🇯🇵 Japanese
+- 🇰🇷 Korean
+- 🇨🇳 Chinese
+
+The language is automatically detected, but you can pin a **Primary Language** in Settings for quick translations.
 
 ---
 
@@ -125,6 +182,52 @@ omni-ai/
 - **Vanilla JavaScript**: Lightweight, no heavy frameworks, maximum performance.
 - **Modern CSS**: Variables, Flex/Grid, Glassmorphism, and smooth animations.
 - **Provider Architecture**: Easily extendable to add new AI providers (OpenAI, Anthropic, etc.).
+
+---
+
+## 📦 Publishing to the Chrome Web Store
+
+Follow this guide to publish **Omni AI** to the official Chrome Web Store.
+
+### 1. Prepare the Distribution Zip
+
+First, you need to create a clean `.zip` file containing only the necessary files for the extension to run.
+
+#### Command to Create Zip
+
+You can run this command in your terminal to generate the package:
+
+```bash
+zip -r omni-ai-v1.0.0.zip manifest.json background/ content/ lib/ assets/ popup/ _locales/ settings.html settings.js settings.css
+```
+
+### 2. Create a Developer Account
+
+To publish on the Chrome Web Store, you need a Google Developer account.
+
+1. Go to the [Chrome Web Store Developer Console](https://chrome.google.com/webstore/devconsole).
+2. Sign in with your Google Account.
+3. Pay the one-time **$5 USD** developer registration fee.
+4. Complete your developer profile.
+
+### 3. Upload and Configure
+
+1. **Upload**: Click **+ New Item** and upload your `.zip`.
+2. **Store Listing**:
+   - **Description**: Use text from this README.
+   - **Icons**: Use `assets/icons/` (ensure 128x128 PNG is available or convert SVG).
+   - **Screenshots**: Upload 1280x800 screenshots of the extension in action.
+   - **Category**: Productivity or Search Tools.
+3. **Privacy & Permissions**:
+   - **Single Purpose**: "Unified writing assistant and productivity tool".
+   - **Justification**: Explain `activeTab`, `storage`, `identity`, `contextMenus` usage clearly.
+   - **Privacy Policy**: Link to your privacy policy (GitHub Pages or similar).
+
+### Pro Tips for Approval
+
+- **Screenshot Quality**: Use high-quality screenshots. Show the ✨ floating button and the Usage Dashboard.
+- **Clear Description**: Clearly explain that users need an API key (Gemini, Groq, or OpenAI) to use the extension.
+- **Permission Scope**: Chrome reviewers prefer the narrowest permissions possible.
 
 ---
 
