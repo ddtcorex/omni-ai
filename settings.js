@@ -14,6 +14,8 @@ const elements = {
   googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
+  openaiApiKey: document.getElementById("openaiApiKey"),
+  openaiKeyGroup: document.getElementById("openaiKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   validateBtn: document.getElementById("validateBtn"),
   validationStatus: document.getElementById("validationStatus"),
@@ -181,6 +183,7 @@ function setupEventListeners() {
   const inputs = [
     elements.apiKey,
     elements.groqApiKey,
+    elements.openaiApiKey,
     elements.apiModel,
     elements.defaultPreset,
     elements.primaryLanguage,
@@ -253,6 +256,8 @@ async function validateConfiguration() {
     apiKey = elements.apiKey.value.trim();
   } else if (provider.id === 'groq') {
     apiKey = elements.groqApiKey.value.trim();
+  } else if (provider.id === 'openai') {
+    apiKey = elements.openaiApiKey.value.trim();
   }
 
   if (!apiKey) {
@@ -337,6 +342,7 @@ async function loadSettings() {
     const result = await chrome.storage.local.get([
       "apiKey",
       "groqApiKey",
+      "openaiApiKey",
       "apiModel",
       "currentPreset",
       "defaultLanguage",
@@ -354,6 +360,9 @@ async function loadSettings() {
 
     // Groq API Key
     if (result.groqApiKey) elements.groqApiKey.value = result.groqApiKey;
+
+    // OpenAI API Key
+    if (result.openaiApiKey) elements.openaiApiKey.value = result.openaiApiKey;
 
     // API Model
     if (result.apiModel) {
@@ -402,6 +411,7 @@ async function saveSettings() {
     const settings = {
       apiKey: elements.apiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
+      openaiApiKey: elements.openaiApiKey.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
       primaryLanguage: elements.primaryLanguage.value,
