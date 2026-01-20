@@ -51,9 +51,16 @@ chrome.commands.onCommand.addListener(async (command) => {
   }
 
   // Handle other commands via selected text
-  const response = await chrome.tabs.sendMessage(tab.id, {
-    type: "GET_SELECTION",
-  });
+  const response = await chrome.tabs
+    .query({ active: true, currentWindow: true })
+    .then(async ([t]) => {
+      try {
+        return await chrome.tabs.sendMessage(t.id, { type: "GET_SELECTION" });
+      } catch (e) {
+        console.warn("Selection fetch failed", e);
+        return null;
+      }
+    });
 
   if (response?.selection) {
     let action;
@@ -61,7 +68,7 @@ chrome.commands.onCommand.addListener(async (command) => {
     if (command === "quick_rephrase") action = "rephrase";
     if (command === "quick_summarize") action = "summarize";
     if (command === "quick_explain") action = "explain";
-    if (command === "quick_translate") action = "translate_default";
+    if (command === "quick_translate") action = "translate_primary";
 
     if (action) {
       processSelectedText(tab.id, response.selection, action);
@@ -591,14 +598,40 @@ async function handleValidateConfig(payload) {
 async function processSelectedText(tabId, text, action) {
   try {
     let result;
-    if (action === "improve") {
-      result = await improveText(text, "clarity", "general");
-    } else if (action === "explain") {
-      result = await explainText(text);
-    } else if (action === "translate") {
-      result = await translateText(text, "en");
-    } else {
-      result = await improveText(text, action, "general");
+
+    switch (action) {
+      case "translate_primary": {
+        const { primaryLanguage } =
+          await chrome.storage.local.get("primaryLanguage");
+
+        result = await translateText(text, primaryLanguage || "vi");
+        break;
+      }
+      case "translate_default": {
+        const { defaultLanguage } =
+          await chrome.storage.local.get("defaultLanguage");
+        result = await translateText(text, defaultLanguage || "en");
+        break;
+      }
+      case "translate": // Context menu legacy
+        result = await translateText(text, "en");
+        break;
+      case "explain":
+        result = await explainText(text);
+        break;
+      case "summarize":
+        result = await summarizeText(text);
+        break;
+      case "grammar":
+      case "rephrase":
+        result = await improveText(text, action, "general");
+        break;
+      case "improve":
+        result = await improveText(text, "clarity", "general");
+        break;
+      default:
+        // Fallback for custom actions or 'improve' variants
+        result = await improveText(text, action, "general");
     }
 
     chrome.tabs.sendMessage(tabId, {

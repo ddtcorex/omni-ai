@@ -1,5 +1,10 @@
 import { getStats, resetStats } from "./lib/history.js";
-import { initTheme, getThemePreference, setThemePreference, applyTheme } from "./lib/theme-manager.js";
+import {
+  initTheme,
+  getThemePreference,
+  setThemePreference,
+  applyTheme,
+} from "./lib/theme-manager.js";
 import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 /**
@@ -25,8 +30,6 @@ const elements = {
   defaultPreset: document.getElementById("defaultPreset"),
   primaryLanguage: document.getElementById("primaryLanguage"),
   defaultLanguage: document.getElementById("defaultLanguage"),
-  autoClose: document.getElementById("autoClose"),
-  showNotifications: document.getElementById("showNotifications"),
   shortcutsLink: document.getElementById("shortcutsLink"),
   saveBtn: document.getElementById("saveBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -61,19 +64,19 @@ async function init() {
  */
 function populateModelSelect() {
   const select = elements.apiModel;
-  select.innerHTML = ''; // Clear existing
+  select.innerHTML = ""; // Clear existing
 
-  Object.values(AI_PROVIDERS).forEach(provider => {
-    const group = document.createElement('optgroup');
+  Object.values(AI_PROVIDERS).forEach((provider) => {
+    const group = document.createElement("optgroup");
     group.label = provider.name;
-    
-    provider.models.forEach(model => {
-      const option = document.createElement('option');
+
+    provider.models.forEach((model) => {
+      const option = document.createElement("option");
       option.value = model.id;
       option.textContent = model.name;
       group.appendChild(option);
     });
-    
+
     select.appendChild(group);
   });
 }
@@ -188,8 +191,6 @@ function setupEventListeners() {
     elements.defaultPreset,
     elements.primaryLanguage,
     elements.defaultLanguage,
-    elements.autoClose,
-    elements.showNotifications,
   ];
 
   inputs.forEach((input) => {
@@ -230,14 +231,16 @@ function updateModelVisibility() {
   const provider = getProviderByModel(modelId);
 
   // Hide all groups first
-  const groups = document.querySelectorAll('.setting-item[data-provider]');
-  groups.forEach(el => el.classList.add('hidden'));
+  const groups = document.querySelectorAll(".setting-item[data-provider]");
+  groups.forEach((el) => el.classList.add("hidden"));
 
   if (provider) {
     // Show matching group based on data-provider attribute
-    const activeGroup = document.querySelector(`.setting-item[data-provider="${provider.id}"]`);
+    const activeGroup = document.querySelector(
+      `.setting-item[data-provider="${provider.id}"]`,
+    );
     if (activeGroup) {
-      activeGroup.classList.remove('hidden');
+      activeGroup.classList.remove("hidden");
     }
   }
 }
@@ -251,39 +254,42 @@ async function validateConfiguration() {
   if (!provider) return;
 
   // Get the Key
-  let apiKey = '';
-  if (provider.id === 'google') {
+  let apiKey = "";
+  if (provider.id === "google") {
     apiKey = elements.apiKey.value.trim();
-  } else if (provider.id === 'groq') {
+  } else if (provider.id === "groq") {
     apiKey = elements.groqApiKey.value.trim();
-  } else if (provider.id === 'openai') {
+  } else if (provider.id === "openai") {
     apiKey = elements.openaiApiKey.value.trim();
   }
 
   if (!apiKey) {
-    showValidationStatus('Please enter an API Key first.', 'error');
+    showValidationStatus("Please enter an API Key first.", "error");
     return;
   }
 
-  showValidationStatus('Validating...', 'processing');
+  showValidationStatus("Validating...", "processing");
   setButtonLoading(true);
 
   try {
     const response = await chrome.runtime.sendMessage({
       type: "VALIDATE_CONFIG",
-      payload: { provider: provider.id, model: modelId, key: apiKey }
+      payload: { provider: provider.id, model: modelId, key: apiKey },
     });
 
     setButtonLoading(false);
 
     if (response.success) {
-      showValidationStatus('Configuration valid! ready to generate.', 'success');
+      showValidationStatus(
+        "Configuration valid! ready to generate.",
+        "success",
+      );
     } else {
-      showValidationStatus(`Error: ${response.error}`, 'error');
+      showValidationStatus(`Error: ${response.error}`, "error");
     }
   } catch (err) {
     setButtonLoading(false);
-    showValidationStatus(`Connection check failed: ${err.message}`, 'error');
+    showValidationStatus(`Connection check failed: ${err.message}`, "error");
   }
 }
 
@@ -293,20 +299,20 @@ async function validateConfiguration() {
 function setButtonLoading(isLoading) {
   const btn = elements.validateBtn;
   if (!btn) return;
-  
+
   if (isLoading) {
-    btn.classList.add('loading');
+    btn.classList.add("loading");
     btn.disabled = true;
-    const svg = btn.querySelector('svg');
-    if (svg) svg.classList.add('validate-spinner');
+    const svg = btn.querySelector("svg");
+    if (svg) svg.classList.add("validate-spinner");
     // Change icon to refresh/spinner
-    btn.querySelector('span').textContent = "Checking...";
+    btn.querySelector("span").textContent = "Checking...";
   } else {
-    btn.classList.remove('loading');
+    btn.classList.remove("loading");
     btn.disabled = false;
-    const svg = btn.querySelector('svg');
-    if (svg) svg.classList.remove('validate-spinner');
-    btn.querySelector('span').textContent = "Validate Configuration";
+    const svg = btn.querySelector("svg");
+    if (svg) svg.classList.remove("validate-spinner");
+    btn.querySelector("span").textContent = "Validate Configuration";
   }
 }
 
@@ -316,23 +322,29 @@ function setButtonLoading(isLoading) {
 function showValidationStatus(message, type) {
   const el = elements.validationStatus;
   if (!el) return;
-  
+
   // Reset classes
-  el.className = 'validation-message visible';
+  el.className = "validation-message visible";
   el.classList.add(type);
-  
+
   // Icon based on type
-  let icon = '';
-  if (type === 'success') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-  else if (type === 'error') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-  else if (type === 'processing') icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+  let icon = "";
+  if (type === "success")
+    icon =
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  else if (type === "error")
+    icon =
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+  else if (type === "processing")
+    icon =
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
 
   el.innerHTML = `${icon}<span>${message}</span>`;
-  
+
   // Auto hide after 5s if success
-  if (type === 'success') {
+  if (type === "success") {
     setTimeout(() => {
-      el.classList.remove('visible');
+      el.classList.remove("visible");
     }, 5000);
   }
 }
@@ -382,7 +394,7 @@ async function loadSettings() {
     if (result.primaryLanguage) {
       elements.primaryLanguage.value = result.primaryLanguage;
     } else {
-      elements.primaryLanguage.value = "vi"; // Default to Vietnamese
+      elements.primaryLanguage.value = "en"; // Default to English
     }
 
     // Default Language
@@ -392,9 +404,7 @@ async function loadSettings() {
 
     // Settings
     if (result.settings) {
-      elements.autoClose.checked = result.settings.autoClose || false;
-      elements.showNotifications.checked =
-        result.settings.showNotifications !== false;
+      // Future settings
     }
   } catch (error) {
     console.error("Failed to load settings:", error);
@@ -417,8 +427,7 @@ async function saveSettings() {
       primaryLanguage: elements.primaryLanguage.value,
       defaultLanguage: elements.defaultLanguage.value,
       settings: {
-        autoClose: elements.autoClose.checked,
-        showNotifications: elements.showNotifications.checked,
+        // Future settings
       },
     };
 
