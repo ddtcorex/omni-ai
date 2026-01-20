@@ -1,6 +1,6 @@
 # Omni AI
 
-> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini and Groq (Llama 3/Mixtral).
+> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/Mixtral), and OpenAI (GPT-4o).
 
 [![Version](https://img.shields.io/badge/version-1.3.1-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -47,7 +47,7 @@ Track your productivity with the new **Usage Dashboard**:
 
 ### 🛠️ Premium Settings UI
 
-- **Dual AI Providers**: Support for **Google Gemini** (1.5 Flash, Pro, 2.0) and **Groq** (Llama 3.3, 3.1, Mixtral, Gemma).
+- **Multiple AI Providers**: Support for **Google Gemini** (1.5 Flash, Pro, 2.0), **Groq** (Llama 3.3, DeepSeek R1, Mixtral, Gemma), and **OpenAI** (GPT-4o, GPT-4o Mini, GPT-3.5).
 - **Glassmorphic Design**: A sleek, modern settings page (`settings.html`) with smooth animations and high-resolution visuals.
 - **Helper Tooltips**: Interactive instructions and links to help you get your API keys quickly.
 - **Context Presets**: Tailor AI responses for Email, Chat, Social Media, Technical, or Academic contexts.
@@ -79,6 +79,7 @@ To use Omni AI, you need your own API keys. The extension supports:
 
 1. **Google Gemini**: Get your free API key at [Google AI Studio](https://aistudio.google.com/app/apikey).
 2. **Groq**: Get a high-speed API key at [Groq Console](https://console.groq.com/keys).
+3. **OpenAI**: Get your API key at [OpenAI Platform](https://platform.openai.com/api-keys).
 
 Enter your keys in the **Settings** page accessible via the extension icon or right-click menu.
 
