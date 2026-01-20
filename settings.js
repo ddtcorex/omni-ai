@@ -357,6 +357,7 @@ async function loadSettings() {
       "openaiApiKey",
       "apiModel",
       "currentPreset",
+      "primaryLanguage",
       "defaultLanguage",
       "settings",
     ]);
@@ -394,12 +395,14 @@ async function loadSettings() {
     if (result.primaryLanguage) {
       elements.primaryLanguage.value = result.primaryLanguage;
     } else {
-      elements.primaryLanguage.value = "en"; // Default to English
+      elements.primaryLanguage.value = "vi"; // Default to Vietnamese
     }
 
     // Default Language
     if (result.defaultLanguage) {
       elements.defaultLanguage.value = result.defaultLanguage;
+    } else {
+      elements.defaultLanguage.value = "en"; // Default to English
     }
 
     // Settings
