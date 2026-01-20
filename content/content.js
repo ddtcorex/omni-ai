@@ -357,9 +357,13 @@ async function showQuickActionMenu(
           ].includes(action);
           const type = isQuickAction ? "QUICK_ACTION" : "WRITING_ACTION";
 
+          // Get saved preset from storage (default to "chat")
+          const { currentPreset = "chat" } =
+            await chrome.storage.local.get("currentPreset");
+
           const response = await sendMessageToBackground({
             type,
-            payload: { action, preset: "general", text },
+            payload: { action, preset: currentPreset, text },
           });
 
           if (response.success) {

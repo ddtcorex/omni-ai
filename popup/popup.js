@@ -3,7 +3,7 @@
  * Handles UI interactions, authentication, and communicates with the service worker
  */
 
-import { initTheme } from '../lib/theme-manager.js';
+import { initTheme } from "../lib/theme-manager.js";
 
 // DOM Elements
 const elements = {
@@ -31,10 +31,17 @@ const elements = {
   userName: document.getElementById("userName"),
   userEmail: document.getElementById("userEmail"),
   signOutBtn: document.getElementById("signOutBtn"),
+
+  // Result Section
+  quickAskResult: document.getElementById("quickAskResult"),
+  resultContent: document.getElementById("resultContent"),
+  resultBackBtn: document.getElementById("resultBackBtn"),
+  copyResultBtn: document.getElementById("copyResultBtn"),
+  newQuestionBtn: document.getElementById("newQuestionBtn"),
 };
 
 // State
-let currentPreset = "email";
+let currentPreset = "chat";
 let isProcessing = false;
 let currentUser = null;
 
@@ -136,6 +143,14 @@ function setupEventListeners() {
     if (!elements.userSection.contains(e.target)) {
       closeUserDropdown();
     }
+  });
+
+  // Result section listeners
+  elements.resultBackBtn.addEventListener("click", hideResultSection);
+  elements.copyResultBtn.addEventListener("click", copyResult);
+  elements.newQuestionBtn.addEventListener("click", () => {
+    hideResultSection();
+    focusInput();
   });
 }
 
@@ -281,7 +296,12 @@ async function handleQuickAsk() {
   if (!query || isProcessing) return;
 
   setProcessing(true);
-  updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
+
+  // Immediately show result section with loading state
+  showResultSection(null, true);
+
+  // Clear input
+  elements.quickAskInput.value = "";
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -291,14 +311,18 @@ async function handleQuickAsk() {
 
     if (response.success) {
       updateStatus(chrome.i18n.getMessage("status_ready"), "success");
-      elements.quickAskInput.value = "";
+
+      // Update result section with actual response
+      showResultSection(response.data.response || response.data, false);
     } else {
       updateStatus(chrome.i18n.getMessage("status_error"), "error");
+      showResultSection("Error: " + (response.error || "Unknown error"), false);
       console.error("Quick Ask failed:", response.error);
     }
   } catch (error) {
     console.error("Quick Ask error:", error);
     updateStatus(chrome.i18n.getMessage("status_error"), "error");
+    showResultSection("Error: " + error.message, false);
   } finally {
     setProcessing(false);
   }
@@ -442,8 +466,9 @@ function focusInput() {
  * Update translation language labels
  */
 async function updateLanguageLabels() {
-  const { primaryLanguage = "vi", defaultLanguage = "en" } = await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
-  
+  const { primaryLanguage = "vi", defaultLanguage = "en" } =
+    await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
+
   const languageNames = {
     en: "English",
     vi: "Vietnamese",
@@ -454,21 +479,117 @@ async function updateLanguageLabels() {
     pt: "Portuguese",
     ja: "Japanese",
     ko: "Korean",
-    zh: "Chinese"
+    zh: "Chinese",
   };
 
   const primaryName = languageNames[primaryLanguage] || primaryLanguage;
   const translationName = languageNames[defaultLanguage] || defaultLanguage;
 
-  const primaryIcon = primaryLanguage === 'vi' ? '🇻🇳' : '🌐';
-  const translationIcon = '🌎';
+  const primaryIcon = primaryLanguage === "vi" ? "🇻🇳" : "🌐";
+  const translationIcon = "🌎";
 
   const labelPrimary = document.getElementById("labelTranslatePrimary");
   const labelDefault = document.getElementById("labelTranslateDefault");
 
-  if (labelPrimary) labelPrimary.textContent = `${primaryIcon} To ${primaryName}`;
-  if (labelDefault) labelDefault.textContent = `${translationIcon} To ${translationName}`;
+  if (labelPrimary)
+    labelPrimary.textContent = `${primaryIcon} To ${primaryName}`;
+  if (labelDefault)
+    labelDefault.textContent = `${translationIcon} To ${translationName}`;
 }
 
 // Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", init);
+// ============================================
+// Result Section Functions
+// ============================================
+
+/**
+ * Show result section with smooth transition
+ */
+function showResultSection(resultText, isLoading = false) {
+  // If already visible, just update content
+  if (elements.quickAskResult.classList.contains("visible")) {
+    if (isLoading) {
+      elements.resultContent.classList.add("loading");
+      elements.resultContent.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 16px; height: 16px; border: 2px solid var(--accent-purple); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <span>Processing your request...</span>
+        </div>
+      `;
+    } else {
+      elements.resultContent.classList.remove("loading");
+      elements.resultContent.textContent = resultText;
+    }
+    return;
+  }
+
+  // Set the result content
+  if (isLoading) {
+    elements.resultContent.classList.add("loading");
+    elements.resultContent.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="width: 16px; height: 16px; border: 2px solid var(--accent-purple); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span>Processing your request...</span>
+      </div>
+    `;
+  } else {
+    elements.resultContent.classList.remove("loading");
+    elements.resultContent.textContent = resultText;
+  }
+
+  // Show result section immediately (no fade-out of other sections)
+  elements.quickAskResult.classList.remove("hidden");
+
+  // Trigger slide-in animation
+  setTimeout(() => {
+    elements.quickAskResult.classList.add("visible");
+  }, 10);
+}
+
+/**
+ * Hide result section and restore main view
+ */
+function hideResultSection() {
+  // Fade out result
+  elements.quickAskResult.classList.remove("visible");
+
+  setTimeout(() => {
+    elements.quickAskResult.classList.add("hidden");
+
+    // Show other sections
+    const sectionsToShow = [
+      document.querySelector(".quick-ask"),
+      document.querySelector(".presets"),
+      document.querySelector(".actions"),
+      document.querySelector(".quick-actions"),
+    ];
+
+    sectionsToShow.forEach((section) => {
+      if (section) {
+        section.classList.remove("hidden");
+        section.classList.remove("fading");
+      }
+    });
+  }, 250);
+}
+
+/**
+ * Copy result to clipboard
+ */
+async function copyResult() {
+  try {
+    await navigator.clipboard.writeText(elements.resultContent.textContent);
+
+    // Visual feedback
+    const originalText =
+      elements.copyResultBtn.querySelector("span").textContent;
+    elements.copyResultBtn.querySelector("span").textContent = "Copied!";
+
+    setTimeout(() => {
+      elements.copyResultBtn.querySelector("span").textContent = originalText;
+    }, 2000);
+  } catch (error) {
+    console.error("Failed to copy:", error);
+  }
+}
