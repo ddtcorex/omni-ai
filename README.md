@@ -109,7 +109,8 @@ omni-ai/
 │   ├── history.js       # Statistics & History management
 │   └── providers/       # Individual API implementations
 │       ├── gemini.js
-│       └── groq.js
+│       ├── groq.js
+│       └── openai.js
 ├── assets/              # Branding & High-res icons
 ├── settings.html        # Main configuration page
 ├── settings.js
