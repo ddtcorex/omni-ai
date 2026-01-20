@@ -49,31 +49,40 @@
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+O",
-        "mac": "Command+Shift+O"
+        "default": "Alt+O",
+        "mac": "Alt+O"
       },
       "description": "__MSG_popup_title__"
     },
-    "quick_fix_grammar": {
+    "quick_ask": {
       "suggested_key": {
-        "default": "Ctrl+Shift+G",
-        "mac": "Command+Shift+G"
+        "default": "Alt+A",
+        "mac": "Alt+A"
       },
-      "description": "__MSG_action_grammar__"
+      "description": "__MSG_popup_quickAsk__"
     },
     "quick_rephrase": {
       "suggested_key": {
-        "default": "Ctrl+Shift+R",
-        "mac": "Command+Shift+R"
+        "default": "Alt+R",
+        "mac": "Alt+R"
       },
       "description": "__MSG_action_rephrase__"
     },
-    "quick_ask": {
+    "quick_translate": {
       "suggested_key": {
-        "default": "Ctrl+Shift+A",
-        "mac": "Command+Shift+A"
+        "default": "Alt+T",
+        "mac": "Alt+T"
       },
-      "description": "__MSG_popup_quickAsk__"
+      "description": "__MSG_action_translate__"
+    },
+    "quick_fix_grammar": {
+      "description": "__MSG_action_grammar__"
+    },
+    "quick_summarize": {
+      "description": "__MSG_action_summarize__"
+    },
+    "quick_explain": {
+      "description": "__MSG_action_explain__"
     }
   },
 
