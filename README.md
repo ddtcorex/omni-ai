@@ -171,7 +171,9 @@ omni-ai/
 ├── assets/              # Branding & High-res icons
 ├── settings.html        # Main configuration page
 ├── settings.js
-└── settings.css
+├── settings.css
+└── scripts/             # Build & Utility scripts
+    └── publish.sh       # Automates ID key removal & zipping
 ```
 
 ---
@@ -193,13 +195,19 @@ Follow this guide to publish **Omni AI** to the official Chrome Web Store.
 
 First, you need to create a clean `.zip` file containing only the necessary files for the extension to run.
 
-#### Command to Create Zip
+#### Automated Build Script (Recommended)
 
-You can run this command in your terminal to generate the package:
+We provide a script that automatically handles versioning and removes the development `key` field (required for OAuth locally but forbidden on the Web Store).
 
 ```bash
-zip -r omni-ai-v1.0.0.zip manifest.json background/ content/ lib/ assets/ popup/ _locales/ settings.html settings.js settings.css
+# Make the script executable (first time only)
+chmod +x scripts/publish.sh
+
+# Run the build script
+./scripts/publish.sh
 ```
+
+This will create `omni-ai-vX.X.X.zip` in the root directory, ready for upload.
 
 ### 2. Create a Developer Account
 
