@@ -19,11 +19,7 @@
       <header class="header">
         <div class="header-content">
           <div class="logo">
-            <img
-              src="assets/icons/logo.svg"
-              alt="Omni AI"
-              class="logo-icon"
-            />
+            <img src="assets/icons/logo.svg" alt="Omni AI" class="logo-icon" />
             <div class="logo-text">
               <h1>Omni AI</h1>
               <span class="version">v1.0.0</span>
@@ -54,7 +50,11 @@
             </div>
 
             <!-- Gemini API Key -->
-            <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
+            <div
+              class="setting-item hidden"
+              id="googleKeyGroup"
+              data-provider="google"
+            >
               <label class="setting-label" for="apiKey">
                 <div class="label-header">
                   <span class="label-text">__MSG_settings_apiKey__</span>
@@ -116,7 +116,11 @@
             </div>
 
             <!-- Groq API Key -->
-            <div class="setting-item hidden" id="groqKeyGroup" data-provider="groq">
+            <div
+              class="setting-item hidden"
+              id="groqKeyGroup"
+              data-provider="groq"
+            >
               <label class="setting-label" for="groqApiKey">
                 <div class="label-header">
                   <span class="label-text">Groq API Key</span>
@@ -163,7 +167,11 @@
             </div>
 
             <!-- OpenAI API Key -->
-            <div class="setting-item hidden" id="openaiKeyGroup" data-provider="openai">
+            <div
+              class="setting-item hidden"
+              id="openaiKeyGroup"
+              data-provider="openai"
+            >
               <label class="setting-label" for="openaiApiKey">
                 <div class="label-header">
                   <span class="label-text">OpenAI API Key</span>
@@ -197,7 +205,9 @@
                     </div>
                   </div>
                 </div>
-                <span class="label-hint">Get API key at platform.openai.com</span>
+                <span class="label-hint"
+                  >Get API key at platform.openai.com</span
+                >
               </label>
               <div class="input-group">
                 <input
@@ -212,7 +222,14 @@
             <!-- Validation -->
             <div class="setting-item">
               <button id="validateBtn" class="validate-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
@@ -250,10 +267,10 @@
                 >
               </label>
               <select id="defaultPreset" class="setting-select">
-                <option value="email">📧 __MSG_preset_email__</option>
                 <option value="chat">💬 __MSG_preset_chat__</option>
-                <option value="social">🐦 __MSG_preset_social__</option>
+                <option value="email">📧 __MSG_preset_email__</option>
                 <option value="technical">📝 __MSG_preset_technical__</option>
+                <option value="social">🐦 __MSG_preset_social__</option>
                 <option value="academic">📚 __MSG_preset_academic__</option>
               </select>
             </div>
@@ -261,7 +278,9 @@
             <div class="setting-item">
               <label class="setting-label">
                 <span class="label-text">Primary Language</span>
-                <span class="label-hint">Your main language for quick actions</span>
+                <span class="label-hint"
+                  >Your main language for quick actions</span
+                >
               </label>
               <select id="primaryLanguage" class="setting-select">
                 <option value="en">English</option>
