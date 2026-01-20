@@ -151,6 +151,10 @@
     "message": "Replace",
     "description": "Replace button"
   },
+  "action_explain": {
+    "message": "Explain",
+    "description": "Explain action"
+  },
   "contextMenu_improve": {
     "message": "Improve with Omni AI",
     "description": "Context menu improve"

@@ -7,7 +7,7 @@ import {
   summarizeText,
   generateReply,
   emojifyText,
-  generateContent
+  generateContent,
 } from "../lib/ai-service.js";
 
 /**
@@ -59,6 +59,9 @@ chrome.commands.onCommand.addListener(async (command) => {
     let action;
     if (command === "quick_fix_grammar") action = "grammar";
     if (command === "quick_rephrase") action = "rephrase";
+    if (command === "quick_summarize") action = "summarize";
+    if (command === "quick_explain") action = "explain";
+    if (command === "quick_translate") action = "translate_default";
 
     if (action) {
       processSelectedText(tab.id, response.selection, action);
@@ -478,17 +481,23 @@ async function handleQuickAction(payload) {
   let result;
   switch (action) {
     case "translate": {
-      const { defaultLanguage } = await chrome.storage.local.get("defaultLanguage");
-      result = await translateText(selectedText, options.targetLanguage || defaultLanguage || "en");
+      const { defaultLanguage } =
+        await chrome.storage.local.get("defaultLanguage");
+      result = await translateText(
+        selectedText,
+        options.targetLanguage || defaultLanguage || "en",
+      );
       break;
     }
     case "translate_primary": {
-      const { primaryLanguage } = await chrome.storage.local.get("primaryLanguage");
+      const { primaryLanguage } =
+        await chrome.storage.local.get("primaryLanguage");
       result = await translateText(selectedText, primaryLanguage || "vi");
       break;
     }
     case "translate_default": {
-      const { defaultLanguage } = await chrome.storage.local.get("defaultLanguage");
+      const { defaultLanguage } =
+        await chrome.storage.local.get("defaultLanguage");
       result = await translateText(selectedText, defaultLanguage || "en");
       break;
     }
@@ -561,18 +570,18 @@ async function handleQuickAction(payload) {
  */
 async function handleValidateConfig(payload) {
   const { model, key } = payload;
-  
+
   if (!key) throw new Error("API Key is missing");
-  
+
   // Test with a simple prompt
   const testPrompt = "Hello. Respond with 'OK'.";
-  
+
   const result = await generateContent(testPrompt, {
     model: model,
     apiKey: key, // Explicit override
-    maxTokens: 5
+    maxTokens: 5,
   });
-  
+
   return { valid: true, response: result };
 }
 
