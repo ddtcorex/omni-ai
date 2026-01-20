@@ -162,6 +162,53 @@
               </div>
             </div>
 
+            <!-- OpenAI API Key -->
+            <div class="setting-item hidden" id="openaiKeyGroup" data-provider="openai">
+              <label class="setting-label" for="openaiApiKey">
+                <div class="label-header">
+                  <span class="label-text">OpenAI API Key</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>Get OpenAI API Key</p>
+                      <ol>
+                        <li>
+                          Go to
+                          <a
+                            href="https://platform.openai.com/api-keys"
+                            target="_blank"
+                            >OpenAI Platform</a
+                          >
+                        </li>
+                        <li>Sign up or Log in</li>
+                        <li>Create new API Key</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                <span class="label-hint">Get API key at platform.openai.com</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="openaiApiKey"
+                  class="setting-input"
+                  placeholder="sk-..."
+                />
+              </div>
+            </div>
+
             <!-- Validation -->
             <div class="setting-item">
               <button id="validateBtn" class="validate-btn">
