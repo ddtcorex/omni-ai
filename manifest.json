@@ -42,7 +42,8 @@
   "host_permissions": [
     "https://generativelanguage.googleapis.com/*",
     "http://localhost/*",
-    "http://127.0.0.1/*"
+    "http://127.0.0.1/*",
+    "http://localhost:11434/*"
   ],
 
   "options_ui": {
