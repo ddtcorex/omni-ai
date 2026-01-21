@@ -21,6 +21,8 @@ const elements = {
   groqKeyGroup: document.getElementById("groqKeyGroup"),
   openaiApiKey: document.getElementById("openaiApiKey"),
   openaiKeyGroup: document.getElementById("openaiKeyGroup"),
+  ollamaEndpoint: document.getElementById("ollamaEndpoint"),
+  ollamaKeyGroup: document.getElementById("ollamaKeyGroup"),
   toggleApiKey: document.getElementById("toggleApiKey"),
   validateBtn: document.getElementById("validateBtn"),
   validationStatus: document.getElementById("validationStatus"),
@@ -187,6 +189,7 @@ function setupEventListeners() {
     elements.apiKey,
     elements.groqApiKey,
     elements.openaiApiKey,
+    elements.ollamaEndpoint,
     elements.apiModel,
     elements.defaultPreset,
     elements.primaryLanguage,
@@ -261,10 +264,12 @@ async function validateConfiguration() {
     apiKey = elements.groqApiKey.value.trim();
   } else if (provider.id === "openai") {
     apiKey = elements.openaiApiKey.value.trim();
+  } else if (provider.id === "ollama") {
+    apiKey = elements.ollamaEndpoint.value.trim();
   }
 
   if (!apiKey) {
-    showValidationStatus("Please enter an API Key first.", "error");
+    showValidationStatus("Please enter an API Key/Endpoint first.", "error");
     return;
   }
 
@@ -355,6 +360,7 @@ async function loadSettings() {
       "apiKey",
       "groqApiKey",
       "openaiApiKey",
+      "ollamaEndpoint",
       "apiModel",
       "currentPreset",
       "primaryLanguage",
@@ -376,6 +382,13 @@ async function loadSettings() {
 
     // OpenAI API Key
     if (result.openaiApiKey) elements.openaiApiKey.value = result.openaiApiKey;
+
+    // Ollama Endpoint
+    if (result.ollamaEndpoint) {
+      elements.ollamaEndpoint.value = result.ollamaEndpoint;
+    } else {
+      elements.ollamaEndpoint.value = "http://localhost:11434"; // Default
+    }
 
     // API Model
     if (result.apiModel) {
@@ -425,6 +438,7 @@ async function saveSettings() {
       apiKey: elements.apiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
       openaiApiKey: elements.openaiApiKey.value.trim(),
+      ollamaEndpoint: elements.ollamaEndpoint.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
       primaryLanguage: elements.primaryLanguage.value,
