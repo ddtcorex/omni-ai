@@ -39,7 +39,11 @@
 
   "permissions": ["storage", "activeTab", "contextMenus", "identity"],
 
-  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
 
   "options_ui": {
     "page": "settings.html",
