@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-01-24
+
+### ✨ Added
+
+- **Ollama Integration**: Full support for local AI models via Ollama.
+- **New Ollama Models**: Added specialized support for `TranslateGemma`, `Llama 3.2`, `Mistral NeMo`, `DeepSeek Coder V2`, and more.
+- **Refined Input Triggers**: Overlay icon now only appears for text-based inputs and textareas, excluding checkboxes and select boxes.
+- **Double-Click Support**: Improved selection handling to trigger actions on double-click within input fields.
+
+### 🛠 Changed
+
+- **UI Update**: Expanded settings page to support Ollama endpoint configuration and model selection.
+- **API permissions**: Updated `manifest.json` to allow connections to local Ollama server.
+
 ## [1.3.1] - 2026-01-20
 
 ### 🐛 Fixed
