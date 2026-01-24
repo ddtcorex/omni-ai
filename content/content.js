@@ -69,17 +69,19 @@ function setupSelectionListener() {
     // 2. Handle text selection for Quick Actions
     setTimeout(() => {
       const text = getSelectedText();
-      const selection = window.getSelection();
+      const activeElement = document.activeElement;
+      const isInput = isTextInput(activeElement);
 
       if (text.length > 0 && !isOverlayVisible) {
-        showQuickActionButton(selection);
+        if (isInput) {
+          showQuickActionButtonForInput(activeElement);
+        } else {
+          showQuickActionButton(window.getSelection());
+        }
       } else {
         // Only hide if not in an input with content
-        const activeElement = document.activeElement;
         const isInInputWithContent =
-          (activeElement.tagName === "INPUT" ||
-            activeElement.tagName === "TEXTAREA") &&
-          activeElement.value.trim().length > 0;
+          isInput && activeElement.value.trim().length > 0;
 
         if (!isInInputWithContent) {
           hideQuickActionButton();
@@ -101,11 +103,7 @@ function setupSelectionListener() {
 
         // Show button for input/textarea with Ctrl+A
         if (text.length > 0 && !isOverlayVisible) {
-          if (
-            activeElement &&
-            (activeElement.tagName === "INPUT" ||
-              activeElement.tagName === "TEXTAREA")
-          ) {
+          if (isTextInput(activeElement)) {
             showQuickActionButtonForInput(activeElement);
           } else {
             showQuickActionButton(selection);
@@ -131,7 +129,7 @@ function setupSelectionListener() {
 
   document.addEventListener("input", (e) => {
     const target = e.target;
-    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+    if (isTextInput(target)) {
       clearTimeout(typingTimer);
       hideQuickActionButton();
 
@@ -143,7 +141,7 @@ function setupSelectionListener() {
 
   document.addEventListener("focusin", (e) => {
     const target = e.target;
-    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+    if (isTextInput(target)) {
       checkInputAndShow(target);
     }
   });
@@ -399,10 +397,7 @@ function getSelectedText() {
   const activeElement = document.activeElement;
 
   // Handle Input/Textarea
-  if (
-    activeElement &&
-    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
-  ) {
+  if (isTextInput(activeElement)) {
     try {
       const start = activeElement.selectionStart;
       const end = activeElement.selectionEnd;
@@ -1045,6 +1040,20 @@ function updateOverlayTheme(el) {
   } else {
     el.classList.remove("omni-ai-light-mode");
   }
+}
+
+/**
+ * Check if an element is a text-based input or textarea
+ */
+function isTextInput(el) {
+  if (!el) return false;
+  const tagName = el.tagName.toUpperCase();
+  if (tagName === "TEXTAREA") return true;
+  if (tagName === "INPUT") {
+    const textTypes = ["text", "search", "url", "tel", "email"];
+    return !el.type || textTypes.includes(el.type.toLowerCase());
+  }
+  return false;
 }
 
 // Initialize
