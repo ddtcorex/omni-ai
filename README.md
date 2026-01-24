@@ -99,6 +99,53 @@ You can choose between Google Gemini, Groq, or OpenAI as your AI provider.
 3. In Omni AI, select **OpenAI** as the provider.
 4. Paste your key `sk-...` and save.
 
+#### Option D: Ollama (Local AI)
+
+1. Ensure [Ollama](https://ollama.com/) is installed and running on your machine.
+2. In Omni AI, go to **Settings** > **AI Provider** and select **Ollama**.
+3. Set your endpoint (default: `http://localhost:11434`).
+4. **Important**: You must configure Ollama to allow requests from the extension (CORS). See [Ollama CORS Configuration](#-ollama-cors-configuration) below.
+
+---
+
+### 🛠 Ollama CORS Configuration
+
+For the extension to communicate with your local Ollama server, you must set the `OLLAMA_ORIGINS` environment variable.
+
+#### Linux (systemd)
+
+1. Run `sudo systemctl edit ollama.service`
+2. Add the following lines:
+   ```ini
+   [Service]
+   Environment="OLLAMA_ORIGINS=*"
+   ```
+3. Restart Ollama:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl restart ollama
+   ```
+
+#### macOS
+
+1. Quit Ollama from the menu bar.
+2. Run in terminal:
+   ```bash
+   launchctl setenv OLLAMA_ORIGINS "*"
+   ```
+3. Restart the Ollama application.
+
+#### Windows
+
+1. Close Ollama from the system tray.
+2. Open **Edit the system environment variables** in the Start menu.
+3. Add a new **User variable**:
+   - Variable: `OLLAMA_ORIGINS`
+   - Value: `*`
+4. Restart Ollama.
+
+---
+
 ### 2. Google Sign-In (Optional)
 
 To use the personalization features (syncing settings across devices), you need to configure OAuth.
@@ -164,10 +211,10 @@ omni-ai/
 ├── lib/                 # Shared logic & AI Providers
 │   ├── ai-service.js    # AI Dispatcher
 │   ├── history.js       # Statistics & History management
-│   └── providers/       # Individual API implementations
 │       ├── gemini.js
 │       ├── groq.js
-│       └── openai.js
+│       ├── openai.js
+│       └── ollama.js
 ├── assets/              # Branding & High-res icons
 ├── settings.html        # Main configuration page
 ├── settings.js
