@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-01-24
+
+### 🛠 Improvements
+
+- **Ollama Documentation**: Added detailed setup instructions for Linux, macOS, and Windows in README.
+- **Error Handling**: Enhanced Ollama provider to catch 403 Forbidden errors and provide helpful CORS configuration hints.
+- **Project Structure**: Updated documentation to reflect the inclusion of the Ollama provider.
+
+### 🐛 Bug Fixes
+
+- Fixed stale documentation regarding AI provider implementations.
+
 ## [1.4.0] - 2026-01-24
 
 ### ✨ Added
