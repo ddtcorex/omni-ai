@@ -21,11 +21,13 @@
           <div class="logo">
             <img src="assets/icons/logo.svg" alt="Omni AI" class="logo-icon" />
             <div class="logo-text">
-              <h1>Omni AI</h1>
-              <span class="version">v1.3.1</span>
+              <div class="title-row">
+                <h1>Omni AI</h1>
+                <span class="version">v1.4.1</span>
+              </div>
+              <p class="tagline">__MSG_settings_tagline__</p>
             </div>
           </div>
-          <p class="tagline">Your AI-powered writing assistant</p>
         </div>
       </header>
 
@@ -72,18 +74,18 @@
                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                     <div class="tooltip-popup">
-                      <p>Get Gemini API Key</p>
+                      <p>__MSG_settings_tooltip_gemini__</p>
                       <ol>
                         <li>
-                          Go to
+                          __MSG_settings_tooltip_gemini_s1__
                           <a
                             href="https://aistudio.google.com/app/apikey"
                             target="_blank"
                             >Google AI Studio</a
                           >
                         </li>
-                        <li>Click <strong>Create API Key</strong></li>
-                        <li>Copy key to clipboard</li>
+                        <li>__MSG_settings_tooltip_gemini_s2__</li>
+                        <li>__MSG_settings_tooltip_gemini_s3__</li>
                       </ol>
                     </div>
                   </div>
@@ -123,7 +125,7 @@
             >
               <label class="setting-label" for="groqApiKey">
                 <div class="label-header">
-                  <span class="label-text">Groq API Key</span>
+                  <span class="label-text">__MSG_settings_groqKey__</span>
                   <div class="tooltip-trigger">
                     <svg
                       width="16"
@@ -138,23 +140,23 @@
                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                     <div class="tooltip-popup">
-                      <p>Get Groq API Key</p>
+                      <p>__MSG_settings_tooltip_groq__</p>
                       <ol>
                         <li>
-                          Go to
+                          __MSG_settings_tooltip_groq_s1__
                           <a
                             href="https://console.groq.com/keys"
                             target="_blank"
                             >Groq Console</a
                           >
                         </li>
-                        <li>Sign up or Log in</li>
-                        <li>Create new API Key</li>
+                        <li>__MSG_settings_tooltip_groq_s2__</li>
+                        <li>__MSG_settings_tooltip_groq_s3__</li>
                       </ol>
                     </div>
                   </div>
                 </div>
-                <span class="label-hint">Get free key at console.groq.com</span>
+                <span class="label-hint">__MSG_settings_groqKeyHint__</span>
               </label>
               <div class="input-group">
                 <input
@@ -174,7 +176,7 @@
             >
               <label class="setting-label" for="openaiApiKey">
                 <div class="label-header">
-                  <span class="label-text">OpenAI API Key</span>
+                  <span class="label-text">__MSG_settings_openaiKey__</span>
                   <div class="tooltip-trigger">
                     <svg
                       width="16"
@@ -189,25 +191,23 @@
                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                     <div class="tooltip-popup">
-                      <p>Get OpenAI API Key</p>
+                      <p>__MSG_settings_tooltip_openai__</p>
                       <ol>
                         <li>
-                          Go to
+                          __MSG_settings_tooltip_openai_s1__
                           <a
                             href="https://platform.openai.com/api-keys"
                             target="_blank"
                             >OpenAI Platform</a
                           >
                         </li>
-                        <li>Sign up or Log in</li>
-                        <li>Create new API Key</li>
+                        <li>__MSG_settings_tooltip_openai_s2__</li>
+                        <li>__MSG_settings_tooltip_openai_s3__</li>
                       </ol>
                     </div>
                   </div>
                 </div>
-                <span class="label-hint"
-                  >Get API key at platform.openai.com</span
-                >
+                <span class="label-hint">__MSG_settings_openaiKeyHint__</span>
               </label>
               <div class="input-group">
                 <input
@@ -227,7 +227,9 @@
             >
               <label class="setting-label" for="ollamaEndpoint">
                 <div class="label-header">
-                  <span class="label-text">Ollama Endpoint</span>
+                  <span class="label-text"
+                    >__MSG_settings_ollamaEndpoint__</span
+                  >
                   <div class="tooltip-trigger">
                     <svg
                       width="16"
@@ -242,16 +244,14 @@
                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                     <div class="tooltip-popup">
-                      <p>Ollama Configuration</p>
-                      <p>Ensure Ollama is running with CORS enabled:</p>
+                      <p>__MSG_settings_tooltip_ollama__</p>
+                      <p>__MSG_settings_tooltip_ollama_s1__</p>
                       <code>OLLAMA_ORIGINS="*" ollama serve</code>
-                      <p>Default: http://localhost:11434</p>
+                      <p>__MSG_settings_tooltip_ollama_s2__</p>
                     </div>
                   </div>
                 </div>
-                <span class="label-hint"
-                  >Local API endpoint (e.g. http://localhost:11434)</span
-                >
+                <span class="label-hint">__MSG_settings_ollamaHint__</span>
               </label>
               <div class="input-group">
                 <input
@@ -278,7 +278,7 @@
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
-                <span>Validate Configuration</span>
+                <span>__MSG_settings_validate__</span>
               </button>
               <div id="validationStatus" class="validation-message"></div>
             </div>
@@ -294,71 +294,69 @@
           <div class="setting-card">
             <div class="setting-item">
               <label class="setting-label" for="themeSelector">
-                <span class="label-text">Theme</span>
-                <span class="label-hint">Choose your preferred appearance</span>
+                <span class="label-text">__MSG_settings_theme__</span>
+                <span class="label-hint">__MSG_settings_themeHint__</span>
               </label>
               <select id="themeSelector" class="setting-select">
-                <option value="system">System Default</option>
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
+                <option value="system">__MSG_theme_system__</option>
+                <option value="dark">__MSG_theme_dark__</option>
+                <option value="light">__MSG_theme_light__</option>
               </select>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">
-                <span class="label-text">__MSG_settings_defaultPreset__</span>
-                <span class="label-hint"
-                  >Default context preset for writing improvements</span
-                >
+                <span class="label-text">__MSG_settings_defaultTone__</span>
+                <span class="label-hint">__MSG_settings_defaultToneHint__</span>
               </label>
               <select id="defaultPreset" class="setting-select">
-                <option value="chat">💬 __MSG_preset_chat__</option>
-                <option value="email">📧 __MSG_preset_email__</option>
-                <option value="technical">📝 __MSG_preset_technical__</option>
-                <option value="social">🐦 __MSG_preset_social__</option>
-                <option value="academic">📚 __MSG_preset_academic__</option>
+                <option value="professional">
+                  👔 __MSG_tone_professional__
+                </option>
+                <option value="casual">💬 __MSG_tone_casual__</option>
+                <option value="friendly">😊 __MSG_tone_friendly__</option>
+                <option value="direct">⚡ __MSG_tone_direct__</option>
+                <option value="confident">🚀 __MSG_tone_confident__</option>
               </select>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">
-                <span class="label-text">Primary Language</span>
+                <span class="label-text">__MSG_settings_primaryLanguage__</span>
                 <span class="label-hint"
-                  >Your main language for quick actions</span
+                  >__MSG_settings_primaryLanguageHint__</span
                 >
               </label>
               <select id="primaryLanguage" class="setting-select">
-                <option value="en">English</option>
-                <option value="vi">Vietnamese</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="it">Italian</option>
-                <option value="pt">Portuguese</option>
-                <option value="ja">Japanese</option>
-                <option value="ko">Korean</option>
-                <option value="zh">Chinese</option>
+                <option value="en">__MSG_lang_en__</option>
+                <option value="vi">__MSG_lang_vi__</option>
+                <option value="es">__MSG_lang_es__</option>
+                <option value="fr">__MSG_lang_fr__</option>
+                <option value="de">__MSG_lang_de__</option>
+                <option value="it">__MSG_lang_it__</option>
+                <option value="pt">__MSG_lang_pt__</option>
+                <option value="ja">__MSG_lang_ja__</option>
+                <option value="ko">__MSG_lang_ko__</option>
+                <option value="zh">__MSG_lang_zh__</option>
               </select>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">
                 <span class="label-text">__MSG_settings_language__</span>
-                <span class="label-hint"
-                  >Default language for translations</span
-                >
+                <span class="label-hint">__MSG_settings_languageHint__</span>
               </label>
               <select id="defaultLanguage" class="setting-select">
-                <option value="en">English</option>
-                <option value="vi">Vietnamese</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="it">Italian</option>
-                <option value="pt">Portuguese</option>
-                <option value="ja">Japanese</option>
-                <option value="ko">Korean</option>
-                <option value="zh">Chinese</option>
+                <option value="en">__MSG_lang_en__</option>
+                <option value="vi">__MSG_lang_vi__</option>
+                <option value="es">__MSG_lang_es__</option>
+                <option value="fr">__MSG_lang_fr__</option>
+                <option value="de">__MSG_lang_de__</option>
+                <option value="it">__MSG_lang_it__</option>
+                <option value="pt">__MSG_lang_pt__</option>
+                <option value="ja">__MSG_lang_ja__</option>
+                <option value="ko">__MSG_lang_ko__</option>
+                <option value="zh">__MSG_lang_zh__</option>
               </select>
             </div>
           </div>
@@ -368,7 +366,7 @@
         <section class="settings-section">
           <h2 class="section-title">
             <span class="section-icon">⌨️</span>
-            Keyboard Shortcuts
+            __MSG_settings_shortcuts__
           </h2>
           <div class="setting-card">
             <div class="shortcuts-list">
@@ -390,20 +388,26 @@
               </div>
               <div class="shortcut-item">
                 <span class="shortcut-action">__MSG_action_grammar__</span>
-                <span class="shortcut-unset">Customize in Chrome</span>
+                <span class="shortcut-unset"
+                  >__MSG_settings_shortcuts_customize__</span
+                >
               </div>
               <div class="shortcut-item">
                 <span class="shortcut-action">__MSG_action_summarize__</span>
-                <span class="shortcut-unset">Customize in Chrome</span>
+                <span class="shortcut-unset"
+                  >__MSG_settings_shortcuts_customize__</span
+                >
               </div>
               <div class="shortcut-item">
                 <span class="shortcut-action">__MSG_action_explain__</span>
-                <span class="shortcut-unset">Customize in Chrome</span>
+                <span class="shortcut-unset"
+                  >__MSG_settings_shortcuts_customize__</span
+                >
               </div>
             </div>
             <p class="shortcuts-hint">
               <a href="chrome://extensions/shortcuts" id="shortcutsLink"
-                >Customize shortcuts in Chrome settings</a
+                >__MSG_settings_shortcuts_hint__</a
               >
             </p>
           </div>
@@ -414,10 +418,14 @@
           <div class="section-header-row">
             <h2 class="section-title">
               <span class="section-icon">📊</span>
-              Usage History
+              __MSG_settings_history__
             </h2>
             <div class="history-actions">
-              <button id="refreshHistory" class="icon-btn" title="Refresh">
+              <button
+                id="refreshHistory"
+                class="icon-btn"
+                title="__MSG_btn_refresh__"
+              >
                 <svg
                   width="16"
                   height="16"
@@ -436,7 +444,7 @@
               <button
                 id="clearHistory"
                 class="icon-btn danger"
-                title="Clear History"
+                title="__MSG_btn_clearHistory__"
               >
                 <svg
                   width="16"
@@ -471,7 +479,7 @@
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-label">Total Actions</span>
+                <span class="stat-label">__MSG_stats_totalActions__</span>
                 <span class="stat-value" id="statTotalActions">0</span>
               </div>
             </div>
@@ -497,7 +505,7 @@
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-label">Words Processed</span>
+                <span class="stat-label">__MSG_stats_wordsProcessed__</span>
                 <span class="stat-value" id="statWordsProcessed">0</span>
               </div>
             </div>
@@ -519,7 +527,7 @@
                 </svg>
               </div>
               <div class="stat-content">
-                <span class="stat-label">Words Generated</span>
+                <span class="stat-label">__MSG_stats_wordsGenerated__</span>
                 <span class="stat-value" id="statWordsGenerated">0</span>
               </div>
             </div>
@@ -530,7 +538,7 @@
         <section class="settings-section">
           <h2 class="section-title">
             <span class="section-icon">ℹ️</span>
-            About
+            __MSG_settings_about__
           </h2>
           <div class="setting-card about-card">
             <p>__MSG_extDescription__</p>
@@ -569,7 +577,7 @@
                   <line x1="12" y1="8" x2="12" y2="12"></line>
                   <line x1="12" y1="16" x2="12.01" y2="16"></line>
                 </svg>
-                Report Issue
+                __MSG_btn_reportIssue__
               </a>
             </div>
           </div>

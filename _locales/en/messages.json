@@ -107,6 +107,10 @@
     "message": "Sign out",
     "description": "Sign out button"
   },
+  "auth_accountMenu": {
+    "message": "Account menu",
+    "description": "Account menu button title"
+  },
   "settings_title": {
     "message": "Settings",
     "description": "Settings page title"
@@ -155,6 +159,10 @@
     "message": "Explain",
     "description": "Explain action"
   },
+  "ui_to": {
+    "message": "To",
+    "description": "To language preposition"
+  },
   "contextMenu_improve": {
     "message": "Improve with Omni AI",
     "description": "Context menu improve"
@@ -171,8 +179,243 @@
     "message": "API key not configured. Please add your Gemini API key in Settings.",
     "description": "No API key error"
   },
+  "settings_apiKeyPlaceholder": {
+    "message": "Enter your Gemini API key...",
+    "description": "API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Error: ",
+    "description": "Error prefix"
+  },
+  "settings_defaultTone": {
+    "message": "Default Tone",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Default tone for writing improvements and replies",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Professional",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Casual",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Friendly",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Direct",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Confident",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Quick Ask",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Result",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Thinking...",
+    "description": "Thinking status"
+  },
+  "btn_ask_ai": {
+    "message": "Ask AI",
+    "description": "Ask AI button"
+  },
+  "btn_back": {
+    "message": "Back",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Copied!",
+    "description": "Copied message"
+  },
   "error_noSelection": {
     "message": "No text selected. Please select some text first.",
     "description": "No selection error"
-  }
+  },
+  "settings_tagline": {
+    "message": "Your AI-powered writing assistant",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Theme",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Choose your preferred appearance",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "System Default",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Dark",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Light",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Primary Language",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Your main language for quick actions",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Validate Configuration",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Keyboard Shortcuts",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Usage History",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Total Actions",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Words Processed",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Words Generated",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "About",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Report Issue",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Clear History",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API Key",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Get free key at console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API Key",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Get API key at platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Ollama Endpoint",
+    "description": "Ollama endpoint label"
+  },
+  "settings_ollamaHint": {
+    "message": "Local API endpoint (e.g. http://localhost:11434)",
+    "description": "Ollama endpoint hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Get Gemini API Key",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Get Groq API Key",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Get OpenAI API Key",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Ollama Configuration",
+    "description": "Ollama tooltip title"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Customize in Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Customize shortcuts in Chrome settings",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Refresh",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Default language for translations",
+    "description": "Translation language hint"
+  },
+  "lang_en": { "message": "English" },
+  "lang_vi": { "message": "Vietnamese" },
+  "lang_es": { "message": "Spanish" },
+  "lang_fr": { "message": "French" },
+  "lang_de": { "message": "German" },
+  "lang_it": { "message": "Italian" },
+  "lang_pt": { "message": "Portuguese" },
+  "lang_ja": { "message": "Japanese" },
+  "lang_ko": { "message": "Korean" },
+  "lang_zh": { "message": "Chinese" },
+  "settings_confirmClearHistory": {
+    "message": "Are you sure you want to clear all usage history?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Please enter an API Key/Endpoint first.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Validating...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Configuration valid! ready to generate.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Connection check failed",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Checking...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Failed to save",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": { "message": "Go to Google AI Studio" },
+  "settings_tooltip_gemini_s2": { "message": "Click Create API Key" },
+  "settings_tooltip_gemini_s3": { "message": "Copy key to clipboard" },
+  "settings_tooltip_groq_s1": { "message": "Go to Groq Console" },
+  "settings_tooltip_groq_s2": { "message": "Sign up or Log in" },
+  "settings_tooltip_groq_s3": { "message": "Create new API Key" },
+  "settings_tooltip_openai_s1": { "message": "Go to OpenAI Platform" },
+  "settings_tooltip_openai_s2": { "message": "Sign up or Log in" },
+  "settings_tooltip_openai_s3": { "message": "Create new API Key" },
+  "settings_tooltip_ollama_s1": {
+    "message": "Ensure Ollama is running with CORS enabled:"
+  },
+  "settings_tooltip_ollama_s2": { "message": "Default: http://localhost:11434" }
 }

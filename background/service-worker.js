@@ -18,8 +18,6 @@ import {
 // ============================================
 // Constants
 // ============================================
-const GEMINI_API_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
 
 // ============================================
 // Installation & Setup
@@ -39,30 +37,26 @@ chrome.runtime.onInstalled.addListener((details) => {
 /**
  * Handle keyboard commands
  */
-chrome.commands.onCommand.addListener(async (command) => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.id) return;
+chrome.commands.onCommand.addListener(async (command, tab) => {
+  if (!tab?.id) {
+    return;
+  }
 
   if (command === "quick_ask") {
-    // Open popup not strictly possible via command unless action button,
-    // but message sending to content script works
     chrome.tabs.sendMessage(tab.id, { type: "SHOW_QUICK_ASK_OVERLAY" });
     return;
   }
 
   // Handle other commands via selected text
-  const response = await chrome.tabs
-    .query({ active: true, currentWindow: true })
-    .then(async ([t]) => {
-      try {
-        return await chrome.tabs.sendMessage(t.id, { type: "GET_SELECTION" });
-      } catch (e) {
-        console.warn("Selection fetch failed", e);
-        return null;
-      }
-    });
+  try {
+    const response = await chrome.tabs
+      .sendMessage(tab.id, {
+        type: "GET_SELECTION",
+      })
+      .catch(() => null);
 
-  if (response?.selection) {
+    const selection = response?.selection;
+    const isInput = response?.isInput || false;
     let action;
     if (command === "quick_fix_grammar") action = "grammar";
     if (command === "quick_rephrase") action = "rephrase";
@@ -71,8 +65,24 @@ chrome.commands.onCommand.addListener(async (command) => {
     if (command === "quick_translate") action = "translate_primary";
 
     if (action) {
-      processSelectedText(tab.id, response.selection, action);
+      if (!selection) {
+        // Notify content script about missing selection for these actions
+        chrome.tabs
+          .sendMessage(tab.id, {
+            type: "SHOW_RESULT",
+            payload: {
+              action,
+              result: chrome.i18n.getMessage("error_noSelection"),
+              error: true,
+            },
+          })
+          .catch(() => {});
+        return;
+      }
+      processSelectedText(tab.id, selection, action, isInput);
     }
+  } catch (e) {
+    console.error("[Omni AI] Command handler failed:", e);
   }
 });
 
@@ -82,7 +92,7 @@ chrome.commands.onCommand.addListener(async (command) => {
 async function initializeSettings() {
   const defaults = {
     apiKey: "",
-    currentPreset: "email",
+    currentPreset: "professional",
     customPrompts: [],
     // history managed by lib/history.js
     settings: {
@@ -103,22 +113,42 @@ async function initializeSettings() {
 function createContextMenus() {
   chrome.contextMenus.create({
     id: "omni-ai-improve",
-    title: "Improve with Omni AI",
+    title: chrome.i18n.getMessage("contextMenu_improve"),
     contexts: ["selection"],
   });
 
   chrome.contextMenus.create({
     id: "omni-ai-explain",
-    title: "Explain with Omni AI",
+    title: chrome.i18n.getMessage("contextMenu_explain"),
     contexts: ["selection"],
   });
 
   chrome.contextMenus.create({
     id: "omni-ai-translate",
-    title: "Translate with Omni AI",
+    title: chrome.i18n.getMessage("contextMenu_translate"),
     contexts: ["selection"],
   });
 }
+
+/**
+ * Handle storage changes
+ */
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "sync" && changes.omni_ai_theme) {
+    // Notify all tabs to update their theme
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach((tab) => {
+        if (tab.id) {
+          chrome.tabs
+            .sendMessage(tab.id, { type: "THEME_CHANGED" })
+            .catch(() => {
+              // Tab might be restricted or script not injected, ignore
+            });
+        }
+      });
+    });
+  }
+});
 
 // ============================================
 // Message Handling
@@ -185,6 +215,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch((error) =>
           sendResponse({ success: false, error: error.message }),
         );
+
     case "VALIDATE_CONFIG":
       handleValidateConfig(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
@@ -362,25 +393,7 @@ async function handleQuickAsk(payload) {
 
   const response = await quickAsk(query, preset);
 
-  // Send response to content script if in active tab
-  try {
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (tab?.id) {
-      chrome.tabs.sendMessage(tab.id, {
-        type: "SHOW_RESULT",
-        payload: {
-          action: "quick_ask",
-          original: query,
-          result: response,
-        },
-      });
-    }
-  } catch (e) {}
-
-  // Return response
+  // Save to history
   try {
     const [tab] = await chrome.tabs.query({
       active: true,
@@ -426,19 +439,6 @@ async function handleWritingAction(payload) {
   }
 
   const result = await improveText(selectedText, action, preset);
-
-  // Send result to content script
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab?.id) {
-    chrome.tabs.sendMessage(tab.id, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        original: selectedText,
-        result,
-      },
-    });
-  }
 
   // Save to history
   try {
@@ -511,17 +511,20 @@ async function handleQuickAction(payload) {
     case "summarize":
       result = await summarizeText(selectedText, options);
       break;
-    case "explain":
-      result = await explainText(selectedText);
+    case "explain": {
+      const { primaryLanguage } =
+        await chrome.storage.local.get("primaryLanguage");
+      result = await explainText(selectedText, primaryLanguage || "vi");
       break;
+    }
     case "reply":
       result = await generateReply(selectedText, preset, options.tone);
       break;
+    case "emoji":
     case "emojify":
       result = await emojifyText(selectedText);
       break;
     default:
-      // Fallback to improveText (covers rephrase, etc if passed here) or error
       if (
         [
           "grammar",
@@ -534,22 +537,8 @@ async function handleQuickAction(payload) {
       ) {
         result = await improveText(selectedText, action, preset);
       } else {
-        // If unknown, try generic generic generate? Or error.
         throw new Error(`Unknown action: ${action}`);
       }
-  }
-
-  // Send result to content script
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab?.id) {
-    chrome.tabs.sendMessage(tab.id, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        original: selectedText,
-        result,
-      },
-    });
   }
 
   // Save to history
@@ -595,7 +584,7 @@ async function handleValidateConfig(payload) {
 /**
  * Process selected text from context menu
  */
-async function processSelectedText(tabId, text, action) {
+async function processSelectedText(tabId, text, action, isInput = false) {
   try {
     let result;
 
@@ -638,8 +627,9 @@ async function processSelectedText(tabId, text, action) {
       type: "SHOW_RESULT",
       payload: {
         action,
-        original: text,
+        originalText: text,
         result,
+        isInput,
       },
     });
     // Save to history

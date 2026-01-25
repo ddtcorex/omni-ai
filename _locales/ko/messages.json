@@ -1,0 +1,423 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "확장 프로그램 이름"
+  },
+  "extDescription": {
+    "message": "Google Gemini 기반 올인원 AI 어시스턴트 - 글쓰기 향상, 빠른 작업 및 스마트 도구",
+    "description": "확장 프로그램 설명"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "팝업 제목"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI에게 무엇이든 물어보세요...",
+    "description": "빠른 질문 플레이스홀더"
+  },
+  "popup_context": {
+    "message": "컨텍스트",
+    "description": "컨텍스트 섹션 제목"
+  },
+  "popup_improveWriting": {
+    "message": "글쓰기 향상",
+    "description": "글쓰기 향상 섹션 제목"
+  },
+  "popup_quickActions": {
+    "message": "빠른 작업",
+    "description": "빠른 작업 섹션 제목"
+  },
+  "preset_email": {
+    "message": "이메일",
+    "description": "이메일 프리셋"
+  },
+  "preset_chat": {
+    "message": "채팅",
+    "description": "채팅 프리셋"
+  },
+  "preset_social": {
+    "message": "소셜 미디어",
+    "description": "소셜 프리셋"
+  },
+  "preset_technical": {
+    "message": "기술 문서",
+    "description": "기술 프리셋"
+  },
+  "preset_academic": {
+    "message": "학술 논문",
+    "description": "학술 프리셋"
+  },
+  "action_grammar": {
+    "message": "문법 교정",
+    "description": "문법 작업"
+  },
+  "action_clarity": {
+    "message": "명확하게 다듬기",
+    "description": "명확성 작업"
+  },
+  "action_tone": {
+    "message": "말투 변경",
+    "description": "톤 작업"
+  },
+  "action_concise": {
+    "message": "간결하게 만들기",
+    "description": "간결성 작업"
+  },
+  "action_expand": {
+    "message": "길게 늘리기",
+    "description": "확장 작업"
+  },
+  "action_rephrase": {
+    "message": "다른 표현으로 바꾸기",
+    "description": "재구성 작업"
+  },
+  "action_translate": {
+    "message": "번역하기",
+    "description": "번역 작업"
+  },
+  "action_summarize": {
+    "message": "요약하기",
+    "description": "요약 작업"
+  },
+  "action_reply": {
+    "message": "답장 작성",
+    "description": "답장 작업"
+  },
+  "action_emojify": {
+    "message": "이모지 추가",
+    "description": "이모지 작업"
+  },
+  "status_ready": {
+    "message": "준비됨",
+    "description": "준비 완료 상태"
+  },
+  "status_processing": {
+    "message": "처리 중...",
+    "description": "처리 중 상태"
+  },
+  "status_error": {
+    "message": "오류",
+    "description": "오류 상태"
+  },
+  "auth_signIn": {
+    "message": "로그인",
+    "description": "로그인 버튼"
+  },
+  "auth_signOut": {
+    "message": "로그아웃",
+    "description": "로그아웃 버튼"
+  },
+  "auth_accountMenu": {
+    "message": "계정 메뉴",
+    "description": "계정 메뉴 버튼 제목"
+  },
+  "settings_title": {
+    "message": "설정",
+    "description": "설정 페이지 제목"
+  },
+  "settings_apiKey": {
+    "message": "Gemini API 키",
+    "description": "API 키 라벨"
+  },
+  "settings_apiKeyHint": {
+    "message": "Google AI Studio에서 API 키를 발급받으세요",
+    "description": "API 키 힌트"
+  },
+  "settings_model": {
+    "message": "AI 모델",
+    "description": "AI 모델 라벨"
+  },
+  "settings_modelHint": {
+    "message": "사용할 Gemini 모델을 선택하세요",
+    "description": "AI 모델 힌트"
+  },
+  "settings_defaultPreset": {
+    "message": "기본 컨텍스트",
+    "description": "기본 프리셋 라벨"
+  },
+  "settings_language": {
+    "message": "번역 대상 언어",
+    "description": "번역 언어 라벨"
+  },
+  "settings_save": {
+    "message": "설정 저장",
+    "description": "저장 버튼"
+  },
+  "settings_saved": {
+    "message": "설정이 저장되었습니다!",
+    "description": "저장 확인 메시지"
+  },
+  "overlay_copy": {
+    "message": "복사",
+    "description": "복사 버튼"
+  },
+  "overlay_replace": {
+    "message": "바꾸기",
+    "description": "교체 버튼"
+  },
+  "action_explain": {
+    "message": "설명하기",
+    "description": "설명 작업"
+  },
+  "ui_to": {
+    "message": "→",
+    "description": "언어 사이의 화살표/전치사"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI로 문장 개선",
+    "description": "컨텍스트 메뉴 개선"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI로 설명 보기",
+    "description": "컨텍스트 메뉴 설명"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI로 번역",
+    "description": "컨텍스트 메뉴 번역"
+  },
+  "error_noApiKey": {
+    "message": "API 키가 설정되지 않았습니다. 설정에서 Gemini API 키를 추가해 주세요.",
+    "description": "API 키 미설정 오류"
+  },
+  "settings_apiKeyPlaceholder": {
+    "message": "Gemini API 키 입력...",
+    "description": "API 키 입력 플레이스홀더"
+  },
+  "error_prefix": {
+    "message": "오류: ",
+    "description": "오류 접두사"
+  },
+  "settings_defaultTone": {
+    "message": "기본 말투",
+    "description": "기본 톤 라벨"
+  },
+  "settings_defaultToneHint": {
+    "message": "글쓰기 개선 및 답장 시 사용할 기본 말투",
+    "description": "기본 톤 힌트"
+  },
+  "tone_professional": {
+    "message": "전문적/비즈니스",
+    "description": "전문적인 톤"
+  },
+  "tone_casual": {
+    "message": "일상적/편안한",
+    "description": "캐주얼한 톤"
+  },
+  "tone_friendly": {
+    "message": "친근한",
+    "description": "친근한 톤"
+  },
+  "tone_direct": {
+    "message": "직설적",
+    "description": "직접적인 톤"
+  },
+  "tone_confident": {
+    "message": "자신감 있는",
+    "description": "자신감 있는 톤"
+  },
+  "quick_ask_title": {
+    "message": "빠른 질문",
+    "description": "빠른 질문 오버레이 제목"
+  },
+  "overlay_result": {
+    "message": "결과",
+    "description": "결과 제목"
+  },
+  "status_thinking": {
+    "message": "생각 중...",
+    "description": "생각 중 상태"
+  },
+  "btn_ask_ai": {
+    "message": "AI에게 묻기",
+    "description": "AI에게 묻기 버튼"
+  },
+  "btn_back": {
+    "message": "뒤로",
+    "description": "뒤로 가기 버튼 제목"
+  },
+  "msg_copied": {
+    "message": "복사되었습니다!",
+    "description": "복사 완료 메시지"
+  },
+  "error_noSelection": {
+    "message": "선택된 텍스트가 없습니다. 먼저 텍스트를 선택해 주세요.",
+    "description": "미선택 오류"
+  },
+  "settings_tagline": {
+    "message": "당신을 위한 AI 글쓰기 어시스턴트",
+    "description": "앱 태그라인"
+  },
+  "settings_theme": {
+    "message": "테마",
+    "description": "테마 라벨"
+  },
+  "settings_themeHint": {
+    "message": "원하는 화면 스타일을 선택하세요",
+    "description": "테마 힌트"
+  },
+  "theme_system": {
+    "message": "시스템 기본값",
+    "description": "시스템 테마"
+  },
+  "theme_dark": {
+    "message": "다크 모드",
+    "description": "다크 테마"
+  },
+  "theme_light": {
+    "message": "라이트 모드",
+    "description": "라이트 테마"
+  },
+  "settings_primaryLanguage": {
+    "message": "주요 언어",
+    "description": "주요 언어 라벨"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "빠른 작업에 주로 사용할 언어",
+    "description": "주요 언어 힌트"
+  },
+  "settings_validate": {
+    "message": "설정 검증",
+    "description": "검증 버튼"
+  },
+  "settings_shortcuts": {
+    "message": "키보드 단축키",
+    "description": "단축키 섹션 제목"
+  },
+  "settings_history": {
+    "message": "사용 기록",
+    "description": "기록 섹션 제목"
+  },
+  "stats_totalActions": {
+    "message": "총 작업 횟수",
+    "description": "총 작업 통계"
+  },
+  "stats_wordsProcessed": {
+    "message": "처리된 단어 수",
+    "description": "처리 단어 통계"
+  },
+  "stats_wordsGenerated": {
+    "message": "생성된 단어 수",
+    "description": "생성 단어 통계"
+  },
+  "settings_about": {
+    "message": "Omni AI 정보",
+    "description": "정보 섹션 제목"
+  },
+  "btn_reportIssue": {
+    "message": "문제 보고하기",
+    "description": "문제 보고 링크"
+  },
+  "btn_clearHistory": {
+    "message": "기록 삭제",
+    "description": "기록 삭제 버튼 툴팁"
+  },
+  "settings_groqKey": {
+    "message": "Groq API 키",
+    "description": "Groq API 키 라벨"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com에서 무료 키를 받으세요",
+    "description": "Groq API 키 힌트"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API 키",
+    "description": "OpenAI API 키 라벨"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com에서 API 키를 받으세요",
+    "description": "OpenAI API 키 힌트"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Ollama 엔드포인트",
+    "description": "Ollama 엔드포인트 라벨"
+  },
+  "settings_ollamaHint": {
+    "message": "로컬 API 주소 (예: http://localhost:11434)",
+    "description": "Ollama 엔드포인트 힌트"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Gemini API 키 발급",
+    "description": "Gemini 툴팁 제목"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API 키 발급",
+    "description": "Groq 툴팁 제목"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API 키 발급",
+    "description": "OpenAI 툴팁 제목"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Ollama 설정",
+    "description": "Ollama 툴팁 제목"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome에서 설정 변경",
+    "description": "단축키 설정 라벨"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chrome의 확장 프로그램 설정에서 단축키를 관리하세요",
+    "description": "단축키 힌트"
+  },
+  "btn_refresh": {
+    "message": "새로고침",
+    "description": "새로고침 버튼 툴팁"
+  },
+  "settings_languageHint": {
+    "message": "번역 시 기본으로 적용될 대상 언어",
+    "description": "번역 언어 힌트"
+  },
+  "lang_en": { "message": "영어" },
+  "lang_vi": { "message": "베트남어" },
+  "lang_es": { "message": "스페인어" },
+  "lang_fr": { "message": "프랑스어" },
+  "lang_de": { "message": "독일어" },
+  "lang_it": { "message": "이탈리아어" },
+  "lang_pt": { "message": "포르투갈어" },
+  "lang_ja": { "message": "일본어" },
+  "lang_ko": { "message": "한국어" },
+  "lang_zh": { "message": "중국어" },
+  "settings_confirmClearHistory": {
+    "message": "모든 사용 기록을 삭제하시겠습니까?",
+    "description": "기록 삭제 확인"
+  },
+  "settings_errorNoApiKey": {
+    "message": "먼저 API 키 또는 엔드포인트를 입력해 주세요.",
+    "description": "입력 부족 오류"
+  },
+  "settings_validating": {
+    "message": "검증 중...",
+    "description": "검증 상태"
+  },
+  "settings_configValid": {
+    "message": "설정이 유효합니다! 이제 시작할 수 있습니다.",
+    "description": "설정 성공 메시지"
+  },
+  "settings_connectionFailed": {
+    "message": "연결 확인 실패",
+    "description": "연결 실패 오류"
+  },
+  "settings_checking": {
+    "message": "확인 중...",
+    "description": "확인 상태"
+  },
+  "settings_failedToSave": {
+    "message": "저장에 실패했습니다",
+    "description": "저장 실패 오류"
+  },
+  "settings_tooltip_gemini_s1": { "message": "Google AI Studio로 이동합니다" },
+  "settings_tooltip_gemini_s2": { "message": "'Create API Key'를 클릭합니다" },
+  "settings_tooltip_gemini_s3": {
+    "message": "발급된 키를 클립보드에 복사합니다"
+  },
+  "settings_tooltip_groq_s1": { "message": "Groq Console로 이동합니다" },
+  "settings_tooltip_groq_s2": { "message": "회원가입 또는 로그인합니다" },
+  "settings_tooltip_groq_s3": { "message": "새 API 키를 생성합니다" },
+  "settings_tooltip_openai_s1": { "message": "OpenAI Platform으로 이동합니다" },
+  "settings_tooltip_openai_s2": { "message": "회원가입 또는 로그인합니다" },
+  "settings_tooltip_openai_s3": { "message": "새 API 키를 생성합니다" },
+  "settings_tooltip_ollama_s1": {
+    "message": "Ollama에서 CORS가 활성화되어 있는지 확인하세요:"
+  },
+  "settings_tooltip_ollama_s2": { "message": "기본값: http://localhost:11434" }
+}

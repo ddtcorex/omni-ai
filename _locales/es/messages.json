@@ -1,0 +1,423 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Nombre de la extensión"
+  },
+  "extDescription": {
+    "message": "Asistente de IA todo en uno impulsado por Google Gemini - Mejora de escritura, acciones rápidas y utilidades inteligentes",
+    "description": "Descripción de la extensión"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Título de la ventana emergente"
+  },
+  "popup_quickAsk": {
+    "message": "Pregunta lo que quieras a Omni AI...",
+    "description": "Marcador de posición para pregunta rápida"
+  },
+  "popup_context": {
+    "message": "Contexto",
+    "description": "Título de la sección de contexto"
+  },
+  "popup_improveWriting": {
+    "message": "Mejorar Escritura",
+    "description": "Título de la sección de mejora de escritura"
+  },
+  "popup_quickActions": {
+    "message": "Acciones Rápidas",
+    "description": "Título de la sección de acciones rápidas"
+  },
+  "preset_email": {
+    "message": "Correo electrónico",
+    "description": "Ajuste preestablecido de correo"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Ajuste preestablecido de chat"
+  },
+  "preset_social": {
+    "message": "Redes Sociales",
+    "description": "Ajuste preestablecido social"
+  },
+  "preset_technical": {
+    "message": "Técnico",
+    "description": "Ajuste preestablecido técnico"
+  },
+  "preset_academic": {
+    "message": "Académico",
+    "description": "Ajuste preestablecido académico"
+  },
+  "action_grammar": {
+    "message": "Corregir Gramática",
+    "description": "Acción de gramática"
+  },
+  "action_clarity": {
+    "message": "Mejorar Claridad",
+    "description": "Acción de claridad"
+  },
+  "action_tone": {
+    "message": "Cambiar Tono",
+    "description": "Acción de tono"
+  },
+  "action_concise": {
+    "message": "Hacer Conciso",
+    "description": "Acción concisa"
+  },
+  "action_expand": {
+    "message": "Expandir",
+    "description": "Acción de expandir"
+  },
+  "action_rephrase": {
+    "message": "Refrasear",
+    "description": "Acción de refrasear"
+  },
+  "action_translate": {
+    "message": "Traducir",
+    "description": "Acción de traducir"
+  },
+  "action_summarize": {
+    "message": "Resumir",
+    "description": "Acción de resumir"
+  },
+  "action_reply": {
+    "message": "Responder",
+    "description": "Acción de responder"
+  },
+  "action_emojify": {
+    "message": "Añadir Emojis",
+    "description": "Acción de emojify"
+  },
+  "status_ready": {
+    "message": "Listo",
+    "description": "Estado listo"
+  },
+  "status_processing": {
+    "message": "Procesando...",
+    "description": "Estado procesando"
+  },
+  "status_error": {
+    "message": "Error",
+    "description": "Estado error"
+  },
+  "auth_signIn": {
+    "message": "Iniciar sesión",
+    "description": "Botón de inicio de sesión"
+  },
+  "auth_signOut": {
+    "message": "Cerrar sesión",
+    "description": "Botón de cierre de sesión"
+  },
+  "auth_accountMenu": {
+    "message": "Menú de cuenta",
+    "description": "Título del botón del menú de cuenta"
+  },
+  "settings_title": {
+    "message": "Configuración",
+    "description": "Título de la página de ajustes"
+  },
+  "settings_apiKey": {
+    "message": "Clave API de Gemini",
+    "description": "Etiqueta de la clave API"
+  },
+  "settings_apiKeyHint": {
+    "message": "Obtén tu clave API en Google AI Studio",
+    "description": "Sugerencia para la clave API"
+  },
+  "settings_model": {
+    "message": "Modelo de IA",
+    "description": "Etiqueta del modelo de IA"
+  },
+  "settings_modelHint": {
+    "message": "Selecciona el modelo de Gemini que prefieras",
+    "description": "Sugerencia para el modelo de IA"
+  },
+  "settings_defaultPreset": {
+    "message": "Contexto Predeterminado",
+    "description": "Etiqueta del ajuste preestablecido"
+  },
+  "settings_language": {
+    "message": "Idioma de Traducción",
+    "description": "Etiqueta del idioma de traducción"
+  },
+  "settings_save": {
+    "message": "Guardar Configuración",
+    "description": "Botón de guardar"
+  },
+  "settings_saved": {
+    "message": "¡Configuración guardada!",
+    "description": "Confirmación de guardado"
+  },
+  "overlay_copy": {
+    "message": "Copiar",
+    "description": "Botón de copiar"
+  },
+  "overlay_replace": {
+    "message": "Reemplazar",
+    "description": "Botón de reemplazar"
+  },
+  "action_explain": {
+    "message": "Explicar",
+    "description": "Acción de explicar"
+  },
+  "ui_to": {
+    "message": "Al",
+    "description": "Preposición para el idioma"
+  },
+  "contextMenu_improve": {
+    "message": "Mejorar con Omni AI",
+    "description": "Menú contextual de mejora"
+  },
+  "contextMenu_explain": {
+    "message": "Explicar con Omni AI",
+    "description": "Menú contextual de explicar"
+  },
+  "contextMenu_translate": {
+    "message": "Traducir con Omni AI",
+    "description": "Menú contextual de traducir"
+  },
+  "error_noApiKey": {
+    "message": "Clave API no configurada. Por favor, añade tu clave de Gemini en Configuración.",
+    "description": "Error de falta de clave API"
+  },
+  "settings_apiKeyPlaceholder": {
+    "message": "Introduce tu clave API de Gemini...",
+    "description": "Marcador de posición para la clave API"
+  },
+  "error_prefix": {
+    "message": "Error: ",
+    "description": "Prefijo de error"
+  },
+  "settings_defaultTone": {
+    "message": "Tono Predeterminado",
+    "description": "Etiqueta del tono predeterminado"
+  },
+  "settings_defaultToneHint": {
+    "message": "Tono por defecto para mejoras de escritura y respuestas",
+    "description": "Sugerencia del tono predeterminado"
+  },
+  "tone_professional": {
+    "message": "Profesional",
+    "description": "Tono profesional"
+  },
+  "tone_casual": {
+    "message": "Informal",
+    "description": "Tono informal"
+  },
+  "tone_friendly": {
+    "message": "Amigable",
+    "description": "Tono amigable"
+  },
+  "tone_direct": {
+    "message": "Directo",
+    "description": "Tono directo"
+  },
+  "tone_confident": {
+    "message": "Seguro",
+    "description": "Tono seguro/confiado"
+  },
+  "quick_ask_title": {
+    "message": "Pregunta Rápida",
+    "description": "Título de la ventana de pregunta rápida"
+  },
+  "overlay_result": {
+    "message": "Resultado",
+    "description": "Título de resultado"
+  },
+  "status_thinking": {
+    "message": "Pensando...",
+    "description": "Estado pensando"
+  },
+  "btn_ask_ai": {
+    "message": "Preguntar a IA",
+    "description": "Botón preguntar a IA"
+  },
+  "btn_back": {
+    "message": "Volver",
+    "description": "Título del botón volver"
+  },
+  "msg_copied": {
+    "message": "¡Copiado!",
+    "description": "Mensaje de copiado"
+  },
+  "error_noSelection": {
+    "message": "No se ha seleccionado texto. Por favor, selecciona un texto primero.",
+    "description": "Error de falta de selección"
+  },
+  "settings_tagline": {
+    "message": "Tu asistente de escritura impulsado por IA",
+    "description": "Eslogan de la aplicación"
+  },
+  "settings_theme": {
+    "message": "Tema",
+    "description": "Etiqueta de tema"
+  },
+  "settings_themeHint": {
+    "message": "Elige tu apariencia preferida",
+    "description": "Sugerencia de tema"
+  },
+  "theme_system": {
+    "message": "Predeterminado del sistema",
+    "description": "Tema del sistema"
+  },
+  "theme_dark": {
+    "message": "Oscuro",
+    "description": "Tema oscuro"
+  },
+  "theme_light": {
+    "message": "Claro",
+    "description": "Tema claro"
+  },
+  "settings_primaryLanguage": {
+    "message": "Idioma Principal",
+    "description": "Etiqueta de idioma principal"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Tu idioma habitual para acciones rápidas",
+    "description": "Sugerencia de idioma principal"
+  },
+  "settings_validate": {
+    "message": "Validar Configuración",
+    "description": "Botón de validar"
+  },
+  "settings_shortcuts": {
+    "message": "Atajos de Teclado",
+    "description": "Título de sección de atajos"
+  },
+  "settings_history": {
+    "message": "Historial de Uso",
+    "description": "Título de sección de historial"
+  },
+  "stats_totalActions": {
+    "message": "Total de Acciones",
+    "description": "Estadística de acciones totales"
+  },
+  "stats_wordsProcessed": {
+    "message": "Palabras Procesadas",
+    "description": "Estadística de palabras procesadas"
+  },
+  "stats_wordsGenerated": {
+    "message": "Palabras Generadas",
+    "description": "Estadística de palabras generadas"
+  },
+  "settings_about": {
+    "message": "Acerca de Omni AI",
+    "description": "Título de sección acerca de"
+  },
+  "btn_reportIssue": {
+    "message": "Informar un problema",
+    "description": "Enlace para reportar problemas"
+  },
+  "btn_clearHistory": {
+    "message": "Borrar Historial",
+    "description": "Botón borrar historial"
+  },
+  "settings_groqKey": {
+    "message": "Clave API de Groq",
+    "description": "Etiqueta de clave Groq"
+  },
+  "settings_groqKeyHint": {
+    "message": "Consigue una clave gratis en console.groq.com",
+    "description": "Sugerencia de clave Groq"
+  },
+  "settings_openaiKey": {
+    "message": "Clave API de OpenAI",
+    "description": "Etiqueta de clave OpenAI"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Consigue tu clave en platform.openai.com",
+    "description": "Sugerencia de clave OpenAI"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Endpoint de Ollama",
+    "description": "Etiqueta de endpoint Ollama"
+  },
+  "settings_ollamaHint": {
+    "message": "URL de la API local (ej. http://localhost:11434)",
+    "description": "Sugerencia de endpoint Ollama"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Obtener Clave API de Gemini",
+    "description": "Título de tooltip Gemini"
+  },
+  "settings_tooltip_groq": {
+    "message": "Obtener Clave API de Groq",
+    "description": "Título de tooltip Groq"
+  },
+  "settings_tooltip_openai": {
+    "message": "Obtener Clave API de OpenAI",
+    "description": "Título de tooltip OpenAI"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Configuración de Ollama",
+    "description": "Título de tooltip Ollama"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Personalizar en Chrome",
+    "description": "Etiqueta de personalización de atajos"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Personaliza los atajos en los ajustes de Chrome",
+    "description": "Sugerencia de personalización de atajos"
+  },
+  "btn_refresh": {
+    "message": "Actualizar",
+    "description": "Botón actualizar historial"
+  },
+  "settings_languageHint": {
+    "message": "Idioma por defecto para las traducciones",
+    "description": "Sugerencia de idioma de traducción"
+  },
+  "lang_en": { "message": "Inglés" },
+  "lang_vi": { "message": "Vietnamita" },
+  "lang_es": { "message": "Español" },
+  "lang_fr": { "message": "Francés" },
+  "lang_de": { "message": "Alemán" },
+  "lang_it": { "message": "Italiano" },
+  "lang_pt": { "message": "Portugués" },
+  "lang_ja": { "message": "Japonés" },
+  "lang_ko": { "message": "Coreano" },
+  "lang_zh": { "message": "Chino" },
+  "settings_confirmClearHistory": {
+    "message": "¿Estás seguro de que quieres borrar todo el historial?",
+    "description": "Confirmación de borrar historial"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Por favor, introduce primero una clave API o endpoint.",
+    "description": "Error por falta de clave"
+  },
+  "settings_validating": {
+    "message": "Validando...",
+    "description": "Estado de validación"
+  },
+  "settings_configValid": {
+    "message": "¡Configuración válida! Todo listo para generar.",
+    "description": "Éxito de configuración"
+  },
+  "settings_connectionFailed": {
+    "message": "Error de conexión",
+    "description": "Error de conexión fallida"
+  },
+  "settings_checking": {
+    "message": "Comprobando...",
+    "description": "Estado de comprobación"
+  },
+  "settings_failedToSave": {
+    "message": "Error al guardar",
+    "description": "Error al guardar"
+  },
+  "settings_tooltip_gemini_s1": { "message": "Ve a Google AI Studio" },
+  "settings_tooltip_gemini_s2": { "message": "Haz clic en 'Create API Key'" },
+  "settings_tooltip_gemini_s3": { "message": "Copia la clave al portapapeles" },
+  "settings_tooltip_groq_s1": { "message": "Ve a la consola de Groq" },
+  "settings_tooltip_groq_s2": { "message": "Regístrate o inicia sesión" },
+  "settings_tooltip_groq_s3": { "message": "Crea una nueva clave API" },
+  "settings_tooltip_openai_s1": { "message": "Ve a la plataforma de OpenAI" },
+  "settings_tooltip_openai_s2": { "message": "Regístrate o inicia sesión" },
+  "settings_tooltip_openai_s3": { "message": "Crea una nueva clave API" },
+  "settings_tooltip_ollama_s1": {
+    "message": "Asegúrate de que Ollama funcione con CORS activado:"
+  },
+  "settings_tooltip_ollama_s2": {
+    "message": "Predeterminado: http://localhost:11434"
+  }
+}
