@@ -4,6 +4,7 @@
  */
 
 import { initTheme } from "../lib/theme-manager.js";
+import { i18n } from "../lib/i18n.js";
 
 // DOM Elements
 const elements = {
@@ -11,11 +12,6 @@ const elements = {
   quickAskInput: document.getElementById("quickAskInput"),
   askBtn: document.getElementById("askBtn"),
   settingsBtn: document.getElementById("settingsBtn"),
-
-  // Presets & Actions
-  presetChips: document.querySelectorAll(".preset-chip"),
-  actionBtns: document.querySelectorAll(".action-btn"),
-  quickActionBtns: document.querySelectorAll(".quick-action-btn"),
 
   // Status
   status: document.getElementById("status"),
@@ -35,13 +31,10 @@ const elements = {
   // Result Section
   quickAskResult: document.getElementById("quickAskResult"),
   resultContent: document.getElementById("resultContent"),
-  resultBackBtn: document.getElementById("resultBackBtn"),
-  copyResultBtn: document.getElementById("copyResultBtn"),
-  newQuestionBtn: document.getElementById("newQuestionBtn"),
 };
 
 // State
-let currentPreset = "chat";
+
 let isProcessing = false;
 let currentUser = null;
 
@@ -49,12 +42,11 @@ let currentUser = null;
  * Initialize popup
  */
 async function init() {
+  await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
   setupEventListeners();
-  await loadSavedPreset();
   await loadAuthState();
-  await updateLanguageLabels();
   focusInput();
 }
 
@@ -63,10 +55,9 @@ async function init() {
  */
 function localizeDOM() {
   // Localize specific attributes
-  document.title = chrome.i18n.getMessage("popup_title");
+  document.title = i18n.getMessage("popup_title");
   if (elements.quickAskInput) {
-    elements.quickAskInput.placeholder =
-      chrome.i18n.getMessage("popup_quickAsk");
+    elements.quickAskInput.placeholder = i18n.getMessage("popup_quickAsk");
   }
 
   // Localize text content in body
@@ -82,7 +73,7 @@ function localizeDOM() {
     const text = node.nodeValue;
     if (text.includes("__MSG_")) {
       node.nodeValue = text.replace(/__MSG_(\w+)__/g, (match, key) => {
-        return chrome.i18n.getMessage(key) || match;
+        return i18n.getMessage(key) || match;
       });
     }
   }
@@ -95,7 +86,7 @@ function localizeDOM() {
       el.setAttribute(
         "title",
         title.replace(/__MSG_(\w+)__/g, (match, key) => {
-          return chrome.i18n.getMessage(key) || match;
+          return i18n.getMessage(key) || match;
         }),
       );
     }
@@ -118,21 +109,6 @@ function setupEventListeners() {
   // Settings
   elements.settingsBtn.addEventListener("click", openSettings);
 
-  // Preset chips
-  elements.presetChips.forEach((chip) => {
-    chip.addEventListener("click", () => handlePresetChange(chip));
-  });
-
-  // Action buttons
-  elements.actionBtns.forEach((btn) => {
-    btn.addEventListener("click", () => handleAction(btn.dataset.action));
-  });
-
-  // Quick action buttons
-  elements.quickActionBtns.forEach((btn) => {
-    btn.addEventListener("click", () => handleQuickAction(btn.dataset.action));
-  });
-
   // Auth events
   elements.signInBtn.addEventListener("click", handleSignIn);
   elements.userMenuBtn.addEventListener("click", toggleUserDropdown);
@@ -143,14 +119,6 @@ function setupEventListeners() {
     if (!elements.userSection.contains(e.target)) {
       closeUserDropdown();
     }
-  });
-
-  // Result section listeners
-  elements.resultBackBtn.addEventListener("click", hideResultSection);
-  elements.copyResultBtn.addEventListener("click", copyResult);
-  elements.newQuestionBtn.addEventListener("click", () => {
-    hideResultSection();
-    focusInput();
   });
 }
 
@@ -180,20 +148,20 @@ async function loadAuthState() {
  */
 async function handleSignIn() {
   try {
-    updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
+    updateStatus(i18n.getMessage("status_processing"), "processing");
 
     const response = await chrome.runtime.sendMessage({ type: "SIGN_IN" });
 
     if (response.success) {
       setSignedInState(response.user);
-      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
+      updateStatus(i18n.getMessage("status_ready"), "success");
     } else {
-      updateStatus(chrome.i18n.getMessage("status_error"), "error");
+      updateStatus(i18n.getMessage("status_error"), "error");
       console.error("Sign in failed:", response.error);
     }
   } catch (error) {
     console.error("Sign in error:", error);
-    updateStatus(chrome.i18n.getMessage("status_error"), "error");
+    updateStatus(i18n.getMessage("status_error"), "error");
   }
 }
 
@@ -203,20 +171,20 @@ async function handleSignIn() {
 async function handleSignOut() {
   try {
     closeUserDropdown();
-    updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
+    updateStatus(i18n.getMessage("status_processing"), "processing");
 
     const response = await chrome.runtime.sendMessage({ type: "SIGN_OUT" });
 
     if (response.success) {
       setSignedOutState();
-      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
+      updateStatus(i18n.getMessage("status_ready"), "success");
     } else {
-      updateStatus(chrome.i18n.getMessage("status_error"), "error");
+      updateStatus(i18n.getMessage("status_error"), "error");
       console.error("Sign out failed:", response.error);
     }
   } catch (error) {
     console.error("Sign out error:", error);
-    updateStatus(chrome.i18n.getMessage("status_error"), "error");
+    updateStatus(i18n.getMessage("status_error"), "error");
   }
 }
 
@@ -306,91 +274,26 @@ async function handleQuickAsk() {
   try {
     const response = await chrome.runtime.sendMessage({
       type: "QUICK_ASK",
-      payload: { query, preset: currentPreset },
+      payload: { query },
     });
 
     if (response.success) {
-      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
+      updateStatus(i18n.getMessage("status_ready"), "success");
 
       // Update result section with actual response
       showResultSection(response.data.response || response.data, false);
     } else {
-      updateStatus(chrome.i18n.getMessage("status_error"), "error");
-      showResultSection("Error: " + (response.error || "Unknown error"), false);
+      updateStatus(i18n.getMessage("status_error"), "error");
+      showResultSection(
+        i18n.getMessage("error_prefix") + (response.error || "Unknown error"),
+        false,
+      );
       console.error("Quick Ask failed:", response.error);
     }
   } catch (error) {
     console.error("Quick Ask error:", error);
-    updateStatus(chrome.i18n.getMessage("status_error"), "error");
-    showResultSection("Error: " + error.message, false);
-  } finally {
-    setProcessing(false);
-  }
-}
-
-/**
- * Handle preset change
- */
-function handlePresetChange(chip) {
-  elements.presetChips.forEach((c) => c.classList.remove("active"));
-  chip.classList.add("active");
-  currentPreset = chip.dataset.preset;
-  savePreset(currentPreset);
-}
-
-/**
- * Handle writing action
- */
-async function handleAction(action) {
-  if (isProcessing) return;
-
-  setProcessing(true);
-  updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
-
-  try {
-    const response = await chrome.runtime.sendMessage({
-      type: "WRITING_ACTION",
-      payload: { action, preset: currentPreset },
-    });
-
-    if (response.success) {
-      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
-    } else {
-      updateStatus(chrome.i18n.getMessage("status_error"), "error");
-      console.error("Action failed:", response.error);
-    }
-  } catch (error) {
-    console.error("Action error:", error);
-    updateStatus(chrome.i18n.getMessage("status_error"), "error");
-  } finally {
-    setProcessing(false);
-  }
-}
-
-/**
- * Handle quick action
- */
-async function handleQuickAction(action) {
-  if (isProcessing) return;
-
-  setProcessing(true);
-  updateStatus(chrome.i18n.getMessage("status_processing"), "processing");
-
-  try {
-    const response = await chrome.runtime.sendMessage({
-      type: "QUICK_ACTION",
-      payload: { action, preset: currentPreset },
-    });
-
-    if (response.success) {
-      updateStatus(chrome.i18n.getMessage("status_ready"), "success");
-    } else {
-      updateStatus(chrome.i18n.getMessage("status_error"), "error");
-      console.error("Quick action failed:", response.error);
-    }
-  } catch (error) {
-    console.error("Quick action error:", error);
-    updateStatus(chrome.i18n.getMessage("status_error"), "error");
+    updateStatus(i18n.getMessage("status_error"), "error");
+    showResultSection(i18n.getMessage("error_prefix") + error.message, false);
   } finally {
     setProcessing(false);
   }
@@ -413,6 +316,23 @@ function openSettings() {
 function setProcessing(processing) {
   isProcessing = processing;
   document.body.classList.toggle("loading", processing);
+
+  const btn = elements.askBtn;
+  if (processing) {
+    if (!btn.dataset.original) {
+      btn.dataset.original = btn.innerHTML;
+    }
+    btn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+      </svg>
+    `;
+  } else {
+    if (btn.dataset.original) {
+      btn.innerHTML = btn.dataset.original;
+      delete btn.dataset.original;
+    }
+  }
 }
 
 /**
@@ -432,69 +352,10 @@ function updateStatus(text, state = "ready") {
 }
 
 /**
- * Save preset to storage
- */
-function savePreset(preset) {
-  chrome.storage.local.set({ currentPreset: preset });
-}
-
-/**
- * Load saved preset from storage
- */
-async function loadSavedPreset() {
-  try {
-    const result = await chrome.storage.local.get("currentPreset");
-    if (result.currentPreset) {
-      currentPreset = result.currentPreset;
-      elements.presetChips.forEach((chip) => {
-        chip.classList.toggle("active", chip.dataset.preset === currentPreset);
-      });
-    }
-  } catch (error) {
-    console.error("Failed to load preset:", error);
-  }
-}
-
-/**
  * Focus input on popup open
  */
 function focusInput() {
   setTimeout(() => elements.quickAskInput.focus(), 100);
-}
-
-/**
- * Update translation language labels
- */
-async function updateLanguageLabels() {
-  const { primaryLanguage = "vi", defaultLanguage = "en" } =
-    await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
-
-  const languageNames = {
-    en: "English",
-    vi: "Vietnamese",
-    es: "Spanish",
-    fr: "French",
-    de: "German",
-    it: "Italian",
-    pt: "Portuguese",
-    ja: "Japanese",
-    ko: "Korean",
-    zh: "Chinese",
-  };
-
-  const primaryName = languageNames[primaryLanguage] || primaryLanguage;
-  const translationName = languageNames[defaultLanguage] || defaultLanguage;
-
-  const primaryIcon = primaryLanguage === "vi" ? "🇻🇳" : "🌐";
-  const translationIcon = "🌎";
-
-  const labelPrimary = document.getElementById("labelTranslatePrimary");
-  const labelDefault = document.getElementById("labelTranslateDefault");
-
-  if (labelPrimary)
-    labelPrimary.textContent = `${primaryIcon} To ${primaryName}`;
-  if (labelDefault)
-    labelDefault.textContent = `${translationIcon} To ${translationName}`;
 }
 
 // Initialize when DOM is ready
@@ -504,92 +365,27 @@ document.addEventListener("DOMContentLoaded", init);
 // ============================================
 
 /**
- * Show result section with smooth transition
+ * Show result section
  */
 function showResultSection(resultText, isLoading = false) {
-  // If already visible, just update content
-  if (elements.quickAskResult.classList.contains("visible")) {
-    if (isLoading) {
-      elements.resultContent.classList.add("loading");
-      elements.resultContent.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div style="width: 16px; height: 16px; border: 2px solid var(--accent-purple); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-          <span>Processing your request...</span>
-        </div>
-      `;
-    } else {
-      elements.resultContent.classList.remove("loading");
-      elements.resultContent.textContent = resultText;
-    }
-    return;
-  }
+  const resultContent = elements.resultContent;
 
-  // Set the result content
+  if (!elements.quickAskResult || !resultContent) return;
+
+  // Show section
+  elements.quickAskResult.classList.remove("hidden");
+  elements.quickAskResult.classList.add("visible");
+
   if (isLoading) {
-    elements.resultContent.classList.add("loading");
-    elements.resultContent.innerHTML = `
+    resultContent.classList.add("loading");
+    resultContent.innerHTML = `
       <div style="display: flex; align-items: center; gap: 8px;">
         <div style="width: 16px; height: 16px; border: 2px solid var(--accent-purple); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span>Processing your request...</span>
+        <span>${i18n.getMessage("status_processing")}</span>
       </div>
     `;
   } else {
-    elements.resultContent.classList.remove("loading");
-    elements.resultContent.textContent = resultText;
-  }
-
-  // Show result section immediately (no fade-out of other sections)
-  elements.quickAskResult.classList.remove("hidden");
-
-  // Trigger slide-in animation
-  setTimeout(() => {
-    elements.quickAskResult.classList.add("visible");
-  }, 10);
-}
-
-/**
- * Hide result section and restore main view
- */
-function hideResultSection() {
-  // Fade out result
-  elements.quickAskResult.classList.remove("visible");
-
-  setTimeout(() => {
-    elements.quickAskResult.classList.add("hidden");
-
-    // Show other sections
-    const sectionsToShow = [
-      document.querySelector(".quick-ask"),
-      document.querySelector(".presets"),
-      document.querySelector(".actions"),
-      document.querySelector(".quick-actions"),
-    ];
-
-    sectionsToShow.forEach((section) => {
-      if (section) {
-        section.classList.remove("hidden");
-        section.classList.remove("fading");
-      }
-    });
-  }, 250);
-}
-
-/**
- * Copy result to clipboard
- */
-async function copyResult() {
-  try {
-    await navigator.clipboard.writeText(elements.resultContent.textContent);
-
-    // Visual feedback
-    const originalText =
-      elements.copyResultBtn.querySelector("span").textContent;
-    elements.copyResultBtn.querySelector("span").textContent = "Copied!";
-
-    setTimeout(() => {
-      elements.copyResultBtn.querySelector("span").textContent = originalText;
-    }, 2000);
-  } catch (error) {
-    console.error("Failed to copy:", error);
+    resultContent.classList.remove("loading");
+    resultContent.textContent = resultText;
   }
 }

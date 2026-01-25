@@ -107,6 +107,10 @@
     "message": "Đăng xuất",
     "description": "Sign out button"
   },
+  "auth_accountMenu": {
+    "message": "Menu tài khoản",
+    "description": "Account menu button title"
+  },
   "settings_title": {
     "message": "Cài đặt",
     "description": "Settings page title"
@@ -118,6 +122,14 @@
   "settings_apiKeyHint": {
     "message": "Lấy khóa API từ Google AI Studio",
     "description": "API key hint"
+  },
+  "settings_model": {
+    "message": "Mô hình AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Chọn mô hình Gemini để sử dụng",
+    "description": "AI model hint"
   },
   "settings_defaultPreset": {
     "message": "Ngữ cảnh mặc định",
@@ -143,6 +155,14 @@
     "message": "Thay thế",
     "description": "Replace button"
   },
+  "action_explain": {
+    "message": "Giải thích",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Sang",
+    "description": "To language preposition"
+  },
   "contextMenu_improve": {
     "message": "Cải thiện với Omni AI",
     "description": "Context menu improve"
@@ -159,8 +179,245 @@
     "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API Gemini trong Cài đặt.",
     "description": "No API key error"
   },
+  "settings_apiKeyPlaceholder": {
+    "message": "Nhập khóa API Gemini của bạn...",
+    "description": "API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Lỗi: ",
+    "description": "Error prefix"
+  },
+  "settings_defaultTone": {
+    "message": "Giọng văn mặc định",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Giọng văn mặc định để cải thiện và trả lời",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Chuyên nghiệp",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Thoải mái",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Thân thiện",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Thẳng thắn",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Tự tin",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Hỏi nhanh",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Kết quả",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Đang suy nghĩ...",
+    "description": "Thinking status"
+  },
+  "btn_ask_ai": {
+    "message": "Hỏi AI",
+    "description": "Ask AI button"
+  },
+  "btn_back": {
+    "message": "Quay lại",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Đã sao chép!",
+    "description": "Copied message"
+  },
   "error_noSelection": {
     "message": "Chưa chọn văn bản. Vui lòng chọn văn bản trước.",
     "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Trợ lý viết lách AI của bạn",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Giao diện",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Chọn giao diện ưa thích của bạn",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Mặc định hệ thống",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Tối",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Sáng",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Ngôn ngữ chính",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Ngôn ngữ chính cho các thao tác nhanh",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Kiểm tra cấu hình",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Phím tắt",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Lịch sử sử dụng",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Tổng thao tác",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Từ đã xử lý",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Từ đã tạo",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Giới thiệu",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Báo cáo lỗi",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Xóa lịch sử",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Khóa API Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Lấy khóa miễn phí tại console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Khóa API OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Lấy khóa API tại platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Ollama Endpoint",
+    "description": "Ollama endpoint label"
+  },
+  "settings_ollamaHint": {
+    "message": "API nội bộ (vd: http://localhost:11434)",
+    "description": "Ollama endpoint hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Lấy Khóa API Gemini",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Lấy Khóa API Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Lấy Khóa API OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Cấu hình Ollama",
+    "description": "Ollama tooltip title"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Tùy chỉnh trong Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Tùy chỉnh phím tắt trong cài đặt Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Làm mới",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Ngôn ngữ mặc định cho các bản dịch",
+    "description": "Translation language hint"
+  },
+  "lang_en": { "message": "Tiếng Anh" },
+  "lang_vi": { "message": "Tiếng Việt" },
+  "lang_es": { "message": "Tiếng Tây Ban Nha" },
+  "lang_fr": { "message": "Tiếng Pháp" },
+  "lang_de": { "message": "Tiếng Đức" },
+  "lang_it": { "message": "Tiếng Ý" },
+  "lang_pt": { "message": "Tiếng Bồ Đào Nha" },
+  "lang_ja": { "message": "Tiếng Nhật" },
+  "lang_ko": { "message": "Tiếng Hàn" },
+  "lang_zh": { "message": "Tiếng Trung" },
+  "settings_confirmClearHistory": {
+    "message": "Bạn có chắc chắn muốn xóa tất cả lịch sử sử dụng không?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Vui lòng nhập Khóa API/Endpoint trước.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Đang kiểm tra...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Cấu hình hợp lệ! Đã sẵn sàng.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Kiểm tra kết nối thất bại",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Đang kiểm tra...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Lưu thất bại",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": { "message": "Truy cập Google AI Studio" },
+  "settings_tooltip_gemini_s2": { "message": "Nhấp vào Create API Key" },
+  "settings_tooltip_gemini_s3": { "message": "Sao chép khóa vào bộ nhớ tạm" },
+  "settings_tooltip_groq_s1": { "message": "Truy cập Groq Console" },
+  "settings_tooltip_groq_s2": { "message": "Đăng ký hoặc Đăng nhập" },
+  "settings_tooltip_groq_s3": { "message": "Tạo Khóa API mới" },
+  "settings_tooltip_openai_s1": { "message": "Truy cập OpenAI Platform" },
+  "settings_tooltip_openai_s2": { "message": "Đăng ký hoặc Đăng nhập" },
+  "settings_tooltip_openai_s3": { "message": "Tạo Khóa API mới" },
+  "settings_tooltip_ollama_s1": {
+    "message": "Đảm bảo Ollama đang chạy với CORS được bật:"
+  },
+  "settings_tooltip_ollama_s2": {
+    "message": "Mặc định: http://localhost:11434"
   }
 }

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-01-26
+
+### ✨ Added
+
+- **Premium UI Overhaul**: Completely redesigned the overlay with a modern glassmorphic look, including a refined "Quick Ask" interface.
+- **Smart Positioning**: The overlay now intelligently positions itself at the right edge of your selection, preferring to grow to the left to avoid screen edges.
+- **Contextual Ask**: "Quick Ask" (`Alt+A`) now displays the selected text context while you type your question.
+- **Input Field Power-Up**: Full support for `input` and `textarea` fields, including a "Replace" button that works seamlessly with keyboard shortcuts.
+- **Auto-Selection**: When no text is selected in a focused input field, Omni AI automatically processes the entire field content.
+
+### 🛠 Changed
+
+- **Unified Result View**: Custom questions asked from the main menu now display results directly in the standard result overlay.
+- **Visual Synchronization**: Synced the arrow buttons and icons across the entire UI for a more premium, cohesive feel.
+- **Improved Diff View**: Added support for "Clarity" and "Improve" actions to show visual differences.
+
+### 🛠 Improvements
+
+- **Performance**: Removed debug logs and optimized message handling between scripts.
+- **UX Polish**: Added vertical centering for action buttons in input wrappers.
+
 ## [1.4.1] - 2026-01-24
 
 ### 🛠 Improvements

@@ -1,4 +1,5 @@
 import { getStats, resetStats } from "./lib/history.js";
+import { i18n } from "./lib/i18n.js";
 import {
   initTheme,
   getThemePreference,
@@ -52,6 +53,7 @@ let isApiKeyVisible = false;
  * Initialize options page
  */
 async function init() {
+  await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
   populateModelSelect();
@@ -87,9 +89,9 @@ function populateModelSelect() {
  * Localize the DOM
  */
 function localizeDOM() {
-  document.title = chrome.i18n.getMessage("settings_title") + " - Omni AI";
+  document.title = i18n.getMessage("settings_title") + " - Omni AI";
   if (elements.apiKey) {
-    elements.apiKey.placeholder = "Enter your Gemini API key..."; // Or localize
+    elements.apiKey.placeholder = i18n.getMessage("settings_apiKeyPlaceholder");
   }
 
   // Localize text content in body
@@ -105,7 +107,7 @@ function localizeDOM() {
     const text = node.nodeValue;
     if (text.includes("__MSG_")) {
       node.nodeValue = text.replace(/__MSG_(\w+)__/g, (match, key) => {
-        return chrome.i18n.getMessage(key) || match;
+        return i18n.getMessage(key) || match;
       });
     }
   }
@@ -118,7 +120,7 @@ function localizeDOM() {
       el.setAttribute(
         "title",
         title.replace(/__MSG_(\w+)__/g, (match, key) => {
-          return chrome.i18n.getMessage(key) || match;
+          return i18n.getMessage(key) || match;
         }),
       );
     }
@@ -178,7 +180,7 @@ function setupEventListeners() {
   });
 
   elements.clearHistoryBtn.addEventListener("click", async () => {
-    if (confirm("Are you sure you want to clear all usage history?")) {
+    if (confirm(i18n.getMessage("settings_confirmClearHistory"))) {
       await resetStats();
       await loadStats();
     }
@@ -269,11 +271,11 @@ async function validateConfiguration() {
   }
 
   if (!apiKey) {
-    showValidationStatus("Please enter an API Key/Endpoint first.", "error");
+    showValidationStatus(i18n.getMessage("settings_errorNoApiKey"), "error");
     return;
   }
 
-  showValidationStatus("Validating...", "processing");
+  showValidationStatus(i18n.getMessage("settings_validating"), "processing");
   setButtonLoading(true);
 
   try {
@@ -285,16 +287,19 @@ async function validateConfiguration() {
     setButtonLoading(false);
 
     if (response.success) {
-      showValidationStatus(
-        "Configuration valid! ready to generate.",
-        "success",
-      );
+      showValidationStatus(i18n.getMessage("settings_configValid"), "success");
     } else {
-      showValidationStatus(`Error: ${response.error}`, "error");
+      showValidationStatus(
+        i18n.getMessage("error_prefix") + response.error,
+        "error",
+      );
     }
   } catch (err) {
     setButtonLoading(false);
-    showValidationStatus(`Connection check failed: ${err.message}`, "error");
+    showValidationStatus(
+      `${i18n.getMessage("settings_connectionFailed")}: ${err.message}`,
+      "error",
+    );
   }
 }
 
@@ -311,13 +316,15 @@ function setButtonLoading(isLoading) {
     const svg = btn.querySelector("svg");
     if (svg) svg.classList.add("validate-spinner");
     // Change icon to refresh/spinner
-    btn.querySelector("span").textContent = "Checking...";
+    btn.querySelector("span").textContent =
+      i18n.getMessage("settings_checking");
   } else {
     btn.classList.remove("loading");
     btn.disabled = false;
     const svg = btn.querySelector("svg");
     if (svg) svg.classList.remove("validate-spinner");
-    btn.querySelector("span").textContent = "Validate Configuration";
+    btn.querySelector("span").textContent =
+      i18n.getMessage("settings_validate");
   }
 }
 
@@ -356,109 +363,88 @@ function showValidationStatus(message, type) {
 
 async function loadSettings() {
   try {
-    const result = await chrome.storage.local.get([
+    // 1. Load Sync Preferences
+    const THEME_KEY = "omni_ai_theme";
+    const prefs = await chrome.storage.sync.get([
+      "primaryLanguage",
+      "defaultLanguage",
+      THEME_KEY,
+    ]);
+
+    if (elements.themeSelector) {
+      elements.themeSelector.value = prefs[THEME_KEY] || "system";
+      applyTheme(elements.themeSelector.value);
+    }
+    if (elements.primaryLanguage)
+      elements.primaryLanguage.value = prefs.primaryLanguage || "vi";
+    if (elements.defaultLanguage)
+      elements.defaultLanguage.value = prefs.defaultLanguage || "en";
+
+    // 2. Load Local AI Config
+    const config = await chrome.storage.local.get([
       "apiKey",
       "groqApiKey",
       "openaiApiKey",
       "ollamaEndpoint",
       "apiModel",
       "currentPreset",
-      "primaryLanguage",
-      "defaultLanguage",
-      "settings",
     ]);
 
-    // Load Theme Preference (from Sync)
-    const theme = await getThemePreference();
-    if (elements.themeSelector) {
-      elements.themeSelector.value = theme;
-    }
+    if (config.apiKey) elements.apiKey.value = config.apiKey;
+    if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
+    if (config.openaiApiKey) elements.openaiApiKey.value = config.openaiApiKey;
 
-    // API Key
-    if (result.apiKey) elements.apiKey.value = result.apiKey;
-
-    // Groq API Key
-    if (result.groqApiKey) elements.groqApiKey.value = result.groqApiKey;
-
-    // OpenAI API Key
-    if (result.openaiApiKey) elements.openaiApiKey.value = result.openaiApiKey;
-
-    // Ollama Endpoint
-    if (result.ollamaEndpoint) {
-      elements.ollamaEndpoint.value = result.ollamaEndpoint;
+    elements.ollamaEndpoint.value =
+      config.ollamaEndpoint || "http://localhost:11434";
+    elements.apiModel.value = config.apiModel || "gemini-1.5-flash";
+    const validPresets = [
+      "professional",
+      "casual",
+      "friendly",
+      "direct",
+      "confident",
+    ];
+    if (config.currentPreset && validPresets.includes(config.currentPreset)) {
+      elements.defaultPreset.value = config.currentPreset;
     } else {
-      elements.ollamaEndpoint.value = "http://localhost:11434"; // Default
+      elements.defaultPreset.value = "professional";
     }
 
-    // API Model
-    if (result.apiModel) {
-      elements.apiModel.value = result.apiModel;
-    } else {
-      elements.apiModel.value = "gemini-1.5-flash"; // Default
-    }
-
-    // Trigger visibility update
     updateModelVisibility();
-
-    // Default Preset
-    if (result.currentPreset)
-      elements.defaultPreset.value = result.currentPreset;
-
-    // Primary Language
-    if (result.primaryLanguage) {
-      elements.primaryLanguage.value = result.primaryLanguage;
-    } else {
-      elements.primaryLanguage.value = "vi"; // Default to Vietnamese
-    }
-
-    // Default Language
-    if (result.defaultLanguage) {
-      elements.defaultLanguage.value = result.defaultLanguage;
-    } else {
-      elements.defaultLanguage.value = "en"; // Default to English
-    }
-
-    // Settings
-    if (result.settings) {
-      // Future settings
-    }
   } catch (error) {
     console.error("Failed to load settings:", error);
   }
 }
 
-// ...
-
 /**
  * Save settings to storage
  */
 async function saveSettings() {
+  const THEME_KEY = "omni_ai_theme";
   try {
-    const settings = {
+    // Preferences to Sync
+    const preferences = {
+      primaryLanguage: elements.primaryLanguage.value,
+      defaultLanguage: elements.defaultLanguage.value,
+      [THEME_KEY]: elements.themeSelector.value,
+    };
+    await chrome.storage.sync.set(preferences);
+
+    // AI Config to Local
+    const aiConfig = {
       apiKey: elements.apiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
       openaiApiKey: elements.openaiApiKey.value.trim(),
       ollamaEndpoint: elements.ollamaEndpoint.value.trim(),
       apiModel: elements.apiModel.value,
       currentPreset: elements.defaultPreset.value,
-      primaryLanguage: elements.primaryLanguage.value,
-      defaultLanguage: elements.defaultLanguage.value,
-      settings: {
-        // Future settings
-      },
     };
+    await chrome.storage.local.set(aiConfig);
 
-    // Save Theme (Sync)
-    if (elements.themeSelector) {
-      await setThemePreference(elements.themeSelector.value);
-    }
-
-    await chrome.storage.local.set(settings);
-
-    showSaveStatus(chrome.i18n.getMessage("settings_saved"), "success");
+    showSaveStatus(i18n.getMessage("settings_saved"), "success");
   } catch (error) {
     console.error("Failed to save settings:", error);
-    showSaveStatus("Failed to save", "error");
+    showSaveStatus(i18n.getMessage("settings_failedToSave"), "error");
   }
 }
 

@@ -1,0 +1,433 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "拡張機能の名前"
+  },
+  "extDescription": {
+    "message": "Google Geminiを搭載したオールインワンAIアシスタント - 文章の推敲、クイックアクション、スマートユーティリティ",
+    "description": "拡張機能の説明"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "ポップアップのタイトル"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AIに何でも聞いてください...",
+    "description": "クイック質問のプレースホルダー"
+  },
+  "popup_context": {
+    "message": "文脈",
+    "description": "文脈セクションのタイトル"
+  },
+  "popup_improveWriting": {
+    "message": "文章を改善",
+    "description": "文章改善セクションのタイトル"
+  },
+  "popup_quickActions": {
+    "message": "クイックアクション",
+    "description": "クイックアクションセクションのタイトル"
+  },
+  "preset_email": {
+    "message": "メール",
+    "description": "メールプリセット"
+  },
+  "preset_chat": {
+    "message": "チャット",
+    "description": "チャットプリセット"
+  },
+  "preset_social": {
+    "message": "SNS",
+    "description": "ソーシャルプリセット"
+  },
+  "preset_technical": {
+    "message": "技術的",
+    "description": "技術プリセット"
+  },
+  "preset_academic": {
+    "message": "学術的",
+    "description": "学術プリセット"
+  },
+  "action_grammar": {
+    "message": "文法を修正",
+    "description": "文法アクション"
+  },
+  "action_clarity": {
+    "message": "明快にする",
+    "description": "明快さアクション"
+  },
+  "action_tone": {
+    "message": "トーンを変更",
+    "description": "トーンアクション"
+  },
+  "action_concise": {
+    "message": "簡潔にする",
+    "description": "簡潔アクション"
+  },
+  "action_expand": {
+    "message": "詳しくする",
+    "description": "拡張アクション"
+  },
+  "action_rephrase": {
+    "message": "言い換える",
+    "description": "言い換えアクション"
+  },
+  "action_translate": {
+    "message": "翻訳",
+    "description": "翻訳アクション"
+  },
+  "action_summarize": {
+    "message": "要約",
+    "description": "要約アクション"
+  },
+  "action_reply": {
+    "message": "返信を作成",
+    "description": "返信アクション"
+  },
+  "action_emojify": {
+    "message": "絵文字を追加",
+    "description": "絵文字アクション"
+  },
+  "status_ready": {
+    "message": "準備完了",
+    "description": "ステータス：準備完了"
+  },
+  "status_processing": {
+    "message": "処理中...",
+    "description": "ステータス：処理中"
+  },
+  "status_error": {
+    "message": "エラー",
+    "description": "ステータス：エラー"
+  },
+  "auth_signIn": {
+    "message": "サインイン",
+    "description": "サインインボタン"
+  },
+  "auth_signOut": {
+    "message": "サインアウト",
+    "description": "サインアウトボタン"
+  },
+  "auth_accountMenu": {
+    "message": "アカウントメニュー",
+    "description": "アカウントメニューボタンのタイトル"
+  },
+  "settings_title": {
+    "message": "設定",
+    "description": "設定ページのタイトル"
+  },
+  "settings_apiKey": {
+    "message": "Gemini APIキー",
+    "description": "APIキーのラベル"
+  },
+  "settings_apiKeyHint": {
+    "message": "Google AI StudioからAPIキーを取得してください",
+    "description": "APIキーのヒント"
+  },
+  "settings_model": {
+    "message": "AIモデル",
+    "description": "AIモデルのラベル"
+  },
+  "settings_modelHint": {
+    "message": "使用するGeminiモデルを選択してください",
+    "description": "AIモデルのヒント"
+  },
+  "settings_defaultPreset": {
+    "message": "デフォルトの文脈",
+    "description": "デフォルトプリセットのラベル"
+  },
+  "settings_language": {
+    "message": "翻訳言語",
+    "description": "翻訳言語のラベル"
+  },
+  "settings_save": {
+    "message": "設定を保存",
+    "description": "保存ボタン"
+  },
+  "settings_saved": {
+    "message": "設定を保存しました！",
+    "description": "保存完了の通知"
+  },
+  "overlay_copy": {
+    "message": "コピー",
+    "description": "コピーボタン"
+  },
+  "overlay_replace": {
+    "message": "置換",
+    "description": "置換ボタン"
+  },
+  "action_explain": {
+    "message": "解説",
+    "description": "解説アクション"
+  },
+  "ui_to": {
+    "message": "→",
+    "description": "言語の前の前置詞"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AIで改善",
+    "description": "コンテキストメニュー：改善"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AIで解説",
+    "description": "コンテキストメニュー：解説"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AIで翻訳",
+    "description": "コンテキストメニュー：翻訳"
+  },
+  "error_noApiKey": {
+    "message": "APIキーが設定されていません。設定からGemini APIキーを追加してください。",
+    "description": "APIキー未設定エラー"
+  },
+  "settings_apiKeyPlaceholder": {
+    "message": "Gemini APIキーを入力...",
+    "description": "APIキー入力のプレースホルダー"
+  },
+  "error_prefix": {
+    "message": "エラー: ",
+    "description": "エラーの接頭辞"
+  },
+  "settings_defaultTone": {
+    "message": "デフォルトのトーン",
+    "description": "デフォルトトーンのラベル"
+  },
+  "settings_defaultToneHint": {
+    "message": "改善や返信に使用するデフォルトの語調",
+    "description": "デフォルトトーンのヒント"
+  },
+  "tone_professional": {
+    "message": "丁寧・ビジネス",
+    "description": "プロフェッショナルなトーン"
+  },
+  "tone_casual": {
+    "message": "カジュアル・親しみやすい",
+    "description": "カジュアルなトーン"
+  },
+  "tone_friendly": {
+    "message": "フレンドリー",
+    "description": "フレンドリーなトーン"
+  },
+  "tone_direct": {
+    "message": "単刀直入",
+    "description": "直接的なトーン"
+  },
+  "tone_confident": {
+    "message": "自信に満ちた",
+    "description": "自信のあるトーン"
+  },
+  "quick_ask_title": {
+    "message": "クイック質問",
+    "description": "クイック質問オーバーレイのタイトル"
+  },
+  "overlay_result": {
+    "message": "結果",
+    "description": "結果のタイトル"
+  },
+  "status_thinking": {
+    "message": "思考中...",
+    "description": "思考中ステータス"
+  },
+  "btn_ask_ai": {
+    "message": "AIに聞く",
+    "description": "AIに聞くボタン"
+  },
+  "btn_back": {
+    "message": "戻る",
+    "description": "戻るボタンのタイトル"
+  },
+  "msg_copied": {
+    "message": "コピーしました！",
+    "description": "コピー完了メッセージ"
+  },
+  "error_noSelection": {
+    "message": "テキストが選択されていません。まずテキストを選択してください。",
+    "description": "未選択エラー"
+  },
+  "settings_tagline": {
+    "message": "あなたのAI文章アシスタント",
+    "description": "アプリのキャッチコピー"
+  },
+  "settings_theme": {
+    "message": "テーマ",
+    "description": "テーマのラベル"
+  },
+  "settings_themeHint": {
+    "message": "好みの外観を選択してください",
+    "description": "テーマのヒント"
+  },
+  "theme_system": {
+    "message": "システム設定に従う",
+    "description": "システムテーマ"
+  },
+  "theme_dark": {
+    "message": "ダーク",
+    "description": "ダークテーマ"
+  },
+  "theme_light": {
+    "message": "ライト",
+    "description": "ライトテーマ"
+  },
+  "settings_primaryLanguage": {
+    "message": "メイン言語",
+    "description": "主言語のラベル"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "クイックアクションで使用する主な言語",
+    "description": "主言語のヒント"
+  },
+  "settings_validate": {
+    "message": "設定を確認",
+    "description": "検証ボタン"
+  },
+  "settings_shortcuts": {
+    "message": "キーボードショートカット",
+    "description": "ショートカットセクションのタイトル"
+  },
+  "settings_history": {
+    "message": "利用履歴",
+    "description": "履歴セクションのタイトル"
+  },
+  "stats_totalActions": {
+    "message": "合計アクション数",
+    "description": "合計アクション統計"
+  },
+  "stats_wordsProcessed": {
+    "message": "処理済み単語数",
+    "description": "処理済み単語統計"
+  },
+  "stats_wordsGenerated": {
+    "message": "生成済み単語数",
+    "description": "生成済み単語統計"
+  },
+  "settings_about": {
+    "message": "Omni AIについて",
+    "description": "概要セクションのタイトル"
+  },
+  "btn_reportIssue": {
+    "message": "問題を報告",
+    "description": "バグ報告リンク"
+  },
+  "btn_clearHistory": {
+    "message": "履歴を消去",
+    "description": "履歴消去ボタンのツールチップ"
+  },
+  "settings_groqKey": {
+    "message": "Groq APIキー",
+    "description": "Groq APIキーのラベル"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com で無料キーを取得できます",
+    "description": "Groq APIキーのヒント"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI APIキー",
+    "description": "OpenAI APIキーのラベル"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com でAPIキーを取得できます",
+    "description": "OpenAI APIキーのヒント"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Ollamaエンドポイント",
+    "description": "Ollamaエンドポイントのラベル"
+  },
+  "settings_ollamaHint": {
+    "message": "ローカルAPI（例: http://localhost:11434）",
+    "description": "Ollamaエンドポイントのヒント"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Gemini APIキーの取得",
+    "description": "Geminiツールチップのタイトル"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq APIキーの取得",
+    "description": "Groqツールチップのタイトル"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI APIキーの取得",
+    "description": "OpenAIツールチップのタイトル"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Ollamaの設定",
+    "description": "Ollamaツールチップのタイトル"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chromeでカスタマイズ",
+    "description": "ショートカット設定ラベル"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chromeの設定画面からショートカットを変更できます",
+    "description": "ショートカットのヒント"
+  },
+  "btn_refresh": {
+    "message": "更新",
+    "description": "更新ボタンのツールチップ"
+  },
+  "settings_languageHint": {
+    "message": "翻訳時のデフォルトターゲット言語",
+    "description": "翻訳言語のヒント"
+  },
+  "lang_en": { "message": "英語" },
+  "lang_vi": { "message": "ベトナム語" },
+  "lang_es": { "message": "スペイン語" },
+  "lang_fr": { "message": "フランス語" },
+  "lang_de": { "message": "ドイツ語" },
+  "lang_it": { "message": "イタリア語" },
+  "lang_pt": { "message": "ポルトガル語" },
+  "lang_ja": { "message": "日本語" },
+  "lang_ko": { "message": "韓国語" },
+  "lang_zh": { "message": "中国語" },
+  "settings_confirmClearHistory": {
+    "message": "利用履歴をすべて消去してもよろしいですか？",
+    "description": "履歴消去の確認"
+  },
+  "settings_errorNoApiKey": {
+    "message": "まずAPIキーまたはエンドポイントを入力してください。",
+    "description": "未入力エラー"
+  },
+  "settings_validating": {
+    "message": "検証中...",
+    "description": "検証中ステータス"
+  },
+  "settings_configValid": {
+    "message": "設定は有効です！準備が整いました。",
+    "description": "検証成功メッセージ"
+  },
+  "settings_connectionFailed": {
+    "message": "接続確認に失敗しました",
+    "description": "接続失敗エラー"
+  },
+  "settings_checking": {
+    "message": "確認中...",
+    "description": "確認中ステータス"
+  },
+  "settings_failedToSave": {
+    "message": "保存に失敗しました",
+    "description": "保存失敗エラー"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio にアクセスします"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "「Create API Key」をクリックします"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "キーをコピーしてクリップボードに保存します"
+  },
+  "settings_tooltip_groq_s1": { "message": "Groq Console にアクセスします" },
+  "settings_tooltip_groq_s2": { "message": "サインアップまたはログインします" },
+  "settings_tooltip_groq_s3": { "message": "新しいAPIキーを作成します" },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform にアクセスします"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "サインアップまたはログインします"
+  },
+  "settings_tooltip_openai_s3": { "message": "新しいAPIキーを作成します" },
+  "settings_tooltip_ollama_s1": {
+    "message": "OllamaがCORSを有効にして動作していることを確認してください："
+  },
+  "settings_tooltip_ollama_s2": {
+    "message": "デフォルト: http://localhost:11434"
+  }
+}

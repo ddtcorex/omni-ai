@@ -1,0 +1,425 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Erweiterungsname"
+  },
+  "extDescription": {
+    "message": "All-in-One-KI-Assistent auf Basis von Google Gemini – Schreiboptimierung, Schnellaktionen und smarte Tools",
+    "description": "Erweiterungsbeschreibung"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup-Titel"
+  },
+  "popup_quickAsk": {
+    "message": "Frag Omni AI alles...",
+    "description": "Platzhalter für Schnellfrage"
+  },
+  "popup_context": {
+    "message": "Kontext",
+    "description": "Titel für den Kontext-Bereich"
+  },
+  "popup_improveWriting": {
+    "message": "Texte optimieren",
+    "description": "Titel für den Schreiboptimierungs-Bereich"
+  },
+  "popup_quickActions": {
+    "message": "Schnellaktionen",
+    "description": "Titel für den Schnellaktionen-Bereich"
+  },
+  "preset_email": {
+    "message": "E-Mail",
+    "description": "Voreinstellung E-Mail"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Voreinstellung Chat"
+  },
+  "preset_social": {
+    "message": "Social Media",
+    "description": "Voreinstellung Social"
+  },
+  "preset_technical": {
+    "message": "Technisch",
+    "description": "Voreinstellung Technisch"
+  },
+  "preset_academic": {
+    "message": "Akademisch",
+    "description": "Voreinstellung Akademisch"
+  },
+  "action_grammar": {
+    "message": "Grammatik prüfen",
+    "description": "Grammatik-Aktion"
+  },
+  "action_clarity": {
+    "message": "Klarheit verbessern",
+    "description": "Klarheits-Aktion"
+  },
+  "action_tone": {
+    "message": "Tonfall ändern",
+    "description": "Tonfall-Aktion"
+  },
+  "action_concise": {
+    "message": "Prägnanter fassen",
+    "description": "Prägnanz-Aktion"
+  },
+  "action_expand": {
+    "message": "Erweitern",
+    "description": "Erweiterungs-Aktion"
+  },
+  "action_rephrase": {
+    "message": "Umformulieren",
+    "description": "Umformulierungs-Aktion"
+  },
+  "action_translate": {
+    "message": "Übersetzen",
+    "description": "Übersetzung-Aktion"
+  },
+  "action_summarize": {
+    "message": "Zusammenfassen",
+    "description": "Zusammenfassung-Aktion"
+  },
+  "action_reply": {
+    "message": "Antworten",
+    "description": "Antwort-Aktion"
+  },
+  "action_emojify": {
+    "message": "Emojis hinzufügen",
+    "description": "Emojify-Aktion"
+  },
+  "status_ready": {
+    "message": "Bereit",
+    "description": "Status Bereit"
+  },
+  "status_processing": {
+    "message": "Verarbeitung...",
+    "description": "Status Verarbeitung"
+  },
+  "status_error": {
+    "message": "Fehler",
+    "description": "Status Fehler"
+  },
+  "auth_signIn": {
+    "message": "Anmelden",
+    "description": "Anmelde-Button"
+  },
+  "auth_signOut": {
+    "message": "Abmelden",
+    "description": "Abmelde-Button"
+  },
+  "auth_accountMenu": {
+    "message": "Kontomenü",
+    "description": "Titel für das Kontomenü"
+  },
+  "settings_title": {
+    "message": "Einstellungen",
+    "description": "Titel der Einstellungsseite"
+  },
+  "settings_apiKey": {
+    "message": "Gemini API-Schlüssel",
+    "description": "API-Schlüssel-Label"
+  },
+  "settings_apiKeyHint": {
+    "message": "Holen Sie sich Ihren API-Schlüssel im Google AI Studio",
+    "description": "API-Schlüssel-Hinweis"
+  },
+  "settings_model": {
+    "message": "KI-Modell",
+    "description": "KI-Modell-Label"
+  },
+  "settings_modelHint": {
+    "message": "Wählen Sie das zu verwendende Gemini-Modell",
+    "description": "KI-Modell-Hinweis"
+  },
+  "settings_defaultPreset": {
+    "message": "Standard-Kontext",
+    "description": "Standardeinstellung Kontext"
+  },
+  "settings_language": {
+    "message": "Zielsprache",
+    "description": "Übersetzungssprache-Label"
+  },
+  "settings_save": {
+    "message": "Einstellungen speichern",
+    "description": "Speichern-Button"
+  },
+  "settings_saved": {
+    "message": "Einstellungen gespeichert!",
+    "description": "Speicherbestätigung"
+  },
+  "overlay_copy": {
+    "message": "Kopieren",
+    "description": "Kopieren-Button"
+  },
+  "overlay_replace": {
+    "message": "Ersetzen",
+    "description": "Ersetzen-Button"
+  },
+  "action_explain": {
+    "message": "Erklären",
+    "description": "Erklär-Aktion"
+  },
+  "ui_to": {
+    "message": "Auf",
+    "description": "Präposition vor der Sprache"
+  },
+  "contextMenu_improve": {
+    "message": "Mit Omni AI optimieren",
+    "description": "Kontextmenü Optimierung"
+  },
+  "contextMenu_explain": {
+    "message": "Mit Omni AI erklären",
+    "description": "Kontextmenü Erklärung"
+  },
+  "contextMenu_translate": {
+    "message": "Mit Omni AI übersetzen",
+    "description": "Kontextmenü Übersetzung"
+  },
+  "error_noApiKey": {
+    "message": "API-Schlüssel nicht konfiguriert. Bitte fügen Sie Ihren Schlüssel in den Einstellungen hinzu.",
+    "description": "Fehler: Kein API-Schlüssel"
+  },
+  "settings_apiKeyPlaceholder": {
+    "message": "Geben Sie Ihren Gemini API-Schlüssel ein...",
+    "description": "API-Schlüssel Platzhalter"
+  },
+  "error_prefix": {
+    "message": "Fehler: ",
+    "description": "Fehler-Präfix"
+  },
+  "settings_defaultTone": {
+    "message": "Standard-Tonfall",
+    "description": "Standard-Tonfall-Label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Standard-Tonfall für Schreiboptimierung und Antworten",
+    "description": "Standard-Tonfall Hinweis"
+  },
+  "tone_professional": {
+    "message": "Professionell",
+    "description": "Tonfall professionell"
+  },
+  "tone_casual": {
+    "message": "Locker",
+    "description": "Tonfall locker"
+  },
+  "tone_friendly": {
+    "message": "Freundlich",
+    "description": "Tonfall freundlich"
+  },
+  "tone_direct": {
+    "message": "Direkt",
+    "description": "Tonfall direkt"
+  },
+  "tone_confident": {
+    "message": "Selbstbewusst",
+    "description": "Tonfall selbstbewusst"
+  },
+  "quick_ask_title": {
+    "message": "Schnellfrage",
+    "description": "Schnellfrage-Overlay Titel"
+  },
+  "overlay_result": {
+    "message": "Ergebnis",
+    "description": "Ergebnis-Titel"
+  },
+  "status_thinking": {
+    "message": "Überlegt...",
+    "description": "Status thinking"
+  },
+  "btn_ask_ai": {
+    "message": "KI fragen",
+    "description": "KI-fragen Button"
+  },
+  "btn_back": {
+    "message": "Zurück",
+    "description": "Zurück-Button"
+  },
+  "msg_copied": {
+    "message": "Kopiert!",
+    "description": "Kopiernachricht"
+  },
+  "error_noSelection": {
+    "message": "Kein Text ausgewählt. Bitte markieren Sie zuerst einen Text.",
+    "description": "Fehler: Keine Auswahl"
+  },
+  "settings_tagline": {
+    "message": "Ihr KI-Schreibassistent",
+    "description": "Slogan der App"
+  },
+  "settings_theme": {
+    "message": "Erscheinungsbild",
+    "description": "Theme-Label"
+  },
+  "settings_themeHint": {
+    "message": "Wählen Sie Ihr bevorzugtes Design",
+    "description": "Theme-Hinweis"
+  },
+  "theme_system": {
+    "message": "Systemstandard",
+    "description": "System-Theme"
+  },
+  "theme_dark": {
+    "message": "Dunkel",
+    "description": "Dark-Theme"
+  },
+  "theme_light": {
+    "message": "Hell",
+    "description": "Light-Theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Hauptsprache",
+    "description": "Primärsprache-Label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Ihre Muttersprache für Schnellaktionen",
+    "description": "Primärsprache-Hinweis"
+  },
+  "settings_validate": {
+    "message": "Konfiguration prüfen",
+    "description": "Prüfen-Button"
+  },
+  "settings_shortcuts": {
+    "message": "Tastaturkürzel",
+    "description": "Titel Tastaturkürzel"
+  },
+  "settings_history": {
+    "message": "Verlauf",
+    "description": "Titel Verlauf"
+  },
+  "stats_totalActions": {
+    "message": "Aktionen gesamt",
+    "description": "Statistik Aktionen"
+  },
+  "stats_wordsProcessed": {
+    "message": "Verarbeitete Wörter",
+    "description": "Statistik Wörter verarbeitet"
+  },
+  "stats_wordsGenerated": {
+    "message": "Generierte Wörter",
+    "description": "Statistik Wörter generiert"
+  },
+  "settings_about": {
+    "message": "Über Omni AI",
+    "description": "Titel Über-Bereich"
+  },
+  "btn_reportIssue": {
+    "message": "Problem melden",
+    "description": "Problem-melden Link"
+  },
+  "btn_clearHistory": {
+    "message": "Verlauf löschen",
+    "description": "Verlauf-löschen Tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API-Schlüssel",
+    "description": "Groq-Schlüssel-Label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Kostenlosen Schlüssel auf console.groq.com erhalten",
+    "description": "Groq-Schlüssel-Hinweis"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API-Schlüssel",
+    "description": "OpenAI-Schlüssel-Label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "API-Schlüssel auf platform.openai.com erhalten",
+    "description": "OpenAI-Schlüssel-Hinweis"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Ollama-Endpunkt",
+    "description": "Ollama-Endpunkt-Label"
+  },
+  "settings_ollamaHint": {
+    "message": "Lokale API (z.B. http://localhost:11434)",
+    "description": "Ollama-Endpunkt-Hinweis"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Gemini-Schlüssel erhalten",
+    "description": "Statistik Gemini"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq-Schlüssel erhalten",
+    "description": "Statistik Groq"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI-Schlüssel erhalten",
+    "description": "Statistik OpenAI"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Ollama-Konfiguration",
+    "description": "Statistik Ollama"
+  },
+  "settings_shortcuts_customize": {
+    "message": "In Chrome anpassen",
+    "description": "Shortcuts Link"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Kürzel in den Chrome-Browser-Einstellungen verwalten",
+    "description": "Shortcuts Hinweis"
+  },
+  "btn_refresh": {
+    "message": "Aktualisieren",
+    "description": "Aktualisieren-Button"
+  },
+  "settings_languageHint": {
+    "message": "Standard-Zielsprache für Übersetzungen",
+    "description": "Übersetzungssprache-Hinweis"
+  },
+  "lang_en": { "message": "Englisch" },
+  "lang_vi": { "message": "Vietnamesisch" },
+  "lang_es": { "message": "Spanisch" },
+  "lang_fr": { "message": "Französisch" },
+  "lang_de": { "message": "Deutsch" },
+  "lang_it": { "message": "Italienisch" },
+  "lang_pt": { "message": "Portugiesisch" },
+  "lang_ja": { "message": "Japanisch" },
+  "lang_ko": { "message": "Koreanisch" },
+  "lang_zh": { "message": "Chinesisch" },
+  "settings_confirmClearHistory": {
+    "message": "Möchten Sie wirklich den gesamten Verlauf löschen?",
+    "description": "Löschbestätigung"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Bitte geben Sie zuerst einen API-Schlüssel oder Endpunkt ein.",
+    "description": "Prüfungsfehler"
+  },
+  "settings_validating": {
+    "message": "Prüfung läuft...",
+    "description": "Prüfstatus"
+  },
+  "settings_configValid": {
+    "message": "Konfiguration gültig! Bereit zur Nutzung.",
+    "description": "Erfolgskonfiguration"
+  },
+  "settings_connectionFailed": {
+    "message": "Verbindung fehlgeschlagen",
+    "description": "Verbindungsfehler"
+  },
+  "settings_checking": {
+    "message": "Wird geprüft...",
+    "description": "Überprüfungsstatus"
+  },
+  "settings_failedToSave": {
+    "message": "Fehler beim Speichern",
+    "description": "Speicherfehler"
+  },
+  "settings_tooltip_gemini_s1": { "message": "Google AI Studio öffnen" },
+  "settings_tooltip_gemini_s2": { "message": "Auf 'Create API Key' klicken" },
+  "settings_tooltip_gemini_s3": {
+    "message": "Schlüssel in die Zwischenablage kopieren"
+  },
+  "settings_tooltip_groq_s1": { "message": "Groq Console öffnen" },
+  "settings_tooltip_groq_s2": { "message": "Registrieren oder Anmelden" },
+  "settings_tooltip_groq_s3": { "message": "Neuen API-Schlüssel erstellen" },
+  "settings_tooltip_openai_s1": { "message": "OpenAI Platform öffnen" },
+  "settings_tooltip_openai_s2": { "message": "Registrieren oder Anmelden" },
+  "settings_tooltip_openai_s3": { "message": "Neuen API-Schlüssel erstellen" },
+  "settings_tooltip_ollama_s1": {
+    "message": "CORS-Modus für Ollama sicherstellen:"
+  },
+  "settings_tooltip_ollama_s2": {
+    "message": "Standard: http://localhost:11434"
+  }
+}
