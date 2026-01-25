@@ -4,23 +4,256 @@
  */
 
 // ============================================
+// Icons (Feather Icons / Custom)
+// ============================================
+const ICONS = {
+  brand: `<img src="${chrome.runtime.getURL("assets/icons/icon-48.png")}" class="omni-ai-logo-img" alt="Omni AI" />`,
+  close: `<svg viewBox="0 0 24 24" fill="none" class="omni-ai-icon-svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+  magic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>`,
+  rephrase: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
+  summarize: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>`,
+  explain: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+  tone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>`,
+  translate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10 15.3 15.3 0 0 1 4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+  ask: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+  reply: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>`,
+  emoji: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>`,
+  grammar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
+  btnSparkle: `<svg viewBox="0 0 24 24" fill="none" class="omni-ai-btn-icon-svg" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>`,
+};
+
+// ============================================
+// Localization Manager
+// ============================================
+// Initialize with fallback while loading shared module
+let i18n = {
+  getMessage: (key) => chrome.i18n.getMessage(key),
+};
+
+// Initialize localization
+async function initializeI18n() {
+  try {
+    const { primaryLanguage } = await new Promise((resolve) => {
+      chrome.storage.sync.get("primaryLanguage", resolve);
+    });
+    const userLang = primaryLanguage || "en";
+
+    // Standard chrome.i18n is available, but the user wants custom override logic
+    // We'll fetch the JSON files manually as fallback to simulate i18n module
+    const enUrl = chrome.runtime.getURL("_locales/en/messages.json");
+    const enRes = await fetch(enUrl);
+    const enData = await enRes.json();
+
+    let targetData = {};
+    if (userLang !== "en") {
+      try {
+        const targetUrl = chrome.runtime.getURL(
+          `_locales/${userLang}/messages.json`,
+        );
+        const targetRes = await fetch(targetUrl);
+        targetData = await targetRes.json();
+      } catch (e) {
+        console.warn("[Omni AI] Failed to load local messages:", userLang);
+      }
+    }
+
+    const combinedData = { ...enData, ...targetData };
+
+    i18n = {
+      getMessage: (key) => {
+        if (combinedData[key]) return combinedData[key].message;
+        return chrome.i18n.getMessage(key) || key;
+      },
+    };
+  } catch (e) {
+    console.error("[Omni AI] Localization initialization failed:", e);
+    // Fallback stays as chrome.i18n
+  }
+}
+
+// Start loading immediately
+initializeI18n();
+
+// ============================================
 // State
+// ============================================
 let overlay = null;
 let isOverlayVisible = false;
-let lastSelection = null; // Store { element, start, end, range, isInput, text }
-let currentTheme = "system";
+let lastSelection = null;
+let quickActionBtn = null;
+let activeInputElement = null; // Track input element for replacement when focus is lost
+
+// Store state for navigation
+let lastMenuContext = null;
 
 // ============================================
 // Initialization
 // ============================================
 
-/**
- * Initialize content script
- */
+// ============================================
+// Diff Logic
+// ============================================
+
+function computeDiff(original, corrected) {
+  if (!original || !corrected) return corrected || "";
+
+  const words1 = original.trim().split(/\s+/);
+  const words2 = corrected.trim().split(/\s+/);
+
+  // If text is totally different, return new text highlighted
+  if (
+    Math.abs(words1.length - words2.length) >
+    Math.max(words1.length, words2.length) * 0.8
+  ) {
+    return `<span class="omni-ai-diff-ins">${corrected}</span>`;
+  }
+
+  let html = "";
+  let i = 0,
+    j = 0;
+
+  while (i < words1.length || j < words2.length) {
+    if (i < words1.length && j < words2.length && words1[i] === words2[j]) {
+      html += words1[i] + " ";
+      i++;
+      j++;
+    } else {
+      // Look ahead to find synchronization point
+      let bestMatchK1 = -1,
+        bestMatchK2 = -1;
+
+      // Search for words1[i] in words2 (deletion check)
+      // Search for words2[j] in words1 (insertion check)
+
+      // Simple heuristic: check next 3 words
+      let foundMatch = false;
+
+      // Check for insertion (can we find words1[i] later in words2?)
+      for (let k2 = j + 1; k2 < Math.min(j + 5, words2.length); k2++) {
+        if (i < words1.length && words1[i] === words2[k2]) {
+          // Found words1[i] at words2[k2].
+          // It means words2[j...k2-1] are insertions.
+          while (j < k2) {
+            html += `<span class="omni-ai-diff-ins">${words2[j]}</span> `;
+            j++;
+          }
+          foundMatch = true;
+          break;
+        }
+      }
+
+      if (!foundMatch) {
+        // Check for deletion (can we find words2[j] later in words1?)
+        for (let k1 = i + 1; k1 < Math.min(i + 5, words1.length); k1++) {
+          if (j < words2.length && words1[k1] === words2[j]) {
+            // Found words2[j] at words1[k1].
+            // It means words1[i...k1-1] are deletions.
+            while (i < k1) {
+              html += `<span class="omni-ai-diff-del">${words1[i]}</span> `;
+              i++;
+            }
+            foundMatch = true;
+            break;
+          }
+        }
+      }
+
+      if (!foundMatch) {
+        // Treat as replacement (delete current, insert current)
+        if (i < words1.length) {
+          html += `<span class="omni-ai-diff-del">${words1[i]}</span> `;
+          i++;
+        }
+        if (j < words2.length) {
+          html += `<span class="omni-ai-diff-ins">${words2[j]}</span> `;
+          j++;
+        }
+      }
+    }
+  }
+  return html.trim();
+}
+
+function updateSmartFixCard(card, originalText, correctedText, isInput) {
+  if (!card) return;
+
+  if (originalText.trim() === correctedText.trim()) {
+    card.innerHTML = `
+        <div class="omni-ai-suggestion-icon" style="background:rgba(34,197,94,0.1);color:var(--ai-success)">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="omni-ai-suggestion-info">
+            <div class="omni-ai-suggestion-label" style="color:var(--ai-success)">No issues found</div>
+            <div class="omni-ai-suggestion-content">Text looks great!</div>
+        </div>
+    `;
+    return;
+  }
+
+  const diffHtml = computeDiff(originalText, correctedText);
+
+  card.innerHTML = `
+     <div style="flex:1;">
+        <div class="omni-ai-suggestion-label">Suggested Fix</div>
+        <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4;">${diffHtml}</div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="omni-ai-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">Accept</button>
+            <button class="omni-ai-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">Dismiss</button>
+        </div>
+     </div>
+  `;
+
+  const acceptBtn = card.querySelector("#omniAiAcceptFix");
+  const dismissBtn = card.querySelector("#omniAiDismissFix");
+
+  acceptBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    replaceSelectedText(correctedText);
+    hideOverlay();
+  });
+
+  dismissBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    card.innerHTML = `
+        <div class="omni-ai-suggestion-icon">
+           ${ICONS.magic}
+        </div>
+        <div class="omni-ai-suggestion-info">
+            <div class="omni-ai-suggestion-label">Fix Grammar</div>
+            <div class="omni-ai-suggestion-content">Corrects spelling and grammar</div>
+        </div>
+    `;
+    card.addEventListener(
+      "click",
+      () => handleAction("grammar", originalText, isInput),
+      { once: true },
+    );
+  });
+}
+
 function init() {
   setupMessageListener();
   setupSelectionListener();
   initTheme();
+}
+
+/**
+ * Initialize Theme logic
+ */
+async function initTheme() {
+  const THEME_KEY = "omni_ai_theme";
+  const { [THEME_KEY]: themePreference = "system" } =
+    await chrome.storage.sync.get(THEME_KEY);
+
+  let effectiveTheme = themePreference;
+  if (themePreference === "system") {
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  const isLight = effectiveTheme === "light";
+  document.documentElement.classList.toggle("omni-ai-light-mode", isLight);
 }
 
 /**
@@ -29,12 +262,18 @@ function init() {
 function setupMessageListener() {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.type) {
-      case "GET_SELECTION":
-        sendResponse({ selection: getSelectedText() });
+      case "GET_SELECTION": {
+        const isInput = isTextInput(document.activeElement);
+        if (isInput) activeInputElement = document.activeElement;
+        sendResponse({
+          selection: getSelectedText(),
+          isInput: isInput,
+        });
         break;
+      }
 
       case "SHOW_RESULT":
-        showResultOverlay(message.payload);
+        showResultOverlay(message.payload, message.payload.isInput);
         sendResponse({ success: true });
         break;
 
@@ -43,30 +282,44 @@ function setupMessageListener() {
         sendResponse({ success: true });
         break;
 
-      case "SHOW_QUICK_ASK_OVERLAY":
-        showQuickAskOverlay(getSelectedText());
+      case "SHOW_QUICK_ASK_OVERLAY": {
+        hideQuickActionButton();
+        const rect = getSelectionRect();
+        const selection = getSelectedText();
+        const isInput = isTextInput(document.activeElement);
+        if (isInput) activeInputElement = document.activeElement;
+        showQuickAskOverlay("", rect, selection, null, isInput);
+        sendResponse({ success: true });
+        break;
+      }
+
+      case "THEME_CHANGED":
+        initTheme();
         sendResponse({ success: true });
         break;
 
+      case "PING":
+        sendResponse({ success: true, active: true });
+        break;
+
       default:
+        console.warn("[Omni AI] Unknown message type:", message.type);
         sendResponse({ success: false, error: "Unknown message type" });
     }
+    return true; // Keep channel open for async if needed
   });
 }
-
-let quickActionBtn = null;
 
 /**
  * Set up selection change listener
  */
 function setupSelectionListener() {
   document.addEventListener("mouseup", (e) => {
-    // 1. Handle existing overlay closing
     if (overlay && !overlay.contains(e.target)) {
       hideOverlay();
     }
 
-    // 2. Handle text selection for Quick Actions
+    // Handle text selection for Quick Actions
     setTimeout(() => {
       const text = getSelectedText();
       const activeElement = document.activeElement;
@@ -75,14 +328,12 @@ function setupSelectionListener() {
       if (text.length > 0 && !isOverlayVisible) {
         if (isInput) {
           showQuickActionButtonForInput(activeElement);
-        } else {
+        } else if (window.getSelection().rangeCount > 0) {
           showQuickActionButton(window.getSelection());
         }
       } else {
-        // Only hide if not in an input with content
         const isInInputWithContent =
           isInput && activeElement.value.trim().length > 0;
-
         if (!isInInputWithContent) {
           hideQuickActionButton();
         } else {
@@ -92,145 +343,77 @@ function setupSelectionListener() {
     }, 10);
   });
 
-  // Handle Ctrl+A (Select All)
-  document.addEventListener("keydown", (e) => {
-    // Ctrl+A or Cmd+A
-    if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+  // Handle paste events
+  document.addEventListener("paste", (e) => {
+    const target = e.target;
+    if (isTextInput(target)) {
       setTimeout(() => {
-        const text = getSelectedText();
-        const selection = window.getSelection();
-        const activeElement = document.activeElement;
-
-        // Show button for input/textarea with Ctrl+A
-        if (text.length > 0 && !isOverlayVisible) {
-          if (isTextInput(activeElement)) {
-            showQuickActionButtonForInput(activeElement);
-          } else {
-            showQuickActionButton(selection);
-          }
+        if (target.value.trim().length > 0 && !isOverlayVisible) {
+          showQuickActionButtonForInput(target);
         }
-      }, 10);
-    } else {
-      // Hide on other keydown to avoid annoyance while typing
-      if (quickActionBtn) hideQuickActionButton();
-    }
-  });
-
-  // Handle typing in input/textarea (debounced)
-  let typingTimer;
-  const typingDelay = 500; // Show faster
-
-  const checkInputAndShow = (target) => {
-    const value = target.value.trim();
-    if (value.length > 0 && !isOverlayVisible) {
-      showQuickActionButtonForInput(target);
-    }
-  };
-
-  document.addEventListener("input", (e) => {
-    const target = e.target;
-    if (isTextInput(target)) {
-      clearTimeout(typingTimer);
-      hideQuickActionButton();
-
-      typingTimer = setTimeout(() => {
-        checkInputAndShow(target);
-      }, typingDelay);
-    }
-  });
-
-  document.addEventListener("focusin", (e) => {
-    const target = e.target;
-    if (isTextInput(target)) {
-      checkInputAndShow(target);
+      }, 100);
     }
   });
 }
 
-/**
- * Show floating quick action button
- */
+// ============================================
+// Quick Action Button
+// ============================================
+
 function showQuickActionButton(selection) {
   if (quickActionBtn) hideQuickActionButton();
 
   const range = selection.getRangeAt(0);
   const rect = range.getBoundingClientRect();
 
-  if (rect.width === 0 && rect.height === 0) return; // invisible selection
+  if (rect.width === 0 && rect.height === 0) return;
 
-  quickActionBtn = document.createElement("button");
-  quickActionBtn.className = "omni-ai-quick-btn";
-  updateOverlayTheme(quickActionBtn);
-  quickActionBtn.innerHTML = `
-    <span class="omni-ai-icon-small">✨</span>
-  `;
-  quickActionBtn.title = "Omni AI Actions";
-
-  // Calculate position (top-right of selection)
-  const top = rect.top + window.scrollY - 30;
-  const left = rect.right + window.scrollX + 5;
-
-  quickActionBtn.style.top = `${top}px`;
-  quickActionBtn.style.left = `${left}px`;
-
-  // Prevent button from closing itself immediately or triggering document listeners
-  // Also preventDefault on mousedown to avoid stealing focus from text input
-  quickActionBtn.addEventListener("mousedown", (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  });
-
-  quickActionBtn.addEventListener("mouseup", (e) => e.stopPropagation());
-
-  quickActionBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // Capture position before removing button
-    const rect = quickActionBtn.getBoundingClientRect();
-
-    // Show the full action menu
-    showQuickActionMenu(selection.toString(), rect);
-  });
-
-  document.body.appendChild(quickActionBtn);
+  createQuickBtn(rect, false);
+  setupQuickBtnEvents(selection.toString(), false);
 }
 
-/**
- * Show floating quick action button for input/textarea
- */
 function showQuickActionButtonForInput(inputElement) {
   if (quickActionBtn) hideQuickActionButton();
 
   const rect = inputElement.getBoundingClientRect();
+  createQuickBtn(rect, true);
+  setupQuickBtnEvents(null, inputElement); // Pass element to grab text later
+}
 
+async function createQuickBtn(rect, isInput) {
   quickActionBtn = document.createElement("button");
   quickActionBtn.className = "omni-ai-quick-btn";
-  updateOverlayTheme(quickActionBtn);
-  quickActionBtn.innerHTML = `
-    <span class="omni-ai-icon-small">✨</span>
-  `;
-  quickActionBtn.title = "Omni AI Actions";
 
-  // Position at top-right of input field
-  // If we have space, put it outside-right. If not, put it inside-right top.
-  let top = rect.top + window.scrollY - 8; // Slightly above the top line
-  let left = rect.right + window.scrollX - 25; // Inside the right edge by default to be safe
-
-  // If there is enough room on the right, put it outside
-  if (rect.right + 40 < window.innerWidth) {
-    left = rect.right + window.scrollX + 8;
+  // Theme check
+  const THEME_KEY = "omni_ai_theme";
+  const { [THEME_KEY]: themePreference = "system" } =
+    await chrome.storage.sync.get(THEME_KEY);
+  let effectiveTheme = themePreference;
+  if (themePreference === "system") {
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+  if (effectiveTheme === "light") {
+    quickActionBtn.classList.add("omni-ai-light-mode");
   }
 
-  // Ensure it doesn't go off the top of the page
-  if (top < window.scrollY + 10) {
-    top = rect.top + window.scrollY + 5;
-  }
+  quickActionBtn.innerHTML = ICONS.btnSparkle;
+
+  // Position
+  const top = isInput
+    ? rect.bottom + window.scrollY - 30
+    : rect.bottom + window.scrollY + 5;
+  const left = isInput
+    ? rect.right + window.scrollX - 30
+    : rect.right + window.scrollX;
 
   quickActionBtn.style.top = `${top}px`;
   quickActionBtn.style.left = `${left}px`;
+  document.body.appendChild(quickActionBtn);
+}
 
-  // Prevent button from closing itself
+function setupQuickBtnEvents(text = null, inputElement = null) {
   quickActionBtn.addEventListener("mousedown", (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -242,20 +425,17 @@ function showQuickActionButtonForInput(inputElement) {
     e.preventDefault();
     e.stopPropagation();
 
-    // Get text from input (selection or full value)
-    const text = getSelectedText() || inputElement.value.trim();
+    const isInput = !!inputElement;
+    if (isInput) activeInputElement = inputElement;
+    const currentText =
+      text ||
+      (inputElement ? getSelectedText() || inputElement.value.trim() : "");
     const btnRect = quickActionBtn.getBoundingClientRect();
 
-    // Show the full action menu
-    showQuickActionMenu(text, btnRect);
+    showQuickActionMenu(currentText, btnRect, null, isInput);
   });
-
-  document.body.appendChild(quickActionBtn);
 }
 
-/**
- * Hide floating quick action button
- */
 function hideQuickActionButton() {
   if (quickActionBtn) {
     quickActionBtn.remove();
@@ -263,438 +443,801 @@ function hideQuickActionButton() {
   }
 }
 
-/**
- * Show quick action menu
- */
+// ============================================
+// Main Overlay Logic
+// ============================================
+
 async function showQuickActionMenu(
   text,
   anchorRect = null,
   lockedPosition = null,
+  isInput = false,
 ) {
   hideQuickActionButton();
-  hideOverlay(); // Ensure previous overlay is removed
+  hideOverlay();
 
-  // Fetch languages for button labels
-  const { primaryLanguage = "vi", defaultLanguage = "en" } =
-    await chrome.storage.local.get(["primaryLanguage", "defaultLanguage"]);
+  // Save context for Back button
+  lastMenuContext = { text, anchorRect, lockedPosition, isInput };
 
-  const languageNames = {
-    en: "English",
-    vi: "Vietnamese",
-    es: "Spanish",
-    fr: "French",
-    de: "German",
-    it: "Italian",
-    pt: "Portuguese",
-    ja: "Japanese",
-    ko: "Korean",
-    zh: "Chinese",
+  // Fetch settings
+  const THEME_KEY = "omni_ai_theme";
+  const {
+    [THEME_KEY]: currentTheme = "system",
+    primaryLanguage = "vi",
+    defaultLanguage = "en",
+  } = await chrome.storage.sync.get([
+    "primaryLanguage",
+    "defaultLanguage",
+    THEME_KEY,
+  ]);
+
+  const languageFlags = {
+    en: "🇬🇧",
+    vi: "🇻🇳",
+    es: "🇪🇸",
+    fr: "🇫🇷",
+    de: "🇩🇪",
+    it: "🇮🇹",
+    pt: "🇵🇹",
+    ja: "🇯🇵",
+    ko: "🇰🇷",
+    zh: "🇨🇳",
   };
 
-  const primaryName = languageNames[primaryLanguage] || primaryLanguage;
-  const translationName = languageNames[defaultLanguage] || defaultLanguage;
+  const pFlag = languageFlags[primaryLanguage] || "🌐";
+  const dFlag = languageFlags[defaultLanguage] || "🏳️";
+  const pCode = primaryLanguage.toUpperCase();
+  const dCode = defaultLanguage.toUpperCase();
 
-  const primaryIcon = primaryLanguage === "vi" ? "🇻🇳" : "🌐";
-  const translationIcon = "🌎";
+  // Create Overlay
+  overlay = createOverlayElement(currentTheme);
 
-  // Show a mini overlay with actions
-  overlay = createOverlayElement();
-  overlay.innerHTML = `
+  // Header
+  const header = `
     <div class="omni-ai-overlay-header">
-       <div class="omni-ai-overlay-title">Omni AI Actions</div>
-       <button class="omni-ai-close-btn" id="omniAiClose">×</button>
-    </div>
-    <div class="omni-ai-overlay-content omni-ai-menu-content">
-       <div class="omni-ai-menu-group-title">Translation</div>
-       <div class="omni-ai-menu-row">
-         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_primary">${primaryIcon} To ${primaryName}</button>
-         <button class="omni-ai-menu-item omni-ai-menu-item-half" data-action="translate_default">${translationIcon} To ${translationName}</button>
+       <div class="omni-ai-brand">
+         ${ICONS.brand}
+         <span>${i18n.getMessage("extName")}</span>
        </div>
-       <div class="omni-ai-menu-divider"></div>
-       <div class="omni-ai-menu-group-title">Writing</div>
-       <button class="omni-ai-menu-item" data-action="grammar">📝 Fix Grammar</button>
-       <button class="omni-ai-menu-item" data-action="rephrase">🔄 Rephrase</button>
-       <button class="omni-ai-menu-item" data-action="summarize">📋 Summarize</button>
-       <button class="omni-ai-menu-item" data-action="explain">🔍 Explain</button>
-       <button class="omni-ai-menu-item" data-action="tone">🎭 Change Tone</button>
-       <div class="omni-ai-menu-divider"></div>
-       <button class="omni-ai-menu-item" data-action="ask">💬 Ask AI...</button>
+       <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>
   `;
 
-  document.body.appendChild(overlay);
-
-  // Position using the anchor rect or locked position
-  positionOverlay(anchorRect, lockedPosition);
-
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
-
-  const buttons = overlay.querySelectorAll(".omni-ai-menu-item");
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const action = btn.dataset.action;
-
-      if (action === "ask") {
-        const lockedRect = overlay.getBoundingClientRect();
-        showQuickAskOverlay(text, lockedRect, text);
-      } else {
-        // Capture absolute position before any changes
-        const lockedRect = overlay.getBoundingClientRect();
-
-        // Show loading in same overlay - no flashing!
-        showLoadingInOverlay(action);
-
-        try {
-          // Select correct background handler
-          const isQuickAction = [
-            "summarize",
-            "explain",
-            "translate_primary",
-            "translate_default",
-            "translate",
-          ].includes(action);
-          const type = isQuickAction ? "QUICK_ACTION" : "WRITING_ACTION";
-
-          // Get saved preset from storage (default to "chat")
-          const { currentPreset = "chat" } =
-            await chrome.storage.local.get("currentPreset");
-
-          const response = await sendMessageToBackground({
-            type,
-            payload: { action, preset: currentPreset, text },
-          });
-
-          if (response.success) {
-            showResultOverlay(
-              {
-                action,
-                original: text,
-                result: response.data.response || response.data,
-              },
-              lockedRect,
-            );
-          } else {
-            showErrorInOverlay(response.error);
-          }
-        } catch (err) {
-          showErrorInOverlay(err.message);
-        }
-      }
-    });
-  });
-
-  isOverlayVisible = true;
-}
-
-// ============================================
-// Text Selection
-// ============================================
-
-/**
- * Get currently selected text
- */
-function getSelectedText() {
-  const activeElement = document.activeElement;
-
-  // Handle Input/Textarea
-  if (isTextInput(activeElement)) {
-    try {
-      const start = activeElement.selectionStart;
-      const end = activeElement.selectionEnd;
-
-      // Check if there's actually a selection
-      if (start !== undefined && end !== undefined && start !== end) {
-        const text = activeElement.value.substring(start, end);
-
-        if (text) {
-          lastSelection = {
-            element: activeElement,
-            start,
-            end,
-            isInput: true,
-            text: text,
-          };
-          return text;
-        }
-      }
-    } catch (e) {
-      console.warn("[Omni AI] Failed to get selection from input:", e);
-    }
-  }
-
-  // Handle contenteditable elements
-  if (activeElement && activeElement.isContentEditable) {
-    const selection = window.getSelection();
-    const text = selection ? selection.toString().trim() : "";
-
-    if (text && selection.rangeCount > 0) {
-      lastSelection = {
-        element: activeElement,
-        range: selection.getRangeAt(0).cloneRange(),
-        isInput: false,
-        isContentEditable: true,
-        text: text,
-      };
-      return text;
-    }
-  }
-
-  // Handle standard document selection
-  const selection = window.getSelection();
-  const text = selection ? selection.toString().trim() : "";
-
-  if (text && selection.rangeCount > 0) {
-    lastSelection = {
-      element: activeElement,
-      range: selection.getRangeAt(0).cloneRange(),
-      isInput: false,
-      text: text,
-    };
-  }
-
-  return text;
-}
-
-/**
- * Replace selected text with new text
- */
-function replaceSelectedText(newText) {
-  // Use lastSelection if available, fallback to current
-  const target = lastSelection;
-
-  if (target && target.isInput && target.element) {
-    const el = target.element;
-    const value = el.value;
-    const start = target.start;
-    const end = target.end;
-
-    el.value = value.substring(0, start) + newText + value.substring(end);
-    el.setSelectionRange(start, start + newText.length);
-    el.focus();
-
-    // Trigger input events for frameworks
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-    el.dispatchEvent(new Event("change", { bubbles: true }));
-  } else if (target && !target.isInput && target.range) {
-    const range = target.range;
-    range.deleteContents();
-    const textNode = document.createTextNode(newText);
-    range.insertNode(textNode);
-
-    // Restore selection to the new text
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    const newRange = document.createRange();
-    newRange.selectNode(textNode);
-    selection.addRange(newRange);
-  } else {
-    // Fallback for immediate selection (standard)
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return;
-    const range = selection.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(document.createTextNode(newText));
-  }
-}
-
-// ============================================
-// Overlay UI
-// ============================================
-
-/**
- * Show result overlay
- */
-function showResultOverlay(payload, lockedRect = null) {
-  const { action, original, result } = payload;
-
-  // Update existing overlay if present, otherwise create new
-  if (!overlay) {
-    overlay = createOverlayElement();
-    document.body.appendChild(overlay);
-  }
-
-  // Update overlay content
-  overlay.innerHTML = `
-    <div class="omni-ai-overlay-header">
-      <div class="omni-ai-row" style="display: flex; align-items: center;">
-        <button class="omni-ai-icon-btn" id="omniAiBack" title="Back" style="background: none; border: none; cursor: pointer; font-size: 16px; margin-right: 8px; padding: 0 4px; color: inherit; display: flex; align-items: center;">
-          <span style="font-size: 18px; line-height: 1;">‹</span>
-        </button>
-        <div class="omni-ai-overlay-title">
-          <span class="omni-ai-icon">✨</span>
-          <span>Omni AI - ${formatActionName(action)}</span>
+  // Quick Fix Section (With Loading State)
+  // Quick Fix Section (With Loading State) - Only for Inputs
+  let quickFix = "";
+  if (isInput) {
+    quickFix = `
+    <div class="omni-ai-quick-fix-section">
+      <div class="omni-ai-suggestion-card" id="omniAiMagicFix">
+        <div class="omni-ai-suggestion-icon">
+           <div class="omni-ai-spinner" style="width:14px;height:14px;border-width:2px;"></div>
+        </div>
+        <div class="omni-ai-suggestion-info">
+            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("status_thinking")}</div>
+            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
         </div>
       </div>
-      <button class="omni-ai-close-btn" id="omniAiClose">×</button>
     </div>
-    <div class="omni-ai-overlay-content">
-      <div class="omni-ai-result">${escapeHtml(result)}</div>
-    </div>
-    <div class="omni-ai-overlay-footer">
-      <button class="omni-ai-btn omni-ai-btn-secondary" id="omniAiCopy">Copy</button>
-      <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiReplace">Replace</button>
+  `;
+  }
+
+  // Menu Grid
+  const menu = `
+    <div class="omni-ai-menu-grid">
+       <button class="omni-ai-menu-item" data-action="translate_primary">
+         <span class="omni-ai-menu-icon">${pFlag}</span> ${i18n.getMessage("ui_to")} ${pCode}
+       </button>
+       <button class="omni-ai-menu-item" data-action="translate_default">
+         <span class="omni-ai-menu-icon">${dFlag}</span> ${i18n.getMessage("ui_to")} ${dCode}
+       </button>
+
+       <button class="omni-ai-menu-item" data-action="grammar">
+         <span class="omni-ai-menu-icon">${ICONS.grammar}</span> ${i18n.getMessage("action_grammar")}
+       </button>
+       <button class="omni-ai-menu-item" data-action="rephrase">
+         <span class="omni-ai-menu-icon">${ICONS.rephrase}</span> ${i18n.getMessage("action_rephrase")}
+       </button>
+
+       <button class="omni-ai-menu-item" data-action="reply">
+         <span class="omni-ai-menu-icon">${ICONS.reply}</span> ${i18n.getMessage("action_reply")}
+       </button>
+       <button class="omni-ai-menu-item" data-action="emoji">
+         <span class="omni-ai-menu-icon">${ICONS.emoji}</span> ${i18n.getMessage("action_emojify")}
+       </button>
+
+       <button class="omni-ai-menu-item" data-action="tone">
+         <span class="omni-ai-menu-icon">${ICONS.tone}</span> ${i18n.getMessage("action_tone")}
+       </button>
+       <button class="omni-ai-menu-item" data-action="summarize">
+         <span class="omni-ai-menu-icon">${ICONS.summarize}</span> ${i18n.getMessage("action_summarize")}
+       </button>
+       
+       <button class="omni-ai-menu-item omni-ai-menu-full" data-action="explain">
+         <span class="omni-ai-menu-icon" style="margin-right: 6px;">${ICONS.explain}</span> ${i18n.getMessage("action_explain")}
+       </button>
     </div>
   `;
 
-  positionOverlay(null, lockedRect);
+  // Input
+  const inputSection = `
+    <div class="omni-ai-input-wrapper" style="padding: 0 12px 12px;">
+       <div style="position:relative; width:100%;">
+         <textarea class="omni-ai-input" placeholder="${i18n.getMessage("popup_quickAsk")}" id="omniAiInlineInput" style="padding-right: 42px; display: block; margin: 0;"></textarea>
+         <button id="omniAiInputBtn" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:var(--ai-accent-gradient); color:white; cursor:pointer; width:28px; height:28px; border-radius:var(--ai-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+         </button>
+       </div>
+    </div>
+  `;
 
-  // Event listeners
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  overlay.innerHTML = header + quickFix + menu + inputSection;
+  document.body.appendChild(overlay);
 
-  // Back button listener
-  overlay.querySelector("#omniAiBack").addEventListener("click", () => {
-    // Capture current position before going back
-    const currentLockedRect = overlay.getBoundingClientRect();
-    // Re-open menu with original text and locked position
-    showQuickActionMenu(original, null, currentLockedRect);
-  });
+  // Position Logic
+  positionOverlay(anchorRect, lockedPosition);
 
-  const copyBtn = overlay.querySelector("#omniAiCopy");
-  const replaceBtn = overlay.querySelector("#omniAiReplace");
+  // Bind Events
+  bindMenuEvents(text, isInput);
 
-  // Prevent focus loss on mousedown
-  [copyBtn, replaceBtn].forEach((btn) => {
-    btn.addEventListener("mousedown", (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-    });
-  });
-
-  copyBtn.addEventListener("click", () => copyToClipboard(result));
-
-  replaceBtn.addEventListener("click", () => {
-    replaceSelectedText(result);
-    hideOverlay();
-  });
+  // TRIGGER AUTOMATIC CHECK (Only for inputs)
+  if (isInput) {
+    sendMessageToBackground({
+      type: "QUICK_ACTION",
+      payload: { action: "grammar", text, preset: "chat" },
+    })
+      .then((response) => {
+        const card = document.getElementById("omniAiMagicFix");
+        if (response.success && card) {
+          updateSmartFixCard(card, text, response.data.response, isInput);
+        } else if (card) {
+          // Show error or revert
+          card.innerHTML = `
+              <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
+              <div class="omni-ai-suggestion-info">
+                  <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">Error</div>
+                  <div class="omni-ai-suggestion-content">Could not analyze</div>
+              </div>
+           `;
+        }
+      })
+      .catch(() => {}); // silent fail
+  }
 
   isOverlayVisible = true;
 }
 
+function bindMenuEvents(text, isInput) {
+  // Close
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+
+  // Menu Items
+  overlay.querySelectorAll(".omni-ai-menu-item").forEach((btn) => {
+    btn.addEventListener("click", () =>
+      handleAction(btn.dataset.action, text, isInput),
+    );
+  });
+
+  // Inline Input
+  const input = overlay.querySelector("#omniAiInlineInput");
+  const inputBtn = overlay.querySelector("#omniAiInputBtn");
+
+  const triggerAsk = () => {
+    const query = input.value.trim();
+    if (query.length > 0) {
+      handleAskAction(query, text, isInput);
+    }
+  };
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      triggerAsk();
+    }
+  });
+
+  if (inputBtn) {
+    inputBtn.addEventListener("click", triggerAsk);
+  }
+}
+
+async function handleAction(action, text, isInput) {
+  showLoadingInOverlay();
+
+  let preset = "chat";
+  if (action === "tone") {
+    const { currentPreset } = await chrome.storage.local.get("currentPreset");
+    const validTones = [
+      "professional",
+      "casual",
+      "friendly",
+      "direct",
+      "confident",
+    ];
+    if (currentPreset && validTones.includes(currentPreset.toLowerCase())) {
+      preset = currentPreset;
+    } else {
+      preset = "professional";
+    }
+  }
+
+  sendMessageToBackground({
+    type: "QUICK_ACTION",
+    payload: { action, text, preset },
+  })
+    .then((response) => {
+      if (response.success) {
+        showResultOverlay(
+          {
+            action,
+            result: response.data.response,
+            originalText: text,
+            preset,
+          },
+          isInput,
+        );
+      } else {
+        showErrorInOverlay(response.error);
+      }
+    })
+    .catch((err) => showErrorInOverlay(err.message));
+}
+
+async function handleAskAction(query, originalText, isInput) {
+  showLoadingInOverlay();
+
+  const prompt = originalText
+    ? `Context: "${originalText}"\n\nQuestion: ${query}`
+    : query;
+
+  try {
+    const response = await sendMessageToBackground({
+      type: "QUICK_ASK",
+      payload: { query: prompt },
+    });
+
+    if (response.success) {
+      showResultOverlay(
+        {
+          action: "quick_ask",
+          result: response.data.response,
+          originalText: originalText,
+          preset: "chat",
+          query: query,
+        },
+        isInput, // Use the passed isInput value
+      );
+    } else {
+      showErrorInOverlay(response.error);
+    }
+  } catch (err) {
+    showErrorInOverlay(err.message);
+  }
+}
+
+// ============================================
+// Positioning Logic (Left Anchored)
+// ============================================
+
 /**
- * Show quick ask overlay
+ * Get rect for current selection, supporting both normal text and inputs
  */
-/**
- * Show quick ask overlay
- */
-function showQuickAskOverlay(
+function getSelectionRect() {
+  const activeElement = document.activeElement;
+  if (isTextInput(activeElement)) {
+    const rect = activeElement.getBoundingClientRect();
+    // For inputs, we return the rect but we'll try to refine if we can later
+    return rect;
+  }
+
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    return selection.getRangeAt(0).getBoundingClientRect();
+  }
+
+  return null;
+}
+
+function positionOverlay(anchorRect = null, lockedPosition = null) {
+  if (!overlay) return;
+
+  // Ensure visibility to calculate height
+  overlay.style.display = "flex";
+  overlay.style.visibility = "hidden";
+
+  if (lockedPosition) {
+    overlay.style.top = `${lockedPosition.top}px`;
+    overlay.style.left = `${lockedPosition.left}px`;
+    overlay.style.visibility = "visible";
+    overlay.style.transform = "none";
+    return;
+  }
+
+  if (anchorRect) {
+    const overlayWidth = 320;
+    const gap = 12;
+
+    // Preference: RIGHT-aligned with anchor (grows left)
+    // This puts the overlay to the left of the 'sparkle icon' position
+    let left = anchorRect.right - overlayWidth;
+    let top = anchorRect.bottom + gap;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const overlayHeight = overlay.offsetHeight || 400;
+
+    // 1. Horizontal Boundary Check
+    // If aligning right edge causes it to go off-screen to the left:
+    if (left < 10) {
+      // Align left edge with anchor instead
+      left = anchorRect.left;
+    }
+
+    // If still off-screen to the right after that:
+    if (left + overlayWidth > viewportWidth - 10) {
+      left = viewportWidth - overlayWidth - 10;
+    }
+
+    // Always ensure it's at least 10px from the left edge
+    if (left < 10) left = 10;
+
+    // 2. Vertical Boundary Check (Prefer Below, Flip Above if needed)
+    if (top + overlayHeight > viewportHeight + window.scrollY - 10) {
+      // Flip up
+      top = anchorRect.top + window.scrollY - overlayHeight - gap;
+    } else {
+      top += window.scrollY;
+    }
+
+    // Adjust left for scroll
+    left += window.scrollX;
+
+    // Clamp vertical final
+    const minTop = window.scrollY + 10;
+    const maxTop = viewportHeight + window.scrollY - overlayHeight - 10;
+    if (top < minTop) top = minTop;
+    if (top > maxTop) top = maxTop;
+
+    overlay.style.top = `${Math.round(top)}px`;
+    overlay.style.left = `${Math.round(left)}px`;
+    overlay.style.transformOrigin = "top right";
+    overlay.style.transform = "none";
+  } else {
+    // True Center
+    overlay.style.top = "50%";
+    overlay.style.left = "50%";
+    overlay.style.transform = "translate(-50%, -50%)";
+    overlay.style.position = "fixed";
+  }
+
+  overlay.style.visibility = "visible";
+}
+
+// ============================================
+// Helpers
+// ============================================
+
+function createOverlayElement(themePreference = "system") {
+  const el = document.createElement("div");
+  el.className = "omni-ai-overlay";
+
+  let effectiveTheme = themePreference;
+  if (themePreference === "system") {
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  // Dark is default in CSS (lines 13-15)
+  // Light is an override (line 55)
+  if (effectiveTheme === "light") {
+    el.classList.add("omni-ai-light-mode");
+  } else {
+    el.classList.remove("omni-ai-light-mode");
+  }
+
+  return el;
+}
+
+function hideOverlay() {
+  if (overlay) {
+    overlay.remove();
+    overlay = null;
+    isOverlayVisible = false;
+    lastMenuContext = null; // Clear context on full close
+  }
+}
+
+function sendMessageToBackground(message) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+      } else {
+        resolve(response);
+      }
+    });
+  });
+}
+
+function getSelectedText() {
+  const activeElement = document.activeElement;
+  if (isTextInput(activeElement)) {
+    const start = activeElement.selectionStart;
+    const end = activeElement.selectionEnd;
+    const selection = activeElement.value.substring(start, end);
+
+    // If focus is in input but no text selected, return the whole content
+    if (!selection && activeElement.value.trim().length > 0) {
+      return activeElement.value.trim();
+    }
+    return selection;
+  }
+  return window.getSelection().toString().trim();
+}
+
+function isTextInput(el) {
+  return el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
+}
+
+function showLoadingInOverlay() {
+  // Try to find the content area to replace, or the grid if first time
+  let content = overlay.querySelector(".omni-ai-content-area");
+  const menuGrid = overlay.querySelector(".omni-ai-menu-grid");
+
+  // If we are coming from the menu, we want to replace the menu-grid
+  // with the content-area style for loading
+  if (!content && menuGrid) {
+    // Create new content area replacing grid
+    content = document.createElement("div");
+    content.className = "omni-ai-content-area";
+    menuGrid.replaceWith(content);
+  } else if (!content) {
+    // Fallback if structure is weird (shouldn't happen)
+    content = document.createElement("div");
+    content.className = "omni-ai-content-area";
+    overlay.appendChild(content);
+  }
+
+  // Hide other sections that shouldn't be visible during loading
+  const inputSection = overlay.querySelector(".omni-ai-input-wrapper");
+  const quickFix = overlay.querySelector(".omni-ai-quick-fix-section");
+  const footer = overlay.querySelector(".omni-ai-footer-actions");
+
+  if (inputSection) inputSection.style.display = "none";
+  if (quickFix) quickFix.style.display = "none";
+  if (footer) footer.style.display = "none";
+
+  // Inject Loading HTML
+  content.innerHTML = `
+    <div class="omni-ai-loading">
+      <div class="omni-ai-spinner"></div>
+      <div class="omni-ai-shimmer-text">${i18n.getMessage("status_processing")}</div>
+    </div>`;
+  content.style.display = "block";
+}
+
+function renderToneSelector(activeTone) {
+  const tones = ["Professional", "Casual", "Friendly", "Direct", "Confident"];
+  const chips = tones
+    .map((tone) => {
+      const isActive = tone.toLowerCase() === activeTone.toLowerCase();
+      const style = isActive
+        ? "background:rgba(139,92,246,0.15); color:var(--ai-accent); border:1px solid rgba(139,92,246,0.3);"
+        : "background:transparent; color:var(--ai-text-secondary); border:1px solid var(--ai-border);";
+      const label = i18n.getMessage("tone_" + tone.toLowerCase()) || tone;
+      return `<button class="omni-ai-tone-chip" data-tone="${tone.toLowerCase()}" style="padding:3px 10px; border-radius:100px; font-size:11px; cursor:pointer; font-weight:500; white-space:nowrap; transition:all 0.2s; ${style}">${label}</button>`;
+    })
+    .join("");
+
+  return `<div class="omni-ai-tone-selector" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--ai-border);">${chips}</div>`;
+}
+
+function showResultOverlay(payload, isInput = false) {
+  const { result, action, originalText, preset, query } = payload;
+  hideQuickActionButton();
+
+  if (!overlay) {
+    const el = document.createElement("div");
+    el.className = "omni-ai-overlay";
+    // Check theme
+    if (document.documentElement.classList.contains("omni-ai-light-mode")) {
+      el.classList.add("omni-ai-light-mode");
+    }
+    overlay = el;
+    document.body.appendChild(overlay);
+
+    // Try to position near selection
+    const rect = getSelectionRect();
+    positionOverlay(rect);
+  }
+
+  // Actions that benefit from diff view
+  const diffActions = ["grammar", "rephrase", "tone", "clarity", "improve"];
+  let contentHtml = result;
+
+  const safeAction = (action || "").toLowerCase().trim();
+
+  if (diffActions.includes(safeAction) && originalText) {
+    contentHtml = computeDiff(originalText, result);
+  }
+
+  // Header with Back Button logic
+  const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
+
+  // Footer buttons logic
+  const replaceBtnHtml = isInput
+    ? `<button class="omni-ai-btn-primary" id="omniAiReplace">${i18n.getMessage("overlay_replace")}</button>`
+    : ``;
+
+  overlay.innerHTML = `
+    <div class="omni-ai-overlay-header">
+        <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
+        <span style="font-weight:600;font-size:13px;margin-left:8px;flex:1;">${i18n.getMessage("overlay_result")}</span>
+        <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+    </div>
+    <div class="omni-ai-content-area">
+        ${action === "quick_ask" && query ? `<div class="omni-ai-context-preview" style="margin-top:0;"><div class="omni-ai-context-label">${i18n.getMessage("quick_ask_title")}</div><div class="omni-ai-context-content" style="-webkit-line-clamp: 3;">${query}</div></div>` : ""}
+        ${safeAction === "tone" ? renderToneSelector(preset || "professional") : ""}
+        <div class="omni-ai-result-text">${contentHtml}</div>
+    </div>
+    <div class="omni-ai-footer-actions">
+        <button class="omni-ai-btn-secondary" id="omniAiCopy">${i18n.getMessage("overlay_copy")}</button>
+        ${replaceBtnHtml}
+    </div>
+  `;
+
+  // Close
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+
+  // Back Navigation
+  overlay.querySelector("#omniAiBack").addEventListener("click", () => {
+    if (lastMenuContext) {
+      showQuickActionMenu(
+        lastMenuContext.text,
+        lastMenuContext.anchorRect,
+        lastMenuContext.lockedPosition,
+        lastMenuContext.isInput,
+      );
+    } else {
+      hideOverlay();
+    }
+  });
+
+  // Tone Chip Click
+  if (safeAction === "tone") {
+    const toneSelector = overlay.querySelector(".omni-ai-tone-selector");
+    if (toneSelector) {
+      toneSelector.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("omni-ai-tone-chip")) {
+          const newTone = e.target.dataset.tone;
+          if (newTone === (preset || "professional").toLowerCase()) return;
+
+          // UI Update
+          const resultTextEl = overlay.querySelector(".omni-ai-result-text");
+          resultTextEl.style.opacity = "0.5";
+          resultTextEl.innerHTML =
+            '<div class="omni-ai-spinner" style="margin:20px auto;"></div>';
+
+          // Optimistic Chip Update
+          overlay.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
+            const isActive = chip.dataset.tone === newTone;
+            chip.style.background = isActive
+              ? "rgba(139,92,246,0.15)"
+              : "transparent";
+            chip.style.color = isActive
+              ? "var(--ai-accent)"
+              : "var(--ai-text-secondary)";
+            chip.style.borderColor = isActive
+              ? "rgba(139,92,246,0.3)"
+              : "var(--ai-border)";
+          });
+
+          // Fetch
+          try {
+            const response = await sendMessageToBackground({
+              type: "QUICK_ACTION",
+              payload: { action: "tone", text: originalText, preset: newTone },
+            });
+
+            if (response.success && overlay) {
+              showResultOverlay(
+                {
+                  action: "tone",
+                  result: response.data.response,
+                  originalText,
+                  preset: newTone,
+                },
+                isInput,
+              );
+            }
+          } catch (err) {
+            resultTextEl.innerText = "Error: " + err.message;
+            resultTextEl.style.opacity = "1";
+          }
+        }
+      });
+    }
+  }
+
+  // Copy
+  const copyBtn = overlay.querySelector("#omniAiCopy");
+  copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(result);
+    copyBtn.textContent = i18n.getMessage("msg_copied");
+    setTimeout(
+      () => (copyBtn.textContent = i18n.getMessage("overlay_copy")),
+      1500,
+    );
+  });
+
+  // Replace (if exists)
+  const replaceBtn = overlay.querySelector("#omniAiReplace");
+  if (replaceBtn) {
+    replaceBtn.addEventListener("click", () => {
+      replaceSelectedText(result); // Replace with CLEAN result, not diff HTML
+      hideOverlay();
+    });
+  }
+}
+
+function replaceSelectedText(newText) {
+  let activeElement = document.activeElement;
+
+  // Fallback to stored input element if focus was lost (e.g. to overlay buttons)
+  if (
+    !isTextInput(activeElement) &&
+    activeInputElement &&
+    document.body.contains(activeInputElement)
+  ) {
+    activeElement = activeInputElement;
+  }
+
+  if (isTextInput(activeElement)) {
+    const start = activeElement.selectionStart;
+    const end = activeElement.selectionEnd;
+
+    // If no text selected (cursor placement only), replace the whole input value
+    if (start === end) {
+      activeElement.value = newText;
+    } else {
+      // Replace specific selection
+      const val = activeElement.value;
+      activeElement.value =
+        val.substring(0, start) + newText + val.substring(end);
+    }
+
+    activeElement.dispatchEvent(new Event("input", { bubbles: true }));
+  } else {
+    // ContentEditable / Selection
+    document.execCommand("insertText", false, newText);
+  }
+}
+
+async function showQuickAskOverlay(
   initialValue = "",
   lockedRect = null,
   originalText = null,
+  autoQuery = null,
+  isInput = false,
 ) {
-  // Reuse existing overlay to prevent flickering/jumping
-  // This preserves the current position strategy (top vs bottom anchor) naturally
   if (!overlay) {
-    overlay = createOverlayElement();
+    const THEME_KEY = "omni_ai_theme";
+    const { [THEME_KEY]: currentTheme = "system" } =
+      await chrome.storage.sync.get(THEME_KEY);
+    overlay = createOverlayElement(currentTheme);
     document.body.appendChild(overlay);
-    // Only calculate position if it's a fresh overlay
-    positionOverlay(null, lockedRect);
+    positionOverlay(lockedRect);
   }
 
-  const contextHtml = initialValue
-    ? `<div class="omni-ai-context-badge">
-         <span>✨ Context:</span>
-         <span class="omni-ai-context-text">${initialValue}</span>
-       </div>`
-    : "";
+  const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
 
-  overlay.innerHTML = `
-    <div class="omni-ai-overlay-header">
-      <div class="omni-ai-row" style="display: flex; align-items: center;">
-        <button class="omni-ai-icon-btn" id="omniAiBack" title="Back" style="background: none; border: none; cursor: pointer; font-size: 16px; margin-right: 8px; padding: 0 4px; color: inherit; display: flex; align-items: center;">
-          <span style="font-size: 18px; line-height: 1;">‹</span>
-        </button>
-        <div class="omni-ai-overlay-title">
-          <span class="omni-ai-icon">💬</span>
-          <span>Quick Ask</span>
+  const header = `
+  <div class="omni-ai-overlay-header">
+     <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
+     <div class="omni-ai-brand" style="flex:1; margin-left:8px;">${i18n.getMessage("quick_ask_title")}</div>
+     <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+  </div>`;
+
+  let contextBlock = "";
+  if (originalText) {
+    const truncated =
+      originalText.length > 120
+        ? originalText.substring(0, 117) + "..."
+        : originalText;
+    contextBlock = `
+    <div class="omni-ai-context-preview">
+      <div class="omni-ai-context-label">${i18n.getMessage("popup_context")}</div>
+      <div class="omni-ai-context-content">${truncated}</div>
+    </div>`;
+  }
+
+  const content = `
+  <div class="omni-ai-content-area">
+      ${contextBlock}
+      <div class="omni-ai-input-wrapper" style="padding:0;">
+        <div style="position:relative; width:100%;">
+          <textarea class="omni-ai-input" id="omniAiQuickInput" placeholder="${i18n.getMessage("popup_quickAsk")}" style="min-height:100px; margin-bottom: 0; padding-right: 42px; display: block;"></textarea>
+          <button id="omniAiInputBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:var(--ai-accent-gradient); color:white; cursor:pointer; width:30px; height:30px; border-radius:var(--ai-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
         </div>
       </div>
-      <button class="omni-ai-close-btn" id="omniAiClose">×</button>
-    </div>
-    <div class="omni-ai-overlay-content">
-      ${contextHtml}
-      <textarea id="omniAiInput" class="omni-ai-input" placeholder="What would you like to know or do with this?..."></textarea>
-      <div id="omniAiLoading" class="omni-ai-loading omni-ai-hidden">
-        <div class="omni-ai-spinner"></div>
-        Processing...
+      
+      <div id="omniAiLoading" class="omni-ai-loading" style="display:none; padding: 20px 0;">
+         <div class="omni-ai-spinner"></div>
+         <div class="omni-ai-shimmer-text">${i18n.getMessage("status_thinking")}</div>
       </div>
-      <div id="omniAiQuickResult" class="omni-ai-result omni-ai-hidden"></div>
-    </div>
-    <div class="omni-ai-overlay-footer">
-      <button class="omni-ai-btn omni-ai-btn-primary" id="omniAiAskBtn" style="height: 38px; font-size: 13px;">Send Request</button>
-    </div>
+      
+      <div id="omniAiQuickResult" style="display:none;">
+        <div class="omni-ai-result-text"></div>
+      </div>
+  </div>
+  <div class="omni-ai-footer-actions">
+      <button class="omni-ai-btn-secondary" id="omniAiQuickCopy" style="display:none;">${i18n.getMessage("overlay_copy")}</button>
+  </div>
   `;
 
-  const backBtn = overlay.querySelector("#omniAiBack");
-  if (originalText !== null) {
-    backBtn.addEventListener("click", () => {
-      const currentLockedRect = overlay.getBoundingClientRect();
-      showQuickActionMenu(originalText, null, currentLockedRect);
-    });
-  } else {
-    // If no original text (e.g. direct invoke?), hide back button
-    backBtn.style.display = "none";
-  }
+  overlay.innerHTML = header + content;
 
-  const input = overlay.querySelector("#omniAiInput");
-  const askBtn = overlay.querySelector("#omniAiAskBtn");
+  // Events
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  overlay.querySelector("#omniAiBack").addEventListener("click", () => {
+    if (lastMenuContext) {
+      showQuickActionMenu(
+        lastMenuContext.text,
+        lastMenuContext.anchorRect,
+        lastMenuContext.lockedPosition,
+        lastMenuContext.isInput,
+      );
+    } else if (originalText) {
+      showQuickActionMenu(originalText, null, lockedRect, false);
+    } else {
+      hideOverlay();
+    }
+  });
+  const input = overlay.querySelector("#omniAiQuickInput");
+  const inputBtn = overlay.querySelector("#omniAiInputBtn");
+  const copyBtn = overlay.querySelector("#omniAiQuickCopy");
   const loading = overlay.querySelector("#omniAiLoading");
   const resultDiv = overlay.querySelector("#omniAiQuickResult");
-  const closeBtn = overlay.querySelector("#omniAiClose");
+  const resultText = resultDiv.querySelector(".omni-ai-result-text");
 
-  input.focus();
+  if (!autoQuery) input.focus();
 
-  closeBtn.addEventListener("click", hideOverlay);
+  // Copy Logic
+  copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(resultText.innerText);
+    copyBtn.textContent = i18n.getMessage("msg_copied");
+    setTimeout(
+      () => (copyBtn.textContent = i18n.getMessage("overlay_copy")),
+      1500,
+    );
+  });
 
   const handleAsk = async () => {
     const query = input.value.trim();
     if (!query) return;
 
-    // Capture the text we're asking about (if any)
-    const contextText = initialValue;
-    const fullQuery = contextText
-      ? `Context: ${contextText}\n\nQuestion: ${query}`
-      : query;
+    // UI Loading
+    const inputWrapper = overlay.querySelector(".omni-ai-input-wrapper");
+    if (inputWrapper) inputWrapper.style.display = "none";
 
-    input.classList.add("omni-ai-hidden");
-    const badge = overlay.querySelector(".omni-ai-context-badge");
-    if (badge) badge.classList.add("omni-ai-hidden");
-
-    askBtn.classList.add("omni-ai-hidden");
-    loading.classList.remove("omni-ai-hidden");
+    copyBtn.style.display = "none";
+    loading.style.display = "flex";
 
     try {
-      const response = await sendMessageToBackground({
-        type: "QUICK_ASK",
-        payload: { query: fullQuery, preset: "general" },
-      });
-
-      loading.classList.add("omni-ai-hidden");
-      resultDiv.classList.remove("omni-ai-hidden");
-
-      if (response.success) {
-        resultDiv.textContent = response.data.response;
-        // Switch footer to copy button
-        askBtn.textContent = "Copy";
-        askBtn.classList.remove("omni-ai-hidden");
-        askBtn.id = "omniAiCopyResult";
-
-        // Remove old listener, add new one
-        const newFooterBtn = askBtn.cloneNode(true);
-        askBtn.parentNode.replaceChild(newFooterBtn, askBtn);
-        newFooterBtn.addEventListener("click", () =>
-          copyToClipboard(response.data.response),
-        );
-      } else {
-        resultDiv.textContent = "Error: " + (response.error || "Unknown error");
-      }
+      handleAskAction(query, originalText, isInput);
     } catch (e) {
-      loading.classList.add("omni-ai-hidden");
-      resultDiv.textContent = "Error: " + e.message;
-      resultDiv.classList.remove("omni-ai-hidden");
+      loading.style.display = "none";
+      resultDiv.style.display = "block";
+      resultText.innerText = "Error: " + e.message;
     }
   };
 
-  askBtn.addEventListener("click", handleAsk);
+  if (inputBtn) {
+    inputBtn.addEventListener("click", handleAsk);
+  }
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -702,359 +1245,26 @@ function showQuickAskOverlay(
     }
   });
 
-  isOverlayVisible = true;
+  if (autoQuery) {
+    handleAsk();
+  }
 }
 
-/**
- * Create overlay element
- */
-function createOverlayElement() {
-  const el = document.createElement("div");
-  el.className = "omni-ai-overlay";
-  el.id = "omniAiOverlay";
-  updateOverlayTheme(el);
-  return el;
-}
-
-/**
- * Position overlay near selection
- */
-/**
- * Position overlay near selection or anchor
- */
-/**
- * Position overlay near selection or anchor
- */
-// Store the handler reference so we can remove it later
-let scrollHandler = null;
-
-/**
- * Handle window scroll events
- */
-function handleWindowScroll(e) {
-  // Ignore scroll events originating from within the overlay
-  if (overlay && overlay.contains(e.target)) {
-    return;
-  }
-  hideOverlay();
-}
-
-/**
- * Position overlay near selection or anchor
- */
-function positionOverlay(anchorRect = null, lockedPosition = null) {
-  if (!overlay) return;
-
-  // Add scroll listener to close overlay on scroll to prevent detachment
-  if (!overlay.dataset.scrollListenerAttached) {
-    scrollHandler = handleWindowScroll;
-    window.addEventListener("scroll", scrollHandler, {
-      capture: true,
-      passive: true,
-    });
-    overlay.dataset.scrollListenerAttached = "true";
-  }
-
-  // Handle locked position (Smart Anchoring)
-  if (lockedPosition) {
-    const isBottomAnchored =
-      overlay.style.bottom && overlay.style.bottom !== "auto";
-
-    overlay.style.position = "fixed";
-    overlay.style.transform = "none";
-
-    if (isBottomAnchored) {
-      // Keep bottom anchor - expand upwards
-      const bottomVal = parseFloat(overlay.style.bottom) || 0;
-      const availableHeight = window.innerHeight - bottomVal - 20; // 20px top margin
-      overlay.style.maxHeight = `${Math.min(availableHeight, window.innerHeight * 0.9)}px`;
-    } else {
-      // Top anchor - expand downwards
-      overlay.style.top = `${lockedPosition.top}px`;
-      overlay.style.left = `${lockedPosition.left}px`;
-      overlay.style.bottom = "auto";
-
-      const availableHeight = window.innerHeight - lockedPosition.top - 20; // 20px bottom margin
-      overlay.style.maxHeight = `${Math.min(availableHeight, window.innerHeight * 0.9)}px`;
-    }
-    return;
-  }
-
-  let rect;
-
-  if (anchorRect) {
-    rect = anchorRect;
-  } else {
-    // Fallback to selection
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0) {
-      rect = selection.getRangeAt(0).getBoundingClientRect();
-    }
-  }
-
-  if (!rect) {
-    // Center on screen if no selection/anchor
-    overlay.style.position = "fixed";
-    overlay.style.top = "50%";
-    overlay.style.left = "50%";
-    overlay.style.bottom = "auto";
-    overlay.style.transform = "translate(-50%, -50%)";
-    overlay.style.maxHeight = "90vh";
-    return;
-  }
-
-  // Use Fixed Positioning for reliability
-  overlay.style.position = "fixed";
-  overlay.style.transform = "none";
-
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  // Get natural dimensions (clone to measure or just use current if visible)
-  const overlayRect = overlay.getBoundingClientRect();
-
-  const spaceBelow = viewportHeight - rect.bottom;
-  const spaceAbove = rect.top;
-
-  // Decide vertical placement
-  // Prefer below if it fits or has substantially more space
-  const useBelow = spaceBelow >= overlayRect.height || spaceBelow >= spaceAbove;
-
-  if (useBelow) {
-    overlay.style.top = `${rect.bottom + 10}px`;
-    overlay.style.bottom = "auto";
-    // Adjust max-height to fit in available space below
-    const availableHeight = spaceBelow - 20; // 20px padding
-    overlay.style.maxHeight = `${Math.min(availableHeight, viewportHeight * 0.9)}px`;
-  } else {
-    overlay.style.bottom = `${viewportHeight - rect.top + 10}px`;
-    overlay.style.top = "auto";
-    // Adjust max-height to fit in available space above
-    const availableHeight = spaceAbove - 20;
-    overlay.style.maxHeight = `${Math.min(availableHeight, viewportHeight * 0.9)}px`;
-  }
-
-  // Horizontal Positioning
-  let left = rect.left;
-
-  // Check right edge
-  if (left + overlayRect.width > viewportWidth) {
-    left = viewportWidth - overlayRect.width - 20;
-  }
-
-  // Check left edge
-  if (left < 20) {
-    left = 20;
-  }
-
-  overlay.style.left = `${left}px`;
-}
-
-/**
- * Hide overlay
- */
-function hideOverlay() {
+function showErrorInOverlay(msg) {
   if (overlay) {
-    // Remove scroll listener
-    if (overlay.dataset.scrollListenerAttached && scrollHandler) {
-      window.removeEventListener("scroll", scrollHandler, {
-        capture: true,
-        passive: true,
-      });
-      overlay.dataset.scrollListenerAttached = "";
-      scrollHandler = null;
-    }
-    overlay.remove();
-    overlay = null;
-  }
-  isOverlayVisible = false;
-}
-
-// ============================================
-// Utilities
-// ============================================
-
-/**
- * Format action name for display
- */
-function formatActionName(action) {
-  const names = {
-    improve: "Improved",
-    explain: "Explanation",
-    translate: "Translation",
-    translate_primary: "Primary Language",
-    translate_default: "Translation Language",
-    grammar: "Grammar Fixed",
-    clarity: "Clarity Improved",
-    tone: "Tone Changed",
-    concise: "Made Concise",
-    expand: "Expanded",
-    rephrase: "Rephrased",
-    summarize: "Summary",
-    reply: "Suggested Reply",
-    emojify: "Emojified",
-    quick_ask: "Quick Ask",
-  };
-  return names[action] || action;
-}
-
-/**
- * Show loading state in current overlay
- */
-function showLoadingInOverlay(action) {
-  if (!overlay) return;
-
-  const content = overlay.querySelector(".omni-ai-overlay-content");
-  if (content) {
-    content.innerHTML = `
-      <div class="omni-ai-loading">
-        <div class="omni-ai-spinner"></div>
-        <span>Processing...</span>
-      </div>
-    `;
+    overlay.innerHTML = `
+        <div class="omni-ai-overlay-header">
+            <div class="omni-ai-brand" style="color:var(--ai-error);">Error</div>
+            <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+        </div>
+        <div class="omni-ai-content-area" style="color:var(--ai-text-secondary);">
+            ${msg}
+        </div>`;
+    overlay
+      .querySelector("#omniAiClose")
+      .addEventListener("click", hideOverlay);
   }
 }
 
-/**
- * Show error in current overlay
- */
-function showErrorInOverlay(errorMessage) {
-  if (!overlay) return;
-
-  const content = overlay.querySelector(".omni-ai-overlay-content");
-  if (content) {
-    content.innerHTML = `
-      <div style="padding: 12px; color: #ef4444; font-size: 13px;">
-        Error: ${escapeHtml(errorMessage)}
-      </div>
-    `;
-  }
-}
-
-/**
- * Escape HTML
- */
-function escapeHtml(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-/**
- * Copy text to clipboard
- */
-async function copyToClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast("Copied to clipboard!");
-  } catch (err) {
-    console.error("[Omni AI] Copy failed:", err);
-  }
-}
-
-/**
- * Show toast notification
- */
-function showToast(message) {
-  const toast = document.createElement("div");
-  toast.className = "omni-ai-toast";
-  updateOverlayTheme(toast);
-  toast.textContent = message;
-  document.body.appendChild(toast);
-
-  setTimeout(() => toast.classList.add("omni-ai-toast-visible"), 10);
-  setTimeout(() => {
-    toast.classList.remove("omni-ai-toast-visible");
-    setTimeout(() => toast.remove(), 300);
-  }, 2000);
-}
-
-/**
- * Safe wrapper for sendMessage to handle invalid context
- */
-async function sendMessageToBackground(message) {
-  try {
-    return await chrome.runtime.sendMessage(message);
-  } catch (error) {
-    if (error.message.includes("Extension context invalidated")) {
-      showToast("Omni AI updated. Please reload the page.");
-      // Stop further execution which might depend on response
-      throw new Error("Extension context invalidated");
-    }
-    throw error;
-  }
-}
-
-/**
- * Initialize theme
- */
-function initTheme() {
-  // Initial load
-  chrome.storage.sync.get("omni_ai_theme", (result) => {
-    currentTheme = result.omni_ai_theme || "system";
-    updateAllThemes();
-  });
-
-  // Listen for changes
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "sync" && changes.omni_ai_theme) {
-      currentTheme = changes.omni_ai_theme.newValue;
-      updateAllThemes();
-    }
-  });
-
-  // Listen for system changes
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", () => {
-      if (currentTheme === "system") {
-        updateAllThemes();
-      }
-    });
-}
-
-/**
- * Update theme for all active elements
- */
-function updateAllThemes() {
-  if (overlay) updateOverlayTheme(overlay);
-  if (quickActionBtn) updateOverlayTheme(quickActionBtn);
-  // Toast is updated on creation, but if we wanted to update live toasts we'd need to track them.
-  // Given their short life, it's probably fine to let existing ones fade out with old theme,
-  // but let's be thorough if there are any.
-  document.querySelectorAll(".omni-ai-toast").forEach(updateOverlayTheme);
-}
-
-/**
- * Update overlay theme class
- */
-function updateOverlayTheme(el) {
-  let isLight = false;
-  if (currentTheme === "light") {
-    isLight = true;
-  } else if (currentTheme === "system") {
-    isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
-  }
-
-  if (isLight) {
-    el.classList.add("omni-ai-light-mode");
-  } else {
-    el.classList.remove("omni-ai-light-mode");
-  }
-}
-
-/**
- * Check if an element is a text-based input or textarea
- */
-function isTextInput(el) {
-  if (!el) return false;
-  const tagName = el.tagName.toUpperCase();
-  if (tagName === "TEXTAREA") return true;
-  if (tagName === "INPUT") {
-    const textTypes = ["text", "search", "url", "tel", "email"];
-    return !el.type || textTypes.includes(el.type.toLowerCase());
-  }
-  return false;
-}
-
-// Initialize
+// Run
 init();

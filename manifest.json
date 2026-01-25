@@ -99,5 +99,16 @@
     ]
   },
 
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/icons/*.png",
+        "_locales/*/messages.json",
+        "lib/i18n.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm0a3wgnRwVA23FcaTW7BtxNUqFzDyd40bH2s3a9kn3hhRaYof5afPqA2e9W/l6gp4pjO4E+aq60obYTKY0iIp8NjPvX8Rjq5P6uZL3WBGy/dOfgiiAVrPACeKDdIeJ1MBdYznrI8hkx3kQEoSxv94cV25h4DpFj6urR8L4rVf6ElErjEvHJEvglzUer5iSqKgVcZ5l9TsgwfpRPC4BF9WnZAMQnqGieJOP9Zski4Xlp0QvD5tWpkvbqVG3CKDBfjTZ1DsxJhI+M0acjUATKpcjhtItIr6R0ByBYwIQ3FQQEliltgkjd5l/zGK75LFEu8jT4BYxPSYdzl8IFO60MtxwIDAQAB"
 }

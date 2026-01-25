@@ -1,0 +1,421 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "扩展程序名称"
+  },
+  "extDescription": {
+    "message": "基于 Google Gemini 的全能 AI 助手 - 写作增强、快速操作和智能工具",
+    "description": "扩展程序描述"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "弹出窗口标题"
+  },
+  "popup_quickAsk": {
+    "message": "向 Omni AI 提问任何事...",
+    "description": "快速提问占位符"
+  },
+  "popup_context": {
+    "message": "上下文",
+    "description": "上下文部分标题"
+  },
+  "popup_improveWriting": {
+    "message": "写作增强",
+    "description": "写作增强部分标题"
+  },
+  "popup_quickActions": {
+    "message": "快速操作",
+    "description": "快速操作部分标题"
+  },
+  "preset_email": {
+    "message": "电子邮件",
+    "description": "电子邮件预设"
+  },
+  "preset_chat": {
+    "message": "聊天",
+    "description": "聊天预设"
+  },
+  "preset_social": {
+    "message": "社交媒体",
+    "description": "社交预设"
+  },
+  "preset_technical": {
+    "message": "技术文档",
+    "description": "技术预设"
+  },
+  "preset_academic": {
+    "message": "学术论文",
+    "description": "学术预设"
+  },
+  "action_grammar": {
+    "message": "语法修正",
+    "description": "语法操作"
+  },
+  "action_clarity": {
+    "message": "提高清晰度",
+    "description": "清晰度操作"
+  },
+  "action_tone": {
+    "message": "修改语气",
+    "description": "语气操作"
+  },
+  "action_concise": {
+    "message": "简洁化",
+    "description": "简洁操作"
+  },
+  "action_expand": {
+    "message": "扩充内容",
+    "description": "扩充操作"
+  },
+  "action_rephrase": {
+    "message": "润色改写",
+    "description": "改写操作"
+  },
+  "action_translate": {
+    "message": "翻译",
+    "description": "翻译操作"
+  },
+  "action_summarize": {
+    "message": "内容总结",
+    "description": "总结操作"
+  },
+  "action_reply": {
+    "message": "快速回复",
+    "description": "回复操作"
+  },
+  "action_emojify": {
+    "message": "添加表情",
+    "description": "表情操作"
+  },
+  "status_ready": {
+    "message": "就绪",
+    "description": "就绪状态"
+  },
+  "status_processing": {
+    "message": "处理中...",
+    "description": "处理中状态"
+  },
+  "status_error": {
+    "message": "错误",
+    "description": "错误状态"
+  },
+  "auth_signIn": {
+    "message": "登录",
+    "description": "登录按钮"
+  },
+  "auth_signOut": {
+    "message": "退出登录",
+    "description": "退出按钮"
+  },
+  "auth_accountMenu": {
+    "message": "账户菜单",
+    "description": "账户菜单按钮标题"
+  },
+  "settings_title": {
+    "message": "设置",
+    "description": "设置页面标题"
+  },
+  "settings_apiKey": {
+    "message": "Gemini API 密钥",
+    "description": "API 密钥标签"
+  },
+  "settings_apiKeyHint": {
+    "message": "从 Google AI Studio 获取您的 API 密钥",
+    "description": "API 密钥提示"
+  },
+  "settings_model": {
+    "message": "AI 模型",
+    "description": "AI 模型标签"
+  },
+  "settings_modelHint": {
+    "message": "选择要使用的 Gemini 模型",
+    "description": "AI 模型提示"
+  },
+  "settings_defaultPreset": {
+    "message": "默认上下文",
+    "description": "默认预设标签"
+  },
+  "settings_language": {
+    "message": "翻译目标语言",
+    "description": "翻译语言标签"
+  },
+  "settings_save": {
+    "message": "保存设置",
+    "description": "保存按钮"
+  },
+  "settings_saved": {
+    "message": "设置已保存！",
+    "description": "保存确认"
+  },
+  "overlay_copy": {
+    "message": "复制",
+    "description": "复制按钮"
+  },
+  "overlay_replace": {
+    "message": "替换原文",
+    "description": "替换按钮"
+  },
+  "action_explain": {
+    "message": "解释说明",
+    "description": "解释操作"
+  },
+  "ui_to": {
+    "message": "到",
+    "description": "语言前置词"
+  },
+  "contextMenu_improve": {
+    "message": "使用 Omni AI 优化",
+    "description": "右键菜单优化"
+  },
+  "contextMenu_explain": {
+    "message": "使用 Omni AI 解释",
+    "description": "右键菜单解释"
+  },
+  "contextMenu_translate": {
+    "message": "使用 Omni AI 翻译",
+    "description": "右键菜单翻译"
+  },
+  "error_noApiKey": {
+    "message": "未配置 API 密钥。请在设置中添加您的 Gemini API 密钥。",
+    "description": "未配置 API 密钥错误"
+  },
+  "settings_apiKeyPlaceholder": {
+    "message": "输入您的 Gemini API 密钥...",
+    "description": "API 密钥占位符"
+  },
+  "error_prefix": {
+    "message": "错误：",
+    "description": "错误前缀"
+  },
+  "settings_defaultTone": {
+    "message": "默认语气",
+    "description": "默认语气标签"
+  },
+  "settings_defaultToneHint": {
+    "message": "写作增强和回复时的默认语气",
+    "description": "默认语气提示"
+  },
+  "tone_professional": {
+    "message": "专业/商务",
+    "description": "专业语气"
+  },
+  "tone_casual": {
+    "message": "随性/日常",
+    "description": "随性语气"
+  },
+  "tone_friendly": {
+    "message": "友好",
+    "description": "友好语气"
+  },
+  "tone_direct": {
+    "message": "直接",
+    "description": "直接语气"
+  },
+  "tone_confident": {
+    "message": "自信",
+    "description": "自信语气"
+  },
+  "quick_ask_title": {
+    "message": "快速提问",
+    "description": "快速提问标题"
+  },
+  "overlay_result": {
+    "message": "结果",
+    "description": "结果标题"
+  },
+  "status_thinking": {
+    "message": "思考中...",
+    "description": "思考状态"
+  },
+  "btn_ask_ai": {
+    "message": "咨询 AI",
+    "description": "咨询 AI 按钮"
+  },
+  "btn_back": {
+    "message": "返回",
+    "description": "返回按钮标题"
+  },
+  "msg_copied": {
+    "message": "已复制！",
+    "description": "已复制提示"
+  },
+  "error_noSelection": {
+    "message": "未选择文本。请先选择一段文本。",
+    "description": "未选择文本错误"
+  },
+  "settings_tagline": {
+    "message": "您的 AI 写作助手",
+    "description": "应用标语"
+  },
+  "settings_theme": {
+    "message": "主题外观",
+    "description": "主题标签"
+  },
+  "settings_themeHint": {
+    "message": "选择您喜欢的主题風格",
+    "description": "主题提示"
+  },
+  "theme_system": {
+    "message": "跟随系统",
+    "description": "系统主题"
+  },
+  "theme_dark": {
+    "message": "深色模式",
+    "description": "深色主题"
+  },
+  "theme_light": {
+    "message": "浅色模式",
+    "description": "浅色主题"
+  },
+  "settings_primaryLanguage": {
+    "message": "主要语言",
+    "description": "主要语言标签"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "用于快速操作的常用语言",
+    "description": "主要语言提示"
+  },
+  "settings_validate": {
+    "message": "验证配置",
+    "description": "验证按钮"
+  },
+  "settings_shortcuts": {
+    "message": "键盘快捷键",
+    "description": "快捷键部分标题"
+  },
+  "settings_history": {
+    "message": "使用历史",
+    "description": "历史部分标题"
+  },
+  "stats_totalActions": {
+    "message": "总操作次数",
+    "description": "总操作统计"
+  },
+  "stats_wordsProcessed": {
+    "message": "已处理词数",
+    "description": "已处理词数统计"
+  },
+  "stats_wordsGenerated": {
+    "message": "已生成词数",
+    "description": "已生成词数统计"
+  },
+  "settings_about": {
+    "message": "关于 Omni AI",
+    "description": "关于部分标题"
+  },
+  "btn_reportIssue": {
+    "message": "报告问题",
+    "description": "报告问题链接"
+  },
+  "btn_clearHistory": {
+    "message": "清除历史",
+    "description": "清除历史提示"
+  },
+  "settings_groqKey": {
+    "message": "Groq API 密钥",
+    "description": "Groq 密钥标签"
+  },
+  "settings_groqKeyHint": {
+    "message": "在 console.groq.com 获取免费密钥",
+    "description": "Groq 密钥提示"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API 密钥",
+    "description": "OpenAI 密钥标签"
+  },
+  "settings_openaiKeyHint": {
+    "message": "在 platform.openai.com 获取密钥",
+    "description": "OpenAI 密钥提示"
+  },
+  "settings_ollamaEndpoint": {
+    "message": "Ollama 端点",
+    "description": "Ollama 端点标签"
+  },
+  "settings_ollamaHint": {
+    "message": "本地 API 端点 (例如 http://localhost:11434)",
+    "description": "Ollama 端点提示"
+  },
+  "settings_tooltip_gemini": {
+    "message": "获取 Gemini 密钥",
+    "description": "Gemini 提示标题"
+  },
+  "settings_tooltip_groq": {
+    "message": "获取 Groq 密钥",
+    "description": "Groq 提示标题"
+  },
+  "settings_tooltip_openai": {
+    "message": "获取 OpenAI 密钥",
+    "description": "OpenAI 提示标题"
+  },
+  "settings_tooltip_ollama": {
+    "message": "Ollama 配置",
+    "description": "Ollama 提示标题"
+  },
+  "settings_shortcuts_customize": {
+    "message": "在 Chrome 中自定义",
+    "description": "自定义快捷键标签"
+  },
+  "settings_shortcuts_hint": {
+    "message": "您可以在 Chrome 设置页面管理快捷键",
+    "description": "快捷键提示"
+  },
+  "btn_refresh": {
+    "message": "刷新",
+    "description": "刷新按钮提示"
+  },
+  "settings_languageHint": {
+    "message": "翻译时的默认目标语言",
+    "description": "翻译语言提示"
+  },
+  "lang_en": { "message": "英语" },
+  "lang_vi": { "message": "越南语" },
+  "lang_es": { "message": "西班牙语" },
+  "lang_fr": { "message": "法语" },
+  "lang_de": { "message": "德语" },
+  "lang_it": { "message": "意大利语" },
+  "lang_pt": { "message": "葡萄牙语" },
+  "lang_ja": { "message": "日语" },
+  "lang_ko": { "message": "韩语" },
+  "lang_zh": { "message": "中文" },
+  "settings_confirmClearHistory": {
+    "message": "您确定要清除所有使用历史吗？",
+    "description": "清除历史确认"
+  },
+  "settings_errorNoApiKey": {
+    "message": "请先输入 API 密钥或端点。",
+    "description": "未输入密钥错误"
+  },
+  "settings_validating": {
+    "message": "正在验证...",
+    "description": "验证状态提示"
+  },
+  "settings_configValid": {
+    "message": "配置有效！可以开始使用。",
+    "description": "配置校验成功"
+  },
+  "settings_connectionFailed": {
+    "message": "连接检查失败",
+    "description": "连接失败错误"
+  },
+  "settings_checking": {
+    "message": "检查中...",
+    "description": "检查状态"
+  },
+  "settings_failedToSave": {
+    "message": "无法保存设置",
+    "description": "保存失败错误"
+  },
+  "settings_tooltip_gemini_s1": { "message": "前往 Google AI Studio" },
+  "settings_tooltip_gemini_s2": { "message": "点击 'Create API Key'" },
+  "settings_tooltip_gemini_s3": { "message": "将密钥复制到剪贴板" },
+  "settings_tooltip_groq_s1": { "message": "前往 Groq 控制台" },
+  "settings_tooltip_groq_s2": { "message": "注册或登录账户" },
+  "settings_tooltip_groq_s3": { "message": "创建新的 API 密钥" },
+  "settings_tooltip_openai_s1": { "message": "前往 OpenAI 平台" },
+  "settings_tooltip_openai_s2": { "message": "注册或登录账户" },
+  "settings_tooltip_openai_s3": { "message": "创建新的 API 密钥" },
+  "settings_tooltip_ollama_s1": {
+    "message": "确保 Ollama 在运行时启用了 CORS："
+  },
+  "settings_tooltip_ollama_s2": { "message": "默认：http://localhost:11434" }
+}

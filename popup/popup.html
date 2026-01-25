@@ -54,7 +54,11 @@
           <!-- Signed In State (hidden by default) -->
           <div id="userInfo" class="user-info hidden">
             <img id="userAvatar" class="user-avatar" src="" alt="User" />
-            <button id="userMenuBtn" class="user-menu-btn" title="Account menu">
+            <button
+              id="userMenuBtn"
+              class="user-menu-btn"
+              title="__MSG_auth_accountMenu__"
+            >
               <svg
                 width="12"
                 height="12"
@@ -132,7 +136,7 @@
             placeholder="__MSG_popup_quickAsk__"
             rows="2"
           ></textarea>
-          <button id="askBtn" class="ask-btn" title="Ask AI">
+          <button id="askBtn" class="ask-btn" title="__MSG_btn_ask_ai__">
             <svg
               width="20"
               height="20"
@@ -150,187 +154,10 @@
         </div>
       </section>
 
-      <!-- Quick Ask Result Section (Hidden by default) -->
+      <!-- Quick Ask Result Section -->
       <section class="quick-ask-result hidden" id="quickAskResult">
-        <div class="result-header">
-          <button id="resultBackBtn" class="result-back-btn" title="Back">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-          <span class="result-title">AI Response</span>
-        </div>
         <div class="result-content" id="resultContent">
           <!-- AI response will be inserted here -->
-        </div>
-        <div class="result-footer">
-          <button id="copyResultBtn" class="result-action-btn secondary">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path
-                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-              ></path>
-            </svg>
-            <span>Copy</span>
-          </button>
-          <button id="newQuestionBtn" class="result-action-btn primary">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            <span>New Question</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Context Presets -->
-      <section class="presets">
-        <h3 class="section-title">__MSG_popup_context__</h3>
-        <div class="preset-chips">
-          <button class="preset-chip active" data-preset="chat">
-            <span class="chip-icon">💬</span>
-            <span>__MSG_preset_chat__</span>
-          </button>
-          <button class="preset-chip" data-preset="email">
-            <span class="chip-icon">📧</span>
-            <span>__MSG_preset_email__</span>
-          </button>
-          <button class="preset-chip" data-preset="technical">
-            <span class="chip-icon">📝</span>
-            <span>__MSG_preset_technical__</span>
-          </button>
-          <button class="preset-chip" data-preset="social">
-            <span class="chip-icon">🐦</span>
-            <span>__MSG_preset_social__</span>
-          </button>
-          <button class="preset-chip" data-preset="academic">
-            <span class="chip-icon">📚</span>
-            <span>__MSG_preset_academic__</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Writing Actions -->
-      <section class="actions">
-        <h3 class="section-title">__MSG_popup_improveWriting__</h3>
-        <div class="action-grid">
-          <button class="action-btn" data-action="grammar">
-            <span class="action-icon">✏️</span>
-            <span class="action-label">__MSG_action_grammar__</span>
-          </button>
-          <button class="action-btn" data-action="clarity">
-            <span class="action-icon">💡</span>
-            <span class="action-label">__MSG_action_clarity__</span>
-          </button>
-          <button class="action-btn" data-action="tone">
-            <span class="action-icon">🎭</span>
-            <span class="action-label">__MSG_action_tone__</span>
-          </button>
-          <button class="action-btn" data-action="concise">
-            <span class="action-icon">📐</span>
-            <span class="action-label">__MSG_action_concise__</span>
-          </button>
-          <button class="action-btn" data-action="expand">
-            <span class="action-icon">📖</span>
-            <span class="action-label">__MSG_action_expand__</span>
-          </button>
-          <button class="action-btn" data-action="rephrase">
-            <span class="action-icon">🔄</span>
-            <span class="action-label">__MSG_action_rephrase__</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Quick Actions -->
-      <section class="quick-actions">
-        <h3 class="section-title">__MSG_popup_quickActions__</h3>
-        <div class="quick-action-row">
-          <button
-            class="quick-action-btn"
-            data-action="translate_primary"
-            id="btnTranslatePrimary"
-          >
-            <span id="labelTranslatePrimary">To Primary</span>
-          </button>
-          <button
-            class="quick-action-btn"
-            data-action="translate_default"
-            id="btnTranslateDefault"
-          >
-            <span id="labelTranslateDefault">To Translation</span>
-          </button>
-
-          <button class="quick-action-btn" data-action="summarize">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="21" y1="10" x2="3" y2="10"></line>
-              <line x1="21" y1="6" x2="3" y2="6"></line>
-              <line x1="21" y1="14" x2="3" y2="14"></line>
-              <line x1="21" y1="18" x2="10" y2="18"></line>
-            </svg>
-            <span>__MSG_action_summarize__</span>
-          </button>
-          <button class="quick-action-btn" data-action="reply">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="9 17 4 12 9 7"></polyline>
-              <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
-            </svg>
-            <span>__MSG_action_reply__</span>
-          </button>
-          <button class="quick-action-btn" data-action="explain">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              <line x1="11" y1="8" x2="11" y2="14"></line>
-              <line x1="8" y1="11" x2="14" y2="11"></line>
-            </svg>
-            <span>Explain</span>
-          </button>
-          <button class="quick-action-btn" data-action="emojify">
-            <span class="emoji-icon">😊</span>
-            <span>__MSG_action_emojify__</span>
-          </button>
         </div>
       </section>
 
