@@ -367,16 +367,36 @@
     "message": "Standard-Zielsprache für Übersetzungen",
     "description": "Übersetzungssprache-Hinweis"
   },
-  "lang_en": { "message": "Englisch" },
-  "lang_vi": { "message": "Vietnamesisch" },
-  "lang_es": { "message": "Spanisch" },
-  "lang_fr": { "message": "Französisch" },
-  "lang_de": { "message": "Deutsch" },
-  "lang_it": { "message": "Italienisch" },
-  "lang_pt": { "message": "Portugiesisch" },
-  "lang_ja": { "message": "Japanisch" },
-  "lang_ko": { "message": "Koreanisch" },
-  "lang_zh": { "message": "Chinesisch" },
+  "lang_en": {
+    "message": "Englisch"
+  },
+  "lang_vi": {
+    "message": "Vietnamesisch"
+  },
+  "lang_es": {
+    "message": "Spanisch"
+  },
+  "lang_fr": {
+    "message": "Französisch"
+  },
+  "lang_de": {
+    "message": "Deutsch"
+  },
+  "lang_it": {
+    "message": "Italienisch"
+  },
+  "lang_pt": {
+    "message": "Portugiesisch"
+  },
+  "lang_ja": {
+    "message": "Japanisch"
+  },
+  "lang_ko": {
+    "message": "Koreanisch"
+  },
+  "lang_zh": {
+    "message": "Chinesisch"
+  },
   "settings_confirmClearHistory": {
     "message": "Möchten Sie wirklich den gesamten Verlauf löschen?",
     "description": "Löschbestätigung"
@@ -405,17 +425,33 @@
     "message": "Fehler beim Speichern",
     "description": "Speicherfehler"
   },
-  "settings_tooltip_gemini_s1": { "message": "Google AI Studio öffnen" },
-  "settings_tooltip_gemini_s2": { "message": "Auf 'Create API Key' klicken" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio öffnen"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Auf 'Create API Key' klicken"
+  },
   "settings_tooltip_gemini_s3": {
     "message": "Schlüssel in die Zwischenablage kopieren"
   },
-  "settings_tooltip_groq_s1": { "message": "Groq Console öffnen" },
-  "settings_tooltip_groq_s2": { "message": "Registrieren oder Anmelden" },
-  "settings_tooltip_groq_s3": { "message": "Neuen API-Schlüssel erstellen" },
-  "settings_tooltip_openai_s1": { "message": "OpenAI Platform öffnen" },
-  "settings_tooltip_openai_s2": { "message": "Registrieren oder Anmelden" },
-  "settings_tooltip_openai_s3": { "message": "Neuen API-Schlüssel erstellen" },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console öffnen"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Registrieren oder Anmelden"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Neuen API-Schlüssel erstellen"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform öffnen"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Registrieren oder Anmelden"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Neuen API-Schlüssel erstellen"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "CORS-Modus für Ollama sicherstellen:"
   },
@@ -449,7 +485,6 @@
   "overlay_translation_failed": {
     "message": "Übersetzung fehlgeschlagen",
     "description": "Translation failed message"
-  }
   },
   "btn_new_chat": {
     "message": "Neuer Chat",

@@ -367,16 +367,36 @@
     "message": "Langue cible par défaut pour les traductions",
     "description": "Indication langue traduction"
   },
-  "lang_en": { "message": "Anglais" },
-  "lang_vi": { "message": "Vietnamien" },
-  "lang_es": { "message": "Espagnol" },
-  "lang_fr": { "message": "Français" },
-  "lang_de": { "message": "Allemand" },
-  "lang_it": { "message": "Italien" },
-  "lang_pt": { "message": "Portugais" },
-  "lang_ja": { "message": "Japonais" },
-  "lang_ko": { "message": "Coréen" },
-  "lang_zh": { "message": "Chinois" },
+  "lang_en": {
+    "message": "Anglais"
+  },
+  "lang_vi": {
+    "message": "Vietnamien"
+  },
+  "lang_es": {
+    "message": "Espagnol"
+  },
+  "lang_fr": {
+    "message": "Français"
+  },
+  "lang_de": {
+    "message": "Allemand"
+  },
+  "lang_it": {
+    "message": "Italien"
+  },
+  "lang_pt": {
+    "message": "Portugais"
+  },
+  "lang_ja": {
+    "message": "Japonais"
+  },
+  "lang_ko": {
+    "message": "Coréen"
+  },
+  "lang_zh": {
+    "message": "Chinois"
+  },
   "settings_confirmClearHistory": {
     "message": "Voulez-vous vraiment effacer tout votre historique ?",
     "description": "Confirmation effacement historique"
@@ -405,19 +425,33 @@
     "message": "Erreur lors de l'enregistrement",
     "description": "Erreur enregistrement"
   },
-  "settings_tooltip_gemini_s1": { "message": "Accédez à Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "Cliquez sur 'Create API Key'" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Accédez à Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Cliquez sur 'Create API Key'"
+  },
   "settings_tooltip_gemini_s3": {
     "message": "Copiez la clé dans le presse-papiers"
   },
-  "settings_tooltip_groq_s1": { "message": "Accédez à la console Groq" },
-  "settings_tooltip_groq_s2": { "message": "Inscrivez-vous ou connectez-vous" },
-  "settings_tooltip_groq_s3": { "message": "Créez une nouvelle clé API" },
-  "settings_tooltip_openai_s1": { "message": "Accédez à la plateforme OpenAI" },
+  "settings_tooltip_groq_s1": {
+    "message": "Accédez à la console Groq"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Inscrivez-vous ou connectez-vous"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Créez une nouvelle clé API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Accédez à la plateforme OpenAI"
+  },
   "settings_tooltip_openai_s2": {
     "message": "Inscrivez-vous ou connectez-vous"
   },
-  "settings_tooltip_openai_s3": { "message": "Créez une nouvelle clé API" },
+  "settings_tooltip_openai_s3": {
+    "message": "Créez une nouvelle clé API"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Assurez-vous que CORS est activé pour Ollama :"
   },
@@ -451,7 +485,6 @@
   "overlay_translation_failed": {
     "message": "Échec de la traduction",
     "description": "Translation failed message"
-  }
   },
   "btn_new_chat": {
     "message": "Nouvelle discussion",

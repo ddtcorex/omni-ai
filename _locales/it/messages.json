@@ -367,16 +367,36 @@
     "message": "Lingua di destinazione predefinita per le traduzioni",
     "description": "Suggerimento lingua traduzione"
   },
-  "lang_en": { "message": "Inglese" },
-  "lang_vi": { "message": "Vietnamita" },
-  "lang_es": { "message": "Spagnolo" },
-  "lang_fr": { "message": "Francese" },
-  "lang_de": { "message": "Tedesco" },
-  "lang_it": { "message": "Italiano" },
-  "lang_pt": { "message": "Portoghese" },
-  "lang_ja": { "message": "Giapponese" },
-  "lang_ko": { "message": "Coreano" },
-  "lang_zh": { "message": "Cinese" },
+  "lang_en": {
+    "message": "Inglese"
+  },
+  "lang_vi": {
+    "message": "Vietnamita"
+  },
+  "lang_es": {
+    "message": "Spagnolo"
+  },
+  "lang_fr": {
+    "message": "Francese"
+  },
+  "lang_de": {
+    "message": "Tedesco"
+  },
+  "lang_it": {
+    "message": "Italiano"
+  },
+  "lang_pt": {
+    "message": "Portoghese"
+  },
+  "lang_ja": {
+    "message": "Giapponese"
+  },
+  "lang_ko": {
+    "message": "Coreano"
+  },
+  "lang_zh": {
+    "message": "Cinese"
+  },
   "settings_confirmClearHistory": {
     "message": "Vuoi davvero cancellare tutta la cronologia?",
     "description": "Conferma cancellazione cronologia"
@@ -405,15 +425,33 @@
     "message": "Errore durante il salvataggio",
     "description": "Errore salvataggio"
   },
-  "settings_tooltip_gemini_s1": { "message": "Vai su Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "Clicca su 'Create API Key'" },
-  "settings_tooltip_gemini_s3": { "message": "Copia la chiave negli appunti" },
-  "settings_tooltip_groq_s1": { "message": "Vai sulla console Groq" },
-  "settings_tooltip_groq_s2": { "message": "Registrati o accedi" },
-  "settings_tooltip_groq_s3": { "message": "Crea una nuova chiave API" },
-  "settings_tooltip_openai_s1": { "message": "Vai sulla piattaforma OpenAI" },
-  "settings_tooltip_openai_s2": { "message": "Registrati o accedi" },
-  "settings_tooltip_openai_s3": { "message": "Crea una nuova chiave API" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Vai su Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Clicca su 'Create API Key'"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Copia la chiave negli appunti"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Vai sulla console Groq"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Registrati o accedi"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Crea una nuova chiave API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Vai sulla piattaforma OpenAI"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Registrati o accedi"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Crea una nuova chiave API"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Assicurati che Ollama funzioni con CORS attivo:"
   },
@@ -447,7 +485,6 @@
   "overlay_translation_failed": {
     "message": "Traduzione fallita",
     "description": "Translation failed message"
-  }
   },
   "btn_new_chat": {
     "message": "Nuova chat",

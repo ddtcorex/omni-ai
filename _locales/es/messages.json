@@ -367,16 +367,36 @@
     "message": "Idioma por defecto para las traducciones",
     "description": "Sugerencia de idioma de traducción"
   },
-  "lang_en": { "message": "Inglés" },
-  "lang_vi": { "message": "Vietnamita" },
-  "lang_es": { "message": "Español" },
-  "lang_fr": { "message": "Francés" },
-  "lang_de": { "message": "Alemán" },
-  "lang_it": { "message": "Italiano" },
-  "lang_pt": { "message": "Portugués" },
-  "lang_ja": { "message": "Japonés" },
-  "lang_ko": { "message": "Coreano" },
-  "lang_zh": { "message": "Chino" },
+  "lang_en": {
+    "message": "Inglés"
+  },
+  "lang_vi": {
+    "message": "Vietnamita"
+  },
+  "lang_es": {
+    "message": "Español"
+  },
+  "lang_fr": {
+    "message": "Francés"
+  },
+  "lang_de": {
+    "message": "Alemán"
+  },
+  "lang_it": {
+    "message": "Italiano"
+  },
+  "lang_pt": {
+    "message": "Portugués"
+  },
+  "lang_ja": {
+    "message": "Japonés"
+  },
+  "lang_ko": {
+    "message": "Coreano"
+  },
+  "lang_zh": {
+    "message": "Chino"
+  },
   "settings_confirmClearHistory": {
     "message": "¿Estás seguro de que quieres borrar todo el historial?",
     "description": "Confirmación de borrar historial"
@@ -405,15 +425,33 @@
     "message": "Error al guardar",
     "description": "Error al guardar"
   },
-  "settings_tooltip_gemini_s1": { "message": "Ve a Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "Haz clic en 'Create API Key'" },
-  "settings_tooltip_gemini_s3": { "message": "Copia la clave al portapapeles" },
-  "settings_tooltip_groq_s1": { "message": "Ve a la consola de Groq" },
-  "settings_tooltip_groq_s2": { "message": "Regístrate o inicia sesión" },
-  "settings_tooltip_groq_s3": { "message": "Crea una nueva clave API" },
-  "settings_tooltip_openai_s1": { "message": "Ve a la plataforma de OpenAI" },
-  "settings_tooltip_openai_s2": { "message": "Regístrate o inicia sesión" },
-  "settings_tooltip_openai_s3": { "message": "Crea una nueva clave API" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Ve a Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Haz clic en 'Create API Key'"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Copia la clave al portapapeles"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Ve a la consola de Groq"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Regístrate o inicia sesión"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Crea una nueva clave API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Ve a la plataforma de OpenAI"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Regístrate o inicia sesión"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Crea una nueva clave API"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Asegúrate de que Ollama funcione con CORS activado:"
   },
@@ -447,7 +485,6 @@
   "overlay_translation_failed": {
     "message": "Error de traducción",
     "description": "Translation failed message"
-  }
   },
   "btn_new_chat": {
     "message": "Nueva conversación",

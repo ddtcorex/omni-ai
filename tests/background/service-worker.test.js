@@ -35,7 +35,8 @@ describe('Service Worker Integration', () => {
                 get: jest.fn().mockResolvedValue({}),
                 set: jest.fn().mockResolvedValue({}),
                 remove: jest.fn().mockResolvedValue({})
-            }
+            },
+            onChanged: { addListener: jest.fn() }
         },
         identity: { getAuthToken: jest.fn() },
         commands: { onCommand: { addListener: jest.fn() } }

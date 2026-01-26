@@ -367,16 +367,36 @@
     "message": "번역 시 기본으로 적용될 대상 언어",
     "description": "번역 언어 힌트"
   },
-  "lang_en": { "message": "영어" },
-  "lang_vi": { "message": "베트남어" },
-  "lang_es": { "message": "스페인어" },
-  "lang_fr": { "message": "프랑스어" },
-  "lang_de": { "message": "독일어" },
-  "lang_it": { "message": "이탈리아어" },
-  "lang_pt": { "message": "포르투갈어" },
-  "lang_ja": { "message": "일본어" },
-  "lang_ko": { "message": "한국어" },
-  "lang_zh": { "message": "중국어" },
+  "lang_en": {
+    "message": "영어"
+  },
+  "lang_vi": {
+    "message": "베트남어"
+  },
+  "lang_es": {
+    "message": "스페인어"
+  },
+  "lang_fr": {
+    "message": "프랑스어"
+  },
+  "lang_de": {
+    "message": "독일어"
+  },
+  "lang_it": {
+    "message": "이탈리아어"
+  },
+  "lang_pt": {
+    "message": "포르투갈어"
+  },
+  "lang_ja": {
+    "message": "일본어"
+  },
+  "lang_ko": {
+    "message": "한국어"
+  },
+  "lang_zh": {
+    "message": "중국어"
+  },
   "settings_confirmClearHistory": {
     "message": "모든 사용 기록을 삭제하시겠습니까?",
     "description": "기록 삭제 확인"
@@ -405,21 +425,39 @@
     "message": "저장에 실패했습니다",
     "description": "저장 실패 오류"
   },
-  "settings_tooltip_gemini_s1": { "message": "Google AI Studio로 이동합니다" },
-  "settings_tooltip_gemini_s2": { "message": "'Create API Key'를 클릭합니다" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio로 이동합니다"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "'Create API Key'를 클릭합니다"
+  },
   "settings_tooltip_gemini_s3": {
     "message": "발급된 키를 클립보드에 복사합니다"
   },
-  "settings_tooltip_groq_s1": { "message": "Groq Console로 이동합니다" },
-  "settings_tooltip_groq_s2": { "message": "회원가입 또는 로그인합니다" },
-  "settings_tooltip_groq_s3": { "message": "새 API 키를 생성합니다" },
-  "settings_tooltip_openai_s1": { "message": "OpenAI Platform으로 이동합니다" },
-  "settings_tooltip_openai_s2": { "message": "회원가입 또는 로그인합니다" },
-  "settings_tooltip_openai_s3": { "message": "새 API 키를 생성합니다" },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console로 이동합니다"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "회원가입 또는 로그인합니다"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "새 API 키를 생성합니다"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform으로 이동합니다"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "회원가입 또는 로그인합니다"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "새 API 키를 생성합니다"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Ollama에서 CORS가 활성화되어 있는지 확인하세요:"
   },
-  "settings_tooltip_ollama_s2": { "message": "기본값: http://localhost:11434" },
+  "settings_tooltip_ollama_s2": {
+    "message": "기본값: http://localhost:11434"
+  },
   "overlay_suggested_fix": {
     "message": "수정 제안",
     "description": "Suggested fix label"
@@ -447,7 +485,6 @@
   "overlay_translation_failed": {
     "message": "번역 실패",
     "description": "Translation failed message"
-  }
   },
   "btn_new_chat": {
     "message": "새 채팅",

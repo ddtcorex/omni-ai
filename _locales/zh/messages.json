@@ -367,16 +367,36 @@
     "message": "翻译时的默认目标语言",
     "description": "翻译语言提示"
   },
-  "lang_en": { "message": "英语" },
-  "lang_vi": { "message": "越南语" },
-  "lang_es": { "message": "西班牙语" },
-  "lang_fr": { "message": "法语" },
-  "lang_de": { "message": "德语" },
-  "lang_it": { "message": "意大利语" },
-  "lang_pt": { "message": "葡萄牙语" },
-  "lang_ja": { "message": "日语" },
-  "lang_ko": { "message": "韩语" },
-  "lang_zh": { "message": "中文" },
+  "lang_en": {
+    "message": "英语"
+  },
+  "lang_vi": {
+    "message": "越南语"
+  },
+  "lang_es": {
+    "message": "西班牙语"
+  },
+  "lang_fr": {
+    "message": "法语"
+  },
+  "lang_de": {
+    "message": "德语"
+  },
+  "lang_it": {
+    "message": "意大利语"
+  },
+  "lang_pt": {
+    "message": "葡萄牙语"
+  },
+  "lang_ja": {
+    "message": "日语"
+  },
+  "lang_ko": {
+    "message": "韩语"
+  },
+  "lang_zh": {
+    "message": "中文"
+  },
   "settings_confirmClearHistory": {
     "message": "您确定要清除所有使用历史吗？",
     "description": "清除历史确认"
@@ -405,19 +425,39 @@
     "message": "无法保存设置",
     "description": "保存失败错误"
   },
-  "settings_tooltip_gemini_s1": { "message": "前往 Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "点击 'Create API Key'" },
-  "settings_tooltip_gemini_s3": { "message": "将密钥复制到剪贴板" },
-  "settings_tooltip_groq_s1": { "message": "前往 Groq 控制台" },
-  "settings_tooltip_groq_s2": { "message": "注册或登录账户" },
-  "settings_tooltip_groq_s3": { "message": "创建新的 API 密钥" },
-  "settings_tooltip_openai_s1": { "message": "前往 OpenAI 平台" },
-  "settings_tooltip_openai_s2": { "message": "注册或登录账户" },
-  "settings_tooltip_openai_s3": { "message": "创建新的 API 密钥" },
+  "settings_tooltip_gemini_s1": {
+    "message": "前往 Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "点击 'Create API Key'"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "将密钥复制到剪贴板"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "前往 Groq 控制台"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "注册或登录账户"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "创建新的 API 密钥"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "前往 OpenAI 平台"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "注册或登录账户"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "创建新的 API 密钥"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "确保 Ollama 在运行时启用了 CORS："
   },
-  "settings_tooltip_ollama_s2": { "message": "默认：http://localhost:11434" },
+  "settings_tooltip_ollama_s2": {
+    "message": "默认：http://localhost:11434"
+  },
   "overlay_suggested_fix": {
     "message": "建议修改",
     "description": "Suggested fix label"
@@ -445,7 +485,6 @@
   "overlay_translation_failed": {
     "message": "翻译失败",
     "description": "Translation failed message"
-  }
   },
   "btn_new_chat": {
     "message": "新聊天",
