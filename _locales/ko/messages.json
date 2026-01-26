@@ -180,7 +180,7 @@
     "description": "API 키 미설정 오류"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Gemini API 키 입력...",
+    "message": "API 키를 입력하세요...",
     "description": "API 키 입력 플레이스홀더"
   },
   "error_prefix": {
@@ -501,5 +501,9 @@
   "settings_errorNoCustomModel": {
     "message": "사용자 지정 모델 이름을 입력하십시오",
     "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "예: 사용자-모델-ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

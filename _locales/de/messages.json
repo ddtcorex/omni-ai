@@ -180,7 +180,7 @@
     "description": "Fehler: Kein API-Schlüssel"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Geben Sie Ihren Gemini API-Schlüssel ein...",
+    "message": "Geben Sie Ihren API-Schlüssel ein...",
     "description": "API-Schlüssel Platzhalter"
   },
   "error_prefix": {
@@ -501,5 +501,9 @@
   "settings_errorNoCustomModel": {
     "message": "Bitte geben Sie einen benutzerdefinierten Modellnamen ein",
     "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "z. B. Ihre-Modell-ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

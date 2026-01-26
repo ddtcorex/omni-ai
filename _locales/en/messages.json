@@ -180,7 +180,7 @@
     "description": "No API key error"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Enter your API Key...",
+    "message": "Enter your API key...",
     "description": "API key input placeholder"
   },
   "error_prefix": {
@@ -501,5 +501,9 @@
   "settings_errorNoCustomModel": {
     "message": "Please enter a Custom Model Name",
     "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "e.g. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

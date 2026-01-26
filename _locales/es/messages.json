@@ -180,7 +180,7 @@
     "description": "Error de falta de clave API"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Introduce tu clave API de Gemini...",
+    "message": "Ingrese su clave API...",
     "description": "Marcador de posición para la clave API"
   },
   "error_prefix": {
@@ -501,5 +501,9 @@
   "settings_errorNoCustomModel": {
     "message": "Por favor ingrese un nombre de modelo personalizado",
     "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "p. ej. su-id-de-modelo",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

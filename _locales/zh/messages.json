@@ -180,7 +180,7 @@
     "description": "未配置 API 密钥错误"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "输入您的 Gemini API 密钥...",
+    "message": "输入您的 API 密钥...",
     "description": "API 密钥占位符"
   },
   "error_prefix": {
@@ -501,5 +501,9 @@
   "settings_errorNoCustomModel": {
     "message": "请输入自定义模型名称",
     "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "例如: 模型ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

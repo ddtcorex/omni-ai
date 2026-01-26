@@ -92,9 +92,23 @@ function populateModelSelect() {
  */
 function localizeDOM() {
   document.title = i18n.getMessage("settings_title") + " - Omni AI";
-  if (elements.apiKey) {
-    elements.apiKey.placeholder = i18n.getMessage("settings_apiKeyPlaceholder");
-  }
+  // Localize attributes (title and placeholder)
+  const elementsWithAttributes = document.querySelectorAll(
+    '[title*="__MSG_"], [placeholder*="__MSG_"]',
+  );
+  elementsWithAttributes.forEach((el) => {
+    ["title", "placeholder"].forEach((attr) => {
+      const val = el.getAttribute(attr);
+      if (val && val.includes("__MSG_")) {
+        el.setAttribute(
+          attr,
+          val.replace(/__MSG_(\w+)__/g, (match, key) => {
+            return i18n.getMessage(key) || match;
+          }),
+        );
+      }
+    });
+  });
 
   // Localize text content in body
   const walker = document.createTreeWalker(
@@ -113,20 +127,6 @@ function localizeDOM() {
       });
     }
   }
-
-  // Localize attributes
-  const elementsWithAttributes = document.querySelectorAll('[title*="__MSG_"]');
-  elementsWithAttributes.forEach((el) => {
-    const title = el.getAttribute("title");
-    if (title && title.includes("__MSG_")) {
-      el.setAttribute(
-        "title",
-        title.replace(/__MSG_(\w+)__/g, (match, key) => {
-          return i18n.getMessage(key) || match;
-        }),
-      );
-    }
-  });
 }
 
 /**

@@ -501,5 +501,9 @@
   "settings_errorNoCustomModel": {
     "message": "Vui lòng nhập tên mô hình tùy chỉnh",
     "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "vd: mã-mô-hình-của-bạn",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }
