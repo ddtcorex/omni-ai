@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-01-26
+
+### ✨ Added
+
+- **Persistent Chat**: The popup chat now retains history until you clear it, allowing for multi-turn conversations with context awareness.
+- **Context-Aware Replies**: AI now understands the conversation history (last 10 messages) for better responses.
+- **Auto-Translation**: Selecting text (non-editable) now automatically triggers a translation card "Translated to [Primary Language]".
+- **Keyboard Navigation**: Added keyboard support for the overlay trigger (`Ctrl+A`, `Shift+Arrow`).
+
+### 🛠 Improvements
+
+- **Localization**: Complete localization support for all UI elements, including new chat features, in 10 languages.
+- **Visual Polish**: Replaced simple result box with a chat bubble interface in the popup.
+- **UX Refinement**: "New Chat" button added to the popup header for easy reset.
+- **Input logic**: Restrict overlay trigger to only appear on valid text inputs/textareas to avoid annoyance.
+
 ## [1.5.0] - 2026-01-26
 
 ### ✨ Added
