@@ -423,5 +423,38 @@
   },
   "settings_tooltip_ollama_s2": {
     "message": "Par défaut : http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "Correction suggérée",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Accepter",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Ignorer",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Aucun problème trouvé",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "Traduit en",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "Erreur",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Échec de la traduction",
+    "description": "Translation failed message"
+  }
+  },
+  "btn_new_chat": {
+    "message": "Nouvelle discussion",
+    "description": "New Chat button tooltip"
   }
 }

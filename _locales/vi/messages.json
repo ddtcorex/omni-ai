@@ -419,5 +419,38 @@
   },
   "settings_tooltip_ollama_s2": {
     "message": "Mặc định: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "Đề xuất sửa lỗi",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Chấp nhận",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Bỏ qua",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Không tìm thấy lỗi",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "Dịch sang",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "Lỗi",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Dịch thất bại",
+    "description": "Translation failed message"
+  }
+  },
+  "btn_new_chat": {
+    "message": "Cuộc trò chuyện mới",
+    "description": "New Chat button tooltip"
   }
 }

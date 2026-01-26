@@ -429,5 +429,38 @@
   },
   "settings_tooltip_ollama_s2": {
     "message": "デフォルト: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "修正案",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "承認",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "却下",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "問題は見つかりませんでした",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "翻訳先",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "エラー",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "翻訳に失敗しました",
+    "description": "Translation failed message"
+  }
+  },
+  "btn_new_chat": {
+    "message": "新しいチャット",
+    "description": "New Chat button tooltip"
   }
 }
