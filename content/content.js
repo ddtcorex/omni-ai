@@ -877,7 +877,15 @@ function getSelectedText() {
 }
 
 function isTextInput(el) {
-  return el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
+  if (!el) return false;
+  if (el.tagName === "TEXTAREA") return true;
+  if (el.tagName === "INPUT") {
+    const type = (el.type || "text").toLowerCase();
+    // Only allow text-based inputs where text manipulation makes sense
+    const allowedTypes = ["text", "email", "number", "search", "tel", "url"];
+    return allowedTypes.includes(type);
+  }
+  return false;
 }
 
 function showLoadingInOverlay() {
@@ -973,7 +981,7 @@ function showResultOverlay(payload, isInput = false) {
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
         <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-        <span style="font-weight:600;font-size:13px;margin-left:8px;flex:1;">${i18n.getMessage("overlay_result")}</span>
+        <span style="font-weight:600;font-size:14px;margin-left:8px;flex:1;">${i18n.getMessage("overlay_result")}</span>
         <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>
     <div class="omni-ai-content-area">
