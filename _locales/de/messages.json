@@ -4,7 +4,7 @@
     "description": "Erweiterungsname"
   },
   "extDescription": {
-    "message": "All-in-One-KI-Assistent auf Basis von Google Gemini – Schreiboptimierung, Schnellaktionen und smarte Tools",
+    "message": "All-in-One-KI-Assistent auf Basis von AI Models – Schreiboptimierung, Schnellaktionen und smarte Tools",
     "description": "Erweiterungsbeschreibung"
   },
   "popup_title": {
@@ -128,7 +128,7 @@
     "description": "KI-Modell-Label"
   },
   "settings_modelHint": {
-    "message": "Wählen Sie das zu verwendende Gemini-Modell",
+    "message": "Wählen Sie das zu verwendende KI-Modell aus",
     "description": "KI-Modell-Hinweis"
   },
   "settings_defaultPreset": {
@@ -180,7 +180,7 @@
     "description": "Fehler: Kein API-Schlüssel"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Geben Sie Ihren Gemini API-Schlüssel ein...",
+    "message": "Geben Sie Ihren API-Schlüssel ein...",
     "description": "API-Schlüssel Platzhalter"
   },
   "error_prefix": {
@@ -489,5 +489,21 @@
   "btn_new_chat": {
     "message": "Neuer Chat",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "Benutzerdefinierter Modellname",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Geben Sie die benutzerdefinierte Modell-ID ein",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Bitte geben Sie einen benutzerdefinierten Modellnamen ein",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "z. B. Ihre-Modell-ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

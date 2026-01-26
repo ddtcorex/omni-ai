@@ -574,6 +574,7 @@ async function handleValidateConfig(payload) {
 
   const result = await generateContent(testPrompt, {
     model: model,
+    provider: payload.provider, // Pass provider hint
     apiKey: key, // Explicit override
     maxTokens: 5,
   });

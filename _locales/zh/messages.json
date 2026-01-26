@@ -4,7 +4,7 @@
     "description": "扩展程序名称"
   },
   "extDescription": {
-    "message": "基于 Google Gemini 的全能 AI 助手 - 写作增强、快速操作和智能工具",
+    "message": "基于 AI Models 的全能 AI 助手 - 写作增强、快速操作和智能工具",
     "description": "扩展程序描述"
   },
   "popup_title": {
@@ -128,7 +128,7 @@
     "description": "AI 模型标签"
   },
   "settings_modelHint": {
-    "message": "选择要使用的 Gemini 模型",
+    "message": "选择要使用的 AI 模型",
     "description": "AI 模型提示"
   },
   "settings_defaultPreset": {
@@ -180,7 +180,7 @@
     "description": "未配置 API 密钥错误"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "输入您的 Gemini API 密钥...",
+    "message": "输入您的 API 密钥...",
     "description": "API 密钥占位符"
   },
   "error_prefix": {
@@ -489,5 +489,21 @@
   "btn_new_chat": {
     "message": "新聊天",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "自定义模型名称",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "输入自定义模型ID",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "请输入自定义模型名称",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "例如: 模型ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

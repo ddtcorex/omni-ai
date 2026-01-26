@@ -4,7 +4,7 @@
     "description": "拡張機能の名前"
   },
   "extDescription": {
-    "message": "Google Geminiを搭載したオールインワンAIアシスタント - 文章の推敲、クイックアクション、スマートユーティリティ",
+    "message": "AI Modelsを搭載したオールインワンAIアシスタント - 文章の推敲、クイックアクション、スマートユーティリティ",
     "description": "拡張機能の説明"
   },
   "popup_title": {
@@ -128,7 +128,7 @@
     "description": "AIモデルのラベル"
   },
   "settings_modelHint": {
-    "message": "使用するGeminiモデルを選択してください",
+    "message": "使用するAIモデルを選択してください",
     "description": "AIモデルのヒント"
   },
   "settings_defaultPreset": {
@@ -180,7 +180,7 @@
     "description": "APIキー未設定エラー"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Gemini APIキーを入力...",
+    "message": "APIキーを入力してください...",
     "description": "APIキー入力のプレースホルダー"
   },
   "error_prefix": {
@@ -489,5 +489,21 @@
   "btn_new_chat": {
     "message": "新しいチャット",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "カスタムモデル名",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "カスタムモデルIDを入力してください",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "カスタムモデル名を入力してください",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "例: モデルID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

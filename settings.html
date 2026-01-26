@@ -23,7 +23,7 @@
             <div class="logo-text">
               <div class="title-row">
                 <h1>Omni AI</h1>
-                <span class="version">v1.6.0</span>
+                <span class="version">v1.7.0</span>
               </div>
               <p class="tagline">__MSG_settings_tagline__</p>
             </div>
@@ -49,6 +49,20 @@
               <select id="apiModel" class="setting-select">
                 <!-- Populated by JS -->
               </select>
+            <!-- Custom Model Input -->
+            <div class="setting-item hidden" id="customModelGroup">
+              <label class="setting-label" for="customModelName">
+                <span class="label-text">__MSG_settings_customModel__</span>
+                <span class="label-hint">__MSG_settings_customModelHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="customModelName"
+                  class="setting-input"
+                  placeholder="__MSG_settings_customModelPlaceholder__"
+                />
+              </div>
             </div>
 
             <!-- Gemini API Key -->
@@ -97,7 +111,7 @@
                   type="password"
                   id="apiKey"
                   class="setting-input"
-                  placeholder="Enter your Gemini API key..."
+                  placeholder="__MSG_settings_apiKeyPlaceholder__"
                 />
                 <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
                   <svg

@@ -4,7 +4,7 @@
     "description": "확장 프로그램 이름"
   },
   "extDescription": {
-    "message": "Google Gemini 기반 올인원 AI 어시스턴트 - 글쓰기 향상, 빠른 작업 및 스마트 도구",
+    "message": "AI Models 기반 올인원 AI 어시스턴트 - 글쓰기 향상, 빠른 작업 및 스마트 도구",
     "description": "확장 프로그램 설명"
   },
   "popup_title": {
@@ -128,7 +128,7 @@
     "description": "AI 모델 라벨"
   },
   "settings_modelHint": {
-    "message": "사용할 Gemini 모델을 선택하세요",
+    "message": "사용할 AI 모델 선택",
     "description": "AI 모델 힌트"
   },
   "settings_defaultPreset": {
@@ -180,7 +180,7 @@
     "description": "API 키 미설정 오류"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Gemini API 키 입력...",
+    "message": "API 키를 입력하세요...",
     "description": "API 키 입력 플레이스홀더"
   },
   "error_prefix": {
@@ -489,5 +489,21 @@
   "btn_new_chat": {
     "message": "새 채팅",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "사용자 지정 모델 이름",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "사용자 지정 모델 ID 입력",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "사용자 지정 모델 이름을 입력하십시오",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "예: 사용자-모델-ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }

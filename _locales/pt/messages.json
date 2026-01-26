@@ -4,7 +4,7 @@
     "description": "Nome da extensão"
   },
   "extDescription": {
-    "message": "Assistente de IA tudo-em-um com Google Gemini - Melhoria de escrita, ações rápidas e utilitários inteligentes",
+    "message": "Assistente de IA tudo-em-um com AI Models - Melhoria de escrita, ações rápidas e utilitários inteligentes",
     "description": "Descrição da extensão"
   },
   "popup_title": {
@@ -128,7 +128,7 @@
     "description": "Etiqueta do modelo de IA"
   },
   "settings_modelHint": {
-    "message": "Selecione o modelo Gemini a utilizar",
+    "message": "Selecione o modelo de IA para usar",
     "description": "Dica do modelo de IA"
   },
   "settings_defaultPreset": {
@@ -180,7 +180,7 @@
     "description": "Erro de chave ausente"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Insira sua chave API Gemini...",
+    "message": "Insira sua chave API...",
     "description": "Placeholder da chave API"
   },
   "error_prefix": {
@@ -489,5 +489,21 @@
   "btn_new_chat": {
     "message": "Nova conversa",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "Nome do modelo personalizado",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Digite o ID do modelo personalizado",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Insira um nome de modelo personalizado",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "ex: seu-id-de-modelo",
+    "description": "Placeholder for settings_customModelPlaceholder"
   }
 }
