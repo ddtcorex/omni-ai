@@ -2,7 +2,7 @@
 
 > 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/Mixtral), OpenAI (GPT-4o), and Ollama (Local AI).
 
-[![Version](https://img.shields.io/badge/version-1.7.0-blue)](https://github.com/ddtcorex/omni-ai)
+[![Version](https://img.shields.io/badge/version-1.7.1-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
@@ -118,7 +118,7 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 #### How to use Custom Models
 
 1. In **Settings**, find the **AI Model** dropdown.
-2. Select the **"Custom Model..."** option for your preferred provider (e.g., *Groq Custom Model...*).
+2. Select the **"Custom Model..."** option for your preferred provider (e.g., _Groq Custom Model..._).
 3. A new field **Custom Model Name** will appear.
 4. Enter the Model ID provided by the AI platform (e.g., `gpt-4o-2024-08-06` for OpenAI).
 5. Click **Save Settings**.
@@ -213,7 +213,7 @@ To use the personalization features (syncing settings across devices), you need 
 | `Alt+R`  | Rephrase (on selected text)                  |
 | `Alt+T`  | Translate to Primary Language                |
 
-*Shortcuts can be customized in `chrome://extensions/shortcuts`*
+_Shortcuts can be customized in `chrome://extensions/shortcuts`_
 
 ---
 
