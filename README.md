@@ -2,7 +2,7 @@
 
 > 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/Mixtral), OpenAI (GPT-4o), and Ollama (Local AI).
 
-[![Version](https://img.shields.io/badge/version-1.6.0-blue)](https://github.com/ddtcorex/omni-ai)
+[![Version](https://img.shields.io/badge/version-1.7.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
@@ -111,6 +111,34 @@ You can choose between Google Gemini, Groq, or OpenAI as your AI provider.
 
 ---
 
+### 2. Custom Model Configuration
+
+Omni AI allows you to use any model provided by your chosen AI provider, even if it's not in the default list.
+
+#### How to use Custom Models
+
+1. In **Settings**, find the **AI Model** dropdown.
+2. Select the **"Custom Model..."** option for your preferred provider (e.g., *Groq Custom Model...*).
+3. A new field **Custom Model Name** will appear.
+4. Enter the Model ID provided by the AI platform (e.g., `gpt-4o-2024-08-06` for OpenAI).
+5. Click **Save Settings**.
+
+#### 🧠 Intelligent Model ID Resolution
+
+Omni AI features a smart resolution system that maps common short names to their official API IDs. You can enter a simplified name, and the extension will automatically use the correct implementation:
+
+- **Groq:** Entering `llama-3.1-8b` automatically maps to `llama-3.1-8b-instant`.
+- **OpenAI:** Entering `gpt-4o` maps to the latest stable `gpt-4o` version.
+- **Ollama:** Prefix `ollama-` is automatically handled if you enter a local model name.
+
+#### Common Custom Model IDs
+
+- **Groq:** `llama-3.3-70b-versatile`, `deepseek-r1-distill-llama-70b`, `mixtral-8x7b-32768`.
+- **OpenAI:** `gpt-4o`, `gpt-4o-mini`, `o1-preview`.
+- **Google:** `gemini-1.5-pro-latest`, `gemini-2.0-flash-exp`.
+
+---
+
 ### 🛠 Ollama CORS Configuration
 
 For the extension to communicate with your local Ollama server, you must set the `OLLAMA_ORIGINS` environment variable.
@@ -185,7 +213,7 @@ To use the personalization features (syncing settings across devices), you need 
 | `Alt+R`  | Rephrase (on selected text)                  |
 | `Alt+T`  | Translate to Primary Language                |
 
-_Shortcuts can be customized in `chrome://extensions/shortcuts`_
+*Shortcuts can be customized in `chrome://extensions/shortcuts`*
 
 ---
 

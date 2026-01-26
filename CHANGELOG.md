@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-01-26
+
+### ✨ Added
+
+- **Custom Model Support**: Users can now manually enter custom model names for all AI providers (Google Gemini, Groq, OpenAI, and Ollama).
+- **Intelligent Model ID Resolution**: The extension now smartly maps shorter names (like `llama-3.1-8b`) to the correct API implementation IDs (like `llama-3.1-8b-instant`).
+
+### 🛠 Improvements
+
+- **Uniform AI Naming**: Replaced "Gemini" with generic "AI" labeling across all settings for a vendor-neutral experience.
+- **Enhanced Localization**: All new settings, custom model inputs, and placeholders are localized in 10 languages.
+- **Visual Refinement**: Centered the version badge in the settings header for a more balanced layout.
+- **Dynamic Placeholders**: Placeholders for API keys and custom models are now automatically localized based on your language settings.
+
 ## [1.6.0] - 2026-01-26
 
 ### ✨ Added
