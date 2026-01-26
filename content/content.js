@@ -314,12 +314,7 @@ function setupMessageListener() {
  * Set up selection change listener
  */
 function setupSelectionListener() {
-  document.addEventListener("mouseup", (e) => {
-    if (overlay && !overlay.contains(e.target)) {
-      hideOverlay();
-    }
-
-    // Handle text selection for Quick Actions
+  const handleSelectionChange = () => {
     setTimeout(() => {
       const text = getSelectedText();
       const activeElement = document.activeElement;
@@ -341,6 +336,23 @@ function setupSelectionListener() {
         }
       }
     }, 10);
+  };
+
+  document.addEventListener("mouseup", (e) => {
+    if (overlay && !overlay.contains(e.target)) {
+      hideOverlay();
+    }
+    handleSelectionChange();
+  });
+
+  document.addEventListener("keyup", (e) => {
+    // Handle Ctrl+A (Select All) and Shift+Arrows (Selection)
+    if (
+      ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") ||
+      (e.shiftKey && e.key.startsWith("Arrow"))
+    ) {
+      handleSelectionChange();
+    }
   });
 
   // Handle paste events
@@ -877,7 +889,15 @@ function getSelectedText() {
 }
 
 function isTextInput(el) {
-  return el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
+  if (!el) return false;
+  if (el.tagName === "TEXTAREA") return true;
+  if (el.tagName === "INPUT") {
+    const type = (el.type || "text").toLowerCase();
+    // Only allow text-based inputs where text manipulation makes sense
+    const allowedTypes = ["text", "email", "number", "search", "tel", "url"];
+    return allowedTypes.includes(type);
+  }
+  return false;
 }
 
 function showLoadingInOverlay() {
@@ -973,7 +993,7 @@ function showResultOverlay(payload, isInput = false) {
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
         <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-        <span style="font-weight:600;font-size:13px;margin-left:8px;flex:1;">${i18n.getMessage("overlay_result")}</span>
+        <span style="font-weight:600;font-size:14px;margin-left:8px;flex:1;">${i18n.getMessage("overlay_result")}</span>
         <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>
     <div class="omni-ai-content-area">
@@ -1135,7 +1155,7 @@ async function showQuickAskOverlay(
   const header = `
   <div class="omni-ai-overlay-header">
      <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-     <div class="omni-ai-brand" style="flex:1; margin-left:8px;">${i18n.getMessage("quick_ask_title")}</div>
+     <div class="omni-ai-brand">${i18n.getMessage("quick_ask_title")}</div>
      <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
   </div>`;
 
