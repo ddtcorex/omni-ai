@@ -188,7 +188,7 @@ body {
 
 .title-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
 }
 
@@ -220,7 +220,6 @@ body {
   font-weight: 600;
   color: var(--accent-purple);
   letter-spacing: 0.3px;
-  transform: translateY(-2px);
 }
 
 .tagline {
