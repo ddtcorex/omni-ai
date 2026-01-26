@@ -1078,7 +1078,7 @@ function showResultOverlay(payload, isInput = false) {
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
         <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-        <span style="font-weight:600;font-size:14px;margin-left:8px;flex:1;">${i18n.getMessage("overlay_result")}</span>
+        <span style="font-weight:600;font-size:14px;flex:1;">${i18n.getMessage("overlay_result")}</span>
         <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>
     <div class="omni-ai-content-area">
