@@ -49,6 +49,11 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
 
   // Handle other commands via selected text
   try {
+    // Notify content script to show processing state (spin icon)
+    chrome.tabs
+      .sendMessage(tab.id, { type: "PROCESSING_START" })
+      .catch(() => {});
+
     const response = await chrome.tabs
       .sendMessage(tab.id, {
         type: "GET_SELECTION",
