@@ -314,12 +314,7 @@ function setupMessageListener() {
  * Set up selection change listener
  */
 function setupSelectionListener() {
-  document.addEventListener("mouseup", (e) => {
-    if (overlay && !overlay.contains(e.target)) {
-      hideOverlay();
-    }
-
-    // Handle text selection for Quick Actions
+  const handleSelectionChange = () => {
     setTimeout(() => {
       const text = getSelectedText();
       const activeElement = document.activeElement;
@@ -341,6 +336,23 @@ function setupSelectionListener() {
         }
       }
     }, 10);
+  };
+
+  document.addEventListener("mouseup", (e) => {
+    if (overlay && !overlay.contains(e.target)) {
+      hideOverlay();
+    }
+    handleSelectionChange();
+  });
+
+  document.addEventListener("keyup", (e) => {
+    // Handle Ctrl+A (Select All) and Shift+Arrows (Selection)
+    if (
+      ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") ||
+      (e.shiftKey && e.key.startsWith("Arrow"))
+    ) {
+      handleSelectionChange();
+    }
   });
 
   // Handle paste events
@@ -1143,7 +1155,7 @@ async function showQuickAskOverlay(
   const header = `
   <div class="omni-ai-overlay-header">
      <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-     <div class="omni-ai-brand" style="flex:1; margin-left:8px;">${i18n.getMessage("quick_ask_title")}</div>
+     <div class="omni-ai-brand">${i18n.getMessage("quick_ask_title")}</div>
      <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
   </div>`;
 
