@@ -92,10 +92,12 @@
   color: var(--ai-text-primary);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto; /* Allow scrolling if content exceeds max-height */
+  max-height: 90vh; /* Prevent overlay from exceeding viewport height */
   animation: omniAiScaleIn 0.2s cubic-bezier(0.2, 0, 0.13, 1.5);
   transform-origin: top right;
   box-sizing: border-box;
+  overscroll-behavior: contain;
 }
 
 /* Header */
@@ -221,16 +223,36 @@
 }
 
 .omni-ai-suggestion-label {
-  font-size: 9px;
+  font-size: var(--ai-font-xs);
   text-transform: uppercase;
   font-weight: 700;
   color: var(--ai-accent);
 }
 
 .omni-ai-suggestion-content {
-  font-size: var(--ai-font-sm);
+  font-size: var(--ai-font-md);
   color: var(--ai-text-primary);
   font-weight: 500;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.omni-ai-suggestion-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.omni-ai-suggestion-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.omni-ai-suggestion-content::-webkit-scrollbar-thumb {
+  background: var(--ai-border);
+  border-radius: 4px;
+}
+
+.omni-ai-suggestion-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-text-secondary);
 }
 
 /* Menu Grid */
@@ -343,6 +365,7 @@
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -350,14 +373,15 @@
 /* Results Area */
 .omni-ai-content-area {
   padding: 16px;
-  max-height: 320px;
+  max-height: 60vh; /* Responsive max-height instead of fixed 320px */
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--ai-bg-primary);
 }
 
 .omni-ai-result-text {
   line-height: 1.6;
-  font-size: 14px; /* Increased from sm/12px */
+  font-size: var(--ai-font-sm);
   color: var(--ai-text-primary);
   white-space: pre-wrap;
 }

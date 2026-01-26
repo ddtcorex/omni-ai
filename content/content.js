@@ -85,6 +85,7 @@ let activeInputElement = null; // Track input element for replacement when focus
 
 // Store state for navigation
 let lastMenuContext = null;
+let currentAnchorRect = null;
 
 // ============================================
 // Initialization
@@ -229,6 +230,9 @@ function updateSmartFixCard(card, originalText, correctedText, isInput) {
       { once: true },
     );
   });
+
+  // Re-position after content update to prevent cutoff
+  setTimeout(() => positionOverlay(currentAnchorRect), 10);
 }
 
 function init() {
@@ -269,6 +273,29 @@ function setupMessageListener() {
           selection: getSelectedText(),
           isInput: isInput,
         });
+        break;
+      }
+
+      case "PROCESSING_START": {
+        const text = getSelectedText();
+        if (text) {
+          // Force show button if not already visible
+          if (!quickActionBtn) {
+            const activeElement = document.activeElement;
+            const isInput = isTextInput(activeElement);
+            if (isInput) {
+              showQuickActionButtonForInput(activeElement);
+            } else if (window.getSelection().rangeCount > 0) {
+              showQuickActionButton(window.getSelection());
+            }
+          }
+          // Show loading spinner inside button
+          if (quickActionBtn) {
+            quickActionBtn.innerHTML = `<div class="omni-ai-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
+            quickActionBtn.style.cursor = "wait";
+          }
+        }
+        sendResponse({ success: true });
         break;
       }
 
@@ -395,6 +422,7 @@ function showQuickActionButtonForInput(inputElement) {
 async function createQuickBtn(rect, isInput) {
   quickActionBtn = document.createElement("button");
   quickActionBtn.className = "omni-ai-quick-btn";
+  quickActionBtn.innerHTML = ICONS.btnSparkle;
 
   // Theme check
   const THEME_KEY = "omni_ai_theme";
@@ -409,8 +437,6 @@ async function createQuickBtn(rect, isInput) {
   if (effectiveTheme === "light") {
     quickActionBtn.classList.add("omni-ai-light-mode");
   }
-
-  quickActionBtn.innerHTML = ICONS.btnSparkle;
 
   // Position
   const top = isInput
@@ -468,8 +494,16 @@ async function showQuickActionMenu(
   hideQuickActionButton();
   hideOverlay();
 
+  // Save current anchor for re-positioning later
+  currentAnchorRect = anchorRect || getSelectionRect();
+
   // Save context for Back button
-  lastMenuContext = { text, anchorRect, lockedPosition, isInput };
+  lastMenuContext = {
+    text,
+    anchorRect: currentAnchorRect,
+    lockedPosition,
+    isInput,
+  };
 
   // Fetch settings
   const THEME_KEY = "omni_ai_theme";
@@ -603,7 +637,8 @@ async function showQuickActionMenu(
   document.body.appendChild(overlay);
 
   // Position Logic
-  positionOverlay(anchorRect, lockedPosition);
+  // Position Logic
+  positionOverlay(currentAnchorRect, lockedPosition);
 
   // Bind Events
   bindMenuEvents(text, isInput);
@@ -696,11 +731,19 @@ async function showQuickActionMenu(
               </div>
            `;
         }
+
+        // Ensure position is updated after content change
+        setTimeout(() => positionOverlay(currentAnchorRect), 10);
       })
       .catch(() => {});
   }
 
   isOverlayVisible = true;
+
+  // Re-position after async content might have loaded
+  setTimeout(() => {
+    if (overlay) positionOverlay(currentAnchorRect, lockedPosition);
+  }, 100);
 }
 
 function bindMenuEvents(text, isInput) {
@@ -842,8 +885,33 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
   overlay.style.visibility = "hidden";
 
   if (lockedPosition) {
-    overlay.style.top = `${lockedPosition.top}px`;
-    overlay.style.left = `${lockedPosition.left}px`;
+    let { top, left } = lockedPosition;
+
+    // Boundary checks for locked position
+    const overlayHeight = overlay.offsetHeight || 400;
+    const viewportHeight = window.innerHeight;
+    const scrollY = window.scrollY;
+    const minTop = scrollY + 10;
+    const maxTop = viewportHeight + scrollY - overlayHeight - 10;
+
+    // Safety: ensure height doesn't exceed viewport
+    if (overlayHeight > viewportHeight - 20) {
+      overlay.style.maxHeight = viewportHeight - 20 + "px";
+      // Re-measure after setting max-height
+      // overlayHeight = overlay.offsetHeight; // (Optional optimization, but let's trust CSS reflow if needed next time)
+    }
+
+    // If it goes off the bottom, shift up
+    if (top > maxTop) {
+      top = Math.max(minTop, maxTop);
+    }
+    // If it goes off the top, shift down (unlikely for locked, but good safety)
+    if (top < minTop) {
+      top = minTop;
+    }
+
+    overlay.style.top = `${top}px`;
+    overlay.style.left = `${left}px`;
     overlay.style.visibility = "visible";
     overlay.style.transform = "none";
     return;
@@ -861,6 +929,11 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const overlayHeight = overlay.offsetHeight || 400;
+
+    // Safety: ensure height doesn't exceed viewport
+    if (overlayHeight > viewportHeight - 20) {
+      overlay.style.maxHeight = viewportHeight - 20 + "px";
+    }
 
     // 1. Horizontal Boundary Check
     // If aligning right edge causes it to go off-screen to the left:
@@ -1041,6 +1114,17 @@ function showResultOverlay(payload, isInput = false) {
   const { result, action, originalText, preset, query } = payload;
   hideQuickActionButton();
 
+  // Capture current position to prevent jumping
+  let preservedPosition = null;
+  if (overlay && overlay.style.display !== "none") {
+    const computed = window.getComputedStyle(overlay);
+    const top = parseInt(computed.top, 10);
+    const left = parseInt(computed.left, 10);
+    if (!isNaN(top) && !isNaN(left)) {
+      preservedPosition = { top, left };
+    }
+  }
+
   if (!overlay) {
     const el = document.createElement("div");
     el.className = "omni-ai-overlay";
@@ -1052,8 +1136,11 @@ function showResultOverlay(payload, isInput = false) {
     document.body.appendChild(overlay);
 
     // Try to position near selection
-    const rect = getSelectionRect();
-    positionOverlay(rect);
+    // Try to position near selection
+    // Try to position near selection
+    const rect = getSelectionRect() || currentAnchorRect;
+    currentAnchorRect = rect;
+    // Don't position yet, wait for content
   }
 
   // Actions that benefit from diff view
@@ -1090,6 +1177,22 @@ function showResultOverlay(payload, isInput = false) {
         ${replaceBtnHtml}
     </div>
   `;
+
+  // Position Logic - Run AFTER content update
+  setTimeout(() => {
+    // If we have a preserved position, use it to Lock the overlay in place
+    if (preservedPosition) {
+      positionOverlay(null, preservedPosition);
+    } else {
+      // Ensure we have an anchor if it was missing (e.g. shortcut first run)
+      if (!currentAnchorRect) {
+        currentAnchorRect = getSelectionRect();
+      }
+      if (currentAnchorRect && overlay) {
+        positionOverlay(currentAnchorRect);
+      }
+    }
+  }, 0);
 
   // Close
   overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
@@ -1154,6 +1257,8 @@ function showResultOverlay(payload, isInput = false) {
                 },
                 isInput,
               );
+              // Ensure position is updated after tone switch
+              setTimeout(() => positionOverlay(currentAnchorRect), 50);
             }
           } catch (err) {
             resultTextEl.innerText = "Error: " + err.message;
@@ -1231,15 +1336,18 @@ async function showQuickAskOverlay(
       await chrome.storage.sync.get(THEME_KEY);
     overlay = createOverlayElement(currentTheme);
     document.body.appendChild(overlay);
-    positionOverlay(lockedRect);
   }
+
+  // Save current anchor for re-positioning
+  currentAnchorRect = lockedRect || getSelectionRect() || currentAnchorRect;
+  positionOverlay(currentAnchorRect);
 
   const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
 
   const header = `
   <div class="omni-ai-overlay-header">
      <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-     <div class="omni-ai-brand">${i18n.getMessage("quick_ask_title")}</div>
+     <div class="omni-ai-brand" style="flex:1; margin-left: 8px;">${i18n.getMessage("quick_ask_title")}</div>
      <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
   </div>`;
 
@@ -1307,7 +1415,7 @@ async function showQuickAskOverlay(
   const resultDiv = overlay.querySelector("#omniAiQuickResult");
   const resultText = resultDiv.querySelector(".omni-ai-result-text");
 
-  if (!autoQuery) input.focus();
+  if (!autoQuery) input.focus({ preventScroll: true });
 
   // Copy Logic
   copyBtn.addEventListener("click", () => {
@@ -1352,6 +1460,9 @@ async function showQuickAskOverlay(
   if (autoQuery) {
     handleAsk();
   }
+
+  // Optimize position after render to avoid cut-off
+  setTimeout(() => positionOverlay(currentAnchorRect), 10);
 }
 
 function showErrorInOverlay(msg) {
