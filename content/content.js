@@ -183,7 +183,7 @@ function updateSmartFixCard(card, originalText, correctedText, isInput) {
            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="color:var(--ai-success)">No issues found</div>
+            <div class="omni-ai-suggestion-label" style="color:var(--ai-success)">${i18n.getMessage("overlay_no_issues")}</div>
             <div class="omni-ai-suggestion-content">Text looks great!</div>
         </div>
     `;
@@ -194,11 +194,11 @@ function updateSmartFixCard(card, originalText, correctedText, isInput) {
 
   card.innerHTML = `
      <div style="flex:1;">
-        <div class="omni-ai-suggestion-label">Suggested Fix</div>
+        <div class="omni-ai-suggestion-label">${i18n.getMessage("overlay_suggested_fix")}</div>
         <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4;">${diffHtml}</div>
         <div style="display:flex; gap:8px; margin-top:8px;">
-            <button class="omni-ai-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">Accept</button>
-            <button class="omni-ai-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">Dismiss</button>
+            <button class="omni-ai-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_accept")}</button>
+            <button class="omni-ai-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_dismiss")}</button>
         </div>
      </div>
   `;
@@ -516,7 +516,8 @@ async function showQuickActionMenu(
   `;
 
   // Quick Fix Section (With Loading State)
-  // Quick Fix Section (With Loading State) - Only for Inputs
+  // - If Input: Show "Thinking..." -> Smart Fix
+  // - If Text: Show "Translating..." -> Translation Result
   let quickFix = "";
   if (isInput) {
     quickFix = `
@@ -527,6 +528,21 @@ async function showQuickActionMenu(
         </div>
         <div class="omni-ai-suggestion-info">
             <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("status_thinking")}</div>
+            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  } else {
+    // Non-input: Translation Card
+    quickFix = `
+    <div class="omni-ai-quick-fix-section">
+      <div class="omni-ai-suggestion-card" id="omniAiTranslateCard">
+        <div class="omni-ai-suggestion-icon">
+           <div class="omni-ai-spinner" style="width:14px;height:14px;border-width:2px;"></div>
+        </div>
+        <div class="omni-ai-suggestion-info">
+            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_translated_to")} ${pCode}...</div>
             <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
         </div>
       </div>
@@ -592,8 +608,9 @@ async function showQuickActionMenu(
   // Bind Events
   bindMenuEvents(text, isInput);
 
-  // TRIGGER AUTOMATIC CHECK (Only for inputs)
+  // TRIGGER AUTOMATIC ACTION
   if (isInput) {
+    // Existing Smart Fix Logic
     sendMessageToBackground({
       type: "QUICK_ACTION",
       payload: { action: "grammar", text, preset: "chat" },
@@ -607,13 +624,81 @@ async function showQuickActionMenu(
           card.innerHTML = `
               <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
               <div class="omni-ai-suggestion-info">
-                  <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">Error</div>
-                  <div class="omni-ai-suggestion-content">Could not analyze</div>
+                  <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
+                  <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_analysis_failed")}</div>
               </div>
            `;
         }
       })
       .catch(() => {}); // silent fail
+  } else {
+    // Non-Input: Trigger Translation
+    sendMessageToBackground({
+      type: "QUICK_ACTION",
+      payload: { action: "translate_primary", text, preset: "chat" },
+    })
+      .then((response) => {
+        const card = document.getElementById("omniAiTranslateCard");
+        if (!card) return;
+
+        if (response.success) {
+          card.innerHTML = `
+              <div class="omni-ai-suggestion-info">
+                  <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>${i18n.getMessage("overlay_translated_to")} ${pCode}:</span>
+                    <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                  </div>
+                  <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--ai-text-primary); font-weight:500;">
+                     ${response.data.response}
+                  </div>
+              </div>
+          `;
+
+          // Bind Copy
+          const copyBtn = card.querySelector("#omniAiCopyTrans");
+          if (copyBtn) {
+            copyBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(response.data.response);
+              // Visual feedback
+              copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--ai-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+              setTimeout(() => {
+                copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+              }, 1500);
+            });
+          }
+
+          // Clicking the card opens full view
+          card.style.cursor = "pointer";
+          card.addEventListener("click", (e) => {
+            // Only if not clicking copy btn
+            if (!e.target.closest("#omniAiCopyTrans")) {
+               showResultOverlay(
+                {
+                  action: "translate_primary",
+                  result: response.data.response,
+                  originalText: text,
+                  preset: "chat",
+                },
+                isInput
+               );
+            }
+          });
+
+        } else {
+          // Error State
+           card.innerHTML = `
+              <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
+              <div class="omni-ai-suggestion-info">
+                  <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
+                  <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_translation_failed")}</div>
+              </div>
+           `;
+        }
+      })
+      .catch(() => {});
   }
 
   isOverlayVisible = true;
@@ -1274,7 +1359,7 @@ function showErrorInOverlay(msg) {
   if (overlay) {
     overlay.innerHTML = `
         <div class="omni-ai-overlay-header">
-            <div class="omni-ai-brand" style="color:var(--ai-error);">Error</div>
+            <div class="omni-ai-brand" style="color:var(--ai-error);">${i18n.getMessage("overlay_error")}</div>
             <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
         </div>
         <div class="omni-ai-content-area" style="color:var(--ai-text-secondary);">
