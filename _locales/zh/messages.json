@@ -128,7 +128,7 @@
     "description": "AI 模型标签"
   },
   "settings_modelHint": {
-    "message": "选择要使用的 Gemini 模型",
+    "message": "选择要使用的 AI 模型",
     "description": "AI 模型提示"
   },
   "settings_defaultPreset": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "新聊天",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "自定义模型名称",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "输入自定义模型ID",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "请输入自定义模型名称",
+    "description": "No custom model error"
   }
 }

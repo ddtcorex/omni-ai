@@ -128,7 +128,7 @@
     "description": "Label modèle IA"
   },
   "settings_modelHint": {
-    "message": "Choisissez le modèle Gemini à utiliser",
+    "message": "Sélectionnez le modèle d'IA à utiliser",
     "description": "Indication modèle IA"
   },
   "settings_defaultPreset": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "Nouvelle discussion",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "Nom du modèle personnalisé",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Entrez l'ID du modèle personnalisé",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Veuillez entrer un nom de modèle personnalisé",
+    "description": "No custom model error"
   }
 }

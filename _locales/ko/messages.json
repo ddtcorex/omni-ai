@@ -128,7 +128,7 @@
     "description": "AI 모델 라벨"
   },
   "settings_modelHint": {
-    "message": "사용할 Gemini 모델을 선택하세요",
+    "message": "사용할 AI 모델 선택",
     "description": "AI 모델 힌트"
   },
   "settings_defaultPreset": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "새 채팅",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "사용자 지정 모델 이름",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "사용자 지정 모델 ID 입력",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "사용자 지정 모델 이름을 입력하십시오",
+    "description": "No custom model error"
   }
 }

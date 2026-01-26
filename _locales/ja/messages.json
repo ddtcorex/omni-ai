@@ -128,7 +128,7 @@
     "description": "AIモデルのラベル"
   },
   "settings_modelHint": {
-    "message": "使用するGeminiモデルを選択してください",
+    "message": "使用するAIモデルを選択してください",
     "description": "AIモデルのヒント"
   },
   "settings_defaultPreset": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "新しいチャット",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "カスタムモデル名",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "カスタムモデルIDを入力してください",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "カスタムモデル名を入力してください",
+    "description": "No custom model error"
   }
 }

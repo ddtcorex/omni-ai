@@ -116,7 +116,7 @@
     "description": "Settings page title"
   },
   "settings_apiKey": {
-    "message": "Khóa API Gemini",
+    "message": "khóa API",
     "description": "API key label"
   },
   "settings_apiKeyHint": {
@@ -128,7 +128,7 @@
     "description": "AI model label"
   },
   "settings_modelHint": {
-    "message": "Chọn mô hình Gemini để sử dụng",
+    "message": "Chọn mô hình AI để sử dụng",
     "description": "AI model hint"
   },
   "settings_defaultPreset": {
@@ -176,11 +176,11 @@
     "description": "Context menu translate"
   },
   "error_noApiKey": {
-    "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API Gemini trong Cài đặt.",
+    "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API trong Cài đặt.",
     "description": "No API key error"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Nhập khóa API Gemini của bạn...",
+    "message": "Nhập khóa API của bạn...",
     "description": "API key input placeholder"
   },
   "error_prefix": {
@@ -336,7 +336,7 @@
     "description": "Ollama endpoint hint"
   },
   "settings_tooltip_gemini": {
-    "message": "Lấy Khóa API Gemini",
+    "message": "Lấy khóa API",
     "description": "Gemini tooltip title"
   },
   "settings_tooltip_groq": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "Cuộc trò chuyện mới",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "Tên mô hình tùy chỉnh",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Nhập mã mô hình tùy chỉnh",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Vui lòng nhập tên mô hình tùy chỉnh",
+    "description": "No custom model error"
   }
 }

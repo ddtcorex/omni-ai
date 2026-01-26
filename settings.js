@@ -17,6 +17,8 @@ import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 const elements = {
   apiKey: document.getElementById("apiKey"), // Google Key
   apiModel: document.getElementById("apiModel"),
+  customModelName: document.getElementById("customModelName"),
+  customModelGroup: document.getElementById("customModelGroup"),
   googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
   groqApiKey: document.getElementById("groqApiKey"),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
@@ -231,6 +233,9 @@ function toggleApiKeyVisibility() {
 /**
  * Update model visibility based on selection
  */
+/**
+ * Update model visibility based on selection
+ */
 function updateModelVisibility() {
   const modelId = elements.apiModel.value;
   const provider = getProviderByModel(modelId);
@@ -238,6 +243,13 @@ function updateModelVisibility() {
   // Hide all groups first
   const groups = document.querySelectorAll(".setting-item[data-provider]");
   groups.forEach((el) => el.classList.add("hidden"));
+
+  // Handle Custom Model Input
+  if (modelId.endsWith("-custom")) {
+    elements.customModelGroup.classList.remove("hidden");
+  } else {
+    elements.customModelGroup.classList.add("hidden");
+  }
 
   if (provider) {
     // Show matching group based on data-provider attribute
@@ -257,6 +269,21 @@ async function validateConfiguration() {
   const modelId = elements.apiModel.value;
   const provider = getProviderByModel(modelId);
   if (!provider) return;
+
+  let validModelId = modelId;
+
+  // Custom Model handling
+  if (modelId.endsWith("-custom")) {
+    const customName = elements.customModelName.value.trim();
+    if (!customName) {
+      showValidationStatus(
+        i18n.getMessage("settings_errorNoCustomModel"),
+        "error",
+      );
+      return;
+    }
+    validModelId = customName;
+  }
 
   // Get the Key
   let apiKey = "";
@@ -281,7 +308,7 @@ async function validateConfiguration() {
   try {
     const response = await chrome.runtime.sendMessage({
       type: "VALIDATE_CONFIG",
-      payload: { provider: provider.id, model: modelId, key: apiKey },
+      payload: { provider: provider.id, model: validModelId, key: apiKey },
     });
 
     setButtonLoading(false);
@@ -387,12 +414,15 @@ async function loadSettings() {
       "openaiApiKey",
       "ollamaEndpoint",
       "apiModel",
+      "customModelName",
       "currentPreset",
     ]);
 
     if (config.apiKey) elements.apiKey.value = config.apiKey;
     if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
     if (config.openaiApiKey) elements.openaiApiKey.value = config.openaiApiKey;
+    if (config.customModelName)
+      elements.customModelName.value = config.customModelName;
 
     elements.ollamaEndpoint.value =
       config.ollamaEndpoint || "http://localhost:11434";
@@ -437,6 +467,7 @@ async function saveSettings() {
       openaiApiKey: elements.openaiApiKey.value.trim(),
       ollamaEndpoint: elements.ollamaEndpoint.value.trim(),
       apiModel: elements.apiModel.value,
+      customModelName: elements.customModelName.value.trim(),
       currentPreset: elements.defaultPreset.value,
     };
     await chrome.storage.local.set(aiConfig);

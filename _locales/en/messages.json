@@ -116,7 +116,7 @@
     "description": "Settings page title"
   },
   "settings_apiKey": {
-    "message": "Gemini API Key",
+    "message": "API Key",
     "description": "API key label"
   },
   "settings_apiKeyHint": {
@@ -128,7 +128,7 @@
     "description": "AI model label"
   },
   "settings_modelHint": {
-    "message": "Select the Gemini model to use",
+    "message": "Select the AI model to use",
     "description": "AI model hint"
   },
   "settings_defaultPreset": {
@@ -176,11 +176,11 @@
     "description": "Context menu translate"
   },
   "error_noApiKey": {
-    "message": "API key not configured. Please add your Gemini API key in Settings.",
+    "message": "API key not configured. Please add your API Key in Settings.",
     "description": "No API key error"
   },
   "settings_apiKeyPlaceholder": {
-    "message": "Enter your Gemini API key...",
+    "message": "Enter your API Key...",
     "description": "API key input placeholder"
   },
   "error_prefix": {
@@ -336,7 +336,7 @@
     "description": "Ollama endpoint hint"
   },
   "settings_tooltip_gemini": {
-    "message": "Get Gemini API Key",
+    "message": "Get API Key",
     "description": "Gemini tooltip title"
   },
   "settings_tooltip_groq": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "New Chat",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "Custom Model Name",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Enter the custom model ID",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Please enter a Custom Model Name",
+    "description": "No custom model error"
   }
 }

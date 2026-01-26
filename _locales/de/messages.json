@@ -128,7 +128,7 @@
     "description": "KI-Modell-Label"
   },
   "settings_modelHint": {
-    "message": "Wählen Sie das zu verwendende Gemini-Modell",
+    "message": "Wählen Sie das zu verwendende KI-Modell aus",
     "description": "KI-Modell-Hinweis"
   },
   "settings_defaultPreset": {
@@ -489,5 +489,17 @@
   "btn_new_chat": {
     "message": "Neuer Chat",
     "description": "New Chat button tooltip"
+  },
+  "settings_customModel": {
+    "message": "Benutzerdefinierter Modellname",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Geben Sie die benutzerdefinierte Modell-ID ein",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Bitte geben Sie einen benutzerdefinierten Modellnamen ein",
+    "description": "No custom model error"
   }
 }
