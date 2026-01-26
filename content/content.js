@@ -675,21 +675,20 @@ async function showQuickActionMenu(
           card.addEventListener("click", (e) => {
             // Only if not clicking copy btn
             if (!e.target.closest("#omniAiCopyTrans")) {
-               showResultOverlay(
+              showResultOverlay(
                 {
                   action: "translate_primary",
                   result: response.data.response,
                   originalText: text,
                   preset: "chat",
                 },
-                isInput
-               );
+                isInput,
+              );
             }
           });
-
         } else {
           // Error State
-           card.innerHTML = `
+          card.innerHTML = `
               <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
               <div class="omni-ai-suggestion-info">
                   <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
@@ -1078,7 +1077,7 @@ function showResultOverlay(payload, isInput = false) {
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
         <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-        <span style="font-weight:600;font-size:14px;flex:1;">${i18n.getMessage("overlay_result")}</span>
+        <span style="font-weight:600;font-size:14px;margin-left:5px;flex:1;">${i18n.getMessage("overlay_result")}</span>
         <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>
     <div class="omni-ai-content-area">

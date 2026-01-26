@@ -28,15 +28,17 @@ const elements = {
   userEmail: document.getElementById("userEmail"),
   signOutBtn: document.getElementById("signOutBtn"),
 
-  // Result Section
-  quickAskResult: document.getElementById("quickAskResult"),
-  resultContent: document.getElementById("resultContent"),
+  // Chat
+  chatContainer: document.getElementById("chatContainer"),
+  emptyState: document.getElementById("emptyState"),
+  newChatBtn: document.getElementById("newChatBtn"),
 };
 
 // State
 
 let isProcessing = false;
 let currentUser = null;
+let chatHistory = [];
 
 /**
  * Initialize popup
@@ -47,6 +49,7 @@ async function init() {
   localizeDOM();
   setupEventListeners();
   await loadAuthState();
+  await loadChatHistory();
   focusInput();
 }
 
@@ -58,6 +61,9 @@ function localizeDOM() {
   document.title = i18n.getMessage("popup_title");
   if (elements.quickAskInput) {
     elements.quickAskInput.placeholder = i18n.getMessage("popup_quickAsk");
+  }
+  if (elements.newChatBtn) {
+    elements.newChatBtn.title = i18n.getMessage("btn_new_chat");
   }
 
   // Localize text content in body
@@ -108,6 +114,9 @@ function setupEventListeners() {
 
   // Settings
   elements.settingsBtn.addEventListener("click", openSettings);
+  if (elements.newChatBtn) {
+    elements.newChatBtn.addEventListener("click", handleNewChat);
+  }
 
   // Auth events
   elements.signInBtn.addEventListener("click", handleSignIn);
@@ -122,10 +131,7 @@ function setupEventListeners() {
   });
 }
 
-// ============================================
-// Authentication
-// ============================================
-
+// ... Authentication functions (unchanged) ...
 /**
  * Load authentication state
  */
@@ -193,16 +199,10 @@ async function handleSignOut() {
  */
 function setSignedInState(user) {
   currentUser = user;
-
-  // Hide sign in button
   elements.signInBtn.classList.add("hidden");
-
-  // Show user info
   elements.userInfo.classList.remove("hidden");
   elements.userAvatar.src = user.picture || getDefaultAvatar(user.name);
   elements.userAvatar.alt = user.name;
-
-  // Update dropdown
   elements.dropdownAvatar.src = user.picture || getDefaultAvatar(user.name);
   elements.userName.textContent = user.name;
   elements.userEmail.textContent = user.email;
@@ -213,11 +213,7 @@ function setSignedInState(user) {
  */
 function setSignedOutState() {
   currentUser = null;
-
-  // Show sign in button
   elements.signInBtn.classList.remove("hidden");
-
-  // Hide user info
   elements.userInfo.classList.add("hidden");
   closeUserDropdown();
 }
@@ -244,7 +240,6 @@ function closeUserDropdown() {
  */
 function getDefaultAvatar(name) {
   const initial = (name || "?").charAt(0).toUpperCase();
-  // Return a data URI for a simple avatar
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
     <rect width="40" height="40" fill="#8b5cf6"/>
     <text x="50%" y="50%" dy=".35em" fill="white" font-family="sans-serif" font-size="18" font-weight="600" text-anchor="middle">${initial}</text>
@@ -252,9 +247,120 @@ function getDefaultAvatar(name) {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
+
 // ============================================
-// Quick Ask & Actions
+// Chat Logic
 // ============================================
+
+/**
+ * Load chat history
+ */
+async function loadChatHistory() {
+  try {
+    const { popupChatHistory = [] } = await chrome.storage.local.get("popupChatHistory");
+    chatHistory = popupChatHistory;
+    renderChatHistory();
+  } catch (e) {
+    console.error("Failed to load history:", e);
+    chatHistory = [];
+  }
+}
+
+/**
+ * Save chat history
+ */
+async function saveChatHistory() {
+  try {
+    await chrome.storage.local.set({ popupChatHistory: chatHistory });
+  } catch (e) {
+    console.error("Failed to save history:", e);
+  }
+}
+
+/**
+ * Render chat history
+ */
+function renderChatHistory() {
+  if (!elements.chatContainer) return;
+  
+  // Clear container but keep empty state
+  elements.chatContainer.innerHTML = '';
+  
+  if (chatHistory.length === 0) {
+    if (elements.emptyState) {
+        elements.chatContainer.appendChild(elements.emptyState);
+        elements.emptyState.style.display = 'flex';
+    }
+  } else {
+    chatHistory.forEach(msg => appendBubble(msg.role, msg.content, false));
+    scrollToBottom();
+  }
+}
+
+/**
+ * Append a bubble
+ */
+function appendBubble(role, content, animated = true) {
+  const bubble = document.createElement("div");
+  bubble.className = `chat-bubble ${role}`;
+  bubble.innerHTML = formatContent(content);
+  
+  if (animated) {
+    bubble.style.opacity = '0';
+    bubble.style.transform = 'translateY(10px)';
+    bubble.style.transition = 'all 0.3s ease';
+    setTimeout(() => {
+        bubble.style.opacity = '1';
+        bubble.style.transform = 'translateY(0)';
+    }, 10);
+  }
+
+  elements.chatContainer.appendChild(bubble);
+  scrollToBottom();
+}
+
+/**
+ * Append typing indicator
+ */
+function showTypingIndicator() {
+  const typing = document.createElement("div");
+  typing.className = "chat-typing";
+  typing.id = "typingIndicator";
+  typing.innerHTML = `
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+  `;
+  elements.chatContainer.appendChild(typing);
+  scrollToBottom();
+}
+
+/**
+ * Remove typing indicator
+ */
+function removeTypingIndicator() {
+  const typing = document.getElementById("typingIndicator");
+  if (typing) typing.remove();
+}
+
+/**
+ * Scroll to bottom
+ */
+function scrollToBottom() {
+  setTimeout(() => {
+      elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+  }, 50);
+}
+
+/**
+ * Handle new chat
+ */
+async function handleNewChat() {
+    chatHistory = [];
+    await saveChatHistory();
+    renderChatHistory();
+    focusInput();
+}
 
 /**
  * Handle Quick Ask submission
@@ -264,39 +370,83 @@ async function handleQuickAsk() {
   if (!query || isProcessing) return;
 
   setProcessing(true);
-
-  // Immediately show result section with loading state
-  showResultSection(null, true);
+  
+  // 1. Add User Message
+  chatHistory.push({ role: "user", content: query });
+  appendBubble("user", query);
+  saveChatHistory(); // async save
 
   // Clear input
   elements.quickAskInput.value = "";
+  elements.quickAskInput.style.height = 'auto'; // reset height
+
+  // 2. Show Typing
+  showTypingIndicator();
+
+  // 3. Build Context (Previous messages)
+  // Limit to last 5 exchanges to avoid token limits
+  const contextMsgs = chatHistory.slice(0, -1).slice(-10); 
+  const contextString = contextMsgs.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
 
   try {
     const response = await chrome.runtime.sendMessage({
       type: "QUICK_ASK",
-      payload: { query },
+      payload: { 
+        query,
+        context: contextString // Pass history as context
+      },
     });
+
+    removeTypingIndicator();
 
     if (response.success) {
       updateStatus(i18n.getMessage("status_ready"), "success");
+      const answer = response.data.response || response.data;
+      
+      chatHistory.push({ role: "ai", content: answer });
+      appendBubble("ai", answer);
+      saveChatHistory();
 
-      // Update result section with actual response
-      showResultSection(response.data.response || response.data, false);
     } else {
       updateStatus(i18n.getMessage("status_error"), "error");
-      showResultSection(
-        i18n.getMessage("error_prefix") + (response.error || "Unknown error"),
-        false,
-      );
-      console.error("Quick Ask failed:", response.error);
+      const errorMsg = response.error || "Unknown error";
+      appendBubble("error", i18n.getMessage("error_prefix") + errorMsg);
     }
   } catch (error) {
+    removeTypingIndicator();
     console.error("Quick Ask error:", error);
     updateStatus(i18n.getMessage("status_error"), "error");
-    showResultSection(i18n.getMessage("error_prefix") + error.message, false);
+    appendBubble("error", i18n.getMessage("error_prefix") + error.message);
   } finally {
     setProcessing(false);
+    focusInput();
   }
+}
+
+/**
+ * Format content (basic markdown support)
+ */
+function formatContent(text) {
+    if (!text) return "";
+    // Basic escapes
+    let html = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+    
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // Newlines to br
+    html = html.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    
+    return html;
 }
 
 // ============================================
@@ -315,8 +465,8 @@ function openSettings() {
  */
 function setProcessing(processing) {
   isProcessing = processing;
-  document.body.classList.toggle("loading", processing);
-
+  // document.body.classList.toggle("loading", processing); // Don't block whole UI
+  
   const btn = elements.askBtn;
   if (processing) {
     if (!btn.dataset.original) {
@@ -327,11 +477,13 @@ function setProcessing(processing) {
         <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
       </svg>
     `;
+    elements.quickAskInput.disabled = true;
   } else {
     if (btn.dataset.original) {
       btn.innerHTML = btn.dataset.original;
       delete btn.dataset.original;
     }
+    elements.quickAskInput.disabled = false;
   }
 }
 
@@ -340,7 +492,9 @@ function setProcessing(processing) {
  */
 function updateStatus(text, state = "ready") {
   const statusDot = elements.status.querySelector(".status-dot");
-  elements.status.lastChild.textContent = text;
+  if (elements.status.lastChild) {
+      elements.status.lastChild.textContent = text;
+  }
 
   statusDot.style.background =
     {
@@ -360,32 +514,3 @@ function focusInput() {
 
 // Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", init);
-// ============================================
-// Result Section Functions
-// ============================================
-
-/**
- * Show result section
- */
-function showResultSection(resultText, isLoading = false) {
-  const resultContent = elements.resultContent;
-
-  if (!elements.quickAskResult || !resultContent) return;
-
-  // Show section
-  elements.quickAskResult.classList.remove("hidden");
-  elements.quickAskResult.classList.add("visible");
-
-  if (isLoading) {
-    resultContent.classList.add("loading");
-    resultContent.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <div style="width: 16px; height: 16px; border: 2px solid var(--accent-purple); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span>${i18n.getMessage("status_processing")}</span>
-      </div>
-    `;
-  } else {
-    resultContent.classList.remove("loading");
-    resultContent.textContent = resultText;
-  }
-}

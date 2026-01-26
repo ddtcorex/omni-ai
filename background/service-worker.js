@@ -389,9 +389,9 @@ async function revokeToken(token) {
  * Handle quick ask
  */
 async function handleQuickAsk(payload) {
-  const { query, preset } = payload;
+  const { query, preset, context } = payload;
 
-  const response = await quickAsk(query, preset);
+  const response = await quickAsk(query, context || preset);
 
   // Save to history
   try {
