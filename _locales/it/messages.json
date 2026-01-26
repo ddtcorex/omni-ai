@@ -419,5 +419,33 @@
   },
   "settings_tooltip_ollama_s2": {
     "message": "Predefinito: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "Correzione suggerita",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Accetta",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Ignora",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Nessun problema trovato",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "Tradotto in",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "Errore",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Traduzione fallita",
+    "description": "Translation failed message"
   }
 }

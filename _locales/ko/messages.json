@@ -419,5 +419,33 @@
   "settings_tooltip_ollama_s1": {
     "message": "Ollama에서 CORS가 활성화되어 있는지 확인하세요:"
   },
-  "settings_tooltip_ollama_s2": { "message": "기본값: http://localhost:11434" }
+  "settings_tooltip_ollama_s2": { "message": "기본값: http://localhost:11434" },
+  "overlay_suggested_fix": {
+    "message": "수정 제안",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "수락",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "무시",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "문제가 발견되지 않았습니다",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "번역됨",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "오류",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "번역 실패",
+    "description": "Translation failed message"
+  }
 }
