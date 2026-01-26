@@ -105,6 +105,22 @@
           </div>
         </div>
 
+        <button id="newChatBtn" class="icon-btn" title="New Chat">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+          </svg>
+        </button>
         <button
           id="settingsBtn"
           class="icon-btn"
@@ -128,13 +144,23 @@
         </button>
       </header>
 
+      <!-- Chat History Section -->
+      <section class="chat-container" id="chatContainer">
+        <!-- Messages will be inserted here -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">👋</div>
+          <p>__MSG_popup_quickAsk__</p>
+        </div>
+      </section>
+
       <!-- Quick Ask Section -->
       <section class="quick-ask">
         <div class="input-wrapper">
           <textarea
             id="quickAskInput"
             placeholder="__MSG_popup_quickAsk__"
-            rows="2"
+            rows="1"
+            style="min-height: 40px; max-height: 120px"
           ></textarea>
           <button id="askBtn" class="ask-btn" title="__MSG_btn_ask_ai__">
             <svg
@@ -154,16 +180,9 @@
         </div>
       </section>
 
-      <!-- Quick Ask Result Section -->
-      <section class="quick-ask-result hidden" id="quickAskResult">
-        <div class="result-content" id="resultContent">
-          <!-- AI response will be inserted here -->
-        </div>
-      </section>
-
       <!-- Footer -->
       <footer class="footer">
-        <span class="version">v1.5.0</span>
+        <span class="version">v1.6.0</span>
         <span class="status" id="status">
           <span class="status-dot"></span>
           __MSG_status_ready__

@@ -367,16 +367,36 @@
     "message": "翻訳時のデフォルトターゲット言語",
     "description": "翻訳言語のヒント"
   },
-  "lang_en": { "message": "英語" },
-  "lang_vi": { "message": "ベトナム語" },
-  "lang_es": { "message": "スペイン語" },
-  "lang_fr": { "message": "フランス語" },
-  "lang_de": { "message": "ドイツ語" },
-  "lang_it": { "message": "イタリア語" },
-  "lang_pt": { "message": "ポルトガル語" },
-  "lang_ja": { "message": "日本語" },
-  "lang_ko": { "message": "韓国語" },
-  "lang_zh": { "message": "中国語" },
+  "lang_en": {
+    "message": "英語"
+  },
+  "lang_vi": {
+    "message": "ベトナム語"
+  },
+  "lang_es": {
+    "message": "スペイン語"
+  },
+  "lang_fr": {
+    "message": "フランス語"
+  },
+  "lang_de": {
+    "message": "ドイツ語"
+  },
+  "lang_it": {
+    "message": "イタリア語"
+  },
+  "lang_pt": {
+    "message": "ポルトガル語"
+  },
+  "lang_ja": {
+    "message": "日本語"
+  },
+  "lang_ko": {
+    "message": "韓国語"
+  },
+  "lang_zh": {
+    "message": "中国語"
+  },
   "settings_confirmClearHistory": {
     "message": "利用履歴をすべて消去してもよろしいですか？",
     "description": "履歴消去の確認"
@@ -414,20 +434,60 @@
   "settings_tooltip_gemini_s3": {
     "message": "キーをコピーしてクリップボードに保存します"
   },
-  "settings_tooltip_groq_s1": { "message": "Groq Console にアクセスします" },
-  "settings_tooltip_groq_s2": { "message": "サインアップまたはログインします" },
-  "settings_tooltip_groq_s3": { "message": "新しいAPIキーを作成します" },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console にアクセスします"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "サインアップまたはログインします"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "新しいAPIキーを作成します"
+  },
   "settings_tooltip_openai_s1": {
     "message": "OpenAI Platform にアクセスします"
   },
   "settings_tooltip_openai_s2": {
     "message": "サインアップまたはログインします"
   },
-  "settings_tooltip_openai_s3": { "message": "新しいAPIキーを作成します" },
+  "settings_tooltip_openai_s3": {
+    "message": "新しいAPIキーを作成します"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "OllamaがCORSを有効にして動作していることを確認してください："
   },
   "settings_tooltip_ollama_s2": {
     "message": "デフォルト: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "修正案",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "承認",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "却下",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "問題は見つかりませんでした",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "翻訳先",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "エラー",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "翻訳に失敗しました",
+    "description": "Translation failed message"
+  },
+  "btn_new_chat": {
+    "message": "新しいチャット",
+    "description": "New Chat button tooltip"
   }
 }

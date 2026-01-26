@@ -367,16 +367,36 @@
     "message": "Ngôn ngữ mặc định cho các bản dịch",
     "description": "Translation language hint"
   },
-  "lang_en": { "message": "Tiếng Anh" },
-  "lang_vi": { "message": "Tiếng Việt" },
-  "lang_es": { "message": "Tiếng Tây Ban Nha" },
-  "lang_fr": { "message": "Tiếng Pháp" },
-  "lang_de": { "message": "Tiếng Đức" },
-  "lang_it": { "message": "Tiếng Ý" },
-  "lang_pt": { "message": "Tiếng Bồ Đào Nha" },
-  "lang_ja": { "message": "Tiếng Nhật" },
-  "lang_ko": { "message": "Tiếng Hàn" },
-  "lang_zh": { "message": "Tiếng Trung" },
+  "lang_en": {
+    "message": "Tiếng Anh"
+  },
+  "lang_vi": {
+    "message": "Tiếng Việt"
+  },
+  "lang_es": {
+    "message": "Tiếng Tây Ban Nha"
+  },
+  "lang_fr": {
+    "message": "Tiếng Pháp"
+  },
+  "lang_de": {
+    "message": "Tiếng Đức"
+  },
+  "lang_it": {
+    "message": "Tiếng Ý"
+  },
+  "lang_pt": {
+    "message": "Tiếng Bồ Đào Nha"
+  },
+  "lang_ja": {
+    "message": "Tiếng Nhật"
+  },
+  "lang_ko": {
+    "message": "Tiếng Hàn"
+  },
+  "lang_zh": {
+    "message": "Tiếng Trung"
+  },
   "settings_confirmClearHistory": {
     "message": "Bạn có chắc chắn muốn xóa tất cả lịch sử sử dụng không?",
     "description": "Clear history confirmation"
@@ -405,19 +425,69 @@
     "message": "Lưu thất bại",
     "description": "Failed to save error"
   },
-  "settings_tooltip_gemini_s1": { "message": "Truy cập Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "Nhấp vào Create API Key" },
-  "settings_tooltip_gemini_s3": { "message": "Sao chép khóa vào bộ nhớ tạm" },
-  "settings_tooltip_groq_s1": { "message": "Truy cập Groq Console" },
-  "settings_tooltip_groq_s2": { "message": "Đăng ký hoặc Đăng nhập" },
-  "settings_tooltip_groq_s3": { "message": "Tạo Khóa API mới" },
-  "settings_tooltip_openai_s1": { "message": "Truy cập OpenAI Platform" },
-  "settings_tooltip_openai_s2": { "message": "Đăng ký hoặc Đăng nhập" },
-  "settings_tooltip_openai_s3": { "message": "Tạo Khóa API mới" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Truy cập Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Nhấp vào Create API Key"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Sao chép khóa vào bộ nhớ tạm"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Truy cập Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Đăng ký hoặc Đăng nhập"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Tạo Khóa API mới"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Truy cập OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Đăng ký hoặc Đăng nhập"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Tạo Khóa API mới"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Đảm bảo Ollama đang chạy với CORS được bật:"
   },
   "settings_tooltip_ollama_s2": {
     "message": "Mặc định: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "Đề xuất sửa lỗi",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Chấp nhận",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Bỏ qua",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Không tìm thấy lỗi",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "Dịch sang",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "Lỗi",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Dịch thất bại",
+    "description": "Translation failed message"
+  },
+  "btn_new_chat": {
+    "message": "Cuộc trò chuyện mới",
+    "description": "New Chat button tooltip"
   }
 }

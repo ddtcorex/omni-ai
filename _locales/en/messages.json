@@ -367,16 +367,36 @@
     "message": "Default language for translations",
     "description": "Translation language hint"
   },
-  "lang_en": { "message": "English" },
-  "lang_vi": { "message": "Vietnamese" },
-  "lang_es": { "message": "Spanish" },
-  "lang_fr": { "message": "French" },
-  "lang_de": { "message": "German" },
-  "lang_it": { "message": "Italian" },
-  "lang_pt": { "message": "Portuguese" },
-  "lang_ja": { "message": "Japanese" },
-  "lang_ko": { "message": "Korean" },
-  "lang_zh": { "message": "Chinese" },
+  "lang_en": {
+    "message": "English"
+  },
+  "lang_vi": {
+    "message": "Vietnamese"
+  },
+  "lang_es": {
+    "message": "Spanish"
+  },
+  "lang_fr": {
+    "message": "French"
+  },
+  "lang_de": {
+    "message": "German"
+  },
+  "lang_it": {
+    "message": "Italian"
+  },
+  "lang_pt": {
+    "message": "Portuguese"
+  },
+  "lang_ja": {
+    "message": "Japanese"
+  },
+  "lang_ko": {
+    "message": "Korean"
+  },
+  "lang_zh": {
+    "message": "Chinese"
+  },
   "settings_confirmClearHistory": {
     "message": "Are you sure you want to clear all usage history?",
     "description": "Clear history confirmation"
@@ -405,17 +425,69 @@
     "message": "Failed to save",
     "description": "Failed to save error"
   },
-  "settings_tooltip_gemini_s1": { "message": "Go to Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "Click Create API Key" },
-  "settings_tooltip_gemini_s3": { "message": "Copy key to clipboard" },
-  "settings_tooltip_groq_s1": { "message": "Go to Groq Console" },
-  "settings_tooltip_groq_s2": { "message": "Sign up or Log in" },
-  "settings_tooltip_groq_s3": { "message": "Create new API Key" },
-  "settings_tooltip_openai_s1": { "message": "Go to OpenAI Platform" },
-  "settings_tooltip_openai_s2": { "message": "Sign up or Log in" },
-  "settings_tooltip_openai_s3": { "message": "Create new API Key" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Go to Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Click Create API Key"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Copy key to clipboard"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Go to Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Sign up or Log in"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Create new API Key"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Go to OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Sign up or Log in"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Create new API Key"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Ensure Ollama is running with CORS enabled:"
   },
-  "settings_tooltip_ollama_s2": { "message": "Default: http://localhost:11434" }
+  "settings_tooltip_ollama_s2": {
+    "message": "Default: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "Suggested Fix",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Accept",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Dismiss",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "No issues found",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "Translated to",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "Error",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Translation failed",
+    "description": "Translation failed message"
+  },
+  "btn_new_chat": {
+    "message": "New Chat",
+    "description": "New Chat button tooltip"
+  }
 }

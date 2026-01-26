@@ -367,16 +367,36 @@
     "message": "Idioma alvo padrão para traduções",
     "description": "Dica idioma tradução"
   },
-  "lang_en": { "message": "Inglês" },
-  "lang_vi": { "message": "Vietnamita" },
-  "lang_es": { "message": "Espanhol" },
-  "lang_fr": { "message": "Francês" },
-  "lang_de": { "message": "Alemão" },
-  "lang_it": { "message": "Italiano" },
-  "lang_pt": { "message": "Português" },
-  "lang_ja": { "message": "Japonês" },
-  "lang_ko": { "message": "Coreano" },
-  "lang_zh": { "message": "Chinês" },
+  "lang_en": {
+    "message": "Inglês"
+  },
+  "lang_vi": {
+    "message": "Vietnamita"
+  },
+  "lang_es": {
+    "message": "Espanhol"
+  },
+  "lang_fr": {
+    "message": "Francês"
+  },
+  "lang_de": {
+    "message": "Alemão"
+  },
+  "lang_it": {
+    "message": "Italiano"
+  },
+  "lang_pt": {
+    "message": "Português"
+  },
+  "lang_ja": {
+    "message": "Japonês"
+  },
+  "lang_ko": {
+    "message": "Coreano"
+  },
+  "lang_zh": {
+    "message": "Chinês"
+  },
   "settings_confirmClearHistory": {
     "message": "Tem certeza que deseja limpar todo o histórico?",
     "description": "Confirmação limpar histórico"
@@ -405,17 +425,69 @@
     "message": "Erro ao salvar",
     "description": "Erro salvar"
   },
-  "settings_tooltip_gemini_s1": { "message": "Vá ao Google AI Studio" },
-  "settings_tooltip_gemini_s2": { "message": "Clique em 'Create API Key'" },
-  "settings_tooltip_gemini_s3": { "message": "Copie a chave para o clipboard" },
-  "settings_tooltip_groq_s1": { "message": "Vá ao console do Groq" },
-  "settings_tooltip_groq_s2": { "message": "Registe-se ou faça login" },
-  "settings_tooltip_groq_s3": { "message": "Crie uma nova chave API" },
-  "settings_tooltip_openai_s1": { "message": "Vá à plataforma OpenAI" },
-  "settings_tooltip_openai_s2": { "message": "Registe-se ou faça login" },
-  "settings_tooltip_openai_s3": { "message": "Crie uma nova chave API" },
+  "settings_tooltip_gemini_s1": {
+    "message": "Vá ao Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Clique em 'Create API Key'"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Copie a chave para o clipboard"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Vá ao console do Groq"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Registe-se ou faça login"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Crie uma nova chave API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Vá à plataforma OpenAI"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Registe-se ou faça login"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Crie uma nova chave API"
+  },
   "settings_tooltip_ollama_s1": {
     "message": "Garanta que o Ollama tem CORS ativo:"
   },
-  "settings_tooltip_ollama_s2": { "message": "Padrão: http://localhost:11434" }
+  "settings_tooltip_ollama_s2": {
+    "message": "Padrão: http://localhost:11434"
+  },
+  "overlay_suggested_fix": {
+    "message": "Correção sugerida",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Aceitar",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Dispensar",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Nenhum problema encontrado",
+    "description": "No issues message"
+  },
+  "overlay_translated_to": {
+    "message": "Traduzido para",
+    "description": "Translated to prefix"
+  },
+  "overlay_error": {
+    "message": "Erro",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Falha na tradução",
+    "description": "Translation failed message"
+  },
+  "btn_new_chat": {
+    "message": "Nova conversa",
+    "description": "New Chat button tooltip"
+  }
 }

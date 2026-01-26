@@ -1,8 +1,8 @@
 # Omni AI
 
-> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/Mixtral), and OpenAI (GPT-4o).
+> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/Mixtral), OpenAI (GPT-4o), and Ollama (Local AI).
 
-[![Version](https://img.shields.io/badge/version-1.5.0-blue)](https://github.com/ddtcorex/omni-ai)
+[![Version](https://img.shields.io/badge/version-1.6.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
@@ -21,6 +21,8 @@ Highlight any text on any website to see the **✨ Omni AI Floating Button**. On
 - **Summarize** - Get the gist of long paragraphs instantly.
 - **Change Tone** - Swiftly switch between Professional, Casual, Formal, and more.
 - **Ask AI** - Direct chat contextually based on your selection.
+- **Persistent Chat** - Popup chat retains history for multi-turn conversations.
+- **Context Awareness** - AI remembers context from previous messages in the popup.
 
 ### 📋 Writing Enhancements
 
@@ -105,6 +107,7 @@ You can choose between Google Gemini, Groq, or OpenAI as your AI provider.
 2. In Omni AI, go to **Settings** > **AI Provider** and select **Ollama**.
 3. Set your endpoint (default: `http://localhost:11434`).
 4. **Important**: You must configure Ollama to allow requests from the extension (CORS). See [Ollama CORS Configuration](#-ollama-cors-configuration) below.
+5. **Specialized Models**: Omni AI supports specialized models like `TranslateGemma` for translations and `DeepSeek Coder` for technical tasks.
 
 ---
 
@@ -116,11 +119,14 @@ For the extension to communicate with your local Ollama server, you must set the
 
 1. Run `sudo systemctl edit ollama.service`
 2. Add the following lines:
+
    ```ini
    [Service]
    Environment="OLLAMA_ORIGINS=*"
    ```
+
 3. Restart Ollama:
+
    ```bash
    sudo systemctl daemon-reload
    sudo systemctl restart ollama
@@ -130,9 +136,11 @@ For the extension to communicate with your local Ollama server, you must set the
 
 1. Quit Ollama from the menu bar.
 2. Run in terminal:
+
    ```bash
    launchctl setenv OLLAMA_ORIGINS "*"
    ```
+
 3. Restart the Ollama application.
 
 #### Windows
@@ -156,12 +164,14 @@ To use the personalization features (syncing settings across devices), you need 
 4. Create **OAuth client ID** > **Chrome extension**.
 5. Detailed steps can be found in the [Chrome Identity API docs](https://developer.chrome.com/docs/extensions/reference/identity/).
 6. Copy the `client_id` and paste it into `manifest.json`:
+
    ```json
    "oauth2": {
      "client_id": "YOUR_NEW_CLIENT_ID.apps.googleusercontent.com",
      ...
    }
    ```
+
 7. (Recommended) Copy the `key` from the Developer Dashboard to `manifest.json` to keep the extension ID stable.
 
 ---
@@ -211,6 +221,7 @@ omni-ai/
 ├── lib/                 # Shared logic & AI Providers
 │   ├── ai-service.js    # AI Dispatcher
 │   ├── history.js       # Statistics & History management
+│   └── providers/       # AI Model Implementations
 │       ├── gemini.js
 │       ├── groq.js
 │       ├── openai.js
@@ -219,6 +230,10 @@ omni-ai/
 ├── settings.html        # Main configuration page
 ├── settings.js
 ├── settings.css
+├── popup/               # Extension Popup
+│   ├── popup.html
+│   ├── popup.js
+│   └── popup.css
 └── scripts/             # Build & Utility scripts
     └── publish.sh       # Automates ID key removal & zipping
 ```
