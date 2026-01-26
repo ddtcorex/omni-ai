@@ -116,7 +116,7 @@
   align-items: center;
   gap: 6px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ai-text-primary);
   letter-spacing: -0.01em;
 }
