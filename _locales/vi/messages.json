@@ -474,6 +474,10 @@
     "message": "Không tìm thấy lỗi",
     "description": "No issues message"
   },
+  "overlay_no_issues_content": {
+    "message": "Văn bản trông tuyệt vời!",
+    "description": "No issues check details"
+  },
   "overlay_translated_to": {
     "message": "Dịch sang",
     "description": "Translated to prefix"

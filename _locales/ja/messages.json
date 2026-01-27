@@ -474,6 +474,10 @@
     "message": "問題は見つかりませんでした",
     "description": "No issues message"
   },
+  "overlay_no_issues_content": {
+    "message": "テキストは素晴らしいです！",
+    "description": "No issues check details"
+  },
   "overlay_translated_to": {
     "message": "翻訳先",
     "description": "Translated to prefix"

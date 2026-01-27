@@ -33,6 +33,11 @@ Dedicated tools for specific needs:
 - **Expand** - Elaborate with AI-generated depth.
 - **Emojify** - Add the perfect emojis for social or chat.
 
+### 📝 Rich Text & Input Support
+
+- **Universal Compatibility**: Works on `input`, `textarea`, and rich text editors like **TinyMCE**.
+- **Smart Replacement**: "Replace" button seamlessly updates content in complex editors.
+
 ### 🌍 Instant Translation & Explanation
 
 - **Translate** - Supports 10+ languages including Spanish, French, German, Japanese, and Chinese.
