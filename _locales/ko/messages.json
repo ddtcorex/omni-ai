@@ -474,6 +474,10 @@
     "message": "문제가 발견되지 않았습니다",
     "description": "No issues message"
   },
+  "overlay_no_issues_content": {
+    "message": "텍스트가 좋아 보입니다!",
+    "description": "No issues check details"
+  },
   "overlay_translated_to": {
     "message": "번역됨",
     "description": "Translated to prefix"

@@ -474,6 +474,10 @@
     "message": "No se encontraron problemas",
     "description": "No issues message"
   },
+  "overlay_no_issues_content": {
+    "message": "¡El texto se ve genial!",
+    "description": "No issues check details"
+  },
   "overlay_translated_to": {
     "message": "Traducido a",
     "description": "Translated to prefix"
