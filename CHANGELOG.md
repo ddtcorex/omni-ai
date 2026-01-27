@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1] - 2026-01-27
+
+### ✨ Added
+
+- **Mouse Cursor Positioning**: The Quick Action button now appears exactly at the mouse cursor position where you stop selecting text. This applies to all contexts, including static text, rich text editors (TinyMCE), and input fields.
+
+### 🛠 Improvements
+
+- **Smaller Button Size**: Reduced the Quick Action button size from 26px to 22px to be less intrusive.
+- **Semi-transparent UI**: The floating button is now semi-transparent (75% opacity) by default, becoming fully solid on hover for a more subtle user experience.
+
 ## [1.8.0] - 2026-01-27
 
 ### ✨ Added
