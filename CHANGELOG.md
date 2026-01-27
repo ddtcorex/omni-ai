@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-01-27
+
+### ✨ Added
+
+- **Top 3 Models + Custom**: Streamlined AI model selection by restricting each provider (Google, Groq, OpenAI, Ollama) to their top 3 best-performing models plus a dedicated "Custom Model" option.
+- **Improved Model ID Parsing**: Enhanced logic to correctly handle model IDs with prefixes (e.g., `openai/gpt-oss-120b`), ensuring compatibility with a wider range of custom models.
+- **New Groq Models**: Updated Groq provider to support `Llama 3.3 70B`, `Llama 3.1 8B`, and `GPT-OSS 120B`.
+
+### 🛠 Changed
+
+- **Cleaned Up Model Lists**: Removed deprecated or less performant models to reduce clutter and simplify user choice.
+- **Documentation Update**: Updated `README.md` to reflect the refined list of supported AI models.
+
 ## [1.7.1] - 2026-01-26
 
 ### 🐛 Fixed
