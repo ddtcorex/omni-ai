@@ -1,8 +1,8 @@
 # Omni AI
 
-> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/Mixtral), OpenAI (GPT-4o), and Ollama (Local AI).
+> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/GPT-OSS), OpenAI (GPT-4o), and Ollama (Local AI).
 
-[![Version](https://img.shields.io/badge/version-1.7.1-blue)](https://github.com/ddtcorex/omni-ai)
+[![Version](https://img.shields.io/badge/version-1.8.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
@@ -33,6 +33,11 @@ Dedicated tools for specific needs:
 - **Expand** - Elaborate with AI-generated depth.
 - **Emojify** - Add the perfect emojis for social or chat.
 
+### 📝 Rich Text & Input Support
+
+- **Universal Compatibility**: Works on `input`, `textarea`, and rich text editors like **TinyMCE**.
+- **Smart Replacement**: "Replace" button seamlessly updates content in complex editors.
+
 ### 🌍 Instant Translation & Explanation
 
 - **Translate** - Supports 10+ languages including Spanish, French, German, Japanese, and Chinese.
@@ -49,7 +54,7 @@ Track your productivity with the new **Usage Dashboard**:
 
 ### 🛠️ Premium Settings UI
 
-- **Multiple AI Providers**: Support for **Google Gemini** (1.5 Flash, Pro, 2.0), **Groq** (Llama 3.3, DeepSeek R1, Mixtral, Gemma), and **OpenAI** (GPT-4o, GPT-4o Mini, GPT-3.5).
+- **Multiple AI Providers**: Support for **Google Gemini** (1.5 Flash, 1.5 Pro, 2.0 Flash), **Groq** (Llama 3.3, Llama 3.1, GPT-OSS 120B), **OpenAI** (GPT-4o, GPT-4o Mini, GPT-4 Turbo), and **Ollama** (TranslateGemma, Llama 3.1, Gemma 2).
 - **Glassmorphic Design**: A sleek, modern settings page (`settings.html`) with smooth animations and high-resolution visuals.
 - **Helper Tooltips**: Interactive instructions and links to help you get your API keys quickly.
 - **Context Presets**: Tailor AI responses for Email, Chat, Social Media, Technical, or Academic contexts.

@@ -86,6 +86,175 @@ let activeInputElement = null; // Track input element for replacement when focus
 // Store state for navigation
 let lastMenuContext = null;
 let currentAnchorRect = null;
+let lastRange = null;
+
+// ============================================
+// Input Strategies
+// ============================================
+
+const strategies = {
+  // Strategy for <input> and <textarea>
+  standard: {
+    id: "standard",
+    isApplicable: (el) => {
+      if (!el) return false;
+      const tagName = el.tagName;
+      if (tagName === "TEXTAREA") return true;
+      if (tagName === "INPUT") {
+        const type = (el.type || "text").toLowerCase();
+        const allowedTypes = [
+          "text",
+          "email",
+          "number",
+          "search",
+          "tel",
+          "url",
+        ];
+        return allowedTypes.includes(type);
+      }
+      return false;
+    },
+    getText: (el) => {
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const text = el.value.substring(start, end);
+      // If no text selected, return full value ONLY if we want to act on the whole input
+      if (!text && el.value.trim().length > 0) {
+        return { text: el.value.trim(), isSelection: false, fullText: true };
+      }
+      return { text: text || "", isSelection: !!text, fullText: false };
+    },
+    getRect: (el) => {
+      // Standard inputs: Button goes to bottom-right corner
+      return el.getBoundingClientRect();
+    },
+    replaceText: (el, newText, state) => {
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      if (state && state.fullText) {
+        el.value = newText;
+      } else {
+        const val = el.value;
+        el.value = val.substring(0, start) + newText + val.substring(end);
+      }
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    },
+  },
+
+  // Strategy for ContentEditable / TinyMCE
+  richText: {
+    id: "richText",
+    isApplicable: (el) => {
+      if (!el) return false;
+      if (el.isContentEditable) return true;
+      if (el.designMode === "on") return true;
+      // Deep check for nested contenteditable
+      let parent = el.parentElement;
+      while (parent && parent !== document.body) {
+        if (
+          parent.isContentEditable ||
+          parent.getAttribute("contenteditable") === "true"
+        ) {
+          return true;
+        }
+        parent = parent.parentElement;
+      }
+      return false;
+    },
+    getText: (el) => {
+      const selection = window.getSelection();
+      const text = selection.toString();
+      if (text) {
+        return { text: text, isSelection: true };
+      }
+      // If no selection, grab innerText (treating as full document)
+      // Note: grabbing innerText from the *root* editable is better
+      const root = getEditableHost(el) || el;
+      return {
+        text: root.innerText.trim(),
+        isSelection: false,
+        fullText: true,
+      };
+    },
+    getRect: (el) => {
+      // Preference: Caret/Selection position
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        if (rect.width > 0 || rect.height > 0) return rect;
+      }
+      // Fallback to element rect
+      const root = getEditableHost(el) || el;
+      return root.getBoundingClientRect();
+    },
+    replaceText: (el, newText, state) => {
+      const root = getEditableHost(el) || el;
+      root.focus();
+
+      if (state && state.lastRange) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(state.lastRange);
+      } else if (state && state.fullText) {
+        document.execCommand("selectAll", false, null);
+      }
+
+      document.execCommand("insertText", false, newText);
+    },
+  },
+
+  // Strategy for Static Text (Selection on page)
+  static: {
+    id: "static",
+    isApplicable: () => true, // Fallback
+    getText: () => {
+      const selection = window.getSelection();
+      return {
+        text: selection.toString().trim(),
+        isSelection: selection.toString().length > 0,
+      };
+    },
+    getRect: () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        return selection.getRangeAt(0).getBoundingClientRect();
+      }
+      return null;
+    },
+    replaceText: () => {
+      // Read-only
+    },
+  },
+};
+
+function getContext(element) {
+  if (strategies.run_standard && strategies.standard.isApplicable(element))
+    return strategies.standard;
+  // Check rich text before standard check in case of overlap, but standard check is specific tags
+  if (strategies.richText.isApplicable(element)) return strategies.richText;
+  if (strategies.standard.isApplicable(element)) return strategies.standard;
+  return strategies.static;
+}
+
+// Helper to find the actual contenteditable host (Moved to top level scope)
+function getEditableHost(el) {
+  if (!el) return null;
+  if (el.isContentEditable) {
+    let current = el;
+    while (current && current.parentElement) {
+      if (
+        current.getAttribute &&
+        current.getAttribute("contenteditable") === "true"
+      ) {
+        return current;
+      }
+      if (current.tagName === "BODY") break;
+      current = current.parentElement;
+    }
+  }
+  return el;
+}
 
 // ============================================
 // Initialization
@@ -101,11 +270,22 @@ function computeDiff(original, corrected) {
   const words1 = original.trim().split(/\s+/);
   const words2 = corrected.trim().split(/\s+/);
 
-  // If text is totally different, return new text highlighted
+  // Check for distinct word count difference (heuristic for major change)
   if (
     Math.abs(words1.length - words2.length) >
     Math.max(words1.length, words2.length) * 0.8
   ) {
+    return `<span class="omni-ai-diff-ins">${corrected}</span>`;
+  }
+
+  // Check for identical tokens but different text (Whitespace/Formatting only)
+  // Reconstruct tokens to compare, as split() swallows delimiters
+  const tokens1 = words1.join(" ");
+  const tokens2 = words2.join(" ");
+  if (tokens1 === tokens2 && original.trim() !== corrected.trim()) {
+    // It's a whitespace/formatting change. Highlight strictly to show 'change' happened.
+    // Alternatively, we could show the cleaned text with a note.
+    // Highlighting the whole thing indicates "Replacement".
     return `<span class="omni-ai-diff-ins">${corrected}</span>`;
   }
 
@@ -175,7 +355,13 @@ function computeDiff(original, corrected) {
   return html.trim();
 }
 
-function updateSmartFixCard(card, originalText, correctedText, isInput) {
+function updateSmartFixCard(
+  card,
+  originalText,
+  correctedText,
+  isInput,
+  activeElement = null,
+) {
   if (!card) return;
 
   if (originalText.trim() === correctedText.trim()) {
@@ -185,7 +371,7 @@ function updateSmartFixCard(card, originalText, correctedText, isInput) {
         </div>
         <div class="omni-ai-suggestion-info">
             <div class="omni-ai-suggestion-label" style="color:var(--ai-success)">${i18n.getMessage("overlay_no_issues")}</div>
-            <div class="omni-ai-suggestion-content">Text looks great!</div>
+            <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_no_issues_content")}</div>
         </div>
     `;
     return;
@@ -209,7 +395,7 @@ function updateSmartFixCard(card, originalText, correctedText, isInput) {
 
   acceptBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    replaceSelectedText(correctedText);
+    replaceSelectedText(correctedText, activeElement);
     hideOverlay();
   });
 
@@ -282,12 +468,12 @@ function setupMessageListener() {
           // Force show button if not already visible
           if (!quickActionBtn) {
             const activeElement = document.activeElement;
-            const isInput = isTextInput(activeElement);
-            if (isInput) {
-              showQuickActionButtonForInput(activeElement);
-            } else if (window.getSelection().rangeCount > 0) {
-              showQuickActionButton(window.getSelection());
-            }
+            const context = getContext(activeElement);
+            // Re-use logic from selection listener basically
+            const rect = context.getRect(activeElement);
+            const inputEl = context.id !== "static" ? activeElement : null;
+
+            presentQuickActionButton(rect, inputEl, text);
           }
           // Show loading spinner inside button
           if (quickActionBtn) {
@@ -343,24 +529,45 @@ function setupMessageListener() {
 function setupSelectionListener() {
   const handleSelectionChange = () => {
     setTimeout(() => {
-      const text = getSelectedText();
-      const activeElement = document.activeElement;
-      const isInput = isTextInput(activeElement);
+      // If overlay is already open, don't show specific button logic or hide it?
+      // Usually checking !isOverlayVisible is correct.
+      if (isOverlayVisible) return;
 
-      if (text.length > 0 && !isOverlayVisible) {
-        if (isInput) {
-          showQuickActionButtonForInput(activeElement);
-        } else if (window.getSelection().rangeCount > 0) {
-          showQuickActionButton(window.getSelection());
+      const activeElement = document.activeElement;
+      const context = getContext(activeElement);
+      const result = context.getText(activeElement);
+
+      // Determine if we should show button
+      // Show if:
+      // 1. Text is selected (Standard, Rich, Static)
+      // 2. OR Input has content (Full text mode) - For Standard/Rich only
+
+      const hasSelection = result.isSelection;
+      const hasContent = result.text.length > 0;
+
+      const shouldShow =
+        hasSelection || (context.id !== "static" && hasContent);
+
+      if (shouldShow) {
+        // Additional check: If rich text has no selection but has content,
+        // we only show if we are focused (which activeElement check covers).
+
+        // Capture Last Range if applicable (Selection based)
+        if (context.id === "richText" || context.id === "static") {
+          const sel = window.getSelection();
+          if (sel.rangeCount > 0) {
+            lastRange = sel.getRangeAt(0).cloneRange();
+          } else {
+            lastRange = null;
+          }
         }
+
+        const rect = context.getRect(activeElement);
+        const inputEl = context.id !== "static" ? activeElement : null;
+
+        presentQuickActionButton(rect, inputEl, result.text);
       } else {
-        const isInInputWithContent =
-          isInput && activeElement.value.trim().length > 0;
-        if (!isInInputWithContent) {
-          hideQuickActionButton();
-        } else {
-          showQuickActionButtonForInput(activeElement);
-        }
+        hideQuickActionButton();
       }
     }, 10);
   };
@@ -384,14 +591,13 @@ function setupSelectionListener() {
 
   // Handle paste events
   document.addEventListener("paste", (e) => {
-    const target = e.target;
-    if (isTextInput(target)) {
-      setTimeout(() => {
-        if (target.value.trim().length > 0 && !isOverlayVisible) {
-          showQuickActionButtonForInput(target);
-        }
-      }, 100);
-    }
+    // Rely on generic detection shortly after paste
+    const target = e.target; // Might be needed for context if focus isn't immediate?
+
+    // Slight delay to allow paste to complete
+    setTimeout(() => {
+      handleSelectionChange();
+    }, 100);
   });
 }
 
@@ -399,24 +605,50 @@ function setupSelectionListener() {
 // Quick Action Button
 // ============================================
 
-function showQuickActionButton(selection) {
+// ============================================
+// Quick Action Button
+// ============================================
+
+function presentQuickActionButton(
+  rect,
+  inputElement = null,
+  initialText = null,
+) {
   if (quickActionBtn) hideQuickActionButton();
 
-  const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
+  if (
+    !rect ||
+    (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0)
+  )
+    return;
 
-  if (rect.width === 0 && rect.height === 0) return;
+  // Determine valid positioning flag
+  const isInput = !!inputElement;
+  // If we are in rich text, we want caret-like positioning (false), unless we fell back to element rect?
+  // Our strategies.getRect handles the rect.
+  // usageInputPositioning argument in createQuickBtn determines offset.
+  // Standard -> True. RichText -> False (usually). Static -> False.
 
-  createQuickBtn(rect, false);
-  setupQuickBtnEvents(selection.toString(), false);
+  let useInputPositioning = false;
+  if (isInput) {
+    const context = getContext(inputElement);
+    // Standard inputs use "Input Positioning" (corner)
+    // RichText standardly uses caret (False), but if we fallback to element rect we might want corner?
+    // Strategies.richText.getRect tries caret first.
+    if (context.id === "standard") useInputPositioning = true;
+  }
+
+  createQuickBtn(rect, useInputPositioning);
+  setupQuickBtnEvents(initialText, inputElement);
+}
+
+function showQuickActionButton(selection, inputElement = null) {
+  // Legacy wrapper if needed, or we just replace usages
+  // But we refactored setupSelectionListener to not call this anymore.
 }
 
 function showQuickActionButtonForInput(inputElement) {
-  if (quickActionBtn) hideQuickActionButton();
-
-  const rect = inputElement.getBoundingClientRect();
-  createQuickBtn(rect, true);
-  setupQuickBtnEvents(null, inputElement); // Pass element to grab text later
+  // Legacy wrapper
 }
 
 async function createQuickBtn(rect, isInput) {
@@ -467,7 +699,12 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
     if (isInput) activeInputElement = inputElement;
     const currentText =
       text ||
-      (inputElement ? getSelectedText() || inputElement.value.trim() : "");
+      (inputElement
+        ? getSelectedText() ||
+          (inputElement.value
+            ? inputElement.value.trim()
+            : inputElement.innerText.trim())
+        : "");
     const btnRect = quickActionBtn.getBoundingClientRect();
 
     showQuickActionMenu(currentText, btnRect, null, isInput);
@@ -653,7 +890,15 @@ async function showQuickActionMenu(
       .then((response) => {
         const card = document.getElementById("omniAiMagicFix");
         if (response.success && card) {
-          updateSmartFixCard(card, text, response.data.response, isInput);
+          // Pass activeInputElement if we tracked it
+          const targetEl = activeInputElement || document.activeElement;
+          updateSmartFixCard(
+            card,
+            text,
+            response.data.response,
+            isInput,
+            targetEl,
+          );
         } else if (card) {
           // Show error or revert
           card.innerHTML = `
@@ -863,18 +1108,8 @@ async function handleAskAction(query, originalText, isInput) {
  */
 function getSelectionRect() {
   const activeElement = document.activeElement;
-  if (isTextInput(activeElement)) {
-    const rect = activeElement.getBoundingClientRect();
-    // For inputs, we return the rect but we'll try to refine if we can later
-    return rect;
-  }
-
-  const selection = window.getSelection();
-  if (selection.rangeCount > 0) {
-    return selection.getRangeAt(0).getBoundingClientRect();
-  }
-
-  return null;
+  const context = getContext(activeElement);
+  return context.getRect(activeElement);
 }
 
 function positionOverlay(anchorRect = null, lockedPosition = null) {
@@ -1029,32 +1264,20 @@ function sendMessageToBackground(message) {
   });
 }
 
-function getSelectedText() {
-  const activeElement = document.activeElement;
-  if (isTextInput(activeElement)) {
-    const start = activeElement.selectionStart;
-    const end = activeElement.selectionEnd;
-    const selection = activeElement.value.substring(start, end);
-
-    // If focus is in input but no text selected, return the whole content
-    if (!selection && activeElement.value.trim().length > 0) {
-      return activeElement.value.trim();
-    }
-    return selection;
-  }
-  return window.getSelection().toString().trim();
-}
+// ============================================
+// Legacy Helper Refactors (Delegates to Strategies)
+// ============================================
 
 function isTextInput(el) {
-  if (!el) return false;
-  if (el.tagName === "TEXTAREA") return true;
-  if (el.tagName === "INPUT") {
-    const type = (el.type || "text").toLowerCase();
-    // Only allow text-based inputs where text manipulation makes sense
-    const allowedTypes = ["text", "email", "number", "search", "tel", "url"];
-    return allowedTypes.includes(type);
-  }
-  return false;
+  const context = getContext(el);
+  return context.id === "standard" || context.id === "richText";
+}
+
+function getSelectedText() {
+  const activeElement = document.activeElement;
+  const context = getContext(activeElement);
+  const result = context.getText(activeElement);
+  return result.text;
 }
 
 function showLoadingInOverlay() {
@@ -1290,36 +1513,35 @@ function showResultOverlay(payload, isInput = false) {
   }
 }
 
-function replaceSelectedText(newText) {
-  let activeElement = document.activeElement;
+function replaceSelectedText(newText, specificElement = null) {
+  let activeElement = specificElement || document.activeElement;
 
-  // Fallback to stored input element if focus was lost (e.g. to overlay buttons)
+  // Fallback to stored input element interaction
   if (
-    !isTextInput(activeElement) &&
     activeInputElement &&
-    document.body.contains(activeInputElement)
+    (!activeElement ||
+      activeElement === document.body ||
+      (!strategies.standard.isApplicable(activeElement) &&
+        !strategies.richText.isApplicable(activeElement)))
   ) {
     activeElement = activeInputElement;
   }
 
-  if (isTextInput(activeElement)) {
-    const start = activeElement.selectionStart;
-    const end = activeElement.selectionEnd;
+  const context = getContext(activeElement);
 
-    // If no text selected (cursor placement only), replace the whole input value
-    if (start === end) {
-      activeElement.value = newText;
-    } else {
-      // Replace specific selection
-      const val = activeElement.value;
-      activeElement.value =
-        val.substring(0, start) + newText + val.substring(end);
-    }
+  // Prepare state for replacement
+  // Re-evaluate text state to see if it's a full text scenario (no selection)
+  const currentTextState = context.getText(activeElement);
 
-    activeElement.dispatchEvent(new Event("input", { bubbles: true }));
-  } else {
-    // ContentEditable / Selection
-    document.execCommand("insertText", false, newText);
+  const state = {
+    // If range is collapsed, it's just a cursor, so we shouldn't use it for text replacement constraint
+    // unless we strictly want insertion. But for "Fix/Replace", we want full text replacement if no selection.
+    lastRange: lastRange && !lastRange.collapsed ? lastRange : null,
+    fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
+  };
+
+  if (context.id !== "static") {
+    context.replaceText(activeElement, newText, state);
   }
 }
 
