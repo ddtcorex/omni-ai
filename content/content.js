@@ -87,6 +87,7 @@ let activeInputElement = null; // Track input element for replacement when focus
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
+let lastMousePosition = null; // Track mouse position for button placement
 
 // ============================================
 // Input Strategies
@@ -527,7 +528,7 @@ function setupMessageListener() {
  * Set up selection change listener
  */
 function setupSelectionListener() {
-  const handleSelectionChange = () => {
+  const handleSelectionChange = (mousePos = null) => {
     setTimeout(() => {
       // If overlay is already open, don't show specific button logic or hide it?
       // Usually checking !isOverlayVisible is correct.
@@ -565,7 +566,14 @@ function setupSelectionListener() {
         const rect = context.getRect(activeElement);
         const inputEl = context.id !== "static" ? activeElement : null;
 
-        presentQuickActionButton(rect, inputEl, result.text);
+        // Use mouse position for any text selection (all contexts)
+        const useMousePos = mousePos && hasSelection;
+        presentQuickActionButton(
+          rect,
+          inputEl,
+          result.text,
+          useMousePos ? mousePos : null,
+        );
       } else {
         hideQuickActionButton();
       }
@@ -573,10 +581,14 @@ function setupSelectionListener() {
   };
 
   document.addEventListener("mouseup", (e) => {
+    // Capture mouse position for button placement
+    const mousePos = { x: e.clientX, y: e.clientY };
+    lastMousePosition = mousePos;
+
     if (overlay && !overlay.contains(e.target)) {
       hideOverlay();
     }
-    handleSelectionChange();
+    handleSelectionChange(mousePos);
   });
 
   document.addEventListener("keyup", (e) => {
@@ -613,14 +625,21 @@ function presentQuickActionButton(
   rect,
   inputElement = null,
   initialText = null,
+  mousePosition = null,
 ) {
   if (quickActionBtn) hideQuickActionButton();
 
-  if (
-    !rect ||
-    (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0)
-  )
-    return;
+  // If using mouse position, we don't need rect validation
+  if (!mousePosition) {
+    if (
+      !rect ||
+      (rect.width === 0 &&
+        rect.height === 0 &&
+        rect.top === 0 &&
+        rect.left === 0)
+    )
+      return;
+  }
 
   // Determine valid positioning flag
   const isInput = !!inputElement;
@@ -638,7 +657,7 @@ function presentQuickActionButton(
     if (context.id === "standard") useInputPositioning = true;
   }
 
-  createQuickBtn(rect, useInputPositioning);
+  createQuickBtn(rect, useInputPositioning, mousePosition);
   setupQuickBtnEvents(initialText, inputElement);
 }
 
@@ -651,7 +670,7 @@ function showQuickActionButtonForInput(inputElement) {
   // Legacy wrapper
 }
 
-async function createQuickBtn(rect, isInput) {
+async function createQuickBtn(rect, isInput, mousePosition = null) {
   quickActionBtn = document.createElement("button");
   quickActionBtn.className = "omni-ai-quick-btn";
   quickActionBtn.innerHTML = ICONS.btnSparkle;
@@ -670,13 +689,24 @@ async function createQuickBtn(rect, isInput) {
     quickActionBtn.classList.add("omni-ai-light-mode");
   }
 
-  // Position
-  const top = isInput
-    ? rect.bottom + window.scrollY - 30
-    : rect.bottom + window.scrollY + 5;
-  const left = isInput
-    ? rect.right + window.scrollX - 30
-    : rect.right + window.scrollX;
+  // Position - Use mouse position if provided (for text selection)
+  let top, left;
+  if (mousePosition) {
+    // Position near mouse cursor with small offset
+    top = mousePosition.y + window.scrollY + 8;
+    left = mousePosition.x + window.scrollX + 8;
+  } else if (isInput && rect) {
+    // Input elements: bottom-right corner (inside the input)
+    top = rect.bottom + window.scrollY - 26;
+    left = rect.right + window.scrollX - 26;
+  } else if (rect) {
+    // Fallback to selection rect
+    top = rect.bottom + window.scrollY + 5;
+    left = rect.right + window.scrollX;
+  } else {
+    // No valid position, don't show
+    return;
+  }
 
   quickActionBtn.style.top = `${top}px`;
   quickActionBtn.style.left = `${left}px`;
