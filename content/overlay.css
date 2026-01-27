@@ -433,28 +433,32 @@
 .omni-ai-quick-btn {
   position: absolute;
   z-index: 2147483647;
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--ai-accent-gradient);
   border: none;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 3px 10px rgba(139, 92, 246, 0.35);
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition:
+    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.2s ease;
   animation: omniAiScaleIn 0.3s;
   padding: 0;
+  opacity: 0.75;
 }
 
 .omni-ai-quick-btn:hover {
   transform: scale(1.15);
+  opacity: 1;
 }
 
 .omni-ai-btn-icon-svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   color: white;
 }
 
