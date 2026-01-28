@@ -26,15 +26,31 @@ const ICONS = {
 // Localization Manager
 // ============================================
 // Initialize with fallback while loading shared module
+const isContextValid = () =>
+  !!(typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id);
+
 let i18n = {
-  getMessage: (key) => chrome.i18n.getMessage(key),
+  getMessage: (key) => {
+    if (!isContextValid()) return key;
+    return chrome.i18n.getMessage(key) || key;
+  },
 };
 
 // Initialize localization
 async function initializeI18n() {
   try {
     const { primaryLanguage } = await new Promise((resolve) => {
-      chrome.storage.sync.get("primaryLanguage", resolve);
+      if (!isContextValid()) {
+        resolve({ primaryLanguage: "en" });
+        return;
+      }
+      chrome.storage.sync.get("primaryLanguage", (data) => {
+        if (chrome.runtime.lastError) {
+          resolve({ primaryLanguage: "en" });
+        } else {
+          resolve(data || { primaryLanguage: "en" });
+        }
+      });
     });
     const userLang = primaryLanguage || "en";
 
@@ -62,12 +78,16 @@ async function initializeI18n() {
     i18n = {
       getMessage: (key) => {
         if (combinedData[key]) return combinedData[key].message;
+        if (!isContextValid()) return key;
         return chrome.i18n.getMessage(key) || key;
       },
     };
   } catch (e) {
-    console.error("[Omni AI] Localization initialization failed:", e);
-    // Fallback stays as chrome.i18n
+    if (e.message?.includes("Extension context invalidated")) {
+      console.warn("[Omni AI] Context invalidated during i18n init");
+    } else {
+      console.error("[Omni AI] Localization initialization failed:", e);
+    }
   }
 }
 
@@ -432,19 +452,24 @@ function init() {
  * Initialize Theme logic
  */
 async function initTheme() {
+  if (!isContextValid()) return;
   const THEME_KEY = "omni_ai_theme";
-  const { [THEME_KEY]: themePreference = "system" } =
-    await chrome.storage.sync.get(THEME_KEY);
+  try {
+    const { [THEME_KEY]: themePreference = "system" } =
+      await chrome.storage.sync.get(THEME_KEY);
 
-  let effectiveTheme = themePreference;
-  if (themePreference === "system") {
-    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    let effectiveTheme = themePreference;
+    if (themePreference === "system") {
+      effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    const isLight = effectiveTheme === "light";
+    document.documentElement.classList.toggle("omni-ai-light-mode", isLight);
+  } catch (e) {
+    console.warn("[Omni AI] Failed to initialize theme:", e);
   }
-
-  const isLight = effectiveTheme === "light";
-  document.documentElement.classList.toggle("omni-ai-light-mode", isLight);
 }
 
 /**
@@ -627,6 +652,7 @@ function presentQuickActionButton(
   initialText = null,
   mousePosition = null,
 ) {
+  if (!isContextValid()) return;
   if (quickActionBtn) hideQuickActionButton();
 
   // If using mouse position, we don't need rect validation
@@ -677,8 +703,11 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
 
   // Theme check
   const THEME_KEY = "omni_ai_theme";
-  const { [THEME_KEY]: themePreference = "system" } =
-    await chrome.storage.sync.get(THEME_KEY);
+  let themePreference = "system";
+  if (isContextValid()) {
+    const data = await chrome.storage.sync.get(THEME_KEY).catch(() => ({}));
+    themePreference = data[THEME_KEY] || "system";
+  }
   let effectiveTheme = themePreference;
   if (themePreference === "system") {
     effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -774,15 +803,24 @@ async function showQuickActionMenu(
 
   // Fetch settings
   const THEME_KEY = "omni_ai_theme";
-  const {
-    [THEME_KEY]: currentTheme = "system",
-    primaryLanguage = "vi",
-    defaultLanguage = "en",
-  } = await chrome.storage.sync.get([
-    "primaryLanguage",
-    "defaultLanguage",
-    THEME_KEY,
-  ]);
+  let currentTheme = "system";
+  let primaryLanguage = "vi";
+  let defaultLanguage = "en";
+
+  if (isContextValid()) {
+    try {
+      const data = await chrome.storage.sync.get([
+        "primaryLanguage",
+        "defaultLanguage",
+        THEME_KEY,
+      ]);
+      currentTheme = data[THEME_KEY] || "system";
+      primaryLanguage = data.primaryLanguage || "vi";
+      defaultLanguage = data.defaultLanguage || "en";
+    } catch (e) {
+      console.warn("[Omni AI] Failed to fetch settings, using defaults");
+    }
+  }
 
   const languageFlags = {
     en: "🇬🇧",
@@ -1284,6 +1322,10 @@ function hideOverlay() {
 
 function sendMessageToBackground(message) {
   return new Promise((resolve, reject) => {
+    if (!isContextValid()) {
+      reject(new Error("Extension context invalidated."));
+      return;
+    }
     chrome.runtime.sendMessage(message, (response) => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message));
@@ -1584,8 +1626,11 @@ async function showQuickAskOverlay(
 ) {
   if (!overlay) {
     const THEME_KEY = "omni_ai_theme";
-    const { [THEME_KEY]: currentTheme = "system" } =
-      await chrome.storage.sync.get(THEME_KEY);
+    let currentTheme = "system";
+    if (isContextValid()) {
+      const data = await chrome.storage.sync.get(THEME_KEY).catch(() => ({}));
+      currentTheme = data[THEME_KEY] || "system";
+    }
     overlay = createOverlayElement(currentTheme);
     document.body.appendChild(overlay);
   }
