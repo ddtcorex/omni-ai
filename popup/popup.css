@@ -143,6 +143,10 @@ body {
   border-color: var(--border-color);
 }
 
+#newChatBtn {
+  margin-right: var(--spacing-sm);
+}
+
 /* User Auth Section - Compact */
 .user-section {
   position: relative;
