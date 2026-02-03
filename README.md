@@ -1,12 +1,12 @@
 # Omni AI
 
-> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, Groq (Llama 3/GPT-OSS), OpenAI (GPT-4o), and Ollama (Local AI).
+> 🧠 Your All-in-One AI Browser Companion. Supercharge your Chrome experience with the power of Google Gemini, Groq (Llama 3/DeepSeek), OpenAI (GPT-4o), and Ollama (Local AI).
 
 [![Version](https://img.shields.io/badge/version-1.9.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
-Omni AI is a modern, lightweight Chrome extension that integrates advanced AI models directly into your browsing experience. Whether you're drafting an email, writing code, or just browsing, Omni AI helps you improve your writing, explain complex topics, and translate text instantly.
+Omni AI is a modern, lightweight Chrome extension that integrates advanced AI models directly into your workflow. Whether you're **drafting emails, debugging code, reading foreign articles, or researching complex topics**, Omni AI helps you write better, read faster, and understand everything instantly.
 
 ---
 
@@ -23,6 +23,7 @@ Highlight any text on any website to see the **✨ Omni AI Floating Button**. On
 - **Ask AI** - Direct chat contextually based on your selection.
 - **Persistent Chat** - Popup chat retains history for multi-turn conversations.
 - **Context Awareness** - AI remembers context from previous messages in the popup.
+- **Page Context** - Smarter answers with awareness of the current page title and URL.
 
 ### 📋 Writing Enhancements
 
