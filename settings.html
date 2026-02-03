@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Omni AI - Settings</title>
+    <title>__MSG_extName__ - __MSG_settings_title__</title>
     <link rel="stylesheet" href="settings.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,10 +19,10 @@
       <header class="header">
         <div class="header-content">
           <div class="logo">
-            <img src="assets/icons/logo.svg" alt="Omni AI" class="logo-icon" />
+            <img src="assets/icons/logo.svg" alt="__MSG_extName__" class="logo-icon" />
             <div class="logo-text">
               <div class="title-row">
-                <h1>Omni AI</h1>
+                <h1>__MSG_extName__</h1>
                 <span class="version">v1.8.2</span>
               </div>
               <p class="tagline">__MSG_settings_tagline__</p>
@@ -71,9 +71,9 @@
               id="googleKeyGroup"
               data-provider="google"
             >
-              <label class="setting-label" for="apiKey">
+              <label class="setting-label" for="geminiApiKey">
                 <div class="label-header">
-                  <span class="label-text">__MSG_settings_apiKey__</span>
+                  <span class="label-text">__MSG_settings_geminiApiKey__</span>
                   <div class="tooltip-trigger">
                     <svg
                       width="16"
@@ -95,7 +95,7 @@
                           <a
                             href="https://aistudio.google.com/app/apikey"
                             target="_blank"
-                            >Google AI Studio</a
+                            >__MSG_settings_googleAiStudio__</a
                           >
                         </li>
                         <li>__MSG_settings_tooltip_gemini_s2__</li>
@@ -104,14 +104,14 @@
                     </div>
                   </div>
                 </div>
-                <span class="label-hint">__MSG_settings_apiKeyHint__</span>
+                <span class="label-hint">__MSG_settings_geminiApiKeyHint__</span>
               </label>
               <div class="input-group">
                 <input
                   type="password"
-                  id="apiKey"
+                  id="geminiApiKey"
                   class="setting-input"
-                  placeholder="__MSG_settings_apiKeyPlaceholder__"
+                  placeholder="__MSG_settings_geminiApiKeyPlaceholder__"
                 />
                 <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
                   <svg
@@ -161,7 +161,7 @@
                           <a
                             href="https://console.groq.com/keys"
                             target="_blank"
-                            >Groq Console</a
+                            >__MSG_settings_groqConsole__</a
                           >
                         </li>
                         <li>__MSG_settings_tooltip_groq_s2__</li>
@@ -212,7 +212,7 @@
                           <a
                             href="https://platform.openai.com/api-keys"
                             target="_blank"
-                            >OpenAI Platform</a
+                            >__MSG_settings_openaiPlatform__</a
                           >
                         </li>
                         <li>__MSG_settings_tooltip_openai_s2__</li>

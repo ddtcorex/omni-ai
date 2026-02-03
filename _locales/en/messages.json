@@ -115,13 +115,13 @@
     "message": "Settings",
     "description": "Settings page title"
   },
-  "settings_apiKey": {
-    "message": "API Key",
-    "description": "API key label"
+  "settings_geminiApiKey": {
+    "message": "Gemini API Key",
+    "description": "Gemini API key label"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Get your API key from Google AI Studio",
-    "description": "API key hint"
+    "description": "Gemini API key hint"
   },
   "settings_model": {
     "message": "AI Model",
@@ -179,9 +179,9 @@
     "message": "API key not configured. Please add your API Key in Settings.",
     "description": "No API key error"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "Enter your API key...",
-    "description": "API key input placeholder"
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Enter your Gemini API key...",
+    "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
     "message": "Error: ",
@@ -426,7 +426,11 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Go to Google AI Studio"
+    "message": "Go to"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Click Create API Key"
@@ -435,7 +439,11 @@
     "message": "Copy key to clipboard"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Go to Groq Console"
+    "message": "Go to"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Sign up or Log in"
@@ -444,7 +452,11 @@
     "message": "Create new API Key"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Go to OpenAI Platform"
+    "message": "Go to"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Sign up or Log in"
@@ -509,5 +521,9 @@
   "settings_customModelPlaceholder": {
     "message": "e.g. your-model-id",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "Include this page's content as context for AI responses",
+    "description": "Checkbox label to include page content in chat context"
   }
 }

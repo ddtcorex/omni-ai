@@ -54,7 +54,7 @@ describe("AI Service", () => {
 
   it("generateContent uses Gemini by default and calls provider", async () => {
     // Setup storage
-    store["apiKey"] = "gemini-key";
+    store["geminiApiKey"] = "gemini-key";
     store["apiModel"] = "gemini-1.5-flash";
 
     mockProvider.generateContent.mockResolvedValue("AI Response");
@@ -99,7 +99,7 @@ describe("AI Service", () => {
   });
 
   it("improveText generates correct prompt", async () => {
-    store["apiKey"] = "key";
+    store["geminiApiKey"] = "key";
     mockProvider.generateContent.mockResolvedValue("Improved Text");
 
     const result = await improveText("Bad text", "grammar", "email");
