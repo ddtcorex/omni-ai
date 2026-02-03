@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-02-03
+
+### ✨ Added
+
+- **Smart Translation**: Introduced intelligent "Smart Translation" which automatically detects the input language and translates it to your Primary Language (or English if already in Primary), streamlining the user flow.
+- **Result Caching**: Implemented in-memory caching for Smart Translations, providing instant results for previously translated text within the same session.
+- **Page Context**: Quick Ask now includes page context (Title, URL) for better AI awareness.
+- **Gemini 2.x Models**: Updated Google AI provider to support the latest `Gemini 2.0 Flash`, `Gemini 2.5 Flash`, and `Gemini 2.5 Flash Lite` models.
+
+### 🛠 Improvements
+
+- **Formatting Preservation**: Strictly preserves original text formatting (paragraphs, lists, spacing) in translations and grammar fixes.
+- **Loading State**: Updated loading labels to be more generic ("Smart Translation...") to avoid confusion before language detection is complete.
+- **Localization**: Added full localization for new features and improved "To [Language]" menu labels.
+- **Formatted Diff**: Improved the "diff" view for grammar fixes to correctly handle and display line breaks.
+
+### 🐛 Bug Fixes
+
+- **Input Replacement**: Fixed a critical bug where Quick Actions would append text instead of replacing it when no text was selected in standard input fields.
+- **Dead Code Removal**: Cleaned up unused translation keys and legacy parameter logic in the UI code.
+
 ## [1.8.2] - 2026-01-29
 
 ### 🛠 Improvements
