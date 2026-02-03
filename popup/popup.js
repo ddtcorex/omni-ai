@@ -12,6 +12,7 @@ const elements = {
   quickAskInput: document.getElementById("quickAskInput"),
   askBtn: document.getElementById("askBtn"),
   settingsBtn: document.getElementById("settingsBtn"),
+  includePageContext: document.getElementById("includePageContext"),
 
   // Status
   status: document.getElementById("status"),
@@ -371,29 +372,66 @@ async function handleQuickAsk() {
 
   setProcessing(true);
   
-  // 1. Add User Message
+  const includeContext = elements.includePageContext?.checked || false;
+  let pageContent = null;
+  
+  if (includeContext) {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab?.id) {
+        const response = await chrome.tabs.sendMessage(tab.id, { type: "GET_PAGE_CONTENT" });
+        if (response?.success && response.content) {
+          pageContent = {
+            text: response.content,
+            title: response.title,
+            url: response.url
+          };
+        }
+      }
+    } catch (e) {
+      console.warn("[Omni AI] Failed to get page content:", e);
+    }
+  }
+  
   chatHistory.push({ role: "user", content: query });
   appendBubble("user", query);
-  saveChatHistory(); // async save
+  
+  if (pageContent) {
+    chatHistory.push({
+      role: "system",
+      content: `Page context from "${pageContent.title}":\n${pageContent.text}`,
+      hidden: true,
+      pageTitle: pageContent.title,
+      pageUrl: pageContent.url
+    });
+  }
+  
+  saveChatHistory();
 
-  // Clear input
   elements.quickAskInput.value = "";
-  elements.quickAskInput.style.height = 'auto'; // reset height
+  elements.quickAskInput.style.height = 'auto';
 
-  // 2. Show Typing
   showTypingIndicator();
 
-  // 3. Build Context (Previous messages)
-  // Limit to last 5 exchanges to avoid token limits
-  const contextMsgs = chatHistory.slice(0, -1).slice(-10); 
-  const contextString = contextMsgs.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
+  const contextParts = [];
+  
+  if (pageContent) {
+    contextParts.push(`Current page content from "${pageContent.title}":\n${pageContent.text}`);
+  }
+  
+  const contextMsgs = chatHistory.filter(m => m.role !== 'system').slice(0, -1).slice(-10);
+  contextMsgs.forEach(m => {
+    contextParts.push(`${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`);
+  });
+  
+  const contextString = contextParts.join('\n\n');
 
   try {
     const response = await chrome.runtime.sendMessage({
       type: "QUICK_ASK",
       payload: { 
         query,
-        context: contextString // Pass history as context
+        context: contextString
       },
     });
 

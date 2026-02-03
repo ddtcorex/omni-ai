@@ -102,6 +102,7 @@ let isOverlayVisible = false;
 let lastSelection = null;
 let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
+const resultCache = new Map();
 
 // Store state for navigation
 let lastMenuContext = null;
@@ -288,8 +289,16 @@ function getEditableHost(el) {
 function computeDiff(original, corrected) {
   if (!original || !corrected) return corrected || "";
 
-  const words1 = original.trim().split(/\s+/);
-  const words2 = corrected.trim().split(/\s+/);
+  // Tokenize with newline preservation
+  const tokenize = (str) =>
+    str
+      .replace(/\n/g, " __NEWLINE__ ")
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
+
+  const words1 = tokenize(original);
+  const words2 = tokenize(corrected);
 
   // Check for distinct word count difference (heuristic for major change)
   if (
@@ -373,7 +382,7 @@ function computeDiff(original, corrected) {
       }
     }
   }
-  return html.trim();
+  return html.replace(/__NEWLINE__\s?/g, "\n").trim();
 }
 
 function updateSmartFixCard(
@@ -403,7 +412,7 @@ function updateSmartFixCard(
   card.innerHTML = `
      <div style="flex:1;">
         <div class="omni-ai-suggestion-label">${i18n.getMessage("overlay_suggested_fix")}</div>
-        <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4;">${diffHtml}</div>
+        <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; white-space: pre-wrap;">${diffHtml}</div>
         <div style="display:flex; gap:8px; margin-top:8px;">
             <button class="omni-ai-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_accept")}</button>
             <button class="omni-ai-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_dismiss")}</button>
@@ -427,8 +436,8 @@ function updateSmartFixCard(
            ${ICONS.magic}
         </div>
         <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label">Fix Grammar</div>
-            <div class="omni-ai-suggestion-content">Corrects spelling and grammar</div>
+            <div class="omni-ai-suggestion-label">${i18n.getMessage("action_grammar")}</div>
+            <div class="omni-ai-suggestion-content">${i18n.getMessage("desc_grammar")}</div>
         </div>
     `;
     card.addEventListener(
@@ -439,6 +448,54 @@ function updateSmartFixCard(
   });
 
   // Re-position after content update to prevent cutoff
+  setTimeout(() => positionOverlay(currentAnchorRect), 10);
+}
+
+function updateTranslateCard(card, result, text, isInput, label = null) {
+  card.innerHTML = `
+      <div class="omni-ai-suggestion-info">
+          <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>${label ? i18n.getMessage("overlay_translated_to") + " " + label : i18n.getMessage("overlay_smart_translation")}</span>
+            <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+          <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--ai-text-primary); font-weight:500; white-space: pre-wrap;">${result}</div>
+      </div>
+  `;
+
+  // Bind Copy
+  const copyBtn = card.querySelector("#omniAiCopyTrans");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(result);
+      // Visual feedback
+      copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--ai-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      setTimeout(() => {
+        copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+      }, 1500);
+    });
+  }
+
+  // Clicking the card opens full view
+  card.style.cursor = "pointer";
+  card.addEventListener("click", (e) => {
+    // Only if not clicking copy btn
+    if (!e.target.closest("#omniAiCopyTrans")) {
+      showResultOverlay(
+        {
+          action: "translate_primary",
+          result: result,
+          originalText: text,
+          preset: "chat",
+        },
+        isInput,
+      );
+    }
+  });
+
+  // Ensure position is updated after content change
   setTimeout(() => positionOverlay(currentAnchorRect), 10);
 }
 
@@ -541,6 +598,17 @@ function setupMessageListener() {
         sendResponse({ success: true, active: true });
         break;
 
+      case "GET_PAGE_CONTENT": {
+        const content = extractPageContent();
+        sendResponse({
+          success: true,
+          content: content.text,
+          title: content.title,
+          url: content.url,
+        });
+        break;
+      }
+
       default:
         console.warn("[Omni AI] Unknown message type:", message.type);
         sendResponse({ success: false, error: "Unknown message type" });
@@ -586,6 +654,10 @@ function setupSelectionListener() {
           } else {
             lastRange = null;
           }
+        } else {
+          // Standard inputs don't use window.getSelection() ranges effectively in the same way for this tracking,
+          // so clear it to prevent stale ranges from blocking fullText detection.
+          lastRange = null;
         }
 
         const rect = context.getRect(activeElement);
@@ -642,10 +714,6 @@ function setupSelectionListener() {
 // Quick Action Button
 // ============================================
 
-// ============================================
-// Quick Action Button
-// ============================================
-
 function presentQuickActionButton(
   rect,
   inputElement = null,
@@ -685,15 +753,6 @@ function presentQuickActionButton(
 
   createQuickBtn(rect, useInputPositioning, mousePosition);
   setupQuickBtnEvents(initialText, inputElement);
-}
-
-function showQuickActionButton(selection, inputElement = null) {
-  // Legacy wrapper if needed, or we just replace usages
-  // But we refactored setupSelectionListener to not call this anymore.
-}
-
-function showQuickActionButtonForInput(inputElement) {
-  // Legacy wrapper
 }
 
 async function createQuickBtn(rect, isInput, mousePosition = null) {
@@ -837,8 +896,12 @@ async function showQuickActionMenu(
 
   const pFlag = languageFlags[primaryLanguage] || "🌐";
   const dFlag = languageFlags[defaultLanguage] || "🏳️";
-  const pCode = primaryLanguage.toUpperCase();
-  const dCode = defaultLanguage.toUpperCase();
+
+  // Use localized language names
+  const pCode =
+    i18n.getMessage(`lang_${primaryLanguage}`) || primaryLanguage.toUpperCase();
+  const dCode =
+    i18n.getMessage(`lang_${defaultLanguage}`) || defaultLanguage.toUpperCase();
 
   // Create Overlay
   overlay = createOverlayElement(currentTheme);
@@ -942,7 +1005,6 @@ async function showQuickActionMenu(
   document.body.appendChild(overlay);
 
   // Position Logic
-  // Position Logic
   positionOverlay(currentAnchorRect, lockedPosition);
 
   // Bind Events
@@ -980,75 +1042,49 @@ async function showQuickActionMenu(
       })
       .catch(() => {}); // silent fail
   } else {
-    // Non-Input: Trigger Translation
-    sendMessageToBackground({
-      type: "QUICK_ACTION",
-      payload: { action: "translate_primary", text, preset: "chat" },
-    })
-      .then((response) => {
+    // Non-Input: Trigger Translation (Smart)
+    const smartAction = "smart_translate";
+    const cacheKey = `${smartAction}|${text.trim()}|chat`;
+
+    if (resultCache.has(cacheKey)) {
+      setTimeout(() => {
         const card = document.getElementById("omniAiTranslateCard");
-        if (!card) return;
-
-        if (response.success) {
-          card.innerHTML = `
-              <div class="omni-ai-suggestion-info">
-                  <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>${i18n.getMessage("overlay_translated_to")} ${pCode}:</span>
-                    <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </button>
-                  </div>
-                  <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--ai-text-primary); font-weight:500;">
-                     ${response.data.response}
-                  </div>
-              </div>
-          `;
-
-          // Bind Copy
-          const copyBtn = card.querySelector("#omniAiCopyTrans");
-          if (copyBtn) {
-            copyBtn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              navigator.clipboard.writeText(response.data.response);
-              // Visual feedback
-              copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--ai-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-              setTimeout(() => {
-                copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-              }, 1500);
-            });
-          }
-
-          // Clicking the card opens full view
-          card.style.cursor = "pointer";
-          card.addEventListener("click", (e) => {
-            // Only if not clicking copy btn
-            if (!e.target.closest("#omniAiCopyTrans")) {
-              showResultOverlay(
-                {
-                  action: "translate_primary",
-                  result: response.data.response,
-                  originalText: text,
-                  preset: "chat",
-                },
-                isInput,
-              );
-            }
-          });
-        } else {
-          // Error State
-          card.innerHTML = `
-              <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
-              <div class="omni-ai-suggestion-info">
-                  <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
-                  <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_translation_failed")}</div>
-              </div>
-           `;
-        }
-
-        // Ensure position is updated after content change
-        setTimeout(() => positionOverlay(currentAnchorRect), 10);
+        if (card)
+          updateTranslateCard(
+            card,
+            resultCache.get(cacheKey),
+            text,
+            isInput,
+            isInput,
+          );
+      }, 100);
+    } else {
+      sendMessageToBackground({
+        type: "QUICK_ACTION",
+        payload: { action: smartAction, text, preset: "chat" },
       })
-      .catch(() => {});
+        .then((response) => {
+          const card = document.getElementById("omniAiTranslateCard");
+          if (!card) return;
+
+          if (response.success) {
+            resultCache.set(cacheKey, response.data.response);
+            updateTranslateCard(card, response.data.response, text, isInput);
+          } else {
+            // Error State logic (moved to helper or kept here)
+            card.innerHTML = `
+               <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
+               <div class="omni-ai-suggestion-info">
+                   <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
+                   <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_translation_failed")}</div>
+               </div>
+            `;
+          }
+          // Ensure position is updated after content change
+          setTimeout(() => positionOverlay(currentAnchorRect), 10);
+        })
+        .catch(() => {});
+    }
   }
 
   isOverlayVisible = true;
@@ -1113,12 +1149,27 @@ async function handleAction(action, text, isInput) {
     }
   }
 
+  const cacheKey = `${action}|${text.trim()}|${preset}`;
+  if (resultCache.has(cacheKey)) {
+    showResultOverlay(
+      {
+        action,
+        result: resultCache.get(cacheKey),
+        originalText: text,
+        preset,
+      },
+      isInput,
+    );
+    return;
+  }
+
   sendMessageToBackground({
     type: "QUICK_ACTION",
     payload: { action, text, preset },
   })
     .then((response) => {
       if (response.success) {
+        resultCache.set(cacheKey, response.data.response);
         showResultOverlay(
           {
             action,
@@ -1350,6 +1401,59 @@ function getSelectedText() {
   const context = getContext(activeElement);
   const result = context.getText(activeElement);
   return result.text;
+}
+
+function extractPageContent() {
+  try {
+    const bodyClone = document.body.cloneNode(true);
+    const noiseSelectors = [
+      "script",
+      "style",
+      "nav",
+      "footer",
+      "header",
+      "aside",
+      '[role="navigation"]',
+      '[role="banner"]',
+      '[role="complementary"]',
+      ".advertisement",
+      ".ads",
+      ".sidebar",
+      ".comments",
+      "#comments",
+      ".social-share",
+      ".cookie-banner",
+      ".newsletter-signup",
+    ];
+
+    noiseSelectors.forEach((selector) => {
+      bodyClone.querySelectorAll(selector).forEach((el) => el.remove());
+    });
+
+    let extractedText = bodyClone.innerText || "";
+    extractedText = extractedText
+      .replace(/\s+/g, " ")
+      .replace(/\n\s*\n/g, "\n")
+      .trim();
+
+    const MAX_CONTENT_LENGTH = 4000;
+    if (extractedText.length > MAX_CONTENT_LENGTH) {
+      extractedText = extractedText.substring(0, MAX_CONTENT_LENGTH) + "...";
+    }
+
+    return {
+      text: extractedText,
+      title: document.title || "",
+      url: window.location.href || "",
+    };
+  } catch (error) {
+    console.error("[Omni AI] Failed to extract page content:", error);
+    return {
+      text: "",
+      title: document.title || "",
+      url: window.location.href || "",
+    };
+  }
 }
 
 function showLoadingInOverlay() {

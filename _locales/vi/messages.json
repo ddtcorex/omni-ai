@@ -51,6 +51,10 @@
     "message": "Sửa ngữ pháp",
     "description": "Grammar action"
   },
+  "desc_grammar": {
+    "message": "Sửa chính tả và ngữ pháp",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "Rõ ràng hơn",
     "description": "Clarity action"
@@ -115,13 +119,13 @@
     "message": "Cài đặt",
     "description": "Settings page title"
   },
-  "settings_apiKey": {
-    "message": "khóa API",
-    "description": "API key label"
+  "settings_geminiApiKey": {
+    "message": "Khóa API Gemini",
+    "description": "Gemini API key label"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Lấy khóa API từ Google AI Studio",
-    "description": "API key hint"
+    "description": "Gemini API key hint"
   },
   "settings_model": {
     "message": "Mô hình AI",
@@ -179,9 +183,9 @@
     "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API trong Cài đặt.",
     "description": "No API key error"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "Nhập khóa API của bạn...",
-    "description": "API key input placeholder"
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Nhập khóa API Gemini của bạn...",
+    "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
     "message": "Lỗi: ",
@@ -244,7 +248,7 @@
     "description": "No selection error"
   },
   "settings_tagline": {
-    "message": "Trợ lý viết lách AI của bạn",
+    "message": "Trợ lý AI của bạn",
     "description": "App tagline"
   },
   "settings_theme": {
@@ -426,7 +430,11 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Truy cập Google AI Studio"
+    "message": "Truy cập"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Nhấp vào Create API Key"
@@ -435,7 +443,11 @@
     "message": "Sao chép khóa vào bộ nhớ tạm"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Truy cập Groq Console"
+    "message": "Truy cập"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Đăng ký hoặc Đăng nhập"
@@ -444,7 +456,11 @@
     "message": "Tạo Khóa API mới"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Truy cập OpenAI Platform"
+    "message": "Truy cập"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Đăng ký hoặc Đăng nhập"
@@ -482,6 +498,10 @@
     "message": "Dịch sang",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "Dịch Thông Minh",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "Lỗi",
     "description": "Error label"
@@ -509,5 +529,9 @@
   "settings_customModelPlaceholder": {
     "message": "vd: mã-mô-hình-của-bạn",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "Sử dụng nội dung trang này làm ngữ cảnh",
+    "description": "Checkbox label to include page content"
   }
 }

@@ -51,6 +51,10 @@
     "message": "Grammatik prüfen",
     "description": "Grammatik-Aktion"
   },
+  "desc_grammar": {
+    "message": "Korrigiert Rechtschreibung und Grammatik",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "Klarheit verbessern",
     "description": "Klarheits-Aktion"
@@ -115,11 +119,11 @@
     "message": "Einstellungen",
     "description": "Titel der Einstellungsseite"
   },
-  "settings_apiKey": {
+  "settings_geminiApiKey": {
     "message": "Gemini API-Schlüssel",
     "description": "API-Schlüssel-Label"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Holen Sie sich Ihren API-Schlüssel im Google AI Studio",
     "description": "API-Schlüssel-Hinweis"
   },
@@ -179,8 +183,8 @@
     "message": "API-Schlüssel nicht konfiguriert. Bitte fügen Sie Ihren Schlüssel in den Einstellungen hinzu.",
     "description": "Fehler: Kein API-Schlüssel"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "Geben Sie Ihren API-Schlüssel ein...",
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Geben Sie Ihren Gemini API-Schlüssel ein...",
     "description": "API-Schlüssel Platzhalter"
   },
   "error_prefix": {
@@ -244,7 +248,7 @@
     "description": "Fehler: Keine Auswahl"
   },
   "settings_tagline": {
-    "message": "Ihr KI-Schreibassistent",
+    "message": "Ihr KI-Assistent",
     "description": "Slogan der App"
   },
   "settings_theme": {
@@ -426,7 +430,11 @@
     "description": "Speicherfehler"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Google AI Studio öffnen"
+    "message": "Gehe zu"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Auf 'Create API Key' klicken"
@@ -435,7 +443,11 @@
     "message": "Schlüssel in die Zwischenablage kopieren"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Groq Console öffnen"
+    "message": "Gehe zu"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Registrieren oder Anmelden"
@@ -444,7 +456,11 @@
     "message": "Neuen API-Schlüssel erstellen"
   },
   "settings_tooltip_openai_s1": {
-    "message": "OpenAI Platform öffnen"
+    "message": "Gehe zu"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Registrieren oder Anmelden"
@@ -482,6 +498,10 @@
     "message": "Übersetzt nach",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "Intelligente Übersetzung",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "Fehler",
     "description": "Error label"
@@ -509,5 +529,9 @@
   "settings_customModelPlaceholder": {
     "message": "z. B. Ihre-Modell-ID",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "Inhalt dieser Seite als Kontext einbeziehen",
+    "description": "Checkbox label to include page content"
   }
 }

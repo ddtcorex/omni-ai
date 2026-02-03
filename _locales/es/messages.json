@@ -51,6 +51,10 @@
     "message": "Corregir Gramática",
     "description": "Acción de gramática"
   },
+  "desc_grammar": {
+    "message": "Corrige ortografía y gramática",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "Mejorar Claridad",
     "description": "Acción de claridad"
@@ -115,11 +119,11 @@
     "message": "Configuración",
     "description": "Título de la página de ajustes"
   },
-  "settings_apiKey": {
+  "settings_geminiApiKey": {
     "message": "Clave API de Gemini",
     "description": "Etiqueta de la clave API"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Obtén tu clave API en Google AI Studio",
     "description": "Sugerencia para la clave API"
   },
@@ -179,8 +183,8 @@
     "message": "Clave API no configurada. Por favor, añade tu clave de Gemini en Configuración.",
     "description": "Error de falta de clave API"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "Ingrese su clave API...",
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Introduce tu clave API de Gemini...",
     "description": "Marcador de posición para la clave API"
   },
   "error_prefix": {
@@ -244,7 +248,7 @@
     "description": "Error de falta de selección"
   },
   "settings_tagline": {
-    "message": "Tu asistente de escritura impulsado por IA",
+    "message": "Tu asistente de IA",
     "description": "Eslogan de la aplicación"
   },
   "settings_theme": {
@@ -426,7 +430,11 @@
     "description": "Error al guardar"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Ve a Google AI Studio"
+    "message": "Ve a"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Haz clic en 'Create API Key'"
@@ -435,7 +443,11 @@
     "message": "Copia la clave al portapapeles"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Ve a la consola de Groq"
+    "message": "Ve a"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Regístrate o inicia sesión"
@@ -444,7 +456,11 @@
     "message": "Crea una nueva clave API"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Ve a la plataforma de OpenAI"
+    "message": "Ve a"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Regístrate o inicia sesión"
@@ -482,6 +498,10 @@
     "message": "Traducido a",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "Traducción Inteligente",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "Error",
     "description": "Error label"
@@ -509,5 +529,9 @@
   "settings_customModelPlaceholder": {
     "message": "p. ej. su-id-de-modelo",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "Incluir el contenido de esta página como contexto",
+    "description": "Checkbox label to include page content"
   }
 }

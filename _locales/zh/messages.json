@@ -51,6 +51,10 @@
     "message": "语法修正",
     "description": "语法操作"
   },
+  "desc_grammar": {
+    "message": "纠正拼写和语法",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "提高清晰度",
     "description": "清晰度操作"
@@ -115,11 +119,11 @@
     "message": "设置",
     "description": "设置页面标题"
   },
-  "settings_apiKey": {
+  "settings_geminiApiKey": {
     "message": "Gemini API 密钥",
     "description": "API 密钥标签"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "从 Google AI Studio 获取您的 API 密钥",
     "description": "API 密钥提示"
   },
@@ -179,8 +183,8 @@
     "message": "未配置 API 密钥。请在设置中添加您的 Gemini API 密钥。",
     "description": "未配置 API 密钥错误"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "输入您的 API 密钥...",
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "输入您的 Gemini API 密钥...",
     "description": "API 密钥占位符"
   },
   "error_prefix": {
@@ -244,7 +248,7 @@
     "description": "未选择文本错误"
   },
   "settings_tagline": {
-    "message": "您的 AI 写作助手",
+    "message": "您的 AI 助手",
     "description": "应用标语"
   },
   "settings_theme": {
@@ -426,7 +430,11 @@
     "description": "保存失败错误"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "前往 Google AI Studio"
+    "message": "前往"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "点击 'Create API Key'"
@@ -435,7 +443,11 @@
     "message": "将密钥复制到剪贴板"
   },
   "settings_tooltip_groq_s1": {
-    "message": "前往 Groq 控制台"
+    "message": "前往"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "注册或登录账户"
@@ -444,7 +456,11 @@
     "message": "创建新的 API 密钥"
   },
   "settings_tooltip_openai_s1": {
-    "message": "前往 OpenAI 平台"
+    "message": "前往"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "注册或登录账户"
@@ -482,6 +498,10 @@
     "message": "翻译成",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "智能翻译",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "错误",
     "description": "Error label"
@@ -509,5 +529,9 @@
   "settings_customModelPlaceholder": {
     "message": "例如: 模型ID",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "将此页面内容作为上下文",
+    "description": "Checkbox label to include page content"
   }
 }

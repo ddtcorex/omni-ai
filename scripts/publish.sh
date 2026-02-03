@@ -33,8 +33,16 @@ python3 -c "
 import json
 with open('manifest.json', 'r') as f:
     data = json.load(f)
+
+# Remove key for production
 if 'key' in data:
     del data['key']
+
+# Replace client_id for production
+PROD_CLIENT_ID = '923297272333-rmi0g307hkonmn1b9tro6dn0dtiqa0p5.apps.googleusercontent.com'
+if 'oauth2' in data and 'client_id' in data['oauth2']:
+    data['oauth2']['client_id'] = PROD_CLIENT_ID
+
 with open('manifest.json', 'w') as f:
     json.dump(data, f, indent=2)
 "

@@ -8,6 +8,7 @@ import {
   generateReply,
   emojifyText,
   generateContent,
+  smartTranslate,
 } from "../lib/ai-service.js";
 
 /**
@@ -96,7 +97,7 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
  */
 async function initializeSettings() {
   const defaults = {
-    apiKey: "",
+    geminiApiKey: "",
     currentPreset: "professional",
     customPrompts: [],
     // history managed by lib/history.js
@@ -501,6 +502,18 @@ async function handleQuickAction(payload) {
       );
       break;
     }
+    case "smart_translate": {
+      const { primaryLanguage } =
+        await chrome.storage.local.get("primaryLanguage");
+      const { defaultLanguage } =
+        await chrome.storage.local.get("defaultLanguage");
+      result = await smartTranslate(
+        selectedText,
+        primaryLanguage || "vi",
+        defaultLanguage || "en",
+      );
+      break;
+    }
     case "translate_primary": {
       const { primaryLanguage } =
         await chrome.storage.local.get("primaryLanguage");
@@ -671,6 +684,6 @@ async function processSelectedText(tabId, text, action, isInput = false) {
  * Get API key from storage
  */
 async function getApiKey() {
-  const result = await chrome.storage.local.get("apiKey");
-  return result.apiKey || "";
+  const result = await chrome.storage.local.get("geminiApiKey");
+  return result.geminiApiKey || "";
 }
