@@ -59,19 +59,19 @@ describe("AI Service", () => {
   it("generateContent uses Gemini by default and calls provider", async () => {
     // Setup storage
     store["geminiApiKey"] = "gemini-key";
-    store["apiModel"] = "gemini-1.5-flash";
+    store["apiModel"] = "gemini-2.0-flash";
 
     mockProvider.generateContent.mockResolvedValue("AI Response");
 
     const result = await generateContent("Test Prompt");
 
     expect(result).toBe("AI Response");
-    expect(Providers.getProvider).toHaveBeenCalledWith("gemini-1.5-flash");
+    expect(Providers.getProvider).toHaveBeenCalledWith("gemini-2.0-flash");
     expect(mockProvider.generateContent).toHaveBeenCalledWith(
       "Test Prompt",
       expect.objectContaining({
         apiKey: "gemini-key",
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
       }),
     );
   });
@@ -117,7 +117,7 @@ describe("AI Service", () => {
   it("throws error if API key is missing", async () => {
     // No keys in store
     await expect(generateContent("Test")).rejects.toThrow(
-      "API key not configured for gemini-1.5-flash",
+      "API key not configured for gemini-2.0-flash",
     );
   });
 

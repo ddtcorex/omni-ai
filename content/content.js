@@ -451,11 +451,11 @@ function updateSmartFixCard(
   setTimeout(() => positionOverlay(currentAnchorRect), 10);
 }
 
-function updateTranslateCard(card, result, text, isInput, label = null) {
+function updateTranslateCard(card, result, text, isInput) {
   card.innerHTML = `
       <div class="omni-ai-suggestion-info">
           <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>${label ? i18n.getMessage("overlay_translated_to") + " " + label : i18n.getMessage("overlay_smart_translation")}</span>
+            <span>${i18n.getMessage("overlay_smart_translation")}</span>
             <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
@@ -944,7 +944,7 @@ async function showQuickActionMenu(
            <div class="omni-ai-spinner" style="width:14px;height:14px;border-width:2px;"></div>
         </div>
         <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_translated_to")} ${pCode}...</div>
+            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_smart_translation")}...</div>
             <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
         </div>
       </div>
@@ -1050,13 +1050,7 @@ async function showQuickActionMenu(
       setTimeout(() => {
         const card = document.getElementById("omniAiTranslateCard");
         if (card)
-          updateTranslateCard(
-            card,
-            resultCache.get(cacheKey),
-            text,
-            isInput,
-            isInput,
-          );
+          updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
       }, 100);
     } else {
       sendMessageToBackground({
