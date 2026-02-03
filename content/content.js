@@ -541,6 +541,17 @@ function setupMessageListener() {
         sendResponse({ success: true, active: true });
         break;
 
+      case "GET_PAGE_CONTENT": {
+        const content = extractPageContent();
+        sendResponse({
+          success: true,
+          content: content.text,
+          title: content.title,
+          url: content.url,
+        });
+        break;
+      }
+
       default:
         console.warn("[Omni AI] Unknown message type:", message.type);
         sendResponse({ success: false, error: "Unknown message type" });
@@ -1350,6 +1361,35 @@ function getSelectedText() {
   const context = getContext(activeElement);
   const result = context.getText(activeElement);
   return result.text;
+}
+
+function extractPageContent() {
+  try {
+    const bodyClone = document.body.cloneNode(true);
+    const noiseSelectors = [
+      'script', 'style', 'nav', 'footer', 'header', 'aside',
+      '[role="navigation"]', '[role="banner"]', '[role="complementary"]',
+      '.advertisement', '.ads', '.sidebar', '.comments', '#comments',
+      '.social-share', '.cookie-banner', '.newsletter-signup'
+    ];
+
+    noiseSelectors.forEach(selector => {
+      bodyClone.querySelectorAll(selector).forEach(el => el.remove());
+    });
+
+    let extractedText = bodyClone.innerText || '';
+    extractedText = extractedText.replace(/\s+/g, ' ').replace(/\n\s*\n/g, '\n').trim();
+
+    const MAX_CONTENT_LENGTH = 4000;
+    if (extractedText.length > MAX_CONTENT_LENGTH) {
+      extractedText = extractedText.substring(0, MAX_CONTENT_LENGTH) + '...';
+    }
+
+    return { text: extractedText, title: document.title || '', url: window.location.href || '' };
+  } catch (error) {
+    console.error('[Omni AI] Failed to extract page content:', error);
+    return { text: '', title: document.title || '', url: window.location.href || '' };
+  }
 }
 
 function showLoadingInOverlay() {

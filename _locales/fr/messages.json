@@ -115,11 +115,11 @@
     "message": "Paramètres",
     "description": "Titre de la page paramètres"
   },
-  "settings_apiKey": {
+  "settings_geminiApiKey": {
     "message": "Clé API Gemini",
     "description": "Label clé API"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Obtenez votre clé API sur Google AI Studio",
     "description": "Indication clé API"
   },
@@ -179,8 +179,8 @@
     "message": "Clé API non configurée. Veuillez ajouter votre clé Gemini dans les paramètres.",
     "description": "Erreur absence clé API"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "Entrez votre clé API...",
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Entrez votre clé API Gemini...",
     "description": "Placeholder clé API"
   },
   "error_prefix": {
@@ -426,7 +426,11 @@
     "description": "Erreur enregistrement"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Accédez à Google AI Studio"
+    "message": "Accédez à"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Cliquez sur 'Create API Key'"
@@ -435,7 +439,11 @@
     "message": "Copiez la clé dans le presse-papiers"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Accédez à la console Groq"
+    "message": "Accédez à"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Inscrivez-vous ou connectez-vous"
@@ -444,7 +452,11 @@
     "message": "Créez une nouvelle clé API"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Accédez à la plateforme OpenAI"
+    "message": "Accédez à"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Inscrivez-vous ou connectez-vous"
@@ -509,5 +521,9 @@
   "settings_customModelPlaceholder": {
     "message": "ex: votre-id-de-modèle",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "Inclure le contenu de cette page comme contexte",
+    "description": "Checkbox label to include page content"
   }
 }

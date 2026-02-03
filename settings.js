@@ -15,7 +15,7 @@ import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 // DOM Elements
 const elements = {
-  apiKey: document.getElementById("apiKey"), // Google Key
+  geminiApiKey: document.getElementById("geminiApiKey"), // Google Key
   apiModel: document.getElementById("apiModel"),
   customModelName: document.getElementById("customModelName"),
   customModelGroup: document.getElementById("customModelGroup"),
@@ -49,7 +49,7 @@ const elements = {
 };
 
 // State
-let isApiKeyVisible = false;
+let isGeminiKeyVisible = false;
 
 /**
  * Initialize options page
@@ -91,7 +91,8 @@ function populateModelSelect() {
  * Localize the DOM
  */
 function localizeDOM() {
-  document.title = i18n.getMessage("settings_title") + " - Omni AI";
+  document.title =
+    i18n.getMessage("extName") + " - " + i18n.getMessage("settings_title");
   // Localize attributes (title and placeholder)
   const elementsWithAttributes = document.querySelectorAll(
     '[title*="__MSG_"], [placeholder*="__MSG_"]',
@@ -190,7 +191,7 @@ function setupEventListeners() {
 
   // Auto-save on change (optional)
   const inputs = [
-    elements.apiKey,
+    elements.geminiApiKey,
     elements.groqApiKey,
     elements.openaiApiKey,
     elements.ollamaEndpoint,
@@ -212,12 +213,12 @@ function setupEventListeners() {
  * Toggle API key visibility
  */
 function toggleApiKeyVisibility() {
-  isApiKeyVisible = !isApiKeyVisible;
-  elements.apiKey.type = isApiKeyVisible ? "text" : "password";
+  isGeminiKeyVisible = !isGeminiKeyVisible;
+  elements.geminiApiKey.type = isGeminiKeyVisible ? "text" : "password";
 
   // Update icon
   const svg = elements.toggleApiKey.querySelector("svg");
-  if (isApiKeyVisible) {
+  if (isGeminiKeyVisible) {
     svg.innerHTML = `
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
       <line x1="1" y1="1" x2="23" y2="23"></line>
@@ -288,7 +289,7 @@ async function validateConfiguration() {
   // Get the Key
   let apiKey = "";
   if (provider.id === "google") {
-    apiKey = elements.apiKey.value.trim();
+    apiKey = elements.geminiApiKey.value.trim();
   } else if (provider.id === "groq") {
     apiKey = elements.groqApiKey.value.trim();
   } else if (provider.id === "openai") {
@@ -409,7 +410,7 @@ async function loadSettings() {
 
     // 2. Load Local AI Config
     const config = await chrome.storage.local.get([
-      "apiKey",
+      "geminiApiKey",
       "groqApiKey",
       "openaiApiKey",
       "ollamaEndpoint",
@@ -418,7 +419,7 @@ async function loadSettings() {
       "currentPreset",
     ]);
 
-    if (config.apiKey) elements.apiKey.value = config.apiKey;
+    if (config.geminiApiKey) elements.geminiApiKey.value = config.geminiApiKey;
     if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
     if (config.openaiApiKey) elements.openaiApiKey.value = config.openaiApiKey;
     if (config.customModelName)
@@ -462,7 +463,7 @@ async function saveSettings() {
 
     // AI Config to Local
     const aiConfig = {
-      apiKey: elements.apiKey.value.trim(),
+      geminiApiKey: elements.geminiApiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
       openaiApiKey: elements.openaiApiKey.value.trim(),
       ollamaEndpoint: elements.ollamaEndpoint.value.trim(),

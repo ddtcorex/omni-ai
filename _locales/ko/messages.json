@@ -115,11 +115,11 @@
     "message": "설정",
     "description": "설정 페이지 제목"
   },
-  "settings_apiKey": {
+  "settings_geminiApiKey": {
     "message": "Gemini API 키",
     "description": "API 키 라벨"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Google AI Studio에서 API 키를 발급받으세요",
     "description": "API 키 힌트"
   },
@@ -179,8 +179,8 @@
     "message": "API 키가 설정되지 않았습니다. 설정에서 Gemini API 키를 추가해 주세요.",
     "description": "API 키 미설정 오류"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "API 키를 입력하세요...",
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Gemini API 키를 입력하세요...",
     "description": "API 키 입력 플레이스홀더"
   },
   "error_prefix": {
@@ -426,7 +426,11 @@
     "description": "저장 실패 오류"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Google AI Studio로 이동합니다"
+    "message": "다음으로 이동:"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "'Create API Key'를 클릭합니다"
@@ -435,7 +439,11 @@
     "message": "발급된 키를 클립보드에 복사합니다"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Groq Console로 이동합니다"
+    "message": "다음으로 이동:"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "회원가입 또는 로그인합니다"
@@ -444,7 +452,11 @@
     "message": "새 API 키를 생성합니다"
   },
   "settings_tooltip_openai_s1": {
-    "message": "OpenAI Platform으로 이동합니다"
+    "message": "다음으로 이동:"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "회원가입 또는 로그인합니다"
@@ -509,5 +521,9 @@
   "settings_customModelPlaceholder": {
     "message": "예: 사용자-모델-ID",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "이 페이지의 내용을 컨텍스트로 포함",
+    "description": "Checkbox label to include page content"
   }
 }

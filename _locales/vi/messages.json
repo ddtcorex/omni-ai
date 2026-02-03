@@ -115,13 +115,13 @@
     "message": "Cài đặt",
     "description": "Settings page title"
   },
-  "settings_apiKey": {
-    "message": "khóa API",
-    "description": "API key label"
+  "settings_geminiApiKey": {
+    "message": "Khóa API Gemini",
+    "description": "Gemini API key label"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Lấy khóa API từ Google AI Studio",
-    "description": "API key hint"
+    "description": "Gemini API key hint"
   },
   "settings_model": {
     "message": "Mô hình AI",
@@ -179,9 +179,9 @@
     "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API trong Cài đặt.",
     "description": "No API key error"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "Nhập khóa API của bạn...",
-    "description": "API key input placeholder"
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Nhập khóa API Gemini của bạn...",
+    "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
     "message": "Lỗi: ",
@@ -426,7 +426,11 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Truy cập Google AI Studio"
+    "message": "Truy cập"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Nhấp vào Create API Key"
@@ -435,7 +439,11 @@
     "message": "Sao chép khóa vào bộ nhớ tạm"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Truy cập Groq Console"
+    "message": "Truy cập"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Đăng ký hoặc Đăng nhập"
@@ -444,7 +452,11 @@
     "message": "Tạo Khóa API mới"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Truy cập OpenAI Platform"
+    "message": "Truy cập"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Đăng ký hoặc Đăng nhập"
@@ -509,5 +521,9 @@
   "settings_customModelPlaceholder": {
     "message": "vd: mã-mô-hình-của-bạn",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "Sử dụng nội dung trang này làm ngữ cảnh",
+    "description": "Checkbox label to include page content"
   }
 }

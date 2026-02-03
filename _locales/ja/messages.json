@@ -115,11 +115,11 @@
     "message": "設定",
     "description": "設定ページのタイトル"
   },
-  "settings_apiKey": {
+  "settings_geminiApiKey": {
     "message": "Gemini APIキー",
     "description": "APIキーのラベル"
   },
-  "settings_apiKeyHint": {
+  "settings_geminiApiKeyHint": {
     "message": "Google AI StudioからAPIキーを取得してください",
     "description": "APIキーのヒント"
   },
@@ -179,8 +179,8 @@
     "message": "APIキーが設定されていません。設定からGemini APIキーを追加してください。",
     "description": "APIキー未設定エラー"
   },
-  "settings_apiKeyPlaceholder": {
-    "message": "APIキーを入力してください...",
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Gemini APIキーを入力してください...",
     "description": "APIキー入力のプレースホルダー"
   },
   "error_prefix": {
@@ -426,7 +426,11 @@
     "description": "保存失敗エラー"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Google AI Studio にアクセスします"
+    "message": "アクセス:"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "「Create API Key」をクリックします"
@@ -435,7 +439,11 @@
     "message": "キーをコピーしてクリップボードに保存します"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Groq Console にアクセスします"
+    "message": "アクセス:"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "サインアップまたはログインします"
@@ -444,7 +452,11 @@
     "message": "新しいAPIキーを作成します"
   },
   "settings_tooltip_openai_s1": {
-    "message": "OpenAI Platform にアクセスします"
+    "message": "アクセス:"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "サインアップまたはログインします"
@@ -509,5 +521,9 @@
   "settings_customModelPlaceholder": {
     "message": "例: モデルID",
     "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "include_page_context": {
+    "message": "このページのコンテンツをコンテキストとして含める",
+    "description": "Checkbox label to include page content"
   }
 }
