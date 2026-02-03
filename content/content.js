@@ -886,8 +886,12 @@ async function showQuickActionMenu(
 
   const pFlag = languageFlags[primaryLanguage] || "🌐";
   const dFlag = languageFlags[defaultLanguage] || "🏳️";
-  const pCode = primaryLanguage.toUpperCase();
-  const dCode = defaultLanguage.toUpperCase();
+
+  // Use localized language names
+  const pCode =
+    i18n.getMessage(`lang_${primaryLanguage}`) || primaryLanguage.toUpperCase();
+  const dCode =
+    i18n.getMessage(`lang_${defaultLanguage}`) || defaultLanguage.toUpperCase();
 
   // Create Overlay
   overlay = createOverlayElement(currentTheme);
