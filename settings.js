@@ -427,7 +427,7 @@ async function loadSettings() {
 
     elements.ollamaEndpoint.value =
       config.ollamaEndpoint || "http://localhost:11434";
-    elements.apiModel.value = config.apiModel || "gemini-1.5-flash";
+    elements.apiModel.value = config.apiModel || "gemini-2.0-flash";
     const validPresets = [
       "professional",
       "casual",
