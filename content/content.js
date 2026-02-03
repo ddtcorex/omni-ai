@@ -289,8 +289,16 @@ function getEditableHost(el) {
 function computeDiff(original, corrected) {
   if (!original || !corrected) return corrected || "";
 
-  const words1 = original.trim().split(/\s+/);
-  const words2 = corrected.trim().split(/\s+/);
+  // Tokenize with newline preservation
+  const tokenize = (str) =>
+    str
+      .replace(/\n/g, " __NEWLINE__ ")
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
+
+  const words1 = tokenize(original);
+  const words2 = tokenize(corrected);
 
   // Check for distinct word count difference (heuristic for major change)
   if (
@@ -374,7 +382,7 @@ function computeDiff(original, corrected) {
       }
     }
   }
-  return html.trim();
+  return html.replace(/__NEWLINE__\s?/g, "\n").trim();
 }
 
 function updateSmartFixCard(
@@ -404,7 +412,7 @@ function updateSmartFixCard(
   card.innerHTML = `
      <div style="flex:1;">
         <div class="omni-ai-suggestion-label">${i18n.getMessage("overlay_suggested_fix")}</div>
-        <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4;">${diffHtml}</div>
+        <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; white-space: pre-wrap;">${diffHtml}</div>
         <div style="display:flex; gap:8px; margin-top:8px;">
             <button class="omni-ai-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_accept")}</button>
             <button class="omni-ai-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_dismiss")}</button>
@@ -452,9 +460,7 @@ function updateTranslateCard(card, result, text, isInput, label = null) {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
-          <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--ai-text-primary); font-weight:500;">
-             ${result}
-          </div>
+          <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--ai-text-primary); font-weight:500; white-space: pre-wrap;">${result}</div>
       </div>
   `;
 

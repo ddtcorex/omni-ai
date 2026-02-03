@@ -132,5 +132,6 @@ describe("AI Service", () => {
       "If the text is in English, translate it to Vietnamese",
     );
     expect(callArgs[0]).toContain("Otherwise, translate it to English");
+    expect(callArgs[0]).toContain("STRICTLY preserve all original formatting");
   });
 });
