@@ -654,6 +654,10 @@ function setupSelectionListener() {
           } else {
             lastRange = null;
           }
+        } else {
+          // Standard inputs don't use window.getSelection() ranges effectively in the same way for this tracking,
+          // so clear it to prevent stale ranges from blocking fullText detection.
+          lastRange = null;
         }
 
         const rect = context.getRect(activeElement);
