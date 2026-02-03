@@ -494,10 +494,6 @@
     "message": "Văn bản trông tuyệt vời!",
     "description": "No issues check details"
   },
-  "overlay_translated_to": {
-    "message": "Dịch sang",
-    "description": "Translated to prefix"
-  },
   "overlay_smart_translation": {
     "message": "Dịch Thông Minh",
     "description": "Smart translation label"

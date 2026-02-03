@@ -494,10 +494,6 @@
     "message": "テキストは素晴らしいです！",
     "description": "No issues check details"
   },
-  "overlay_translated_to": {
-    "message": "翻訳先",
-    "description": "Translated to prefix"
-  },
   "overlay_smart_translation": {
     "message": "スマート翻訳",
     "description": "Smart translation label"

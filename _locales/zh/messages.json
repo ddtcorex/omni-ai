@@ -494,10 +494,6 @@
     "message": "文本看起来很棒！",
     "description": "No issues check details"
   },
-  "overlay_translated_to": {
-    "message": "翻译成",
-    "description": "Translated to prefix"
-  },
   "overlay_smart_translation": {
     "message": "智能翻译",
     "description": "Smart translation label"

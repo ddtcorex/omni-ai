@@ -494,10 +494,6 @@
     "message": "Il testo sembra perfetto!",
     "description": "No issues check details"
   },
-  "overlay_translated_to": {
-    "message": "Tradotto in",
-    "description": "Translated to prefix"
-  },
   "overlay_smart_translation": {
     "message": "Traduzione Intelligente",
     "description": "Smart translation label"
