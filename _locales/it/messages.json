@@ -51,6 +51,10 @@
     "message": "Correggi Grammatica",
     "description": "Azione grammatica"
   },
+  "desc_grammar": {
+    "message": "Corregge ortografia e grammatica",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "Migliora Chiarezza",
     "description": "Azione chiarezza"

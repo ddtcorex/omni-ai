@@ -1,4 +1,8 @@
-import { generateContent, improveText } from "../../lib/ai-service";
+import {
+  generateContent,
+  improveText,
+  smartTranslate,
+} from "../../lib/ai-service";
 import * as Providers from "../../lib/providers/index";
 
 jest.mock("../../lib/providers/index", () => ({
@@ -115,5 +119,18 @@ describe("AI Service", () => {
     await expect(generateContent("Test")).rejects.toThrow(
       "API key not configured for gemini-1.5-flash",
     );
+  });
+
+  it("smartTranslate generates correct prompt", async () => {
+    store["geminiApiKey"] = "key";
+    mockProvider.generateContent.mockResolvedValue("Translated Text");
+
+    await smartTranslate("Hola", "en", "vi");
+
+    const callArgs = mockProvider.generateContent.mock.calls[0];
+    expect(callArgs[0]).toContain(
+      "If the text is in English, translate it to Vietnamese",
+    );
+    expect(callArgs[0]).toContain("Otherwise, translate it to English");
   });
 });

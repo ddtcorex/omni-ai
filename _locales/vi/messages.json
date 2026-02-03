@@ -51,6 +51,10 @@
     "message": "Sửa ngữ pháp",
     "description": "Grammar action"
   },
+  "desc_grammar": {
+    "message": "Sửa chính tả và ngữ pháp",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "Rõ ràng hơn",
     "description": "Clarity action"

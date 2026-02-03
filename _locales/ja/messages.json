@@ -51,6 +51,10 @@
     "message": "文法を修正",
     "description": "文法アクション"
   },
+  "desc_grammar": {
+    "message": "スペルと文法を修正します",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "明快にする",
     "description": "明快さアクション"

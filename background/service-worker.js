@@ -8,6 +8,7 @@ import {
   generateReply,
   emojifyText,
   generateContent,
+  smartTranslate,
 } from "../lib/ai-service.js";
 
 /**
@@ -498,6 +499,18 @@ async function handleQuickAction(payload) {
       result = await translateText(
         selectedText,
         options.targetLanguage || defaultLanguage || "en",
+      );
+      break;
+    }
+    case "smart_translate": {
+      const { primaryLanguage } =
+        await chrome.storage.local.get("primaryLanguage");
+      const { defaultLanguage } =
+        await chrome.storage.local.get("defaultLanguage");
+      result = await smartTranslate(
+        selectedText,
+        primaryLanguage || "vi",
+        defaultLanguage || "en",
       );
       break;
     }

@@ -51,6 +51,10 @@
     "message": "문법 교정",
     "description": "문법 작업"
   },
+  "desc_grammar": {
+    "message": "맞춤법 및 문법을 수정합니다",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "명확하게 다듬기",
     "description": "명확성 작업"

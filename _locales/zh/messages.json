@@ -51,6 +51,10 @@
     "message": "语法修正",
     "description": "语法操作"
   },
+  "desc_grammar": {
+    "message": "纠正拼写和语法",
+    "description": "Description for grammar action"
+  },
   "action_clarity": {
     "message": "提高清晰度",
     "description": "清晰度操作"
