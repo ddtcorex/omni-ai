@@ -498,6 +498,10 @@
     "message": "Dịch sang",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "Dịch Thông Minh",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "Lỗi",
     "description": "Error label"

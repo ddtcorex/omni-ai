@@ -447,7 +447,7 @@ function updateTranslateCard(card, result, text, isInput, label = null) {
   card.innerHTML = `
       <div class="omni-ai-suggestion-info">
           <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>${label ? i18n.getMessage("overlay_translated_to") + " " + label : i18n.getMessage("overlay_translated_to") + "..."}</span>
+            <span>${label ? i18n.getMessage("overlay_translated_to") + " " + label : i18n.getMessage("overlay_smart_translation")}</span>
             <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>

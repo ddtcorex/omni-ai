@@ -498,6 +498,10 @@
     "message": "번역됨",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "스마트 번역",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "오류",
     "description": "Error label"

@@ -498,6 +498,10 @@
     "message": "Traducido a",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "Traducción Inteligente",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "Error",
     "description": "Error label"

@@ -498,6 +498,10 @@
     "message": "翻译成",
     "description": "Translated to prefix"
   },
+  "overlay_smart_translation": {
+    "message": "智能翻译",
+    "description": "Smart translation label"
+  },
   "overlay_error": {
     "message": "错误",
     "description": "Error label"
