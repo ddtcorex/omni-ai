@@ -3,16 +3,14 @@
    Glassmorphism & Modern UI/UX
    ============================================ */
 
-:root {
-  --ai-font-family:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
 /* Shared Theme Variables */
 /* Scoped to avoid conflicts with host page */
 .omni-ai-overlay,
 .omni-ai-toast,
 .omni-ai-quick-btn {
+  --ai-font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
   /* Dark Mode (Default) */
   --ai-bg-primary: #0f0f14;
   --ai-bg-secondary: #1a1a24;
@@ -74,6 +72,31 @@
   --ai-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
   --ai-shadow-lg:
     0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Defensive reset against host-page styles */
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn),
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn) * {
+  box-sizing: border-box;
+}
+
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn) {
+  font-family: var(--ai-font-family);
+  font-style: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  text-shadow: none;
+  line-height: 1.4;
+}
+
+:where(.omni-ai-quick-btn) {
+  all: revert;
+}
+
+:where(.omni-ai-overlay button, .omni-ai-overlay input, .omni-ai-overlay textarea) {
+  all: revert;
+  font-family: inherit;
+  color: inherit;
 }
 
 /* Overlay Container */
@@ -319,6 +342,7 @@
 }
 
 .omni-ai-input {
+  display: block;
   width: 100%;
   min-height: 36px;
   max-height: 100px;
@@ -331,6 +355,7 @@
   font-size: var(--ai-font-sm);
   resize: none;
   outline: none;
+  cursor: text;
   transition: all 0.2s;
   box-sizing: border-box;
 }
@@ -397,6 +422,9 @@
 }
 
 .omni-ai-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--ai-accent-gradient);
   color: white;
   border: none;
@@ -414,6 +442,9 @@
 }
 
 .omni-ai-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--ai-bg-hover);
   color: var(--ai-text-primary);
   border: 1px solid var(--ai-border);

@@ -110,6 +110,120 @@ let currentAnchorRect = null;
 let lastRange = null;
 let lastMousePosition = null; // Track mouse position for button placement
 
+// Shadow UI root to isolate extension styles from host page CSS.
+const OMNI_UI_HOST_ID = "omni-ai-shadow-host";
+let omniUiHost = null;
+let omniUiRoot = null;
+let omniUiCssText = "";
+let omniUiStylePromise = null;
+
+function applyUiHostStyles(host) {
+  host.style.setProperty("all", "initial", "important");
+  host.style.setProperty("position", "static", "important");
+  host.style.setProperty("display", "block", "important");
+  host.style.setProperty("width", "0", "important");
+  host.style.setProperty("height", "0", "important");
+  host.style.setProperty("margin", "0", "important");
+  host.style.setProperty("padding", "0", "important");
+  host.style.setProperty("border", "0", "important");
+  host.style.setProperty("line-height", "0", "important");
+  host.style.setProperty("font-size", "0", "important");
+}
+
+function ensureUiRoot() {
+  if (omniUiRoot && omniUiHost?.isConnected) {
+    return omniUiRoot;
+  }
+
+  let host = document.getElementById(OMNI_UI_HOST_ID);
+  if (!host) {
+    host = document.createElement("div");
+    host.id = OMNI_UI_HOST_ID;
+    const mountPoint = document.body || document.documentElement;
+    mountPoint.appendChild(host);
+  }
+
+  applyUiHostStyles(host);
+  omniUiHost = host;
+  omniUiRoot = host.shadowRoot || host.attachShadow({ mode: "open" });
+  return omniUiRoot;
+}
+
+function ensureUiStyles(root = ensureUiRoot()) {
+  let styleTag = root.querySelector("style[data-omni-ai-shadow-style='true']");
+  if (!styleTag) {
+    styleTag = document.createElement("style");
+    styleTag.setAttribute("data-omni-ai-shadow-style", "true");
+    root.prepend(styleTag);
+  }
+
+  if (omniUiCssText) {
+    styleTag.textContent = omniUiCssText;
+    return Promise.resolve();
+  }
+
+  if (!omniUiStylePromise) {
+    if (!isContextValid()) {
+      omniUiStylePromise = Promise.resolve("");
+    } else {
+      omniUiStylePromise = fetch(chrome.runtime.getURL("content/overlay.css"))
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to load overlay CSS: ${response.status}`);
+          }
+          return response.text();
+        })
+        .then((cssText) => {
+          omniUiCssText = cssText || "";
+          return omniUiCssText;
+        })
+        .catch((error) => {
+          console.warn("[Omni AI] Failed to load shadow CSS:", error);
+          omniUiCssText = "";
+          return "";
+        });
+    }
+  }
+
+  return omniUiStylePromise.then((cssText) => {
+    styleTag.textContent = cssText || "";
+  });
+}
+
+function ensureUiRootReady() {
+  const root = ensureUiRoot();
+  return ensureUiStyles(root).then(() => root);
+}
+
+function isEventInsideOmniUi(event) {
+  if (!event) return false;
+
+  const path =
+    typeof event.composedPath === "function" ? event.composedPath() : [];
+  const target = event.target;
+
+  if (
+    overlay &&
+    (path.includes(overlay) || (target && overlay.contains(target)))
+  ) {
+    return true;
+  }
+
+  if (
+    quickActionBtn &&
+    (path.includes(quickActionBtn) ||
+      (target && quickActionBtn.contains(target)))
+  ) {
+    return true;
+  }
+
+  if (omniUiHost && path.includes(omniUiHost)) {
+    return true;
+  }
+
+  return false;
+}
+
 // ============================================
 // Input Strategies
 // ============================================
@@ -500,6 +614,7 @@ function updateTranslateCard(card, result, text, isInput) {
 }
 
 function init() {
+  ensureUiRootReady().catch(() => {});
   setupMessageListener();
   setupSelectionListener();
   initTheme();
@@ -682,7 +797,7 @@ function setupSelectionListener() {
     const mousePos = { x: e.clientX, y: e.clientY };
     lastMousePosition = mousePos;
 
-    if (overlay && !overlay.contains(e.target)) {
+    if (overlay && !isEventInsideOmniUi(e)) {
       hideOverlay();
     }
     handleSelectionChange(mousePos);
@@ -756,9 +871,12 @@ function presentQuickActionButton(
 }
 
 async function createQuickBtn(rect, isInput, mousePosition = null) {
-  quickActionBtn = document.createElement("button");
-  quickActionBtn.className = "omni-ai-quick-btn";
-  quickActionBtn.innerHTML = ICONS.btnSparkle;
+  const button = document.createElement("button");
+  quickActionBtn = button;
+  button.className = "omni-ai-quick-btn";
+  button.innerHTML = ICONS.btnSparkle;
+
+  const uiReady = ensureUiRootReady();
 
   // Theme check
   const THEME_KEY = "omni_ai_theme";
@@ -774,7 +892,7 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
       : "light";
   }
   if (effectiveTheme === "light") {
-    quickActionBtn.classList.add("omni-ai-light-mode");
+    button.classList.add("omni-ai-light-mode");
   }
 
   // Position - Use mouse position if provided (for text selection)
@@ -796,9 +914,12 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
     return;
   }
 
-  quickActionBtn.style.top = `${top}px`;
-  quickActionBtn.style.left = `${left}px`;
-  document.body.appendChild(quickActionBtn);
+  button.style.top = `${top}px`;
+  button.style.left = `${left}px`;
+
+  await uiReady;
+  if (quickActionBtn !== button) return;
+  ensureUiRoot().appendChild(button);
 }
 
 function setupQuickBtnEvents(text = null, inputElement = null) {
@@ -903,6 +1024,8 @@ async function showQuickActionMenu(
   const dCode =
     i18n.getMessage(`lang_${defaultLanguage}`) || defaultLanguage.toUpperCase();
 
+  await ensureUiRootReady();
+
   // Create Overlay
   overlay = createOverlayElement(currentTheme);
 
@@ -1002,7 +1125,7 @@ async function showQuickActionMenu(
   `;
 
   overlay.innerHTML = header + quickFix + menu + inputSection;
-  document.body.appendChild(overlay);
+  ensureUiRoot().appendChild(overlay);
 
   // Position Logic
   positionOverlay(currentAnchorRect, lockedPosition);
@@ -1018,7 +1141,7 @@ async function showQuickActionMenu(
       payload: { action: "grammar", text, preset: "chat" },
     })
       .then((response) => {
-        const card = document.getElementById("omniAiMagicFix");
+        const card = overlay?.querySelector("#omniAiMagicFix");
         if (response.success && card) {
           // Pass activeInputElement if we tracked it
           const targetEl = activeInputElement || document.activeElement;
@@ -1048,7 +1171,7 @@ async function showQuickActionMenu(
 
     if (resultCache.has(cacheKey)) {
       setTimeout(() => {
-        const card = document.getElementById("omniAiTranslateCard");
+        const card = overlay?.querySelector("#omniAiTranslateCard");
         if (card)
           updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
       }, 100);
@@ -1058,7 +1181,7 @@ async function showQuickActionMenu(
         payload: { action: smartAction, text, preset: "chat" },
       })
         .then((response) => {
-          const card = document.getElementById("omniAiTranslateCard");
+          const card = overlay?.querySelector("#omniAiTranslateCard");
           if (!card) return;
 
           if (response.success) {
@@ -1503,7 +1626,7 @@ function renderToneSelector(activeTone) {
   return `<div class="omni-ai-tone-selector" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--ai-border);">${chips}</div>`;
 }
 
-function showResultOverlay(payload, isInput = false) {
+async function showResultOverlay(payload, isInput = false) {
   const { result, action, originalText, preset, query } = payload;
   hideQuickActionButton();
 
@@ -1519,6 +1642,7 @@ function showResultOverlay(payload, isInput = false) {
   }
 
   if (!overlay) {
+    await ensureUiRootReady();
     const el = document.createElement("div");
     el.className = "omni-ai-overlay";
     // Check theme
@@ -1526,7 +1650,7 @@ function showResultOverlay(payload, isInput = false) {
       el.classList.add("omni-ai-light-mode");
     }
     overlay = el;
-    document.body.appendChild(overlay);
+    ensureUiRoot().appendChild(overlay);
 
     // Try to position near selection
     // Try to position near selection
@@ -1722,6 +1846,8 @@ async function showQuickAskOverlay(
   autoQuery = null,
   isInput = false,
 ) {
+  await ensureUiRootReady();
+
   if (!overlay) {
     const THEME_KEY = "omni_ai_theme";
     let currentTheme = "system";
@@ -1730,7 +1856,7 @@ async function showQuickAskOverlay(
       currentTheme = data[THEME_KEY] || "system";
     }
     overlay = createOverlayElement(currentTheme);
-    document.body.appendChild(overlay);
+    ensureUiRoot().appendChild(overlay);
   }
 
   // Save current anchor for re-positioning
