@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-02-23
+
+### ✨ Added
+
+- **Shadow DOM Isolation**: The extension UI now uses Shadow DOM for style isolation, which prevents host website styles from breaking the Omni AI overlay and vice-versa. This ensures a consistent look and feel across all web pages.
+- **Improved Persistence**: The popup chat now intelligently persists draft input and maintains active page-context sessions during multi-tasking, preventing accidental loss of context when switching tabs or windows.
+
+### 🛠 Improvements
+
+- **Refined Rephrasing**: Updated the "Rephrase" prompt logic to provide more natural and concise results while reducing output variance for a more predictable experience.
+
 ## [1.9.0] - 2026-02-03
 
 ### ✨ Added

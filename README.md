@@ -2,7 +2,7 @@
 
 > 🧠 Your All-in-One AI Browser Companion. Supercharge your Chrome experience with the power of Google Gemini, Groq (Llama 3/DeepSeek), OpenAI (GPT-4o), and Ollama (Local AI).
 
-[![Version](https://img.shields.io/badge/version-1.9.0-blue)](https://github.com/ddtcorex/omni-ai)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-extension-yellow)](#installation)
 
