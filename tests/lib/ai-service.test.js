@@ -114,6 +114,23 @@ describe("AI Service", () => {
     expect(callArgs[0]).toContain("Original text:\nBad text");
   });
 
+  it("rephrase prefers simple words and uses lower default temperature", async () => {
+    store["geminiApiKey"] = "key";
+    mockProvider.generateContent.mockResolvedValue("Rephrased Text");
+
+    const result = await improveText("Complicated sentence", "rephrase", "chat");
+
+    expect(result).toBe("Rephrased Text");
+    const callArgs = mockProvider.generateContent.mock.calls[0];
+    expect(callArgs[0]).toContain("simple, everyday words");
+    expect(callArgs[0]).toContain("not fancy or rare vocabulary");
+    expect(callArgs[1]).toEqual(
+      expect.objectContaining({
+        temperature: 0.15,
+      }),
+    );
+  });
+
   it("throws error if API key is missing", async () => {
     // No keys in store
     await expect(generateContent("Test")).rejects.toThrow(
