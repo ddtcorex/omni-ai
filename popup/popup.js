@@ -13,6 +13,9 @@ const elements = {
   askBtn: document.getElementById("askBtn"),
   settingsBtn: document.getElementById("settingsBtn"),
   includePageContext: document.getElementById("includePageContext"),
+  includePageContextLabel: document.querySelector(
+    ".context-toggle .checkbox-label",
+  ),
 
   // Status
   status: document.getElementById("status"),
@@ -40,6 +43,16 @@ const elements = {
 let isProcessing = false;
 let currentUser = null;
 let chatHistory = [];
+let conversationPageContext = null;
+let isPageContextLocked = false;
+
+const STORAGE_KEYS = {
+  chatHistory: "popupChatHistory",
+  pageContextSession: "popupPageContextSession",
+  draftState: "popupDraftState",
+};
+
+let draftSaveTimer = null;
 
 /**
  * Initialize popup
@@ -51,6 +64,7 @@ async function init() {
   setupEventListeners();
   await loadAuthState();
   await loadChatHistory();
+  await loadDraftState();
   focusInput();
 }
 
@@ -112,6 +126,8 @@ function setupEventListeners() {
       handleQuickAsk();
     }
   });
+  elements.quickAskInput.addEventListener("input", scheduleSaveDraftState);
+  elements.includePageContext?.addEventListener("change", scheduleSaveDraftState);
 
   // Settings
   elements.settingsBtn.addEventListener("click", openSettings);
@@ -128,6 +144,15 @@ function setupEventListeners() {
   document.addEventListener("click", (e) => {
     if (!elements.userSection.contains(e.target)) {
       closeUserDropdown();
+    }
+  });
+
+  // Extension action popup closes when it loses focus (e.g. Win+Space IME switch).
+  // Persist draft state to reduce disruption.
+  window.addEventListener("beforeunload", saveDraftState);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      saveDraftState();
     }
   });
 }
@@ -248,6 +273,108 @@ function getDefaultAvatar(name) {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
+function getPageContextNoticeMessage() {
+  return (
+    i18n.getMessage("popup_page_context_included") ||
+    "Page content has been included and will be used as context for this conversation."
+  );
+}
+
+function applyPageContextCheckboxState() {
+  const checkbox = elements.includePageContext;
+  if (!checkbox) return;
+
+  const label = elements.includePageContextLabel;
+  if (isPageContextLocked) {
+    checkbox.checked = true;
+    checkbox.disabled = true;
+    if (label) {
+      label.classList.add("is-locked");
+      label.title =
+        i18n.getMessage("include_page_context_locked_hint") ||
+        "Page context is locked for this conversation. Start a new chat to change it.";
+    }
+  } else {
+    checkbox.disabled = false;
+    if (label) {
+      label.classList.remove("is-locked");
+      label.removeAttribute("title");
+    }
+  }
+}
+
+async function fetchCurrentPageContent() {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) return null;
+
+    const response = await chrome.tabs.sendMessage(tab.id, {
+      type: "GET_PAGE_CONTENT",
+    });
+
+    if (!response?.success || !response?.content) {
+      return null;
+    }
+
+    return {
+      text: response.content,
+      title: response.title || "",
+      url: response.url || "",
+    };
+  } catch (e) {
+    console.warn("[Omni AI] Failed to get page content:", e);
+    return null;
+  }
+}
+
+async function loadDraftState() {
+  try {
+    const data = await chrome.storage.local.get(STORAGE_KEYS.draftState);
+    const draft = data[STORAGE_KEYS.draftState];
+    if (!draft || typeof draft !== "object") return;
+
+    if (elements.quickAskInput && typeof draft.query === "string") {
+      elements.quickAskInput.value = draft.query;
+    }
+
+    if (
+      elements.includePageContext &&
+      !isPageContextLocked &&
+      typeof draft.includePageContext === "boolean"
+    ) {
+      elements.includePageContext.checked = draft.includePageContext;
+    }
+
+    applyPageContextCheckboxState();
+  } catch (e) {
+    console.error("Failed to load draft state:", e);
+  }
+}
+
+function scheduleSaveDraftState() {
+  if (draftSaveTimer) {
+    clearTimeout(draftSaveTimer);
+  }
+  draftSaveTimer = setTimeout(() => {
+    saveDraftState();
+    draftSaveTimer = null;
+  }, 120);
+}
+
+async function saveDraftState() {
+  try {
+    const includeChecked =
+      isPageContextLocked || !!elements.includePageContext?.checked;
+    await chrome.storage.local.set({
+      [STORAGE_KEYS.draftState]: {
+        query: elements.quickAskInput?.value || "",
+        includePageContext: includeChecked,
+      },
+    });
+  } catch (e) {
+    console.error("Failed to save draft state:", e);
+  }
+}
 
 // ============================================
 // Chat Logic
@@ -258,12 +385,69 @@ function getDefaultAvatar(name) {
  */
 async function loadChatHistory() {
   try {
-    const { popupChatHistory = [] } = await chrome.storage.local.get("popupChatHistory");
-    chatHistory = popupChatHistory;
+    const data = await chrome.storage.local.get([
+      STORAGE_KEYS.chatHistory,
+      STORAGE_KEYS.pageContextSession,
+    ]);
+
+    chatHistory = Array.isArray(data[STORAGE_KEYS.chatHistory])
+      ? data[STORAGE_KEYS.chatHistory]
+      : [];
+
+    const storedContextSession = data[STORAGE_KEYS.pageContextSession];
+    if (
+      storedContextSession?.locked &&
+      storedContextSession?.pageContent?.text
+    ) {
+      isPageContextLocked = true;
+      conversationPageContext = storedContextSession.pageContent;
+    } else {
+      isPageContextLocked = false;
+      conversationPageContext = null;
+    }
+
+    // Backward compatibility: recover context from legacy hidden system message.
+    if (!conversationPageContext) {
+      const legacyContextMessage = [...chatHistory].reverse().find((msg) => {
+        return (
+          msg?.role === "system" &&
+          msg?.hidden &&
+          typeof msg?.content === "string" &&
+          msg.content.startsWith('Page context from "')
+        );
+      });
+
+      if (legacyContextMessage) {
+        const legacyMatch = legacyContextMessage.content.match(
+          /^Page context from "(.*)":\n([\s\S]*)$/,
+        );
+
+        if (legacyMatch?.[2]) {
+          conversationPageContext = {
+            text: legacyMatch[2],
+            title: legacyContextMessage.pageTitle || legacyMatch[1] || "",
+            url: legacyContextMessage.pageUrl || "",
+          };
+          isPageContextLocked = true;
+        }
+      }
+    }
+
+    // Keep old hidden context entries out of visible chat.
+    chatHistory = chatHistory.filter((msg) => !msg?.hidden);
+
+    applyPageContextCheckboxState();
     renderChatHistory();
+
+    if (isPageContextLocked) {
+      await saveChatHistory();
+    }
   } catch (e) {
     console.error("Failed to load history:", e);
     chatHistory = [];
+    conversationPageContext = null;
+    isPageContextLocked = false;
+    applyPageContextCheckboxState();
   }
 }
 
@@ -272,7 +456,18 @@ async function loadChatHistory() {
  */
 async function saveChatHistory() {
   try {
-    await chrome.storage.local.set({ popupChatHistory: chatHistory });
+    const contextSession =
+      isPageContextLocked && conversationPageContext?.text
+        ? {
+            locked: true,
+            pageContent: conversationPageContext,
+          }
+        : null;
+
+    await chrome.storage.local.set({
+      [STORAGE_KEYS.chatHistory]: chatHistory,
+      [STORAGE_KEYS.pageContextSession]: contextSession,
+    });
   } catch (e) {
     console.error("Failed to save history:", e);
   }
@@ -286,14 +481,16 @@ function renderChatHistory() {
   
   // Clear container but keep empty state
   elements.chatContainer.innerHTML = '';
-  
-  if (chatHistory.length === 0) {
+
+  const visibleMessages = chatHistory.filter((msg) => !msg?.hidden);
+
+  if (visibleMessages.length === 0) {
     if (elements.emptyState) {
         elements.chatContainer.appendChild(elements.emptyState);
         elements.emptyState.style.display = 'flex';
     }
   } else {
-    chatHistory.forEach(msg => appendBubble(msg.role, msg.content, false));
+    visibleMessages.forEach(msg => appendBubble(msg.role, msg.content, false));
     scrollToBottom();
   }
 }
@@ -357,10 +554,24 @@ function scrollToBottom() {
  * Handle new chat
  */
 async function handleNewChat() {
-    chatHistory = [];
-    await saveChatHistory();
-    renderChatHistory();
-    focusInput();
+  chatHistory = [];
+  conversationPageContext = null;
+  isPageContextLocked = false;
+
+  if (elements.quickAskInput) {
+    elements.quickAskInput.value = "";
+    elements.quickAskInput.style.height = "auto";
+  }
+
+  if (elements.includePageContext) {
+    elements.includePageContext.checked = false;
+  }
+  applyPageContextCheckboxState();
+
+  await saveChatHistory();
+  await saveDraftState();
+  renderChatHistory();
+  focusInput();
 }
 
 /**
@@ -371,55 +582,58 @@ async function handleQuickAsk() {
   if (!query || isProcessing) return;
 
   setProcessing(true);
-  
-  const includeContext = elements.includePageContext?.checked || false;
-  let pageContent = null;
-  
-  if (includeContext) {
-    try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (tab?.id) {
-        const response = await chrome.tabs.sendMessage(tab.id, { type: "GET_PAGE_CONTENT" });
-        if (response?.success && response.content) {
-          pageContent = {
-            text: response.content,
-            title: response.title,
-            url: response.url
-          };
-        }
-      }
-    } catch (e) {
-      console.warn("[Omni AI] Failed to get page content:", e);
+
+  const shouldIncludeContext =
+    isPageContextLocked || elements.includePageContext?.checked || false;
+  let justIncludedPageContext = false;
+
+  if (shouldIncludeContext && !conversationPageContext) {
+    const fetchedPageContent = await fetchCurrentPageContent();
+    if (fetchedPageContent?.text) {
+      conversationPageContext = fetchedPageContent;
+      isPageContextLocked = true;
+      justIncludedPageContext = true;
+      applyPageContextCheckboxState();
     }
   }
-  
+
   chatHistory.push({ role: "user", content: query });
   appendBubble("user", query);
-  
-  if (pageContent) {
+
+  if (justIncludedPageContext) {
+    const contextNotice = getPageContextNoticeMessage();
     chatHistory.push({
       role: "system",
-      content: `Page context from "${pageContent.title}":\n${pageContent.text}`,
-      hidden: true,
-      pageTitle: pageContent.title,
-      pageUrl: pageContent.url
+      content: contextNotice,
+      kind: "page_context_notice",
     });
+    appendBubble("system", contextNotice);
   }
-  
-  saveChatHistory();
+
+  await saveChatHistory();
 
   elements.quickAskInput.value = "";
   elements.quickAskInput.style.height = 'auto';
+  await saveDraftState();
 
   showTypingIndicator();
 
   const contextParts = [];
-  
-  if (pageContent) {
-    contextParts.push(`Current page content from "${pageContent.title}":\n${pageContent.text}`);
+
+  if (conversationPageContext?.text) {
+    const pageTitle =
+      conversationPageContext.title ||
+      i18n.getMessage("popup_context") ||
+      "Current Page";
+    contextParts.push(
+      `Current page content from "${pageTitle}":\n${conversationPageContext.text}`,
+    );
   }
-  
-  const contextMsgs = chatHistory.filter(m => m.role !== 'system').slice(0, -1).slice(-10);
+
+  const contextMsgs = chatHistory
+    .filter((m) => m.role === "user" || m.role === "ai")
+    .slice(0, -1)
+    .slice(-10);
   contextMsgs.forEach(m => {
     contextParts.push(`${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`);
   });
@@ -443,7 +657,7 @@ async function handleQuickAsk() {
       
       chatHistory.push({ role: "ai", content: answer });
       appendBubble("ai", answer);
-      saveChatHistory();
+      await saveChatHistory();
 
     } else {
       updateStatus(i18n.getMessage("status_error"), "error");

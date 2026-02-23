@@ -529,5 +529,13 @@
   "include_page_context": {
     "message": "将此页面内容作为上下文",
     "description": "Checkbox label to include page content"
+  },
+  "popup_page_context_included": {
+    "message": "页面内容已加入，并将作为本次对话的上下文使用。",
+    "description": "System message shown after page content is attached to the popup conversation context"
+  },
+  "include_page_context_locked_hint": {
+    "message": "该页面上下文在本次对话中已锁定。请开启新对话以更改。",
+    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   }
 }
