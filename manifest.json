@@ -104,7 +104,8 @@
       "resources": [
         "assets/icons/*.png",
         "_locales/*/messages.json",
-        "lib/i18n.js"
+        "lib/i18n.js",
+        "content/overlay.css"
       ],
       "matches": ["<all_urls>"]
     }
