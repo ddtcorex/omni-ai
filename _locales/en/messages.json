@@ -529,5 +529,13 @@
   "include_page_context": {
     "message": "Include this page's content as context for AI responses",
     "description": "Checkbox label to include page content in chat context"
+  },
+  "popup_page_context_included": {
+    "message": "Page content has been included and will be used as context for this conversation.",
+    "description": "System message shown after page content is attached to the popup conversation context"
+  },
+  "include_page_context_locked_hint": {
+    "message": "Page context is locked for this conversation. Start a new chat to change it.",
+    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   }
 }

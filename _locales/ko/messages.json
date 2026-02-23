@@ -529,5 +529,13 @@
   "include_page_context": {
     "message": "이 페이지의 내용을 컨텍스트로 포함",
     "description": "Checkbox label to include page content"
+  },
+  "popup_page_context_included": {
+    "message": "페이지 콘텐츠가 포함되었으며 이 대화의 컨텍스트로 사용됩니다.",
+    "description": "System message shown after page content is attached to the popup conversation context"
+  },
+  "include_page_context_locked_hint": {
+    "message": "이 대화에서는 페이지 컨텍스트가 고정되었습니다. 변경하려면 새 채팅을 시작하세요.",
+    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   }
 }

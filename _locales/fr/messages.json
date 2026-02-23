@@ -529,5 +529,13 @@
   "include_page_context": {
     "message": "Inclure le contenu de cette page comme contexte",
     "description": "Checkbox label to include page content"
+  },
+  "popup_page_context_included": {
+    "message": "Le contenu de la page a été inclus et sera utilisé comme contexte pour cette conversation.",
+    "description": "System message shown after page content is attached to the popup conversation context"
+  },
+  "include_page_context_locked_hint": {
+    "message": "Le contexte de la page est verrouillé pour cette conversation. Démarrez une nouvelle discussion pour le modifier.",
+    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   }
 }

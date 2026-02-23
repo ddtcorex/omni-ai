@@ -387,6 +387,12 @@ body {
   color: var(--text-primary);
 }
 
+.checkbox-label.is-locked {
+  pointer-events: none;
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
 .checkbox-label input[type="checkbox"] {
   display: none;
 }
@@ -421,6 +427,10 @@ body {
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
   margin-bottom: 2px;
+}
+
+.checkbox-label input[type="checkbox"]:disabled ~ .label-text {
+  opacity: 0.9;
 }
 
 .label-text {
@@ -681,6 +691,18 @@ body {
   border: 1px solid rgba(139, 92, 246, 0.2);
   color: var(--text-primary);
   border-bottom-left-radius: 4px;
+}
+
+.chat-bubble.system {
+  align-self: center;
+  max-width: 100%;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px dashed var(--border-color);
+  color: var(--text-secondary);
+  font-size: 11px;
+  text-align: center;
+  border-radius: 12px;
+  padding: 8px 12px;
 }
 
 .chat-bubble.error {

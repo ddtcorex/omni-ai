@@ -529,5 +529,13 @@
   "include_page_context": {
     "message": "Sử dụng nội dung trang này làm ngữ cảnh",
     "description": "Checkbox label to include page content"
+  },
+  "popup_page_context_included": {
+    "message": "Nội dung trang đã được thêm và sẽ được dùng làm ngữ cảnh cho cuộc hội thoại này.",
+    "description": "System message shown after page content is attached to the popup conversation context"
+  },
+  "include_page_context_locked_hint": {
+    "message": "Ngữ cảnh trang đã bị khóa cho cuộc hội thoại này. Hãy bắt đầu cuộc trò chuyện mới để thay đổi.",
+    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   }
 }
