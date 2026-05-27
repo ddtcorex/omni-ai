@@ -1,6 +1,6 @@
 # Omni AI
 
-> 🧠 Your All-in-One AI Browser Companion. Supercharge your Chrome experience with the power of Google Gemini, Groq (Llama 3/DeepSeek), OpenAI (GPT-4o), and Ollama (Local AI).
+> 🧠 Your All-in-One AI Browser Companion. Supercharge your Chrome experience with the power of Google Gemini, OpenAI, Groq, and Custom Gateway.
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
@@ -55,7 +55,7 @@ Track your productivity with the new **Usage Dashboard**:
 
 ### 🛠️ Premium Settings UI
 
-- **Multiple AI Providers**: Support for **Google Gemini** (1.5 Flash, 1.5 Pro, 2.0 Flash), **Groq** (Llama 3.3, Llama 3.1, GPT-OSS 120B), **OpenAI** (GPT-4o, GPT-4o Mini, GPT-4 Turbo), and **Ollama** (TranslateGemma, Llama 3.1, Gemma 2).
+- **Multiple AI Providers**: Support for **Google Gemini** (2.0 Flash, 2.5 Flash, 2.5 Flash Lite), **OpenAI** (GPT-4o, GPT-4o Mini, GPT-4 Turbo), **Groq** (Llama 3.3, Llama 3.1, GPT-OSS 120B), and **Custom Gateway** (OpenAI-compatible).
 - **Glassmorphic Design**: A sleek, modern settings page (`settings.html`) with smooth animations and high-resolution visuals.
 - **Helper Tooltips**: Interactive instructions and links to help you get your API keys quickly.
 - **Context Presets**: Tailor AI responses for Email, Chat, Social Media, Technical, or Academic contexts.
@@ -84,36 +84,38 @@ cd omni-ai
 
 ### 1. AI Provider Configuration (Required)
 
-You can choose between Google Gemini, Groq, or OpenAI as your AI provider.
+You can choose between Google Gemini, OpenAI, Groq, or Custom Gateway as your AI provider.
 
 #### Option A: Google Gemini
 
 1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey).
 2. Create a new API key.
-3. In Omni AI, go to **Settings** > **AI Provider** and select **Google Gemini**.
+3. In Omni AI, go to **Settings** > **AI Model** and select a **Google Gemini** model.
 4. Paste your key and save.
 
-#### Option B: Groq (Llama 3 / Mixtral)
-
-1. Go to [Groq Console](https://console.groq.com/keys).
-2. Create a new API Key.
-3. In Omni AI, select **Groq** as the provider.
-4. Paste your key `gsk_...` and save.
-
-#### Option C: OpenAI (GPT-3.5 / GPT-4)
+#### Option B: OpenAI (GPT-4)
 
 1. Go to [OpenAI Platform](https://platform.openai.com/api-keys).
 2. Create a new API Key.
-3. In Omni AI, select **OpenAI** as the provider.
+3. In Omni AI, select an **OpenAI** model.
 4. Paste your key `sk-...` and save.
 
-#### Option D: Ollama (Local AI)
+#### Option C: Groq (Llama 3)
 
-1. Ensure [Ollama](https://ollama.com/) is installed and running on your machine.
-2. In Omni AI, go to **Settings** > **AI Provider** and select **Ollama**.
-3. Set your endpoint (default: `http://localhost:11434`).
-4. **Important**: You must configure Ollama to allow requests from the extension (CORS). See [Ollama CORS Configuration](#-ollama-cors-configuration) below.
-5. **Specialized Models**: Omni AI supports specialized models like `TranslateGemma` for translations and `DeepSeek Coder` for technical tasks.
+1. Go to [Groq Console](https://console.groq.com/keys).
+2. Create a new API Key.
+3. In Omni AI, select a **Groq** model.
+4. Paste your key `gsk_...` and save.
+
+#### Option D: Custom Gateway
+
+Connect to any OpenAI-compatible API endpoint (OpenRouter, LiteLLM, Together AI, your own proxy, etc.):
+
+1. In Omni AI, select **Custom Gateway** from the model dropdown.
+2. Enter your **Base URL** (e.g., `https://openrouter.ai/api/v1`, `https://your-gateway.com/v1`).
+3. Enter your **API Key** (optional for some gateways).
+4. Enter the **Model Name** (e.g., `anthropic/claude-sonnet-4-20250514`).
+5. Click **Validate Configuration** to test.
 
 ---
 
@@ -124,7 +126,7 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 #### How to use Custom Models
 
 1. In **Settings**, find the **AI Model** dropdown.
-2. Select the **"Custom Model..."** option for your preferred provider (e.g., _Groq Custom Model..._).
+2. Select the **"Custom Model..."** option for your preferred provider (e.g., _OpenAI Custom Model..._).
 3. A new field **Custom Model Name** will appear.
 4. Enter the Model ID provided by the AI platform (e.g., `gpt-4o-2024-08-06` for OpenAI).
 5. Click **Save Settings**.
@@ -135,60 +137,17 @@ Omni AI features a smart resolution system that maps common short names to their
 
 - **Groq:** Entering `llama-3.1-8b` automatically maps to `llama-3.1-8b-instant`.
 - **OpenAI:** Entering `gpt-4o` maps to the latest stable `gpt-4o` version.
-- **Ollama:** Prefix `ollama-` is automatically handled if you enter a local model name.
 
 #### Common Custom Model IDs
 
 - **Groq:** `llama-3.3-70b-versatile`, `deepseek-r1-distill-llama-70b`, `mixtral-8x7b-32768`.
 - **OpenAI:** `gpt-4o`, `gpt-4o-mini`, `o1-preview`.
 - **Google:** `gemini-1.5-pro-latest`, `gemini-2.0-flash-exp`.
+- **Custom Gateway:** Varies by provider (e.g., OpenRouter: `anthropic/claude-sonnet-4-20250514`).
 
 ---
 
-### 🛠 Ollama CORS Configuration
-
-For the extension to communicate with your local Ollama server, you must set the `OLLAMA_ORIGINS` environment variable.
-
-#### Linux (systemd)
-
-1. Run `sudo systemctl edit ollama.service`
-2. Add the following lines:
-
-   ```ini
-   [Service]
-   Environment="OLLAMA_ORIGINS=*"
-   ```
-
-3. Restart Ollama:
-
-   ```bash
-   sudo systemctl daemon-reload
-   sudo systemctl restart ollama
-   ```
-
-#### macOS
-
-1. Quit Ollama from the menu bar.
-2. Run in terminal:
-
-   ```bash
-   launchctl setenv OLLAMA_ORIGINS "*"
-   ```
-
-3. Restart the Ollama application.
-
-#### Windows
-
-1. Close Ollama from the system tray.
-2. Open **Edit the system environment variables** in the Start menu.
-3. Add a new **User variable**:
-   - Variable: `OLLAMA_ORIGINS`
-   - Value: `*`
-4. Restart Ollama.
-
----
-
-### 2. Google Sign-In (Optional)
+### 3. Google Sign-In (Optional)
 
 To use the personalization features (syncing settings across devices), you need to configure OAuth.
 
@@ -212,12 +171,12 @@ To use the personalization features (syncing settings across devices), you need 
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action                                       |
-| :------- | :------------------------------------------- |
-| `Alt+O`  | Open Omni AI Popup                           |
+| Shortcut | Action                                        |
+| :------- | :-------------------------------------------- |
+| `Alt+O`  | Open Omni AI Popup                            |
 | `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page) |
 | `Alt+R`  | Rephrase (on selected text)                  |
-| `Alt+T`  | Translate to Primary Language                |
+| `Alt+T`  | Translate to Primary Language                 |
 
 _Shortcuts can be customized in `chrome://extensions/shortcuts`_
 
@@ -246,30 +205,31 @@ The language is automatically detected, but you can pin a **Primary Language** i
 
 ```text
 omni-ai/
-├── manifest.json        # Extension Manifest V3
-├── background/          # Background service worker
+├── manifest.json           # Extension Manifest V3
+├── background/             # Background service worker
 │   └── service-worker.js
-├── content/             # Injected scripts & UI
-│   ├── content.js       # Core injection logic
-│   └── overlay.css      # Floating buttons & popups
-├── lib/                 # Shared logic & AI Providers
-│   ├── ai-service.js    # AI Dispatcher
-│   ├── history.js       # Statistics & History management
-│   └── providers/       # AI Model Implementations
+├── content/               # Injected scripts & UI
+│   ├── content.js          # Core injection logic
+│   └── overlay.css         # Floating buttons & popups
+├── lib/                    # Shared logic & AI Providers
+│   ├── ai-service.js       # AI Dispatcher
+│   ├── ai-providers.js     # Provider & model definitions
+│   ├── history.js          # Statistics & History management
+│   └── providers/          # AI Model Implementations
 │       ├── gemini.js
 │       ├── groq.js
 │       ├── openai.js
-│       └── ollama.js
-├── assets/              # Branding & High-res icons
-├── settings.html        # Main configuration page
+│       └── custom-gateway.js
+├── assets/                 # Branding & High-res icons
+├── settings.html           # Main configuration page
 ├── settings.js
 ├── settings.css
-├── popup/               # Extension Popup
+├── popup/                  # Extension Popup
 │   ├── popup.html
 │   ├── popup.js
 │   └── popup.css
-└── scripts/             # Build & Utility scripts
-    └── publish.sh       # Automates ID key removal & zipping
+└── scripts/                # Build & Utility scripts
+    └── publish.sh          # Automates ID key removal & zipping
 ```
 
 ---
@@ -330,7 +290,7 @@ To publish on the Chrome Web Store, you need a Google Developer account.
 ### Pro Tips for Approval
 
 - **Screenshot Quality**: Use high-quality screenshots. Show the ✨ floating button and the Usage Dashboard.
-- **Clear Description**: Clearly explain that users need an API key (Gemini, Groq, or OpenAI) to use the extension.
+- **Clear Description**: Clearly explain that users need an API key (Gemini, OpenAI, Groq) or Custom Gateway to use the extension.
 - **Permission Scope**: Chrome reviewers prefer the narrowest permissions possible.
 
 ---

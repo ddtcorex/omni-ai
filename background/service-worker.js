@@ -100,7 +100,9 @@ async function initializeSettings() {
     geminiApiKey: "",
     currentPreset: "professional",
     customPrompts: [],
-    // history managed by lib/history.js
+    customGatewayBaseUrl: "",
+    customGatewayApiKey: "",
+    customGatewayModelName: "",
     settings: {
       theme: "dark",
       autoClose: false,
@@ -583,19 +585,29 @@ async function handleQuickAction(payload) {
  * Handle configuration validation
  */
 async function handleValidateConfig(payload) {
-  const { model, key } = payload;
+  const { model, key, provider } = payload;
 
-  if (!key) throw new Error("API Key is missing");
+  // Custom Gateway may not require API Key
+  if (!key && provider !== "customGateway") {
+    throw new Error("API Key is missing");
+  }
 
   // Test with a simple prompt
   const testPrompt = "Hello. Respond with 'OK'.";
 
-  const result = await generateContent(testPrompt, {
+  const generateOptions = {
     model: model,
-    provider: payload.provider, // Pass provider hint
-    apiKey: key, // Explicit override
+    provider: payload.provider,
+    apiKey: key,
     maxTokens: 5,
-  });
+  };
+
+  // Add Custom Gateway extras
+  if (payload.provider === "customGateway") {
+    generateOptions.baseUrl = payload.baseUrl;
+  }
+
+  const result = await generateContent(testPrompt, generateOptions);
 
   return { valid: true, response: result };
 }

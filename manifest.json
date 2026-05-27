@@ -40,10 +40,8 @@
   "permissions": ["storage", "activeTab", "contextMenus", "identity"],
 
   "host_permissions": [
-    "https://generativelanguage.googleapis.com/*",
-    "http://127.0.0.1/*",
-    "http://localhost/*",
-    "http://localhost:11434/*"
+    "https://*/*",
+    "http://*/*"
   ],
 
   "options_ui": {

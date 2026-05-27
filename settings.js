@@ -24,9 +24,10 @@ const elements = {
   groqKeyGroup: document.getElementById("groqKeyGroup"),
   openaiApiKey: document.getElementById("openaiApiKey"),
   openaiKeyGroup: document.getElementById("openaiKeyGroup"),
-  ollamaEndpoint: document.getElementById("ollamaEndpoint"),
-  ollamaKeyGroup: document.getElementById("ollamaKeyGroup"),
-  toggleApiKey: document.getElementById("toggleApiKey"),
+  customGatewayKeyGroup: document.getElementById("customGatewayKeyGroup"),
+  customGatewayBaseUrl: document.getElementById("customGatewayBaseUrl"),
+  customGatewayApiKey: document.getElementById("customGatewayApiKey"),
+    toggleApiKey: document.getElementById("toggleApiKey"),
   validateBtn: document.getElementById("validateBtn"),
   validationStatus: document.getElementById("validationStatus"),
   // Theme
@@ -194,7 +195,8 @@ function setupEventListeners() {
     elements.geminiApiKey,
     elements.groqApiKey,
     elements.openaiApiKey,
-    elements.ollamaEndpoint,
+    elements.customGatewayBaseUrl,
+    elements.customGatewayApiKey,
     elements.apiModel,
     elements.defaultPreset,
     elements.primaryLanguage,
@@ -234,9 +236,6 @@ function toggleApiKeyVisibility() {
 /**
  * Update model visibility based on selection
  */
-/**
- * Update model visibility based on selection
- */
 function updateModelVisibility() {
   const modelId = elements.apiModel.value;
   const provider = getProviderByModel(modelId);
@@ -246,7 +245,7 @@ function updateModelVisibility() {
   groups.forEach((el) => el.classList.add("hidden"));
 
   // Handle Custom Model Input
-  if (modelId.endsWith("-custom")) {
+  if (modelId.endsWith("-custom") || modelId === "custom-gateway") {
     elements.customModelGroup.classList.remove("hidden");
   } else {
     elements.customModelGroup.classList.add("hidden");
@@ -284,21 +283,42 @@ async function validateConfiguration() {
       return;
     }
     validModelId = customName;
+  } else if (modelId === "custom-gateway") {
+    const customName = elements.customModelName.value.trim();
+    if (!customName) {
+      showValidationStatus(
+        i18n.getMessage("settings_errorNoCustomModel"),
+        "error",
+      );
+      return;
+    }
+    validModelId = customName;
   }
 
-  // Get the Key
+  // Get the Key and extra config for Custom Gateway
   let apiKey = "";
+  let baseUrl = "";
+
   if (provider.id === "google") {
     apiKey = elements.geminiApiKey.value.trim();
   } else if (provider.id === "groq") {
     apiKey = elements.groqApiKey.value.trim();
   } else if (provider.id === "openai") {
     apiKey = elements.openaiApiKey.value.trim();
-  } else if (provider.id === "ollama") {
-    apiKey = elements.ollamaEndpoint.value.trim();
+  } else if (provider.id === "customGateway") {
+    apiKey = elements.customGatewayApiKey.value.trim();
+    baseUrl = elements.customGatewayBaseUrl.value.trim();
+
+    if (!baseUrl) {
+      showValidationStatus(
+        i18n.getMessage("settings_errorNoGatewayUrl"),
+        "error",
+      );
+      return;
+    }
   }
 
-  if (!apiKey) {
+  if (!apiKey && provider.id !== "customGateway") {
     showValidationStatus(i18n.getMessage("settings_errorNoApiKey"), "error");
     return;
   }
@@ -307,9 +327,13 @@ async function validateConfiguration() {
   setButtonLoading(true);
 
   try {
+    const payload = { provider: provider.id, model: validModelId, key: apiKey };
+    if (provider.id === "customGateway") {
+      payload.baseUrl = baseUrl;
+    }
     const response = await chrome.runtime.sendMessage({
       type: "VALIDATE_CONFIG",
-      payload: { provider: provider.id, model: validModelId, key: apiKey },
+      payload,
     });
 
     setButtonLoading(false);
@@ -413,10 +437,12 @@ async function loadSettings() {
       "geminiApiKey",
       "groqApiKey",
       "openaiApiKey",
-      "ollamaEndpoint",
       "apiModel",
       "customModelName",
       "currentPreset",
+      "customGatewayBaseUrl",
+      "customGatewayApiKey",
+      "customGatewayModelName",
     ]);
 
     if (config.geminiApiKey) elements.geminiApiKey.value = config.geminiApiKey;
@@ -425,9 +451,18 @@ async function loadSettings() {
     if (config.customModelName)
       elements.customModelName.value = config.customModelName;
 
-    elements.ollamaEndpoint.value =
-      config.ollamaEndpoint || "http://localhost:11434";
-    elements.apiModel.value = config.apiModel || "gemini-2.0-flash";
+    // Custom Gateway config
+    if (elements.customGatewayBaseUrl)
+      elements.customGatewayBaseUrl.value = config.customGatewayBaseUrl || "";
+    if (elements.customGatewayApiKey)
+      elements.customGatewayApiKey.value = config.customGatewayApiKey || "";
+
+    // Load custom model name for selected provider
+    const savedModel = config.apiModel || "gemini-2.0-flash";
+    elements.apiModel.value = savedModel;
+    if (savedModel === "custom-gateway" && config.customGatewayModelName) {
+      elements.customModelName.value = config.customGatewayModelName;
+    }
     const validPresets = [
       "professional",
       "casual",
@@ -466,11 +501,17 @@ async function saveSettings() {
       geminiApiKey: elements.geminiApiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
       openaiApiKey: elements.openaiApiKey.value.trim(),
-      ollamaEndpoint: elements.ollamaEndpoint.value.trim(),
       apiModel: elements.apiModel.value,
       customModelName: elements.customModelName.value.trim(),
       currentPreset: elements.defaultPreset.value,
+      customGatewayBaseUrl: elements.customGatewayBaseUrl.value.trim(),
+      customGatewayApiKey: elements.customGatewayApiKey.value.trim(),
     };
+
+    // Save custom model name to gateway-specific key if custom gateway is selected
+    if (elements.apiModel.value === "custom-gateway") {
+      aiConfig.customGatewayModelName = elements.customModelName.value.trim();
+    }
     await chrome.storage.local.set(aiConfig);
 
     showSaveStatus(i18n.getMessage("settings_saved"), "success");

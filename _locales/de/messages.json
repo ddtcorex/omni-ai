@@ -331,14 +331,6 @@
     "message": "API-Schlüssel auf platform.openai.com erhalten",
     "description": "OpenAI-Schlüssel-Hinweis"
   },
-  "settings_ollamaEndpoint": {
-    "message": "Ollama-Endpunkt",
-    "description": "Ollama-Endpunkt-Label"
-  },
-  "settings_ollamaHint": {
-    "message": "Lokale API (z.B. http://localhost:11434)",
-    "description": "Ollama-Endpunkt-Hinweis"
-  },
   "settings_tooltip_gemini": {
     "message": "Gemini-Schlüssel erhalten",
     "description": "Statistik Gemini"
@@ -350,10 +342,6 @@
   "settings_tooltip_openai": {
     "message": "OpenAI-Schlüssel erhalten",
     "description": "Statistik OpenAI"
-  },
-  "settings_tooltip_ollama": {
-    "message": "Ollama-Konfiguration",
-    "description": "Statistik Ollama"
   },
   "settings_shortcuts_customize": {
     "message": "In Chrome anpassen",
@@ -468,12 +456,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Neuen API-Schlüssel erstellen"
   },
-  "settings_tooltip_ollama_s1": {
-    "message": "CORS-Modus für Ollama sicherstellen:"
-  },
-  "settings_tooltip_ollama_s2": {
-    "message": "Standard: http://localhost:11434"
-  },
   "overlay_suggested_fix": {
     "message": "Vorgeschlagene Korrektur",
     "description": "Suggested fix label"
@@ -537,5 +519,33 @@
   "include_page_context_locked_hint": {
     "message": "Der Seitenkontext ist für diese Unterhaltung gesperrt. Starte einen neuen Chat, um ihn zu ändern.",
     "description": "Tooltip when include page context checkbox is locked during an active conversation"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Connect to any OpenAI-compatible API endpoint",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "e.g. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Enter your API key...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway Configuration",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Supports OpenAI-compatible APIs (OpenRouter, LiteLLM, Together AI, etc.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Optional for some gateways (e.g., OpenRouter free tier)",
+    "description": "Note about API key being optional"
   }
 }

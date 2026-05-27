@@ -331,14 +331,6 @@
     "message": "在 platform.openai.com 获取密钥",
     "description": "OpenAI 密钥提示"
   },
-  "settings_ollamaEndpoint": {
-    "message": "Ollama 端点",
-    "description": "Ollama 端点标签"
-  },
-  "settings_ollamaHint": {
-    "message": "本地 API 端点 (例如 http://localhost:11434)",
-    "description": "Ollama 端点提示"
-  },
   "settings_tooltip_gemini": {
     "message": "获取 Gemini 密钥",
     "description": "Gemini 提示标题"
@@ -350,10 +342,6 @@
   "settings_tooltip_openai": {
     "message": "获取 OpenAI 密钥",
     "description": "OpenAI 提示标题"
-  },
-  "settings_tooltip_ollama": {
-    "message": "Ollama 配置",
-    "description": "Ollama 提示标题"
   },
   "settings_shortcuts_customize": {
     "message": "在 Chrome 中自定义",
@@ -468,12 +456,6 @@
   "settings_tooltip_openai_s3": {
     "message": "创建新的 API 密钥"
   },
-  "settings_tooltip_ollama_s1": {
-    "message": "确保 Ollama 在运行时启用了 CORS："
-  },
-  "settings_tooltip_ollama_s2": {
-    "message": "默认：http://localhost:11434"
-  },
   "overlay_suggested_fix": {
     "message": "建议修改",
     "description": "Suggested fix label"
@@ -537,5 +519,33 @@
   "include_page_context_locked_hint": {
     "message": "该页面上下文在本次对话中已锁定。请开启新对话以更改。",
     "description": "Tooltip when include page context checkbox is locked during an active conversation"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Connect to any OpenAI-compatible API endpoint",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "e.g. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Enter your API key...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway Configuration",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Supports OpenAI-compatible APIs (OpenRouter, LiteLLM, Together AI, etc.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Optional for some gateways (e.g., OpenRouter free tier)",
+    "description": "Note about API key being optional"
   }
 }

@@ -337,6 +337,15 @@ body {
   text-decoration: underline;
 }
 
+/* Field Note (below inputs) */
+.field-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
 /* Input Group */
 .input-group {
   display: flex;

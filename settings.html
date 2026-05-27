@@ -233,16 +233,16 @@
               </div>
             </div>
 
-            <!-- Ollama Endpoint -->
+            <!-- Custom Gateway -->
             <div
               class="setting-item hidden"
-              id="ollamaKeyGroup"
-              data-provider="ollama"
+              id="customGatewayKeyGroup"
+              data-provider="customGateway"
             >
-              <label class="setting-label" for="ollamaEndpoint">
+              <label class="setting-label">
                 <div class="label-header">
                   <span class="label-text"
-                    >__MSG_settings_ollamaEndpoint__</span
+                    >__MSG_settings_customGatewayTitle__</span
                   >
                   <div class="tooltip-trigger">
                     <svg
@@ -258,24 +258,34 @@
                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                     <div class="tooltip-popup">
-                      <p>__MSG_settings_tooltip_ollama__</p>
-                      <p>__MSG_settings_tooltip_ollama_s1__</p>
-                      <code>OLLAMA_ORIGINS="*" ollama serve</code>
-                      <p>__MSG_settings_tooltip_ollama_s2__</p>
+                      <p>__MSG_settings_tooltip_customGateway__</p>
                     </div>
                   </div>
                 </div>
-                <span class="label-hint">__MSG_settings_ollamaHint__</span>
+                <span class="label-hint">__MSG_settings_customGatewayHint__</span>
               </label>
-              <div class="input-group">
+
+              <!-- Base URL -->
+              <div class="input-group" style="margin-bottom: 8px;">
                 <input
                   type="text"
-                  id="ollamaEndpoint"
+                  id="customGatewayBaseUrl"
                   class="setting-input"
-                  placeholder="http://localhost:11434"
-                  value="http://localhost:11434"
+                  placeholder="__MSG_settings_customGatewayUrlPlaceholder__"
                 />
               </div>
+              <p class="field-note">__MSG_settings_customGatewayUrlNote__</p>
+
+              <!-- API Key -->
+              <div class="input-group" style="margin-bottom: 8px;">
+                <input
+                  type="password"
+                  id="customGatewayApiKey"
+                  class="setting-input"
+                  placeholder="__MSG_settings_customGatewayKeyPlaceholder__"
+                />
+              </div>
+              <p class="field-note">__MSG_settings_customGatewayKeyNote__</p>
             </div>
 
             <!-- Validation -->
