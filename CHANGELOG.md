@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-05-28
+
+### ✨ Added
+
+- **Custom Gateway Support**: Connect to any OpenAI-compatible API endpoint, including custom deployments and third-party providers like DeepSeek v4 Pro.
+
+### 🛠 Improvements
+
+- **Simple Language**: Prompts now emphasize using everyday, common vocabulary for more natural results.
+- **Rephrase Freshness**: Rephrase action now bypasses cache for always-fresh results on each click.
+- **Tone Presets**: Fixed tone action to correctly apply professional/casual/friendly/direct/confident presets.
+
+### 🐛 Bug Fixes
+
+- **Custom Gateway Provider Resolution**: Fixed issue where Custom Gateway provider was incorrectly routing to Gemini when using custom model names.
+- **SSE Streaming Parser**: Fixed parsing for non-standard SSE response formats (common with proxy/gateway providers).
+
 ## [2.0.0] - 2026-02-23
 
 ### ✨ Added
