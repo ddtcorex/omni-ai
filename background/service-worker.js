@@ -555,7 +555,10 @@ async function handleQuickAction(payload) {
           "clarity",
         ].includes(action)
       ) {
-        result = await improveText(selectedText, action, preset);
+        // Pass preset as tone via options, not context
+        result = await improveText(selectedText, action, "chat", {
+          tone: preset,
+        });
       } else {
         throw new Error(`Unknown action: ${action}`);
       }

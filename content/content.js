@@ -1250,6 +1250,7 @@ async function handleAction(action, text, isInput) {
   showLoadingInOverlay();
 
   let preset = "chat";
+  let options = {};
   if (action === "tone") {
     const { currentPreset } = await chrome.storage.local.get("currentPreset");
     const validTones = [
@@ -1266,8 +1267,9 @@ async function handleAction(action, text, isInput) {
     }
   }
 
+  // Skip cache for rephrase to always get fresh results
   const cacheKey = `${action}|${text.trim()}|${preset}`;
-  if (resultCache.has(cacheKey)) {
+  if (action !== "rephrase" && resultCache.has(cacheKey)) {
     showResultOverlay(
       {
         action,
@@ -1280,13 +1282,21 @@ async function handleAction(action, text, isInput) {
     return;
   }
 
+  // For tone action, pass the tone as options.tone
+  if (action === "tone") {
+    options = { tone: preset };
+  }
+
   sendMessageToBackground({
     type: "QUICK_ACTION",
-    payload: { action, text, preset },
+    payload: { action, text, preset, options },
   })
     .then((response) => {
       if (response.success) {
-        resultCache.set(cacheKey, response.data.response);
+        // Skip caching for rephrase
+        if (action !== "rephrase") {
+          resultCache.set(cacheKey, response.data.response);
+        }
         showResultOverlay(
           {
             action,
