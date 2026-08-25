@@ -110,7 +110,9 @@ describe("AI Service", () => {
 
     expect(result).toBe("Improved Text");
     const callArgs = mockProvider.generateContent.mock.calls[0];
-    expect(callArgs[0]).toContain("You are a professional writing assistant");
+    expect(callArgs[0]).toContain(
+      "You are a helpful writing assistant who uses simple, everyday language",
+    );
     expect(callArgs[0]).toContain("Original text:\nBad text");
   });
 
@@ -122,8 +124,8 @@ describe("AI Service", () => {
 
     expect(result).toBe("Rephrased Text");
     const callArgs = mockProvider.generateContent.mock.calls[0];
-    expect(callArgs[0]).toContain("simple, everyday words");
-    expect(callArgs[0]).toContain("not fancy or rare vocabulary");
+    expect(callArgs[0]).toContain("simple, common words that ordinary people use in daily life");
+    expect(callArgs[0]).toContain("Avoid fancy, formal, or rare vocabulary");
     expect(callArgs[1]).toEqual(
       expect.objectContaining({
         temperature: 0.15,

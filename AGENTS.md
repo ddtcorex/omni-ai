@@ -176,8 +176,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 
 ## ⚠️ Known Issues (fix on sight — do not copy these patterns)
 
-1. **Stale tests**: `tests/lib/ai-service.test.js` asserts pre-v2.1.0 prompt wording (2 failures as of this writing).
-2. **Dead code**: `lib/auth.js` and `lib/prompts.js` are imported nowhere.
+1. **Dead code**: `lib/auth.js` and `lib/prompts.js` are imported nowhere.
 
 ---
 
