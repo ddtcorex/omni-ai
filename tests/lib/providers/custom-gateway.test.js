@@ -4,7 +4,9 @@
  * Pins: base-URL trailing-slash normalization, content-type-based streaming
  * detection, SSE delta parsing with the [DONE] sentinel, the DeepSeek-style
  * reasoning_content fallback, bare-JSON line tolerance, request body/header
- * mapping, and gateway error propagation.
+ * mapping, and gateway error propagation. Also pins cross-read event
+ * reassembly for events split across chunk boundaries and the actual
+ * content-vs-reasoning_content precedence when one delta carries both.
  *
  * SSE responses are simulated with node:stream/web ReadableStream +
  * node:util Text{En,De}coder because the jsdom test environment does not
@@ -65,6 +67,39 @@ describe("Custom Gateway Provider", () => {
     await expect(
       generateContent("hi", { baseUrl: "https://gw.example/", apiKey: "k", model: "m" }),
     ).resolves.toBe("Hello");
+  });
+
+  it("reassembles an SSE event split across two chunk boundaries", async () => {
+    // One complete `data: {...}\n\n` event is delivered as TWO enqueues (two
+    // reader.read() calls): the first read holds an unparseable fragment in
+    // `buffer`, the second completes it via segments.pop() reassembly.
+    global.fetch.mockResolvedValue(
+      wrapHeaders(
+        sseResponse([
+          'data: {"choices":[{"del',
+          'ta":{"content":"Hel"}}]}\n\ndata: {"choices":[{"delta":{"content":"lo"}}]}\n\ndata: [DONE]\n\n',
+        ]),
+      ),
+    );
+    await expect(
+      generateContent("hi", { baseUrl: "https://gw.example", model: "m" }),
+    ).resolves.toBe("Hello");
+  });
+
+  it("prefers content over reasoning_content when a single delta carries both", async () => {
+    // Pins ACTUAL extractContent() order in lib/providers/custom-gateway.js:
+    // content is read first (:12); reasoning_content (:16) is only consulted
+    // when content is falsy. Reality: content wins, reasoning is discarded.
+    global.fetch.mockResolvedValue(
+      wrapHeaders(
+        sseResponse([
+          'data: {"choices":[{"delta":{"content":"visible","reasoning_content":"hidden"}}]}\n\n',
+        ]),
+      ),
+    );
+    await expect(
+      generateContent("hi", { baseUrl: "https://gw.example", model: "m" }),
+    ).resolves.toBe("visible");
   });
 
   it("falls back to DeepSeek-style reasoning_content and omits Authorization without apiKey", async () => {
