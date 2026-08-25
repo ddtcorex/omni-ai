@@ -37,7 +37,7 @@ This repo **mandates** the superpowers process skills for every agent session (C
 | Work needing workspace isolation          | `using-git-worktrees`                                                            |
 | Creating or editing skills themselves     | `writing-skills`                                                                 |
 
-3.  Implementation plans live in `docs/superpowers/plans/YYYY-MM-DD-<name>.md` (see the engineering-hygiene plan there as the working example).
+3.  Implementation plans live in `docs/superpowers/plans/YYYY-MM-DD-<name>.md`; completed plans are pruned once their work has merged (see `docs/FOLLOWUPS.md` for anything still outstanding from a finished plan).
 4.  Direct human instructions and this file take precedence over skills; skipping a mandated workflow requires the human to say so explicitly.
 
 ---
