@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Long unbroken tokens (URLs, code) in an AI result or the auto grammar-check suggestion card now wrap inside their card instead of forcing it wider than the overlay and spilling outside its boundary.
 - Added a `:host` reset inside `content/overlay.css` as a second isolation layer: previously the shadow host's page-CSS isolation depended entirely on a one-time inline style written by `content.js`, which a host page's own script could strip (a full DOM reset, an attribute-cleanup script) and let its own styles leak into the Omni AI UI through inheritance.
 - The Alt+T "Dịch"/Translate keyboard shortcut now uses the same direction-detecting `smartTranslate()` as the on-page "Smart Translation" card, instead of always force-translating into the primary language regardless of the source text's language. `processSelectedText()` (shared by keyboard shortcuts and the right-click context menu) never had a `smart_translate` case, so the shortcut fell back to the one-way `translate_primary` action.
+- The right-click "Dịch với Omni AI" context-menu item now also uses `smartTranslate()` instead of always translating to the default language, matching the shortcut and menu-card fix above.
+- `chrome.runtime.onInstalled`'s `"update"` branch was an empty no-op, so reloading the unpacked extension (routine during development, and any real auto-update) never recreated the right-click context menu items that Chrome clears on reload, and never re-ran the settings-default merge for keys added after a user's original install. Both now run on `"update"` too, not just `"install"`.
 
 ## [2.1.0] - 2026-05-28
 

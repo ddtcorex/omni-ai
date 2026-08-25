@@ -69,10 +69,16 @@ async function sendToActiveEditor(tabId, message) {
  * Handle extension installation
  */
 chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === "install") {
+  if (details.reason === "install" || details.reason === "update") {
+    // Reloading an unpacked extension in chrome://extensions (routine
+    // during development) fires "update", and Chrome clears the
+    // extension's context menu items on that reload — they must be
+    // recreated here too, not just on first install. initializeSettings()
+    // is a safe no-op merge for existing keys, so re-running it on update
+    // also seeds any new setting default (e.g. showFloatingButton) added
+    // after a user's original install.
     initializeSettings();
     createContextMenus();
-  } else if (details.reason === "update") {
   }
 });
 
@@ -298,7 +304,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       processSelectedText(tab.id, selectedText, "explain");
       break;
     case "omni-ai-translate":
-      processSelectedText(tab.id, selectedText, "translate");
+      processSelectedText(tab.id, selectedText, "smart_translate");
       break;
   }
 });

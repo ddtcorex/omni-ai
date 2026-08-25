@@ -78,6 +78,31 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it("recreates context menus and seeds new setting defaults on update, not just install", async () => {
+    // Reloading an unpacked extension in chrome://extensions (a routine dev
+    // action per AGENTS.md's Dev Loop) fires onInstalled with reason
+    // "update", not "install" — and Chrome clears the extension's context
+    // menu items on that reload. If update is a no-op, the menu never comes
+    // back, and any new settings default introduced after a user's original
+    // install (e.g. showFloatingButton) never gets seeded for them either.
+    chromeMock.storage.local.get.mockResolvedValue({ settings: { autoClose: true } });
+    await import("../../background/service-worker");
+
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+    chromeMock.contextMenus.create.mockClear();
+    installed({ reason: "update" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.contextMenus.create).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "omni-ai-translate" }),
+    );
+    expect(chromeMock.storage.local.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({ autoClose: true, showFloatingButton: true }),
+      }),
+    );
+  });
+
   it("routes keyboard commands to the most recently focused editor frame", async () => {
     const AIService = await import("../../lib/ai-service");
     AIService.improveText.mockResolvedValue("Improved");
@@ -309,26 +334,27 @@ describe("Service Worker Integration", () => {
     expect(sendResponse).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });
 
-  it("context menu legacy translate falls back to defaultLanguage from storage.sync", async () => {
+  it("context menu translate uses smartTranslate, matching the Alt+T shortcut and the menu card", async () => {
     const AIService = await import("../../lib/ai-service");
     const History = await import("../../lib/history");
 
     await import("../../background/service-worker");
     const menuListener = chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
 
-    AIService.translateText.mockResolvedValue("TRANSLATED");
+    AIService.smartTranslate.mockResolvedValue("TRANSLATED");
     History.addToHistory.mockResolvedValue({});
     chromeMock.storage.sync.get.mockResolvedValue({});
 
     menuListener({ menuItemId: "omni-ai-translate", selectionText: "hola" }, { id: 123 });
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Legacy flow must consult storage.sync (never local) before translating
-    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("defaultLanguage");
+    // Must consult storage.sync (never local) for both languages
+    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith(["primaryLanguage", "defaultLanguage"]);
     const localKeys = chromeMock.storage.local.get.mock.calls.map((c) => c[0]).flat();
     expect(localKeys).not.toContain("defaultLanguage");
-    // No configured language -> documented fallback
-    expect(AIService.translateText).toHaveBeenCalledWith("hola", "en");
+    // No configured languages -> documented fallbacks
+    expect(AIService.smartTranslate).toHaveBeenCalledWith("hola", "vi", "en");
+    expect(AIService.translateText).not.toHaveBeenCalled();
     expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
       123,
       expect.objectContaining({ type: "SHOW_RESULT" }),
