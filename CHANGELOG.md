@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Keyboard-shortcut and context-menu actions (translate, rephrase, grammar, explain, summarize, quick ask) no longer broadcast `GET_SELECTION`/`SHOW_RESULT` to every frame on the page when no editor frame is being tracked; they now target the top frame explicitly. The broadcast form raced against any other frame on the page (ads, embeds) and could silently return an unrelated frame's empty selection instead of the real one.
+- Long unbroken tokens (URLs, code) in an AI result or the auto grammar-check suggestion card now wrap inside their card instead of forcing it wider than the overlay and spilling outside its boundary.
+- Added a `:host` reset inside `content/overlay.css` as a second isolation layer: previously the shadow host's page-CSS isolation depended entirely on a one-time inline style written by `content.js`, which a host page's own script could strip (a full DOM reset, an attribute-cleanup script) and let its own styles leak into the Omni AI UI through inheritance.
 
 ## [2.1.0] - 2026-05-28
 
