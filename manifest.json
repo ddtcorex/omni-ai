@@ -78,12 +78,24 @@
       "description": "__MSG_action_translate__"
     },
     "quick_fix_grammar": {
+      "suggested_key": {
+        "default": "Alt+F",
+        "mac": "Alt+F"
+      },
       "description": "__MSG_action_grammar__"
     },
     "quick_summarize": {
+      "suggested_key": {
+        "default": "Alt+S",
+        "mac": "Alt+S"
+      },
       "description": "__MSG_action_summarize__"
     },
     "quick_explain": {
+      "suggested_key": {
+        "default": "Alt+E",
+        "mac": "Alt+E"
+      },
       "description": "__MSG_action_explain__"
     }
   },

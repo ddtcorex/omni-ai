@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frame-aware keyboard-command routing for active editors.
 - Settings control for the floating Omni AI button; it is enabled by default and shortcuts remain available when disabled.
 - Translations for the new floating-button settings strings across all 10 locales.
+- Default `suggested_key` shortcuts for Fix Grammar (Alt+F), Summarize (Alt+S), and Explain (Alt+E). Chrome only auto-binds the first 4 declared shortcuts per extension (already used by popup/quick-ask/rephrase/translate), so these 3 won't be assigned automatically on install — users can bind them at `chrome://extensions/shortcuts`. See `docs/FOLLOWUPS.md` #8: e2e coverage can't currently verify a manifest with 5+ suggested keys (the test harness's Chromium channel hangs loading the extension, contrary to documented Chrome behavior).
 
 ### Fixed
 
