@@ -31,6 +31,18 @@ Prompt-wording changes in `lib/ai-service.js` MUST update `tests/lib/ai-service.
 - E2E: Playwright (`npm run e2e`) — required for content-script UI behavior changes
 - Before opening a PR: `npm run verify` green locally
 
+## Editor Support Matrix
+
+Run this matrix manually after changing content scripts. Each site must keep Copy available if direct replacement is rejected.
+
+| Site | Selected replace | Full-draft replace | Shortcut routing | Copy fallback |
+| --- | --- | --- | --- | --- |
+| TinyMCE 6/7 iframe demo | Required | Required | Required | Required |
+| Discord | Required | Required | Required | Required |
+| Telegram Web | Required | Required | Required | Required |
+| Slack | Required | Required | Required | Required |
+| Microsoft Teams | Required | Required | Required | Required |
+
 ## PR Checklist
 
 - [ ] `npm run verify` green

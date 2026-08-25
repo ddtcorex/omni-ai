@@ -16,6 +16,7 @@ describe("Service Worker Integration", () => {
         onInstalled: { addListener: jest.fn() },
         onMessage: { addListener: jest.fn() },
       },
+      i18n: { getMessage: jest.fn((key) => key) },
       contextMenus: {
         create: jest.fn(),
         onClicked: { addListener: jest.fn() },
@@ -26,6 +27,11 @@ describe("Service Worker Integration", () => {
       },
       storage: {
         local: {
+          get: jest.fn().mockResolvedValue({}),
+          set: jest.fn().mockResolvedValue({}),
+          remove: jest.fn().mockResolvedValue({}),
+        },
+        session: {
           get: jest.fn().mockResolvedValue({}),
           set: jest.fn().mockResolvedValue({}),
           remove: jest.fn().mockResolvedValue({}),
@@ -50,6 +56,80 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.runtime.onInstalled.addListener).toHaveBeenCalled();
     expect(chromeMock.runtime.onMessage.addListener).toHaveBeenCalled();
     expect(chromeMock.contextMenus.onClicked.addListener).toHaveBeenCalled();
+  });
+
+  it("preserves existing settings while defaulting showFloatingButton to true on install", async () => {
+    chromeMock.storage.local.get.mockResolvedValue({
+      settings: { autoClose: true },
+    });
+    await import("../../background/service-worker");
+
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+    installed({ reason: "install" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.storage.local.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({
+          autoClose: true,
+          showFloatingButton: true,
+        }),
+      }),
+    );
+  });
+
+  it("routes keyboard commands to the most recently focused editor frame", async () => {
+    const AIService = await import("../../lib/ai-service");
+    AIService.improveText.mockResolvedValue("Improved");
+    await import("../../background/service-worker");
+
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+    messageListener({ type: "EDITOR_FOCUSED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "Original", isInput: true });
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_rephrase", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({ type: "GET_SELECTION" }),
+      { frameId: 7 },
+    );
+  });
+
+  it("restores the active editor frame after a service-worker restart", async () => {
+    chromeMock.storage.session.get.mockResolvedValue({ omni_ai_active_frame_123: 7 });
+    await import("../../background/service-worker");
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "Original", isInput: true });
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_rephrase", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({ type: "GET_SELECTION" }),
+      { frameId: 7 },
+    );
+  });
+
+  it("clears a cached iframe when the editor context becomes static", async () => {
+    await import("../../background/service-worker");
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+    messageListener({ type: "EDITOR_FOCUSED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
+    messageListener({ type: "EDITOR_BLURRED" }, { tab: { id: 123 }, frameId: 0 }, jest.fn());
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "Original", isInput: true });
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_rephrase", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.storage.session.remove).toHaveBeenCalledWith("omni_ai_active_frame_123");
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({ type: "GET_SELECTION" }),
+    );
   });
 
   it("handles WRITING_ACTION message correctly", async () => {

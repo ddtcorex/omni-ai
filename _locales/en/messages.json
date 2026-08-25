@@ -147,6 +147,22 @@
     "message": "Save Settings",
     "description": "Save button"
   },
+  "settings_showFloatingButton": {
+    "message": "Show floating Omni AI button",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Turn this off to use keyboard shortcuts and context menus only.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_on": {
+    "message": "On",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Off",
+    "description": "Disabled setting option"
+  },
   "settings_saved": {
     "message": "Settings saved!",
     "description": "Save confirmation"

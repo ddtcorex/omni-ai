@@ -19,6 +19,42 @@ import {
 // ============================================
 // Constants
 // ============================================
+const activeEditorFrames = new Map();
+
+function activeEditorFrameKey(tabId) {
+  return `omni_ai_active_frame_${tabId}`;
+}
+
+async function getActiveEditorFrame(tabId) {
+  if (activeEditorFrames.has(tabId)) return activeEditorFrames.get(tabId);
+
+  const stored = await chrome.storage.session.get(activeEditorFrameKey(tabId));
+  const frameId = stored[activeEditorFrameKey(tabId)];
+  if (Number.isInteger(frameId)) activeEditorFrames.set(tabId, frameId);
+  return frameId;
+}
+
+function rememberActiveEditorFrame(tabId, frameId) {
+  activeEditorFrames.set(tabId, frameId);
+  return chrome.storage.session.set({ [activeEditorFrameKey(tabId)]: frameId });
+}
+
+function clearActiveEditorFrame(tabId) {
+  activeEditorFrames.delete(tabId);
+  return chrome.storage.session.remove(activeEditorFrameKey(tabId));
+}
+
+async function sendToActiveEditor(tabId, message) {
+  const frameId = await getActiveEditorFrame(tabId);
+  if (Number.isInteger(frameId) && frameId > 0) {
+    try {
+      return await chrome.tabs.sendMessage(tabId, message, { frameId });
+    } catch {
+      await clearActiveEditorFrame(tabId);
+    }
+  }
+  return chrome.tabs.sendMessage(tabId, message);
+}
 
 // ============================================
 // Installation & Setup
@@ -44,20 +80,18 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
   }
 
   if (command === "quick_ask") {
-    chrome.tabs.sendMessage(tab.id, { type: "SHOW_QUICK_ASK_OVERLAY" });
+    sendToActiveEditor(tab.id, { type: "SHOW_QUICK_ASK_OVERLAY" }).catch(() => {});
     return;
   }
 
   // Handle other commands via selected text
   try {
     // Notify content script to show processing state (spin icon)
-    chrome.tabs.sendMessage(tab.id, { type: "PROCESSING_START" }).catch(() => {});
+    void sendToActiveEditor(tab.id, { type: "PROCESSING_START" }).catch(() => {});
 
-    const response = await chrome.tabs
-      .sendMessage(tab.id, {
-        type: "GET_SELECTION",
-      })
-      .catch(() => null);
+    const response = await sendToActiveEditor(tab.id, {
+      type: "GET_SELECTION",
+    }).catch(() => null);
 
     const selection = response?.selection;
     const isInput = response?.isInput || false;
@@ -71,16 +105,14 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
     if (action) {
       if (!selection) {
         // Notify content script about missing selection for these actions
-        chrome.tabs
-          .sendMessage(tab.id, {
-            type: "SHOW_RESULT",
-            payload: {
-              action,
-              result: chrome.i18n.getMessage("error_noSelection"),
-              error: true,
-            },
-          })
-          .catch(() => {});
+        void sendToActiveEditor(tab.id, {
+          type: "SHOW_RESULT",
+          payload: {
+            action,
+            result: chrome.i18n.getMessage("error_noSelection"),
+            error: true,
+          },
+        }).catch(() => {});
         return;
       }
       processSelectedText(tab.id, selection, action, isInput);
@@ -105,11 +137,17 @@ async function initializeSettings() {
       theme: "dark",
       autoClose: false,
       showNotifications: true,
+      showFloatingButton: true,
     },
   };
 
+  /** @type {Record<string, any>} */
   const existing = await chrome.storage.local.get(null);
-  const merged = { ...defaults, ...existing };
+  const merged = {
+    ...defaults,
+    ...existing,
+    settings: { ...defaults.settings, ...(existing.settings || {}) },
+  };
   await chrome.storage.local.set(merged);
 }
 
@@ -163,6 +201,26 @@ chrome.storage.onChanged.addListener((changes, area) => {
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
+    case "EDITOR_FOCUSED":
+      if (sender.tab?.id !== undefined && Number.isInteger(sender.frameId)) {
+        rememberActiveEditorFrame(sender.tab.id, sender.frameId)
+          .then(() => sendResponse({ success: true }))
+          .catch((error) => sendResponse({ success: false, error: error.message }));
+      } else {
+        sendResponse({ success: false });
+      }
+      break;
+
+    case "EDITOR_BLURRED":
+      if (sender.tab?.id !== undefined) {
+        clearActiveEditorFrame(sender.tab.id)
+          .then(() => sendResponse({ success: true }))
+          .catch((error) => sendResponse({ success: false, error: error.message }));
+      } else {
+        sendResponse({ success: false });
+      }
+      break;
+
     // Authentication
     case "SIGN_IN":
       handleSignIn()
@@ -627,7 +685,7 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         result = await improveText(text, action, "general");
     }
 
-    chrome.tabs.sendMessage(tabId, {
+    await sendToActiveEditor(tabId, {
       type: "SHOW_RESULT",
       payload: {
         action,
@@ -645,7 +703,7 @@ async function processSelectedText(tabId, text, action, isInput = false) {
       site: "context-menu",
     });
   } catch (error) {
-    chrome.tabs.sendMessage(tabId, {
+    await sendToActiveEditor(tabId, {
       type: "SHOW_RESULT",
       payload: {
         action,

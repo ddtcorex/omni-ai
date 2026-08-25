@@ -105,6 +105,7 @@ const resultCache = new Map();
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
+let floatingButtonEnabled = true;
 
 // Shadow UI root to isolate extension styles from host page CSS.
 const OMNI_UI_HOST_ID = "omni-ai-shadow-host";
@@ -346,12 +347,9 @@ const strategies = {
 };
 
 function getContext(element) {
-  if (strategies.run_standard && strategies.standard.isApplicable(element))
-    return strategies.standard;
-  // Check rich text before standard check in case of overlap, but standard check is specific tags
-  if (strategies.richText.isApplicable(element)) return strategies.richText;
-  if (strategies.standard.isApplicable(element)) return strategies.standard;
-  return strategies.static;
+  return (
+    /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS?.resolveAdapter(element) || strategies.static
+  );
 }
 
 // Helper to find the actual contenteditable host (Moved to top level scope)
@@ -503,10 +501,9 @@ function updateSmartFixCard(card, originalText, correctedText, isInput, activeEl
   const acceptBtn = card.querySelector("#omniAiAcceptFix");
   const dismissBtn = card.querySelector("#omniAiDismissFix");
 
-  acceptBtn.addEventListener("click", (e) => {
+  acceptBtn.addEventListener("click", async (e) => {
     e.stopPropagation();
-    replaceSelectedText(correctedText, activeElement);
-    hideOverlay();
+    if (await replaceSelectedText(correctedText, activeElement)) hideOverlay();
   });
 
   dismissBtn.addEventListener("click", (e) => {
@@ -579,6 +576,7 @@ function updateTranslateCard(card, result, text, isInput) {
 
 function init() {
   ensureUiRootReady().catch(() => {});
+  setupFloatingButtonPreference();
   setupMessageListener();
   setupSelectionListener();
   initTheme();
@@ -718,6 +716,7 @@ function setupSelectionListener() {
       const shouldShow = hasSelection || (context.id !== "static" && hasContent);
 
       if (shouldShow) {
+        reportEditorFocus(activeElement, context);
         // Additional check: If rich text has no selection but has content,
         // we only show if we are focused (which activeElement check covers).
 
@@ -773,6 +772,37 @@ function setupSelectionListener() {
       handleSelectionChange();
     }, 100);
   });
+
+  document.addEventListener("focusin", () => {
+    const activeElement = document.activeElement;
+    reportEditorFocus(activeElement, getContext(activeElement));
+  });
+}
+
+function reportEditorFocus(element, context = getContext(element)) {
+  if (!isContextValid()) return;
+
+  const type = context.id === "static" ? "EDITOR_BLURRED" : "EDITOR_FOCUSED";
+  chrome.runtime.sendMessage({ type }).catch(() => {});
+}
+
+function setupFloatingButtonPreference() {
+  if (!isContextValid()) return;
+
+  chrome.storage.local
+    .get("settings")
+    .then((data) => {
+      floatingButtonEnabled = /** @type {any} */ (data).settings?.showFloatingButton !== false;
+      if (!floatingButtonEnabled) hideQuickActionButton();
+    })
+    .catch(() => {});
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes.settings) return;
+    floatingButtonEnabled =
+      /** @type {any} */ (changes.settings.newValue).showFloatingButton !== false;
+    if (!floatingButtonEnabled) hideQuickActionButton();
+  });
 }
 
 // ============================================
@@ -786,6 +816,7 @@ function presentQuickActionButton(
   mousePosition = null,
 ) {
   if (!isContextValid()) return;
+  if (!floatingButtonEnabled) return;
   if (quickActionBtn) hideQuickActionButton();
 
   // If using mouse position, we don't need rect validation
@@ -1717,23 +1748,19 @@ async function showResultOverlay(payload, isInput = false) {
   // Replace (if exists)
   const replaceBtn = overlay.querySelector("#omniAiReplace");
   if (replaceBtn) {
-    replaceBtn.addEventListener("click", () => {
-      replaceSelectedText(result); // Replace with CLEAN result, not diff HTML
-      hideOverlay();
+    replaceBtn.addEventListener("click", async () => {
+      if (await replaceSelectedText(result)) hideOverlay();
     });
   }
 }
 
-function replaceSelectedText(newText, specificElement = null) {
+async function replaceSelectedText(newText, specificElement = null) {
   let activeElement = specificElement || document.activeElement;
 
   // Fallback to stored input element interaction
   if (
     activeInputElement &&
-    (!activeElement ||
-      activeElement === document.body ||
-      (!strategies.standard.isApplicable(activeElement) &&
-        !strategies.richText.isApplicable(activeElement)))
+    (!activeElement || activeElement === document.body || getContext(activeElement).id === "static")
   ) {
     activeElement = activeInputElement;
   }
@@ -1751,9 +1778,17 @@ function replaceSelectedText(newText, specificElement = null) {
     fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
   };
 
-  if (context.id !== "static") {
-    context.replaceText(activeElement, newText, state);
+  if (context.id === "static") return false;
+
+  const replacement = await /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.replaceViaAdapters(
+    activeElement,
+    state,
+    newText,
+  );
+  if (!replacement.ok) {
+    console.warn("[Omni AI] replace failed:", replacement.attempts.join("; "));
   }
+  return replacement.ok;
 }
 
 async function showQuickAskOverlay(
