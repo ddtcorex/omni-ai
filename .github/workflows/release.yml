@@ -1,0 +1,52 @@
+# ─── Required secrets ────────────────────────────────────────────────────────
+# Active steps below need NO repo secrets: they use the automatic GITHUB_TOKEN
+# via `permissions: contents: write`.
+#
+# Optional Chrome Web Store upload (commented block at the bottom) requires
+# FOUR secrets, configured by the repo owner under:
+#   GitHub → Settings → Secrets and variables → Actions ("New repository secret")
+#   (or the same page scoped to a GitHub Environment, if the job is pinned to one)
+#   https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
+#
+#   CWS_APP_ID          – Chrome Web Store item/extension ID
+#   CWS_CLIENT_ID       – OAuth client ID of the CWS API project
+#   CWS_CLIENT_SECRET   – OAuth client secret for that client ID
+#   CWS_REFRESH_TOKEN   – OAuth refresh token minted for chrome-webstore-upload-cli
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build store zip (publish.sh strips dev key + swaps OAuth client_id)
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y zip
+          bash scripts/publish.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chrome-web-store-zip
+          path: dist/*.zip
+      - name: Attach zip to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true
+      # Optional CWS upload — enable after storing repo secrets:
+      #   CWS_APP_ID, CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN
+      # - name: Upload to Chrome Web Store
+      #   env:
+      #     EXTENSION_ID: ${{ secrets.CWS_APP_ID }}
+      #     CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+      #     CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+      #     REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+      #   run: npx chrome-webstore-upload-cli upload --source dist/*.zip --auto-publish
