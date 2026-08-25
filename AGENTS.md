@@ -153,7 +153,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] Selection floating button appears; menu opens on plain pages AND inside inputs/textareas/contenteditable editors
 - [ ] Replace works for both plain inputs and rich editors
 - [ ] Context-menu items (Improve / Explain / Translate) show result cards
-- [ ] Keyboard shortcuts fire (Alt+O popup, Alt+A ask, Alt+R rephrase, Alt+T translate — these 4 auto-bind on install, the Chrome-documented max). Alt+F grammar / Alt+S summarize / Alt+E explain are declared as `suggested_key` too but won't auto-bind past that limit; assign them manually at `chrome://extensions/shortcuts` before testing.
+- [ ] Keyboard shortcuts fire (Alt+A ask, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit).
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
 - [ ] Service worker console clean after idle (no unhandled promise rejections)

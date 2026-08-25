@@ -50,10 +50,6 @@
 
   "commands": {
     "_execute_action": {
-      "suggested_key": {
-        "default": "Alt+O",
-        "mac": "Alt+O"
-      },
       "description": "__MSG_popup_title__"
     },
     "quick_ask": {
@@ -85,17 +81,9 @@
       "description": "__MSG_action_grammar__"
     },
     "quick_summarize": {
-      "suggested_key": {
-        "default": "Alt+S",
-        "mac": "Alt+S"
-      },
       "description": "__MSG_action_summarize__"
     },
     "quick_explain": {
-      "suggested_key": {
-        "default": "Alt+E",
-        "mac": "Alt+E"
-      },
       "description": "__MSG_action_explain__"
     }
   },
