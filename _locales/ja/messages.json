@@ -147,6 +147,22 @@
     "message": "設定を保存",
     "description": "保存ボタン"
   },
+  "settings_showFloatingButton": {
+    "message": "フローティングOmni AIボタンを表示",
+    "description": "フローティングアクションボタンの設定ラベル"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "オフにすると、キーボードショートカットとコンテキストメニューのみが使用できます。",
+    "description": "フローティングアクションボタンのヘルプテキスト"
+  },
+  "settings_on": {
+    "message": "オン",
+    "description": "有効設定オプション"
+  },
+  "settings_off": {
+    "message": "オフ",
+    "description": "無効設定オプション"
+  },
   "settings_saved": {
     "message": "設定を保存しました！",
     "description": "保存完了の通知"
@@ -178,6 +194,22 @@
   "contextMenu_translate": {
     "message": "Omni AIで翻訳",
     "description": "コンテキストメニュー：翻訳"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AIで言い換え",
+    "description": "コンテキストメニュー：言い換え"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AIで絵文字を追加",
+    "description": "コンテキストメニュー：絵文字追加"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AIで要約",
+    "description": "コンテキストメニュー：要約"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AIに質問",
+    "description": "コンテキストメニュー：質問"
   },
   "error_noApiKey": {
     "message": "APIキーが設定されていません。設定からGemini APIキーを追加してください。",

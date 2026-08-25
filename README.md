@@ -171,14 +171,14 @@ To use the personalization features (syncing settings across devices), you need 
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action                                       |
-| :------- | :------------------------------------------- |
-| `Alt+O`  | Open Omni AI Popup                           |
-| `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page) |
-| `Alt+R`  | Rephrase (on selected text)                  |
-| `Alt+T`  | Translate to Primary Language                |
+| Shortcut | Action                                                        |
+| :------- | :-------------------------------------------------------------- |
+| `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page)                     |
+| `Alt+R`  | Rephrase (on selected text)                                      |
+| `Alt+T`  | Smart Translate (auto-detects direction between your two configured languages) |
+| `Alt+F`  | Fix Grammar (on selected text)                                   |
 
-_Shortcuts can be customized in `chrome://extensions/shortcuts`_
+Chrome only auto-binds up to 4 shortcuts per extension, so these are the 4 with a default binding. Open Popup, Summarize, and Explain are also available as commands but need to be bound manually — like all shortcuts here, customizable at `chrome://extensions/shortcuts`.
 
 ---
 

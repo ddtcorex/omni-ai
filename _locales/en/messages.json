@@ -147,6 +147,22 @@
     "message": "Save Settings",
     "description": "Save button"
   },
+  "settings_showFloatingButton": {
+    "message": "Show floating Omni AI button",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Turn this off to use keyboard shortcuts and context menus only.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_on": {
+    "message": "On",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Off",
+    "description": "Disabled setting option"
+  },
   "settings_saved": {
     "message": "Settings saved!",
     "description": "Save confirmation"
@@ -178,6 +194,22 @@
   "contextMenu_translate": {
     "message": "Translate with Omni AI",
     "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Rephrase with Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Add Emoji with Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Summarize with Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Ask Omni AI",
+    "description": "Context menu quick ask"
   },
   "error_noApiKey": {
     "message": "API key not configured. Please add your API Key in Settings.",

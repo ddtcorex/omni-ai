@@ -147,6 +147,22 @@
     "message": "Enregistrer les paramètres",
     "description": "Bouton enregistrer"
   },
+  "settings_showFloatingButton": {
+    "message": "Afficher le bouton flottant Omni AI",
+    "description": "Libellé de préférence du bouton d'action flottant"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Désactivez cette option pour utiliser uniquement les raccourcis clavier et les menus contextuels.",
+    "description": "Texte d'aide de la préférence du bouton flottant"
+  },
+  "settings_on": {
+    "message": "Activé",
+    "description": "Option de réglage activé"
+  },
+  "settings_off": {
+    "message": "Désactivé",
+    "description": "Option de réglage désactivé"
+  },
   "settings_saved": {
     "message": "Paramètres enregistrés !",
     "description": "Confirmation enregistrement"
@@ -178,6 +194,22 @@
   "contextMenu_translate": {
     "message": "Traduire avec Omni AI",
     "description": "Menu contextuel traduire"
+  },
+  "contextMenu_rephrase": {
+    "message": "Reformuler avec Omni AI",
+    "description": "Menu contextuel reformuler"
+  },
+  "contextMenu_emojify": {
+    "message": "Ajouter un emoji avec Omni AI",
+    "description": "Menu contextuel ajouter emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Résumer avec Omni AI",
+    "description": "Menu contextuel résumer"
+  },
+  "contextMenu_ask": {
+    "message": "Demander à Omni AI",
+    "description": "Menu contextuel question rapide"
   },
   "error_noApiKey": {
     "message": "Clé API non configurée. Veuillez ajouter votre clé Gemini dans les paramètres.",

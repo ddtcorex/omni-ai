@@ -3,6 +3,27 @@
    Glassmorphism & Modern UI/UX
    ============================================ */
 
+/* Backup isolation layer: content.js applyUiHostStyles() sets this same
+   reset via an inline style (!important) on the shadow host when it first
+   mounts, but that's a one-time JS write. If a host page's own script later
+   clears/replaces the host element's style attribute (a full DOM reset, a
+   naive "strip inline styles" cleanup, etc.), the inline protection is gone
+   but this :host rule still applies from inside the shadow root itself, so
+   inherited properties (font, color, text-align, cursor, ...) keep
+   resetting to their initial values instead of leaking in from the page. */
+:host {
+  all: initial !important;
+  position: static !important;
+  display: block !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+}
+
 /* Shared Theme Variables */
 /* Scoped to avoid conflicts with host page */
 .omni-ai-overlay,
@@ -240,6 +261,9 @@
   flex-direction: column;
   gap: 0px;
   flex: 1;
+  /* Flex children default to min-width:auto, which refuses to shrink below
+     an unbroken long token's intrinsic width instead of letting it wrap. */
+  min-width: 0;
 }
 
 .omni-ai-suggestion-label {
@@ -256,6 +280,8 @@
   max-height: 180px;
   overflow-y: auto;
   padding-right: 4px;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .omni-ai-suggestion-content::-webkit-scrollbar {
@@ -399,6 +425,10 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--ai-bg-primary);
+  /* .omni-ai-overlay is a flex column; a flex child's default min-width is
+     auto, so an unbroken long token (URL, code) forces this child (and the
+     card) wider than the 320px card instead of wrapping. */
+  min-width: 0;
 }
 
 .omni-ai-result-text {
@@ -406,6 +436,8 @@
   font-size: var(--ai-font-sm);
   color: var(--ai-text-primary);
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 /* Footer Actions */

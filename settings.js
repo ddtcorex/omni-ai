@@ -33,6 +33,9 @@ const elements = {
   themeSelector: /** @type {HTMLSelectElement} */ (document.getElementById("themeSelector")),
   // Preferences
   defaultPreset: /** @type {HTMLSelectElement} */ (document.getElementById("defaultPreset")),
+  showFloatingButton: /** @type {HTMLSelectElement} */ (
+    document.getElementById("showFloatingButton")
+  ),
   primaryLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("primaryLanguage")),
   defaultLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("defaultLanguage")),
   shortcutsLink: document.getElementById("shortcutsLink"),
@@ -422,6 +425,7 @@ async function loadSettings() {
       "customGatewayBaseUrl",
       "customGatewayApiKey",
       "customGatewayModelName",
+      "settings",
     ]);
 
     if (config.geminiApiKey) elements.geminiApiKey.value = config.geminiApiKey;
@@ -447,6 +451,10 @@ async function loadSettings() {
     } else {
       elements.defaultPreset.value = "professional";
     }
+    if (elements.showFloatingButton) {
+      elements.showFloatingButton.value =
+        config.settings?.showFloatingButton === false ? "off" : "on";
+    }
 
     updateModelVisibility();
   } catch (error) {
@@ -469,6 +477,8 @@ async function saveSettings() {
     await chrome.storage.sync.set(preferences);
 
     // AI Config to Local
+    /** @type {Record<string, any>} */
+    const existingLocalSettings = await chrome.storage.local.get("settings");
     const aiConfig = {
       geminiApiKey: elements.geminiApiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
@@ -478,6 +488,10 @@ async function saveSettings() {
       currentPreset: elements.defaultPreset.value,
       customGatewayBaseUrl: elements.customGatewayBaseUrl.value.trim(),
       customGatewayApiKey: elements.customGatewayApiKey.value.trim(),
+      settings: {
+        ...(existingLocalSettings.settings || {}),
+        showFloatingButton: elements.showFloatingButton?.value !== "off",
+      },
     };
 
     // Save custom model name to gateway-specific key if custom gateway is selected

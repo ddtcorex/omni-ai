@@ -105,6 +105,7 @@ const resultCache = new Map();
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
+let floatingButtonEnabled = true;
 
 // Shadow UI root to isolate extension styles from host page CSS.
 const OMNI_UI_HOST_ID = "omni-ai-shadow-host";
@@ -219,155 +220,36 @@ function isEventInsideOmniUi(event) {
 // Input Strategies
 // ============================================
 
-const strategies = {
-  // Strategy for <input> and <textarea>
-  standard: {
-    id: "standard",
-    isApplicable: (el) => {
-      if (!el) return false;
-      const tagName = el.tagName;
-      if (tagName === "TEXTAREA") return true;
-      if (tagName === "INPUT") {
-        const type = (el.type || "text").toLowerCase();
-        const allowedTypes = ["text", "email", "number", "search", "tel", "url"];
-        return allowedTypes.includes(type);
-      }
-      return false;
-    },
-    getText: (el) => {
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      const text = el.value.substring(start, end);
-      // If no text selected, return full value ONLY if we want to act on the whole input
-      if (!text && el.value.trim().length > 0) {
-        return { text: el.value.trim(), isSelection: false, fullText: true };
-      }
-      return { text: text || "", isSelection: !!text, fullText: false };
-    },
-    getRect: (el) => {
-      // Standard inputs: Button goes to bottom-right corner
-      return el.getBoundingClientRect();
-    },
-    replaceText: (el, newText, state) => {
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      if (state && state.fullText) {
-        el.value = newText;
-      } else {
-        const val = el.value;
-        el.value = val.substring(0, start) + newText + val.substring(end);
-      }
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-    },
+// Fallback used only if content/editor-adapters.js somehow failed to load
+// before this script (manifest.json orders it first; see
+// tests/content/editor-adapters.test.js for that guarantee). Replacement
+// is never attempted through this fallback (see the `id === "static"`
+// guard in replaceSelectedText), so it only needs getText/getRect.
+const staticStrategy = {
+  id: "static",
+  isApplicable: () => true,
+  getText: () => {
+    const selection = window.getSelection();
+    return {
+      text: selection.toString().trim(),
+      isSelection: selection.toString().length > 0,
+    };
   },
-
-  // Strategy for ContentEditable / TinyMCE
-  richText: {
-    id: "richText",
-    isApplicable: (el) => {
-      if (!el) return false;
-      if (el.isContentEditable) return true;
-      if (el.designMode === "on") return true;
-      // Deep check for nested contenteditable
-      let parent = el.parentElement;
-      while (parent && parent !== document.body) {
-        if (parent.isContentEditable || parent.getAttribute("contenteditable") === "true") {
-          return true;
-        }
-        parent = parent.parentElement;
-      }
-      return false;
-    },
-    getText: (el) => {
-      const selection = window.getSelection();
-      const text = selection.toString();
-      if (text) {
-        return { text: text, isSelection: true };
-      }
-      // If no selection, grab innerText (treating as full document)
-      // Note: grabbing innerText from the *root* editable is better
-      const root = getEditableHost(el) || el;
-      return {
-        text: root.innerText.trim(),
-        isSelection: false,
-        fullText: true,
-      };
-    },
-    getRect: (el) => {
-      // Preference: Caret/Selection position
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        if (rect.width > 0 || rect.height > 0) return rect;
-      }
-      // Fallback to element rect
-      const root = getEditableHost(el) || el;
-      return root.getBoundingClientRect();
-    },
-    replaceText: (el, newText, state) => {
-      const root = getEditableHost(el) || el;
-      root.focus();
-
-      if (state && state.lastRange) {
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(state.lastRange);
-      } else if (state && state.fullText) {
-        document.execCommand("selectAll", false, null);
-      }
-
-      document.execCommand("insertText", false, newText);
-    },
-  },
-
-  // Strategy for Static Text (Selection on page)
-  static: {
-    id: "static",
-    isApplicable: () => true, // Fallback
-    getText: () => {
-      const selection = window.getSelection();
-      return {
-        text: selection.toString().trim(),
-        isSelection: selection.toString().length > 0,
-      };
-    },
-    getRect: () => {
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        return selection.getRangeAt(0).getBoundingClientRect();
-      }
-      return null;
-    },
-    replaceText: () => {
-      // Read-only
-    },
+  getRect: () => {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      return selection.getRangeAt(0).getBoundingClientRect();
+    }
+    return null;
   },
 };
 
 function getContext(element) {
-  if (strategies.run_standard && strategies.standard.isApplicable(element))
-    return strategies.standard;
-  // Check rich text before standard check in case of overlap, but standard check is specific tags
-  if (strategies.richText.isApplicable(element)) return strategies.richText;
-  if (strategies.standard.isApplicable(element)) return strategies.standard;
-  return strategies.static;
-}
-
-// Helper to find the actual contenteditable host (Moved to top level scope)
-function getEditableHost(el) {
-  if (!el) return null;
-  if (el.isContentEditable) {
-    let current = el;
-    while (current && current.parentElement) {
-      if (current.getAttribute && current.getAttribute("contenteditable") === "true") {
-        return current;
-      }
-      if (current.tagName === "BODY") break;
-      current = current.parentElement;
-    }
-  }
-  return el;
+  return (
+    /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS?.resolveAdapter(element, {
+      hostname: location.hostname,
+    }) || staticStrategy
+  );
 }
 
 // ============================================
@@ -503,10 +385,9 @@ function updateSmartFixCard(card, originalText, correctedText, isInput, activeEl
   const acceptBtn = card.querySelector("#omniAiAcceptFix");
   const dismissBtn = card.querySelector("#omniAiDismissFix");
 
-  acceptBtn.addEventListener("click", (e) => {
+  acceptBtn.addEventListener("click", async (e) => {
     e.stopPropagation();
-    replaceSelectedText(correctedText, activeElement);
-    hideOverlay();
+    if (await replaceSelectedText(correctedText, activeElement)) hideOverlay();
   });
 
   dismissBtn.addEventListener("click", (e) => {
@@ -579,6 +460,7 @@ function updateTranslateCard(card, result, text, isInput) {
 
 function init() {
   ensureUiRootReady().catch(() => {});
+  setupFloatingButtonPreference();
   setupMessageListener();
   setupSelectionListener();
   initTheme();
@@ -718,6 +600,7 @@ function setupSelectionListener() {
       const shouldShow = hasSelection || (context.id !== "static" && hasContent);
 
       if (shouldShow) {
+        reportEditorFocus(activeElement, context);
         // Additional check: If rich text has no selection but has content,
         // we only show if we are focused (which activeElement check covers).
 
@@ -773,6 +656,37 @@ function setupSelectionListener() {
       handleSelectionChange();
     }, 100);
   });
+
+  document.addEventListener("focusin", () => {
+    const activeElement = document.activeElement;
+    reportEditorFocus(activeElement, getContext(activeElement));
+  });
+}
+
+function reportEditorFocus(element, context = getContext(element)) {
+  if (!isContextValid()) return;
+
+  const type = context.id === "static" ? "EDITOR_BLURRED" : "EDITOR_FOCUSED";
+  chrome.runtime.sendMessage({ type }).catch(() => {});
+}
+
+function setupFloatingButtonPreference() {
+  if (!isContextValid()) return;
+
+  chrome.storage.local
+    .get("settings")
+    .then((data) => {
+      floatingButtonEnabled = /** @type {any} */ (data).settings?.showFloatingButton !== false;
+      if (!floatingButtonEnabled) hideQuickActionButton();
+    })
+    .catch(() => {});
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes.settings) return;
+    floatingButtonEnabled =
+      /** @type {any} */ (changes.settings.newValue).showFloatingButton !== false;
+    if (!floatingButtonEnabled) hideQuickActionButton();
+  });
 }
 
 // ============================================
@@ -786,6 +700,7 @@ function presentQuickActionButton(
   mousePosition = null,
 ) {
   if (!isContextValid()) return;
+  if (!floatingButtonEnabled) return;
   if (quickActionBtn) hideQuickActionButton();
 
   // If using mouse position, we don't need rect validation
@@ -797,7 +712,7 @@ function presentQuickActionButton(
   // Determine valid positioning flag
   const isInput = !!inputElement;
   // If we are in rich text, we want caret-like positioning (false), unless we fell back to element rect?
-  // Our strategies.getRect handles the rect.
+  // The resolved adapter's getRect() handles the rect.
   // usageInputPositioning argument in createQuickBtn determines offset.
   // Standard -> True. RichText -> False (usually). Static -> False.
 
@@ -806,7 +721,7 @@ function presentQuickActionButton(
     const context = getContext(inputElement);
     // Standard inputs use "Input Positioning" (corner)
     // RichText standardly uses caret (False), but if we fallback to element rect we might want corner?
-    // Strategies.richText.getRect tries caret first.
+    // The richText adapter's getRect() tries the caret position first.
     if (context.id === "standard") useInputPositioning = true;
   }
 
@@ -1717,23 +1632,19 @@ async function showResultOverlay(payload, isInput = false) {
   // Replace (if exists)
   const replaceBtn = overlay.querySelector("#omniAiReplace");
   if (replaceBtn) {
-    replaceBtn.addEventListener("click", () => {
-      replaceSelectedText(result); // Replace with CLEAN result, not diff HTML
-      hideOverlay();
+    replaceBtn.addEventListener("click", async () => {
+      if (await replaceSelectedText(result)) hideOverlay();
     });
   }
 }
 
-function replaceSelectedText(newText, specificElement = null) {
+async function replaceSelectedText(newText, specificElement = null) {
   let activeElement = specificElement || document.activeElement;
 
   // Fallback to stored input element interaction
   if (
     activeInputElement &&
-    (!activeElement ||
-      activeElement === document.body ||
-      (!strategies.standard.isApplicable(activeElement) &&
-        !strategies.richText.isApplicable(activeElement)))
+    (!activeElement || activeElement === document.body || getContext(activeElement).id === "static")
   ) {
     activeElement = activeInputElement;
   }
@@ -1751,9 +1662,17 @@ function replaceSelectedText(newText, specificElement = null) {
     fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
   };
 
-  if (context.id !== "static") {
-    context.replaceText(activeElement, newText, state);
+  if (context.id === "static") return false;
+
+  const replacement = await /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.replaceViaAdapters(
+    activeElement,
+    state,
+    newText,
+  );
+  if (!replacement.ok) {
+    console.warn("[Omni AI] replace failed:", replacement.attempts.join("; "));
   }
+  return replacement.ok;
 }
 
 async function showQuickAskOverlay(

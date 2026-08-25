@@ -147,6 +147,22 @@
     "message": "保存设置",
     "description": "保存按钮"
   },
+  "settings_showFloatingButton": {
+    "message": "显示悬浮 Omni AI 按钮",
+    "description": "悬浮操作按钮偏好设置标签"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "关闭后仅可使用键盘快捷键和右键菜单。",
+    "description": "悬浮操作按钮偏好设置帮助文本"
+  },
+  "settings_on": {
+    "message": "开启",
+    "description": "启用设置选项"
+  },
+  "settings_off": {
+    "message": "关闭",
+    "description": "禁用设置选项"
+  },
   "settings_saved": {
     "message": "设置已保存！",
     "description": "保存确认"
@@ -178,6 +194,22 @@
   "contextMenu_translate": {
     "message": "使用 Omni AI 翻译",
     "description": "右键菜单翻译"
+  },
+  "contextMenu_rephrase": {
+    "message": "使用 Omni AI 改写",
+    "description": "右键菜单改写"
+  },
+  "contextMenu_emojify": {
+    "message": "使用 Omni AI 添加表情",
+    "description": "右键菜单添加表情"
+  },
+  "contextMenu_summarize": {
+    "message": "使用 Omni AI 总结",
+    "description": "右键菜单总结"
+  },
+  "contextMenu_ask": {
+    "message": "询问 Omni AI",
+    "description": "右键菜单快速提问"
   },
   "error_noApiKey": {
     "message": "未配置 API 密钥。请在设置中添加您的 Gemini API 密钥。",

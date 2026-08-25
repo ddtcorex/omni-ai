@@ -147,6 +147,22 @@
     "message": "Salvar Configurações",
     "description": "Botão salvar"
   },
+  "settings_showFloatingButton": {
+    "message": "Mostrar botão flutuante da Omni AI",
+    "description": "Rótulo de preferência do botão de ação flutuante"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Desative para usar apenas atalhos de teclado e menus de contexto.",
+    "description": "Texto de ajuda da preferência do botão flutuante"
+  },
+  "settings_on": {
+    "message": "Ativado",
+    "description": "Opção de configuração ativada"
+  },
+  "settings_off": {
+    "message": "Desativado",
+    "description": "Opção de configuração desativada"
+  },
   "settings_saved": {
     "message": "Configurações salvas!",
     "description": "Confirmação de salvamento"
@@ -178,6 +194,22 @@
   "contextMenu_translate": {
     "message": "Traduzir com Omni AI",
     "description": "Menu de contexto traduzir"
+  },
+  "contextMenu_rephrase": {
+    "message": "Reformular com Omni AI",
+    "description": "Menu de contexto reformular"
+  },
+  "contextMenu_emojify": {
+    "message": "Adicionar emoji com Omni AI",
+    "description": "Menu de contexto adicionar emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Resumir com Omni AI",
+    "description": "Menu de contexto resumir"
+  },
+  "contextMenu_ask": {
+    "message": "Perguntar à Omni AI",
+    "description": "Menu de contexto pergunta rápida"
   },
   "error_noApiKey": {
     "message": "Chave API não configurada. Por favor, adicione sua chave Gemini nas configurações.",

@@ -10,7 +10,7 @@ Four user-reported issues, investigated per systematic-debugging Phase 1 (static
 | # | Issue | Evidence gathered |
 |---|---|---|
 | 1 | Need a config toggle for the floating master icon (keyboard-shortcuts-only mode) | Single gate point exists: `presentQuickActionButton()` (`content/content.js:832`). Settings object pattern already lives in `chrome.storage.local` (`settings: { autoClose, showNotifications }`, seeded in service-worker `initializeSettings`). |
-| 2 | Many chat tools unsupported (input structures differ) | Only 3 strategies exist (`standard`, `richText`, `static`, `content.js:231-365`). `richText` relies on `window.getSelection` + `document.execCommand("insertText")` only. `getEditableHost()` (`content.js:377`) walks light DOM only. Manifest content script has no `"all_frames": true` → editors inside iframes unreachable. React-controlled editors (Lexical/ProseMirror/Draft) ignore plain `execCommand` mutations. |
+| 2 | Many chat tools unsupported (input structures differ) | Only 3 strategies exist (`standard`, `richText`, `static`, `content.js:231-365`). `richText` relies on `window.getSelection` + `document.execCommand("insertText")` only. `getEditableHost()` (`content.js:377`) walks light DOM only. The supplied TinyMCE 7 markup places its editable `body#tinymce` in `.tox-edit-area__iframe`; manifest content scripts have no `"all_frames": true`, so it is unreachable. React-controlled editors (Lexical/ProseMirror/Draft) ignore plain `execCommand` mutations. |
 | 3 | Modal content sometimes overflows its frame | `.omni-ai-content-area` has `white-space: pre-wrap` (`overlay.css:411`) but **zero occurrences** of `overflow-wrap` / `word-break` / `min-width` guards in the entire stylesheet → long unbroken tokens (URLs, code) cannot wrap. |
 | 4 | Host page occasionally overrides extension CSS | Two candidate root causes: (a) `ensureUiStyles()` (`content.js:152-191`) fetches `overlay.css` via `fetch(chrome.runtime.getURL(...))`; on pages whose CSP blocks `connect-src` the fetch fails, the `catch` only warns, and the empty stylesheet is cached forever in `omniUiCssText` / `omniUiStylePromise` (no retry) → fully unstyled UI that *looks* like CSS override; (b) inheritable-property leakage is already mitigated by host `all: initial !important` (`content.js:120-131`), but internal wrappers carry no defensive resets beyond a `:where()` (specificity-0) block. |
 
@@ -19,7 +19,7 @@ Issues 3 and 4 share a failure surface: when (4a) triggers, the overlay loses AL
 ## Goals
 
 1. Users can disable the floating quick-action button from Settings; keyboard shortcuts and context menus keep working.
-2. AI actions read text from, and **fully replace results back into**, all major editor frameworks: ChatGPT, Claude, Gemini web, Slack, Discord, X/Twitter, Facebook, LinkedIn, Notion, TinyMCE (recent versions). Google Docs is explicitly degraded-mode (canvas rendering — DOM text does not exist).
+2. AI actions read text from, and **fully replace results back into**, TinyMCE (including recent iframe variants), Discord, Telegram Web, Slack, Microsoft Teams, and other major editor frameworks (ChatGPT, Claude, Gemini web, X/Twitter, Facebook, LinkedIn, Notion). Google Docs is explicitly degraded-mode (canvas rendering — DOM text does not exist).
 3. Overlay content never overflows regardless of token shape.
 4. Extension styling is immune to host-page CSP and host styles.
 
@@ -67,7 +67,7 @@ Generalize the existing ordered-strategy lookup (`getContext()`, `content.js:367
 
 ```js
 {
-  id: "beforeinput",                    // stable id, used by site hints + logs
+  id: "framework-contenteditable",       // stable id, used by site hints + logs
   match(el) -> bool,                    // cheapest checks first
   getText(el, selState) -> { text, isSelection, fullText },
   getRect(el, selState) -> DOMRect,
@@ -81,24 +81,24 @@ Resolution order (first `match()` wins, falling through on `applyReplace` failur
 | Order | Adapter | Targets | Mechanism |
 |---|---|---|---|
 | 1 | `standard` (exists) | input/textarea | value surgery + `input` event |
-| 2 | `rich-execCommand` (generalized from today's `richText`) | TinyMCE, classic CE editors | `execCommand("insertText")` |
-| 3 | `beforeinput` | ChatGPT, Slack (Lexical), Discord, modern Draft | focus restore → dispatch real `InputEvent("beforeinput", { inputType: "insertText", data })` on the focused editable; frameworks apply their own model updates |
-| 4 | `clipboard-sim` | Notion, X/Twitter, Facebook, LinkedIn, Gemini web; universal fallback; Google Docs (degraded) | `navigator.clipboard.writeText(newText)` → restore selection → `execCommand("paste")` (fallback: synthetic `paste` ClipboardEvent with DataTransfer) |
+| 2 | `rich-execCommand` (generalized from today's `richText`) | TinyMCE, classic CE editors, generic contenteditable | restore the captured selection → `execCommand("insertText")` → verify the document changed and the editor emitted `input` |
+| 3 | `framework-contenteditable` | ChatGPT, Slack (Lexical), Discord, Telegram Web, Microsoft Teams, modern Draft | use the same native edit path with app-specific host resolution and post-apply verification of the visible draft; dispatch an `InputEvent` only as a compatibility notification, never as the primary mutation mechanism |
+| 4 | `copy-fallback` | editors that reject programmatic replacement; Google Docs (degraded) | retain the result card and Copy action; never simulate a trusted paste event |
 | 5 | `static` (exists) | page text, read-only | unchanged |
 
 - **Shadow piercing:** rewrite `getEditableHost()` to walk `composedTree` parents (`node.getRootNode().host` chains) so open-shadow editors resolve to their true editable root. Closed shadow roots are out of reach (browser limitation, documented).
 - **Iframes:** add `"all_frames": true` + `"match_about_blank"` to the manifest content-script entry; per-frame instances self-gate via the existing `isContextValid()` and only mount UI when an editable is focused/selected. Blast-radius note: scripts now inject into ad/restricted frames too — acceptable because UI mounts lazily; revisit if perf regressions appear.
-- **Site hints:** hostname→adapter-preference map consulted BEFORE generic matching (e.g. `chatgpt.com→beforeinput`, `notion.so→clipboard-sim`, `docs.google.com→clipboard-sim(degraded)`), overridable by observed behavior at runtime (failure of an apply falls through to the next adapter).
-- **Google Docs degraded mode:** clipboard-sim against the active selection only; if no selection, result card offers Copy. UI toast states "Paste mode" when the sim path is used. Documented limitation, not a bug.
+- **Site hints:** hostname→adapter-preference map consulted BEFORE generic matching (including `discord.com`, `web.telegram.org`, `app.slack.com`, and `teams.microsoft.com` → `framework-contenteditable`; `chatgpt.com→framework-contenteditable`, `notion.so→rich-execCommand`, `docs.google.com→copy-fallback(degraded)`). A hint changes only host resolution and adapter precedence; it must not scrape messages or depend on internal framework state. A failed verification falls through to the next safe adapter.
+- **Google Docs degraded mode:** the result card offers Copy; no attempt is made to simulate a trusted paste event. This is a browser security limitation, not a bug.
 
 ### Failure semantics
 
-`applyReplace` returns boolean success. On failure: try next matching adapter; if all fail, fall back to today's behavior (result card with Copy button) and `console.warn("[Omni AI] replace failed via <adapterId>")`.
+`applyReplace` returns boolean success only after it verifies that the editor document/draft changed to the requested text. On failure: try the next matching safe adapter; if all fail, retain the result card with its Copy button and `console.warn("[Omni AI] replace failed via <adapterId>")`. Synthetic keyboard, paste, and `beforeinput` events are never treated as proof of replacement because JavaScript cannot create browser-trusted user input.
 
 ### Testing
 
-- Unit (jsdom): each adapter against structural fixtures (textarea; contenteditable; element listening to `beforeinput`; element listening to `paste`; nested open-shadow editable). Assert text lands and correct events fired.
-- E2E/manual matrix (documented in CONTRIBUTING): public sites listed above; recorded as a checklist table with expected adapter id per site. Proprietary internals may shift — adapters fail soft by design.
+- Unit (jsdom): each adapter against structural fixtures (textarea; contenteditable; iframe document; nested open-shadow editable). Assert the expected document changes, selection is restored, and failure produces `ok: false` rather than a false success.
+- E2E/manual matrix (documented in CONTRIBUTING): TinyMCE 6/7 iframe demos, Discord, Telegram Web, Slack, and Microsoft Teams are required rows, each recording read, selected replacement, full-draft replacement, and safe Copy fallback. Other public sites listed above are additional coverage. Proprietary internals may shift — adapters fail soft by design.
 - Telemetry-free: failures log locally only.
 
 ---
