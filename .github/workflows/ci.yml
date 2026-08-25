@@ -22,18 +22,13 @@ jobs:
       - run: npm ci
       - run: npm run verify
 
-  # Playwright smoke E2E — non-blocking until the spec stabilizes.
-  #
-  # Fail-soft today: playwright.config.js does not exist until Task 12, so
-  # each post-checkout step is guarded by hashFiles and the job skips
-  # cleanly instead of failing on missing config/tests. The guard lives on
-  # STEPS, not on the job: at job-if evaluation time no step has run yet,
-  # the workspace is empty and hashFiles would return '' forever, silently
-  # disabling e2e even after Task 12 adds the config.
+  # Playwright smoke E2E — blocking quality gate (since Task 12).
+  # Runs the specs under e2e/ only: playwright.config.js scopes testDir +
+  # testMatch so Jest's tests/**/*.test.js can never be swept.
   e2e:
     name: e2e (playwright)
     runs-on: ubuntu-latest
-    continue-on-error: true   # flip to false in Task 12 once smoke spec is stable
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -41,11 +36,8 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-        if: hashFiles('playwright.config.js') != ''
       - run: npx playwright install --with-deps chromium
-        if: hashFiles('playwright.config.js') != ''
       - run: npx playwright test
-        if: hashFiles('playwright.config.js') != ''
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
