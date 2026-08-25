@@ -7,12 +7,18 @@ import { initTheme } from "../lib/theme-manager.js";
 import { i18n } from "../lib/i18n.js";
 
 // DOM Elements
+// Nullability policy (uniform): every entry is `{PreciseType} | null`,
+// mirroring what getElementById/querySelector actually return. Call sites
+// with runtime guards narrow naturally; unguarded ones are pre-existing
+// presence assumptions, unchanged here.
 const elements = {
   // Quick Ask
-  quickAskInput: /** @type {HTMLTextAreaElement} */ (document.getElementById("quickAskInput")),
-  askBtn: document.getElementById("askBtn"),
-  settingsBtn: document.getElementById("settingsBtn"),
-  includePageContext: /** @type {HTMLInputElement} */ (
+  quickAskInput: /** @type {HTMLTextAreaElement | null} */ (
+    document.getElementById("quickAskInput")
+  ),
+  askBtn: /** @type {HTMLElement | null} */ (document.getElementById("askBtn")),
+  settingsBtn: /** @type {HTMLElement | null} */ (document.getElementById("settingsBtn")),
+  includePageContext: /** @type {HTMLInputElement | null} */ (
     document.getElementById("includePageContext")
   ),
   includePageContextLabel: /** @type {HTMLElement | null} */ (
@@ -20,24 +26,26 @@ const elements = {
   ),
 
   // Status
-  status: document.getElementById("status"),
+  status: /** @type {HTMLElement | null} */ (document.getElementById("status")),
 
   // Auth
-  userSection: document.getElementById("userSection"),
-  signInBtn: document.getElementById("signInBtn"),
-  userInfo: document.getElementById("userInfo"),
-  userAvatar: /** @type {HTMLImageElement} */ (document.getElementById("userAvatar")),
-  userMenuBtn: document.getElementById("userMenuBtn"),
-  userDropdown: document.getElementById("userDropdown"),
-  dropdownAvatar: /** @type {HTMLImageElement} */ (document.getElementById("dropdownAvatar")),
-  userName: document.getElementById("userName"),
-  userEmail: document.getElementById("userEmail"),
-  signOutBtn: document.getElementById("signOutBtn"),
+  userSection: /** @type {HTMLElement | null} */ (document.getElementById("userSection")),
+  signInBtn: /** @type {HTMLElement | null} */ (document.getElementById("signInBtn")),
+  userInfo: /** @type {HTMLElement | null} */ (document.getElementById("userInfo")),
+  userAvatar: /** @type {HTMLImageElement | null} */ (document.getElementById("userAvatar")),
+  userMenuBtn: /** @type {HTMLElement | null} */ (document.getElementById("userMenuBtn")),
+  userDropdown: /** @type {HTMLElement | null} */ (document.getElementById("userDropdown")),
+  dropdownAvatar: /** @type {HTMLImageElement | null} */ (
+    document.getElementById("dropdownAvatar")
+  ),
+  userName: /** @type {HTMLElement | null} */ (document.getElementById("userName")),
+  userEmail: /** @type {HTMLElement | null} */ (document.getElementById("userEmail")),
+  signOutBtn: /** @type {HTMLElement | null} */ (document.getElementById("signOutBtn")),
 
   // Chat
-  chatContainer: document.getElementById("chatContainer"),
-  emptyState: document.getElementById("emptyState"),
-  newChatBtn: document.getElementById("newChatBtn"),
+  chatContainer: /** @type {HTMLElement | null} */ (document.getElementById("chatContainer")),
+  emptyState: /** @type {HTMLElement | null} */ (document.getElementById("emptyState")),
+  newChatBtn: /** @type {HTMLElement | null} */ (document.getElementById("newChatBtn")),
 };
 
 // State
@@ -329,8 +337,13 @@ async function fetchCurrentPageContent() {
 
 async function loadDraftState() {
   try {
+    // chrome.storage.local.get's promise resolution is not index-typed to
+    // any in our @types/chrome, so pin the record shape at this boundary
+    // (same convention as loadChatHistory below) and leave `draft` dynamic;
+    // every field use is guarded by typeof checks.
+    /** @type {Record<string, any>} */
     const data = await chrome.storage.local.get(STORAGE_KEYS.draftState);
-    const draft = /** @type {any} */ (data[STORAGE_KEYS.draftState]);
+    const draft = data[STORAGE_KEYS.draftState];
     if (!draft || typeof draft !== "object") return;
 
     if (elements.quickAskInput && typeof draft.query === "string") {
