@@ -13,7 +13,7 @@
     "lint:webext": "web-ext lint --source-dir .",
     "test": "jest",
     "e2e": "playwright test",
-    "verify": "npm run typecheck && npm test",
+    "verify": "npm run typecheck && npm run lint && npm test",
     "package": "bash scripts/publish.sh"
   },
   "repository": {
