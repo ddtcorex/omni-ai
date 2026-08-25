@@ -1,60 +1,115 @@
-# AGENTS.md - Handbook for AI Coding Assistants
+# AGENTS.md — Omni AI Chrome Extension
 
-Welcome, fellow agent. This document provides the necessary context and guidelines for interacting with the **Omni AI** codebase. Follow these directives to ensure consistency, performance, and high-quality UI standards.
+> `CLAUDE.md` at the repo root is a symlink to `AGENTS.md` (same convention as the maestro-harness workspace). Claude Code follows the same rule set as every other agent. **Only edit `AGENTS.md`** — never edit `CLAUDE.md` directly or replace the symlink with a copy.
+
+Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.1.0**. Follow these directives for consistency, performance, and UI quality.
 
 ---
 
 ## 🎯 Core Directives
 
-1.  **Stick to Vanilla**: This project explicitly avoids heavy frameworks (React, Vue, Tailwind). Use **Vanilla JavaScript (ES6+)** and **Modern CSS**.
-2.  **Manifest V3 Compliance**: Always adhere to Chrome Extension Manifest V3 standards. Avoid deprecated V2 APIs.
-3.  **UI Excellence**: The project uses a "Premium Glassmorphic" design. Always use defined **CSS Variables** in `settings.css` and `overlay.css` for any UI additions.
-4.  **Provider Pattern**: When adding AI capabilities, follow the provider pattern in `lib/providers/`.
-5.  **Safety First**: Ensure all user selections and text injections handle edge cases (Inputs, Textareas, ContentEditables).
+1.  **Stick to Vanilla**: No React, Vue, Tailwind, or bundler. Plain **ES modules (ES6+)** + modern CSS. The browser loads source files directly — there is no compile step in the dev loop.
+2.  **Manifest V3 Compliance**: Service worker background (`"type": "module"`), no remote code, no MV2 APIs.
+3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `content/overlay.css` and injected as a `<style>` inside the shadow root.
+4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code.
+5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before).
+6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` (see the strategy objects near the top of `content/content.js`). Always fall back gracefully.
+7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 10 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
 ---
 
-## 🏗️ Architectural Overview
+## 🧠 Skills Protocol (MANDATORY)
 
-### 1. Message Protocol
+This repo **mandates** the superpowers process skills for every agent session (Claude Code, Codex, DSH, …). Skills resolve through your environment's superpowers install — this file only defines **when** each one applies here.
 
-The project relies on a strictly defined messaging system between the `background` (service-worker) and `content` scripts:
+1.  **Invoke `using-superpowers` before ANY response or action** in this repo, and let it route the task.
+2.  Match the trigger, load the required skill FIRST — no exceptions, no rationalizing "it's a small change":
 
-- `GET_SELECTION`: Content script returns current text selection.
-- `SHOW_RESULT`: Background tells content script to display the AI response overlay.
-- `REPLACE_SELECTION`: Background tells content script to swap selection with AI result.
-- `WRITING_ACTION`: Content/Popup tells background to execute a specific AI prompt.
+| Trigger                                   | Required skill                                                                   |
+| ----------------------------------------- | -------------------------------------------------------------------------------- |
+| New feature / component / behavior change | `brainstorming`                                                                  |
+| Bug, test failure, unexpected behavior    | `systematic-debugging`                                                           |
+| Implementing any feature or bugfix        | `test-driven-development`                                                        |
+| Multi-step work with requirements         | `writing-plans` → execute via `subagent-driven-development` or `executing-plans` |
+| About to claim done / commit / PR         | `verification-before-completion`                                                 |
+| Finished major task / pre-merge           | `requesting-code-review`                                                         |
+| Received review feedback                  | `receiving-code-review`                                                          |
+| Work needing workspace isolation          | `using-git-worktrees`                                                            |
+| Creating or editing skills themselves     | `writing-skills`                                                                 |
 
-### 2. AI Service (`lib/ai-service.js`)
-
-Central dispatcher that chooses between providers (Gemini or Groq) based on the user's saved settings.
-
-- **Providers**: Located in `lib/providers/`. Every provider must export an `async generateContent(prompt, config)` function and handle its own API-specific request/response mapping.
-
-### 3. Settings & Storage
-
-Settings are stored in `chrome.storage.local`.
-
-- Global settings: `apiKey`, `groqApiKey`, `apiModel`, `currentPreset`, `defaultLanguage`.
-- Object-based settings: `settings: { autoClose, showNotifications }`.
+3.  Implementation plans live in `docs/superpowers/plans/YYYY-MM-DD-<name>.md` (see the engineering-hygiene plan there as the working example).
+4.  Direct human instructions and this file take precedence over skills; skipping a mandated workflow requires the human to say so explicitly.
 
 ---
 
-## 🎨 UI & Design System
+## 🏗️ Architecture Overview
 
-The design identity is defined by the CSS variables in root. Do NOT hardcode colors.
+### File Map
 
-**Key Tokens:**
+```
+omni-ai/
+|-- manifest.json            # MV3; SW module; <all_urls> content script; commands; oauth2
+|-- background/
+|   `-- service-worker.js    # Message router, context menus, commands, OAuth, history writes
+|-- content/
+|   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
+|   |                        #   overlay cards, text replacement, Shadow DOM host
+|   `-- overlay.css          # Styles injected INTO the shadow root via fetch()
+|-- popup/                   # Quick Ask chat popup (auth UI, page-context toggle)
+|-- settings.{html,js,css}   # Options dashboard: providers, languages, theme, usage stats
+|-- lib/
+|   |-- ai-service.js        # Action functions (improveText, translateText, ...) +
+|   |                        #   generateContent() dispatcher
+|   |-- ai-providers.js      # AI_PROVIDERS registry: models, key-setting names, routing
+|   |-- providers/           # gemini.js, openai.js, groq.js, custom-gateway.js, index.js
+|   |-- history.js           # History + usage stats (storage.local)
+|   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
+|   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
+|-- _locales/                # chrome.i18n messages
+|-- scripts/publish.sh       # Strips manifest "key", swaps prod OAuth client_id, zips dist/
+`-- tests/                   # Jest + jest-chrome + jsdom (`npm test`)
+```
 
-- `--accent-purple`: #8b5cf6 (Primary brand color)
-- `--bg-secondary`: Glassmorphic card background.
-- `--glass-bg`: Semi-transparent background for overlays.
-- `--transition-normal`: 0.3s ease.
+### Message Protocol
 
-**Templates:**
+Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-- Use the `.omni-ai-overlay` class for on-page popups to maintain consistency with branding.
-- The Settings page (`settings.html`) uses a grid-based dashboard for usage statistics.
+| Type                        | Direction          | Purpose                                                                  |
+| --------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `GET_SELECTION`             | bg → content       | Return `{ selection, isInput }` for the current selection                |
+| `PROCESSING_START`          | bg → content       | Show spinner state before an async action                                |
+| `SHOW_RESULT`               | bg → content       | Render result card `{ action, result, error?, originalText?, isInput? }` |
+| `REPLACE_SELECTION`         | bg → content       | Swap selection with the AI result                                        |
+| `SHOW_QUICK_ASK_OVERLAY`    | bg → content       | Open Quick Ask overlay (keyboard command)                                |
+| `THEME_CHANGED`             | bg → all tabs      | Re-read theme after `omni_ai_theme` sync change                          |
+| `PING` / `GET_PAGE_CONTENT` | popup/bg → content | Liveness check / page context for Quick Ask                              |
+
+Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
+
+| Type                                | Purpose                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `QUICK_ASK`                         | Popup chat query (+ optional page context)                                          |
+| `WRITING_ACTION`                    | Action request with explicit text                                                   |
+| `QUICK_ACTION`                      | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …) |
+| `VALIDATE_CONFIG`                   | Test provider credentials with a tiny prompt                                        |
+| `GET_API_KEY`                       | Read Gemini key                                                                     |
+| `SIGN_IN` / `SIGN_OUT` / `GET_USER` | Google identity (oauth2 in manifest)                                                |
+
+**Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
+
+### Provider System
+
+- Registry: `AI_PROVIDERS` in `lib/ai-providers.js` — each entry declares `id`, `name`, `keySetting` (storage key of its API key), and `models[]`.
+- Routing: model IDs are provider-prefixed — `google-*`, `openai-*`, `groq-*`, `custom-*` — resolved by `getProvider()` in `lib/providers/index.js`. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
+- Every provider module exports `async generateContent(prompt, config)` where `config = { apiKey, model, maxTokens, temperature, topP, baseUrl? }`.
+- Custom models use the `-custom` suffix convention; the actual model name comes from storage (`customModelName` / `customGatewayModelName`).
+
+### Storage Map (the contract)
+
+| Area    | Keys                                                                                                                                                                                                             |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync`  | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`, `user` (OAuth profile)                                                                                                                                    |
+| `local` | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
 
 ---
 
@@ -62,28 +117,76 @@ The design identity is defined by the CSS variables in root. Do NOT hardcode col
 
 ### Adding a New AI Provider
 
-1. Create `lib/providers/[name].js`.
-2. Implement `generateContent(prompt, config)`.
-3. Register the provider in `lib/providers/index.js`.
-4. Update `settings.html` and `settings.js` to include the new model/key inputs.
+1. Create `lib/providers/[name].js` exporting `generateContent(prompt, config)`.
+2. Register it in `lib/providers/index.js` (import, export, and a `modelName.startsWith("<prefix>-")` branch).
+3. Add the registry entry (models + `keySetting`) to `AI_PROVIDERS` in `lib/ai-providers.js`.
+4. Add key/model inputs to `settings.html` plus load/save wiring in `settings.js`.
+5. Add tests under `tests/lib/providers/`.
 
-### Adding a Writing Action (e.g., "Simplify")
+### Adding a Writing Action (e.g. "Simplify")
 
-1. Add the action to `lib/ai-service.js` prompt logic (or dedicated provider logic).
-2. Add the button to `content.js` in the `showQuickActionMenu` function.
-3. Add the display name to `formatActionName` in `content.js`.
-4. (Optional) Define a unique icon and default preset if needed.
+1. Add the action function/prompt in `lib/ai-service.js` (system prompts live in `getSystemPrompt()`).
+2. Route it in `handleQuickAction()` in `background/service-worker.js`.
+3. Add the button + icon to `showQuickActionMenu()` in `content/content.js`.
+4. Add display-name mapping and i18n keys in `_locales/*/messages.json`.
 
----
+### Editing Content-Script UI
 
-## 🧪 Verification Checklist for Agents
-
-- [ ] Does the change preserve the "No Framework" rule?
-- [ ] Does the UI use the standard CSS variables?
-- [ ] Are logs removed before finalizing (unless it's a critical error)?
-- [ ] Does text replacement work in both standard text and `<textarea>` elements?
-- [ ] Are i18n messages used if the change involves user-facing text?
+All markup/styles live inside the Shadow DOM root. To style: edit `content/overlay.css` (fetched into the shadow root — keep it self-contained, no reliance on page styles). Keep the `.omni-ai-*` class prefix inside the shadow tree.
 
 ---
 
-_This guide is maintained by ddtcorex and the Antigravity AI agent._
+## 🧪 Testing & Verification
+
+```bash
+npm test                  # Jest (jsdom + jest-chrome mocks)
+bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_id)
+```
+
+- Tests import ES modules through babel-jest; `jest.setup.js` provides `jest-chrome` globals.
+- When you change prompt wording in `lib/ai-service.js`, update `tests/lib/ai-service.test.js` **in the same commit** — its assertions are exact substrings.
+
+### Manual smoke checklist (load unpacked)
+
+- [ ] Selection floating button appears; menu opens on plain pages AND inside inputs/textareas/contenteditable editors
+- [ ] Replace works for both plain inputs and rich editors
+- [ ] Context-menu items (Improve / Explain / Translate) show result cards
+- [ ] Keyboard shortcuts fire (Alt+O popup, Alt+A ask, Alt+R rephrase, Alt+T translate)
+- [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
+- [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
+- [ ] Service worker console clean after idle (no unhandled promise rejections)
+
+---
+
+## 🚀 Dev Loop & Tooling (speed)
+
+- **Load unpacked** from `chrome://extensions` (dev mode). After edits: refresh the extension card (service worker / manifest changes) and reload target tabs (content-script changes). There is no HMR by default — see `docs/dev-tooling.md` for the recommended speed stack (auto-reload, lint, typecheck, E2E).
+- The `manifest.json` `"key"` field pins a stable extension ID in dev; `scripts/publish.sh` strips it for store builds. Never change `key` casually.
+- Debugging surfaces: SW inspector via `chrome://extensions` → "Inspect views: service worker"; content-script logs in page DevTools console (filter `[Omni AI]`).
+
+## 📦 Release Flow
+
+1. Bump `version` in `manifest.json` (+ `package.json`), update `CHANGELOG.md`.
+2. `bash scripts/publish.sh` → `dist/omni-ai-vX.Y.Z.zip` (prod OAuth client_id swapped automatically).
+3. Upload to Chrome Web Store dashboard. PRs merge feature → `develop` → `master`.
+
+---
+
+## ⚠️ Known Issues (fix on sight — do not copy these patterns)
+
+None currently. 🎉
+
+---
+
+## ✅ Agent Checklist (before you finish)
+
+- [ ] No framework imports, no bundler assumptions — files still load raw in the browser
+- [ ] New UI renders inside the Shadow DOM root using tokens (`--accent-purple`, `--glass-bg`, …) from `overlay.css` / `settings.css` — never hardcode colors
+- [ ] Every new `onMessage` case that replies asynchronously returns `true`
+- [ ] Text replacement verified for `input` + `textarea` + `contenteditable`
+- [ ] Every user-facing string goes through i18n (`_locales/en/messages.json`) — zero hardcoded visible text
+- [ ] `npm test` green; no leftover `console.log`s (warnings/errors OK)
+
+---
+
+_Maintained by ddtcorex with AI coding agents. Keep this file accurate — it is the single source of truth for agents working on Omni AI._

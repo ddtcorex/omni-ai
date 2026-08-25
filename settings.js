@@ -1,11 +1,6 @@
 import { getStats, resetStats } from "./lib/history.js";
 import { i18n } from "./lib/i18n.js";
-import {
-  initTheme,
-  getThemePreference,
-  setThemePreference,
-  applyTheme,
-} from "./lib/theme-manager.js";
+import { initTheme, applyTheme } from "./lib/theme-manager.js";
 import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 /**
@@ -15,27 +10,31 @@ import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 // DOM Elements
 const elements = {
-  geminiApiKey: document.getElementById("geminiApiKey"), // Google Key
-  apiModel: document.getElementById("apiModel"),
-  customModelName: document.getElementById("customModelName"),
+  geminiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("geminiApiKey")), // Google Key
+  apiModel: /** @type {HTMLSelectElement} */ (document.getElementById("apiModel")),
+  customModelName: /** @type {HTMLInputElement} */ (document.getElementById("customModelName")),
   customModelGroup: document.getElementById("customModelGroup"),
   googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
-  groqApiKey: document.getElementById("groqApiKey"),
+  groqApiKey: /** @type {HTMLInputElement} */ (document.getElementById("groqApiKey")),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
-  openaiApiKey: document.getElementById("openaiApiKey"),
+  openaiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("openaiApiKey")),
   openaiKeyGroup: document.getElementById("openaiKeyGroup"),
   customGatewayKeyGroup: document.getElementById("customGatewayKeyGroup"),
-  customGatewayBaseUrl: document.getElementById("customGatewayBaseUrl"),
-  customGatewayApiKey: document.getElementById("customGatewayApiKey"),
-    toggleApiKey: document.getElementById("toggleApiKey"),
-  validateBtn: document.getElementById("validateBtn"),
+  customGatewayBaseUrl: /** @type {HTMLInputElement} */ (
+    document.getElementById("customGatewayBaseUrl")
+  ),
+  customGatewayApiKey: /** @type {HTMLInputElement} */ (
+    document.getElementById("customGatewayApiKey")
+  ),
+  toggleApiKey: document.getElementById("toggleApiKey"),
+  validateBtn: /** @type {HTMLButtonElement} */ (document.getElementById("validateBtn")),
   validationStatus: document.getElementById("validationStatus"),
   // Theme
-  themeSelector: document.getElementById("themeSelector"),
+  themeSelector: /** @type {HTMLSelectElement} */ (document.getElementById("themeSelector")),
   // Preferences
-  defaultPreset: document.getElementById("defaultPreset"),
-  primaryLanguage: document.getElementById("primaryLanguage"),
-  defaultLanguage: document.getElementById("defaultLanguage"),
+  defaultPreset: /** @type {HTMLSelectElement} */ (document.getElementById("defaultPreset")),
+  primaryLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("primaryLanguage")),
+  defaultLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("defaultLanguage")),
   shortcutsLink: document.getElementById("shortcutsLink"),
   saveBtn: document.getElementById("saveBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -92,8 +91,7 @@ function populateModelSelect() {
  * Localize the DOM
  */
 function localizeDOM() {
-  document.title =
-    i18n.getMessage("extName") + " - " + i18n.getMessage("settings_title");
+  document.title = i18n.getMessage("extName") + " - " + i18n.getMessage("settings_title");
   // Localize attributes (title and placeholder)
   const elementsWithAttributes = document.querySelectorAll(
     '[title*="__MSG_"], [placeholder*="__MSG_"]',
@@ -117,6 +115,7 @@ function localizeDOM() {
     document.body,
     NodeFilter.SHOW_TEXT,
     null,
+    // @ts-expect-error legacy 4th argument (expandEntityReferences) is ignored by Chromium
     false,
   );
 
@@ -157,7 +156,7 @@ function setupEventListeners() {
   // Theme preview listener
   if (elements.themeSelector) {
     elements.themeSelector.addEventListener("change", (e) => {
-      applyTheme(e.target.value);
+      applyTheme(/** @type {HTMLSelectElement} */ (e.target).value);
     });
   }
 
@@ -253,9 +252,7 @@ function updateModelVisibility() {
 
   if (provider) {
     // Show matching group based on data-provider attribute
-    const activeGroup = document.querySelector(
-      `.setting-item[data-provider="${provider.id}"]`,
-    );
+    const activeGroup = document.querySelector(`.setting-item[data-provider="${provider.id}"]`);
     if (activeGroup) {
       activeGroup.classList.remove("hidden");
     }
@@ -276,20 +273,14 @@ async function validateConfiguration() {
   if (modelId.endsWith("-custom")) {
     const customName = elements.customModelName.value.trim();
     if (!customName) {
-      showValidationStatus(
-        i18n.getMessage("settings_errorNoCustomModel"),
-        "error",
-      );
+      showValidationStatus(i18n.getMessage("settings_errorNoCustomModel"), "error");
       return;
     }
     validModelId = customName;
   } else if (modelId === "custom-gateway") {
     const customName = elements.customModelName.value.trim();
     if (!customName) {
-      showValidationStatus(
-        i18n.getMessage("settings_errorNoCustomModel"),
-        "error",
-      );
+      showValidationStatus(i18n.getMessage("settings_errorNoCustomModel"), "error");
       return;
     }
     validModelId = customName;
@@ -310,10 +301,7 @@ async function validateConfiguration() {
     baseUrl = elements.customGatewayBaseUrl.value.trim();
 
     if (!baseUrl) {
-      showValidationStatus(
-        i18n.getMessage("settings_errorNoGatewayUrl"),
-        "error",
-      );
+      showValidationStatus(i18n.getMessage("settings_errorNoGatewayUrl"), "error");
       return;
     }
   }
@@ -341,10 +329,7 @@ async function validateConfiguration() {
     if (response.success) {
       showValidationStatus(i18n.getMessage("settings_configValid"), "success");
     } else {
-      showValidationStatus(
-        i18n.getMessage("error_prefix") + response.error,
-        "error",
-      );
+      showValidationStatus(i18n.getMessage("error_prefix") + response.error, "error");
     }
   } catch (err) {
     setButtonLoading(false);
@@ -368,15 +353,13 @@ function setButtonLoading(isLoading) {
     const svg = btn.querySelector("svg");
     if (svg) svg.classList.add("validate-spinner");
     // Change icon to refresh/spinner
-    btn.querySelector("span").textContent =
-      i18n.getMessage("settings_checking");
+    btn.querySelector("span").textContent = i18n.getMessage("settings_checking");
   } else {
     btn.classList.remove("loading");
     btn.disabled = false;
     const svg = btn.querySelector("svg");
     if (svg) svg.classList.remove("validate-spinner");
-    btn.querySelector("span").textContent =
-      i18n.getMessage("settings_validate");
+    btn.querySelector("span").textContent = i18n.getMessage("settings_validate");
   }
 }
 
@@ -417,22 +400,18 @@ async function loadSettings() {
   try {
     // 1. Load Sync Preferences
     const THEME_KEY = "omni_ai_theme";
-    const prefs = await chrome.storage.sync.get([
-      "primaryLanguage",
-      "defaultLanguage",
-      THEME_KEY,
-    ]);
+    /** @type {Record<string, any>} */
+    const prefs = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage", THEME_KEY]);
 
     if (elements.themeSelector) {
       elements.themeSelector.value = prefs[THEME_KEY] || "system";
       applyTheme(elements.themeSelector.value);
     }
-    if (elements.primaryLanguage)
-      elements.primaryLanguage.value = prefs.primaryLanguage || "vi";
-    if (elements.defaultLanguage)
-      elements.defaultLanguage.value = prefs.defaultLanguage || "en";
+    if (elements.primaryLanguage) elements.primaryLanguage.value = prefs.primaryLanguage || "vi";
+    if (elements.defaultLanguage) elements.defaultLanguage.value = prefs.defaultLanguage || "en";
 
     // 2. Load Local AI Config
+    /** @type {Record<string, any>} */
     const config = await chrome.storage.local.get([
       "geminiApiKey",
       "groqApiKey",
@@ -448,8 +427,7 @@ async function loadSettings() {
     if (config.geminiApiKey) elements.geminiApiKey.value = config.geminiApiKey;
     if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
     if (config.openaiApiKey) elements.openaiApiKey.value = config.openaiApiKey;
-    if (config.customModelName)
-      elements.customModelName.value = config.customModelName;
+    if (config.customModelName) elements.customModelName.value = config.customModelName;
 
     // Custom Gateway config
     if (elements.customGatewayBaseUrl)
@@ -463,13 +441,7 @@ async function loadSettings() {
     if (savedModel === "custom-gateway" && config.customGatewayModelName) {
       elements.customModelName.value = config.customGatewayModelName;
     }
-    const validPresets = [
-      "professional",
-      "casual",
-      "friendly",
-      "direct",
-      "confident",
-    ];
+    const validPresets = ["professional", "casual", "friendly", "direct", "confident"];
     if (config.currentPreset && validPresets.includes(config.currentPreset)) {
       elements.defaultPreset.value = config.currentPreset;
     } else {
@@ -526,8 +498,7 @@ async function saveSettings() {
  */
 function showSaveStatus(message, type = "success") {
   elements.saveStatus.textContent = message;
-  elements.saveStatus.style.color =
-    type === "success" ? "var(--success)" : "var(--error)";
+  elements.saveStatus.style.color = type === "success" ? "var(--success)" : "var(--error)";
   elements.saveStatus.classList.add("visible");
 
   setTimeout(() => {

@@ -44,8 +44,7 @@
   --transition-normal: 250ms ease;
 
   /* Font */
-  --font-family:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 :root.omni-ai-light-mode {
@@ -89,16 +88,8 @@ body {
   margin: 0 auto;
   padding: var(--spacing-2xl);
   background-image:
-    radial-gradient(
-      ellipse at top left,
-      rgba(139, 92, 246, 0.06) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at bottom right,
-      rgba(6, 182, 212, 0.04) 0%,
-      transparent 50%
-    );
+    radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(6, 182, 212, 0.04) 0%, transparent 50%);
 }
 
 /* Header */

@@ -1,8 +1,4 @@
-import {
-  generateContent,
-  improveText,
-  smartTranslate,
-} from "../../lib/ai-service";
+import { generateContent, improveText, smartTranslate } from "../../lib/ai-service";
 import * as Providers from "../../lib/providers/index";
 
 jest.mock("../../lib/providers/index", () => ({
@@ -110,7 +106,9 @@ describe("AI Service", () => {
 
     expect(result).toBe("Improved Text");
     const callArgs = mockProvider.generateContent.mock.calls[0];
-    expect(callArgs[0]).toContain("You are a professional writing assistant");
+    expect(callArgs[0]).toContain(
+      "You are a helpful writing assistant who uses simple, everyday language",
+    );
     expect(callArgs[0]).toContain("Original text:\nBad text");
   });
 
@@ -122,8 +120,8 @@ describe("AI Service", () => {
 
     expect(result).toBe("Rephrased Text");
     const callArgs = mockProvider.generateContent.mock.calls[0];
-    expect(callArgs[0]).toContain("simple, everyday words");
-    expect(callArgs[0]).toContain("not fancy or rare vocabulary");
+    expect(callArgs[0]).toContain("simple, common words that ordinary people use in daily life");
+    expect(callArgs[0]).toContain("Avoid fancy, formal, or rare vocabulary");
     expect(callArgs[1]).toEqual(
       expect.objectContaining({
         temperature: 0.15,
@@ -145,9 +143,7 @@ describe("AI Service", () => {
     await smartTranslate("Hola", "en", "vi");
 
     const callArgs = mockProvider.generateContent.mock.calls[0];
-    expect(callArgs[0]).toContain(
-      "If the text is in English, translate it to Vietnamese",
-    );
+    expect(callArgs[0]).toContain("If the text is in English, translate it to Vietnamese");
     expect(callArgs[0]).toContain("Otherwise, translate it to English");
     expect(callArgs[0]).toContain("STRICTLY preserve all original formatting");
   });

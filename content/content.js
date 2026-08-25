@@ -63,12 +63,10 @@ async function initializeI18n() {
     let targetData = {};
     if (userLang !== "en") {
       try {
-        const targetUrl = chrome.runtime.getURL(
-          `_locales/${userLang}/messages.json`,
-        );
+        const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
         const targetRes = await fetch(targetUrl);
         targetData = await targetRes.json();
-      } catch (e) {
+      } catch {
         console.warn("[Omni AI] Failed to load local messages:", userLang);
       }
     }
@@ -99,7 +97,6 @@ initializeI18n();
 // ============================================
 let overlay = null;
 let isOverlayVisible = false;
-let lastSelection = null;
 let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
 const resultCache = new Map();
@@ -108,7 +105,6 @@ const resultCache = new Map();
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
-let lastMousePosition = null; // Track mouse position for button placement
 
 // Shadow UI root to isolate extension styles from host page CSS.
 const OMNI_UI_HOST_ID = "omni-ai-shadow-host";
@@ -198,21 +194,16 @@ function ensureUiRootReady() {
 function isEventInsideOmniUi(event) {
   if (!event) return false;
 
-  const path =
-    typeof event.composedPath === "function" ? event.composedPath() : [];
+  const path = typeof event.composedPath === "function" ? event.composedPath() : [];
   const target = event.target;
 
-  if (
-    overlay &&
-    (path.includes(overlay) || (target && overlay.contains(target)))
-  ) {
+  if (overlay && (path.includes(overlay) || (target && overlay.contains(target)))) {
     return true;
   }
 
   if (
     quickActionBtn &&
-    (path.includes(quickActionBtn) ||
-      (target && quickActionBtn.contains(target)))
+    (path.includes(quickActionBtn) || (target && quickActionBtn.contains(target)))
   ) {
     return true;
   }
@@ -238,14 +229,7 @@ const strategies = {
       if (tagName === "TEXTAREA") return true;
       if (tagName === "INPUT") {
         const type = (el.type || "text").toLowerCase();
-        const allowedTypes = [
-          "text",
-          "email",
-          "number",
-          "search",
-          "tel",
-          "url",
-        ];
+        const allowedTypes = ["text", "email", "number", "search", "tel", "url"];
         return allowedTypes.includes(type);
       }
       return false;
@@ -287,10 +271,7 @@ const strategies = {
       // Deep check for nested contenteditable
       let parent = el.parentElement;
       while (parent && parent !== document.body) {
-        if (
-          parent.isContentEditable ||
-          parent.getAttribute("contenteditable") === "true"
-        ) {
+        if (parent.isContentEditable || parent.getAttribute("contenteditable") === "true") {
           return true;
         }
         parent = parent.parentElement;
@@ -379,10 +360,7 @@ function getEditableHost(el) {
   if (el.isContentEditable) {
     let current = el;
     while (current && current.parentElement) {
-      if (
-        current.getAttribute &&
-        current.getAttribute("contenteditable") === "true"
-      ) {
+      if (current.getAttribute && current.getAttribute("contenteditable") === "true") {
         return current;
       }
       if (current.tagName === "BODY") break;
@@ -415,10 +393,7 @@ function computeDiff(original, corrected) {
   const words2 = tokenize(corrected);
 
   // Check for distinct word count difference (heuristic for major change)
-  if (
-    Math.abs(words1.length - words2.length) >
-    Math.max(words1.length, words2.length) * 0.8
-  ) {
+  if (Math.abs(words1.length - words2.length) > Math.max(words1.length, words2.length) * 0.8) {
     return `<span class="omni-ai-diff-ins">${corrected}</span>`;
   }
 
@@ -444,9 +419,6 @@ function computeDiff(original, corrected) {
       j++;
     } else {
       // Look ahead to find synchronization point
-      let bestMatchK1 = -1,
-        bestMatchK2 = -1;
-
       // Search for words1[i] in words2 (deletion check)
       // Search for words2[j] in words1 (insertion check)
 
@@ -499,13 +471,7 @@ function computeDiff(original, corrected) {
   return html.replace(/__NEWLINE__\s?/g, "\n").trim();
 }
 
-function updateSmartFixCard(
-  card,
-  originalText,
-  correctedText,
-  isInput,
-  activeElement = null,
-) {
+function updateSmartFixCard(card, originalText, correctedText, isInput, activeElement = null) {
   if (!card) return;
 
   if (originalText.trim() === correctedText.trim()) {
@@ -554,11 +520,9 @@ function updateSmartFixCard(
             <div class="omni-ai-suggestion-content">${i18n.getMessage("desc_grammar")}</div>
         </div>
     `;
-    card.addEventListener(
-      "click",
-      () => handleAction("grammar", originalText, isInput),
-      { once: true },
-    );
+    card.addEventListener("click", () => handleAction("grammar", originalText, isInput), {
+      once: true,
+    });
   });
 
   // Re-position after content update to prevent cutoff
@@ -627,14 +591,11 @@ async function initTheme() {
   if (!isContextValid()) return;
   const THEME_KEY = "omni_ai_theme";
   try {
-    const { [THEME_KEY]: themePreference = "system" } =
-      await chrome.storage.sync.get(THEME_KEY);
+    const { [THEME_KEY]: themePreference = "system" } = await chrome.storage.sync.get(THEME_KEY);
 
     let effectiveTheme = themePreference;
     if (themePreference === "system") {
-      effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+      effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     }
 
     const isLight = effectiveTheme === "light";
@@ -754,8 +715,7 @@ function setupSelectionListener() {
       const hasSelection = result.isSelection;
       const hasContent = result.text.length > 0;
 
-      const shouldShow =
-        hasSelection || (context.id !== "static" && hasContent);
+      const shouldShow = hasSelection || (context.id !== "static" && hasContent);
 
       if (shouldShow) {
         // Additional check: If rich text has no selection but has content,
@@ -780,12 +740,7 @@ function setupSelectionListener() {
 
         // Use mouse position for any text selection (all contexts)
         const useMousePos = mousePos && hasSelection;
-        presentQuickActionButton(
-          rect,
-          inputEl,
-          result.text,
-          useMousePos ? mousePos : null,
-        );
+        presentQuickActionButton(rect, inputEl, result.text, useMousePos ? mousePos : null);
       } else {
         hideQuickActionButton();
       }
@@ -793,14 +748,10 @@ function setupSelectionListener() {
   };
 
   document.addEventListener("mouseup", (e) => {
-    // Capture mouse position for button placement
-    const mousePos = { x: e.clientX, y: e.clientY };
-    lastMousePosition = mousePos;
-
     if (overlay && !isEventInsideOmniUi(e)) {
       hideOverlay();
     }
-    handleSelectionChange(mousePos);
+    handleSelectionChange({ x: e.clientX, y: e.clientY });
   });
 
   document.addEventListener("keyup", (e) => {
@@ -814,9 +765,8 @@ function setupSelectionListener() {
   });
 
   // Handle paste events
-  document.addEventListener("paste", (e) => {
+  document.addEventListener("paste", () => {
     // Rely on generic detection shortly after paste
-    const target = e.target; // Might be needed for context if focus isn't immediate?
 
     // Slight delay to allow paste to complete
     setTimeout(() => {
@@ -840,13 +790,7 @@ function presentQuickActionButton(
 
   // If using mouse position, we don't need rect validation
   if (!mousePosition) {
-    if (
-      !rect ||
-      (rect.width === 0 &&
-        rect.height === 0 &&
-        rect.top === 0 &&
-        rect.left === 0)
-    )
+    if (!rect || (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0))
       return;
   }
 
@@ -887,9 +831,7 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
   }
   let effectiveTheme = themePreference;
   if (themePreference === "system") {
-    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
   if (effectiveTheme === "light") {
     button.classList.add("omni-ai-light-mode");
@@ -940,9 +882,7 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
       text ||
       (inputElement
         ? getSelectedText() ||
-          (inputElement.value
-            ? inputElement.value.trim()
-            : inputElement.innerText.trim())
+          (inputElement.value ? inputElement.value.trim() : inputElement.innerText.trim())
         : "");
     const btnRect = quickActionBtn.getBoundingClientRect();
 
@@ -989,15 +929,12 @@ async function showQuickActionMenu(
 
   if (isContextValid()) {
     try {
-      const data = await chrome.storage.sync.get([
-        "primaryLanguage",
-        "defaultLanguage",
-        THEME_KEY,
-      ]);
+      /** @type {Record<string, any>} */
+      const data = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage", THEME_KEY]);
       currentTheme = data[THEME_KEY] || "system";
       primaryLanguage = data.primaryLanguage || "vi";
       defaultLanguage = data.defaultLanguage || "en";
-    } catch (e) {
+    } catch {
       console.warn("[Omni AI] Failed to fetch settings, using defaults");
     }
   }
@@ -1019,10 +956,8 @@ async function showQuickActionMenu(
   const dFlag = languageFlags[defaultLanguage] || "🏳️";
 
   // Use localized language names
-  const pCode =
-    i18n.getMessage(`lang_${primaryLanguage}`) || primaryLanguage.toUpperCase();
-  const dCode =
-    i18n.getMessage(`lang_${defaultLanguage}`) || defaultLanguage.toUpperCase();
+  const pCode = i18n.getMessage(`lang_${primaryLanguage}`) || primaryLanguage.toUpperCase();
+  const dCode = i18n.getMessage(`lang_${defaultLanguage}`) || defaultLanguage.toUpperCase();
 
   await ensureUiRootReady();
 
@@ -1145,13 +1080,7 @@ async function showQuickActionMenu(
         if (response.success && card) {
           // Pass activeInputElement if we tracked it
           const targetEl = activeInputElement || document.activeElement;
-          updateSmartFixCard(
-            card,
-            text,
-            response.data.response,
-            isInput,
-            targetEl,
-          );
+          updateSmartFixCard(card, text, response.data.response, isInput, targetEl);
         } else if (card) {
           // Show error or revert
           card.innerHTML = `
@@ -1172,8 +1101,7 @@ async function showQuickActionMenu(
     if (resultCache.has(cacheKey)) {
       setTimeout(() => {
         const card = overlay?.querySelector("#omniAiTranslateCard");
-        if (card)
-          updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
+        if (card) updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
       }, 100);
     } else {
       sendMessageToBackground({
@@ -1218,9 +1146,7 @@ function bindMenuEvents(text, isInput) {
 
   // Menu Items
   overlay.querySelectorAll(".omni-ai-menu-item").forEach((btn) => {
-    btn.addEventListener("click", () =>
-      handleAction(btn.dataset.action, text, isInput),
-    );
+    btn.addEventListener("click", () => handleAction(btn.dataset.action, text, isInput));
   });
 
   // Inline Input
@@ -1252,14 +1178,9 @@ async function handleAction(action, text, isInput) {
   let preset = "chat";
   let options = {};
   if (action === "tone") {
+    /** @type {{ currentPreset?: string }} */
     const { currentPreset } = await chrome.storage.local.get("currentPreset");
-    const validTones = [
-      "professional",
-      "casual",
-      "friendly",
-      "direct",
-      "confident",
-    ];
+    const validTones = ["professional", "casual", "friendly", "direct", "confident"];
     if (currentPreset && validTones.includes(currentPreset.toLowerCase())) {
       preset = currentPreset;
     } else {
@@ -1316,9 +1237,7 @@ async function handleAction(action, text, isInput) {
 async function handleAskAction(query, originalText, isInput) {
   showLoadingInOverlay();
 
-  const prompt = originalText
-    ? `Context: "${originalText}"\n\nQuestion: ${query}`
-    : query;
+  const prompt = originalText ? `Context: "${originalText}"\n\nQuestion: ${query}` : query;
 
   try {
     const response = await sendMessageToBackground({
@@ -1473,9 +1392,7 @@ function createOverlayElement(themePreference = "system") {
 
   let effectiveTheme = themePreference;
   if (themePreference === "system") {
-    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   // Dark is default in CSS (lines 13-15)
@@ -1532,7 +1449,7 @@ function getSelectedText() {
 
 function extractPageContent() {
   try {
-    const bodyClone = document.body.cloneNode(true);
+    const bodyClone = /** @type {HTMLElement} */ (document.body.cloneNode(true));
     const noiseSelectors = [
       "script",
       "style",
@@ -1750,21 +1667,14 @@ async function showResultOverlay(payload, isInput = false) {
           // UI Update
           const resultTextEl = overlay.querySelector(".omni-ai-result-text");
           resultTextEl.style.opacity = "0.5";
-          resultTextEl.innerHTML =
-            '<div class="omni-ai-spinner" style="margin:20px auto;"></div>';
+          resultTextEl.innerHTML = '<div class="omni-ai-spinner" style="margin:20px auto;"></div>';
 
           // Optimistic Chip Update
           overlay.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
             const isActive = chip.dataset.tone === newTone;
-            chip.style.background = isActive
-              ? "rgba(139,92,246,0.15)"
-              : "transparent";
-            chip.style.color = isActive
-              ? "var(--ai-accent)"
-              : "var(--ai-text-secondary)";
-            chip.style.borderColor = isActive
-              ? "rgba(139,92,246,0.3)"
-              : "var(--ai-border)";
+            chip.style.background = isActive ? "rgba(139,92,246,0.15)" : "transparent";
+            chip.style.color = isActive ? "var(--ai-accent)" : "var(--ai-text-secondary)";
+            chip.style.borderColor = isActive ? "rgba(139,92,246,0.3)" : "var(--ai-border)";
           });
 
           // Fetch
@@ -1801,10 +1711,7 @@ async function showResultOverlay(payload, isInput = false) {
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(result);
     copyBtn.textContent = i18n.getMessage("msg_copied");
-    setTimeout(
-      () => (copyBtn.textContent = i18n.getMessage("overlay_copy")),
-      1500,
-    );
+    setTimeout(() => (copyBtn.textContent = i18n.getMessage("overlay_copy")), 1500);
   });
 
   // Replace (if exists)
@@ -1850,7 +1757,7 @@ function replaceSelectedText(newText, specificElement = null) {
 }
 
 async function showQuickAskOverlay(
-  initialValue = "",
+  _initialValue = "",
   lockedRect = null,
   originalText = null,
   autoQuery = null,
@@ -1885,9 +1792,7 @@ async function showQuickAskOverlay(
   let contextBlock = "";
   if (originalText) {
     const truncated =
-      originalText.length > 120
-        ? originalText.substring(0, 117) + "..."
-        : originalText;
+      originalText.length > 120 ? originalText.substring(0, 117) + "..." : originalText;
     contextBlock = `
     <div class="omni-ai-context-preview">
       <div class="omni-ai-context-label">${i18n.getMessage("popup_context")}</div>
@@ -1952,10 +1857,7 @@ async function showQuickAskOverlay(
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(resultText.innerText);
     copyBtn.textContent = i18n.getMessage("msg_copied");
-    setTimeout(
-      () => (copyBtn.textContent = i18n.getMessage("overlay_copy")),
-      1500,
-    );
+    setTimeout(() => (copyBtn.textContent = i18n.getMessage("overlay_copy")), 1500);
   });
 
   const handleAsk = async () => {
@@ -2006,9 +1908,7 @@ function showErrorInOverlay(msg) {
         <div class="omni-ai-content-area" style="color:var(--ai-text-secondary);">
             ${msg}
         </div>`;
-    overlay
-      .querySelector("#omniAiClose")
-      .addEventListener("click", hideOverlay);
+    overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
   }
 }
 

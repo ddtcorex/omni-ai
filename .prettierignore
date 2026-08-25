@@ -1,0 +1,10 @@
+dist/
+node_modules/
+package-lock.json
+.webext-profile/
+playwright-report/
+test-results/
+# Process artifacts: never reformat SDD task briefs/reports or the living plan
+# documents other tasks execute from.
+.superpowers/
+docs/superpowers/

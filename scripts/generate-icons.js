@@ -12,7 +12,7 @@ const path = require("path");
 let sharp;
 try {
   sharp = require("sharp");
-} catch (err) {
+} catch {
   console.error("Error: sharp is not installed.");
   console.error("Please run: npm install --save-dev sharp");
   process.exit(1);
