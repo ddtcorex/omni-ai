@@ -195,6 +195,22 @@
     "message": "Omni AI로 번역",
     "description": "컨텍스트 메뉴 번역"
   },
+  "contextMenu_rephrase": {
+    "message": "Omni AI로 다시 표현",
+    "description": "컨텍스트 메뉴 다시 표현"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI로 이모지 추가",
+    "description": "컨텍스트 메뉴 이모지 추가"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI로 요약",
+    "description": "컨텍스트 메뉴 요약"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI에게 질문",
+    "description": "컨텍스트 메뉴 빠른 질문"
+  },
   "error_noApiKey": {
     "message": "API 키가 설정되지 않았습니다. 설정에서 Gemini API 키를 추가해 주세요.",
     "description": "API 키 미설정 오류"

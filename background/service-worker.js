@@ -167,20 +167,32 @@ async function initializeSettings() {
  */
 function createContextMenus() {
   chrome.contextMenus.create({
-    id: "omni-ai-improve",
-    title: chrome.i18n.getMessage("contextMenu_improve"),
-    contexts: ["selection"],
-  });
-
-  chrome.contextMenus.create({
-    id: "omni-ai-explain",
-    title: chrome.i18n.getMessage("contextMenu_explain"),
-    contexts: ["selection"],
-  });
-
-  chrome.contextMenus.create({
     id: "omni-ai-translate",
     title: chrome.i18n.getMessage("contextMenu_translate"),
+    contexts: ["selection"],
+  });
+
+  chrome.contextMenus.create({
+    id: "omni-ai-rephrase",
+    title: chrome.i18n.getMessage("contextMenu_rephrase"),
+    contexts: ["selection"],
+  });
+
+  chrome.contextMenus.create({
+    id: "omni-ai-emojify",
+    title: chrome.i18n.getMessage("contextMenu_emojify"),
+    contexts: ["selection"],
+  });
+
+  chrome.contextMenus.create({
+    id: "omni-ai-summarize",
+    title: chrome.i18n.getMessage("contextMenu_summarize"),
+    contexts: ["selection"],
+  });
+
+  chrome.contextMenus.create({
+    id: "omni-ai-ask",
+    title: chrome.i18n.getMessage("contextMenu_ask"),
     contexts: ["selection"],
   });
 }
@@ -297,14 +309,20 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (!selectedText) return;
 
   switch (info.menuItemId) {
-    case "omni-ai-improve":
-      processSelectedText(tab.id, selectedText, "improve");
-      break;
-    case "omni-ai-explain":
-      processSelectedText(tab.id, selectedText, "explain");
-      break;
     case "omni-ai-translate":
       processSelectedText(tab.id, selectedText, "smart_translate");
+      break;
+    case "omni-ai-rephrase":
+      processSelectedText(tab.id, selectedText, "rephrase");
+      break;
+    case "omni-ai-emojify":
+      processSelectedText(tab.id, selectedText, "emoji");
+      break;
+    case "omni-ai-summarize":
+      processSelectedText(tab.id, selectedText, "summarize");
+      break;
+    case "omni-ai-ask":
+      sendToActiveEditor(tab.id, { type: "SHOW_QUICK_ASK_OVERLAY" }).catch(() => {});
       break;
   }
 });
@@ -693,6 +711,10 @@ async function processSelectedText(tabId, text, action, isInput = false) {
       }
       case "summarize":
         result = await summarizeText(text);
+        break;
+      case "emoji":
+      case "emojify":
+        result = await emojifyText(text);
         break;
       case "grammar":
       case "rephrase":

@@ -362,28 +362,65 @@ describe("Service Worker Integration", () => {
     );
   });
 
-  it("context menu legacy explain falls back to primaryLanguage from storage.sync", async () => {
+  it("registers exactly the 5 reordered context menu items: translate, rephrase, emojify, summarize, ask", async () => {
+    await import("../../background/service-worker");
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+    installed({ reason: "install" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const ids = chromeMock.contextMenus.create.mock.calls.map((c) => c[0].id);
+    expect(ids).toEqual([
+      "omni-ai-translate",
+      "omni-ai-rephrase",
+      "omni-ai-emojify",
+      "omni-ai-summarize",
+      "omni-ai-ask",
+    ]);
+    // The old Improve/Explain items were replaced, not just reordered
+    expect(ids).not.toContain("omni-ai-improve");
+    expect(ids).not.toContain("omni-ai-explain");
+  });
+
+  it("context menu rephrase/emojify/summarize call the matching AI actions", async () => {
     const AIService = await import("../../lib/ai-service");
     const History = await import("../../lib/history");
 
     await import("../../background/service-worker");
     const menuListener = chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
 
-    AIService.explainText.mockResolvedValue("EXPLAINED");
+    AIService.improveText.mockResolvedValue("REPHRASED");
+    AIService.emojifyText.mockResolvedValue("EMOJIFIED 🎉");
+    AIService.summarizeText.mockResolvedValue("SUMMARIZED");
     History.addToHistory.mockResolvedValue({});
-    chromeMock.storage.sync.get.mockResolvedValue({});
 
-    menuListener({ menuItemId: "omni-ai-explain", selectionText: "hola" }, { id: 123 });
+    menuListener({ menuItemId: "omni-ai-rephrase", selectionText: "hola" }, { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(AIService.improveText).toHaveBeenCalledWith("hola", "rephrase", "general");
+
+    menuListener({ menuItemId: "omni-ai-emojify", selectionText: "hola" }, { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(AIService.emojifyText).toHaveBeenCalledWith("hola");
+
+    menuListener({ menuItemId: "omni-ai-summarize", selectionText: "hola" }, { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(AIService.summarizeText).toHaveBeenCalledWith("hola");
+  });
+
+  it("context menu ask opens the Quick Ask overlay instead of calling an AI action", async () => {
+    const AIService = await import("../../lib/ai-service");
+
+    await import("../../background/service-worker");
+    const menuListener = chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
+
+    menuListener({ menuItemId: "omni-ai-ask", selectionText: "hola" }, { id: 123 });
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("primaryLanguage");
-    // No configured language -> same "vi" convention as handleQuickAction's explain
-    expect(AIService.explainText).toHaveBeenCalledWith("hola", "vi");
     expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
       123,
-      expect.objectContaining({ type: "SHOW_RESULT" }),
+      { type: "SHOW_QUICK_ASK_OVERLAY" },
       { frameId: 0 },
     );
+    expect(AIService.quickAsk).not.toHaveBeenCalled();
   });
 
   it("GET_API_KEY keeps channel open and replies asynchronously", async () => {

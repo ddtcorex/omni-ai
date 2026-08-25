@@ -195,6 +195,22 @@
     "message": "使用 Omni AI 翻译",
     "description": "右键菜单翻译"
   },
+  "contextMenu_rephrase": {
+    "message": "使用 Omni AI 改写",
+    "description": "右键菜单改写"
+  },
+  "contextMenu_emojify": {
+    "message": "使用 Omni AI 添加表情",
+    "description": "右键菜单添加表情"
+  },
+  "contextMenu_summarize": {
+    "message": "使用 Omni AI 总结",
+    "description": "右键菜单总结"
+  },
+  "contextMenu_ask": {
+    "message": "询问 Omni AI",
+    "description": "右键菜单快速提问"
+  },
   "error_noApiKey": {
     "message": "未配置 API 密钥。请在设置中添加您的 Gemini API 密钥。",
     "description": "未配置 API 密钥错误"

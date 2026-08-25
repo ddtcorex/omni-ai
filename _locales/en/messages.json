@@ -195,6 +195,22 @@
     "message": "Translate with Omni AI",
     "description": "Context menu translate"
   },
+  "contextMenu_rephrase": {
+    "message": "Rephrase with Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Add Emoji with Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Summarize with Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Ask Omni AI",
+    "description": "Context menu quick ask"
+  },
   "error_noApiKey": {
     "message": "API key not configured. Please add your API Key in Settings.",
     "description": "No API key error"

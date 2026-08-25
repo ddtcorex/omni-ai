@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings control for the floating Omni AI button; it is enabled by default and shortcuts remain available when disabled.
 - Translations for the new floating-button settings strings across all 10 locales.
 - Default Alt+F shortcut for Fix Grammar. Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension, so the popup-open shortcut (`_execute_action`, previously Alt+O) was dropped to make room — the popup is still reachable via the toolbar icon or `chrome://extensions/shortcuts`. Shortcuts now auto-bound on install: Alt+A (quick ask), Alt+R (rephrase), Alt+T (translate), Alt+F (grammar). Summarize/Explain remain declared without a default and must be bound manually. See `docs/FOLLOWUPS.md` #8 for a Playwright-test-harness quirk found while verifying this (resolved by staying at exactly 4 shortcuts, but worth reading before adding a 5th).
+- Reordered and expanded the right-click context menu to Translate / Rephrase / Add Emoji / Summarize / Ask Omni AI, replacing the previous Improve/Explain/Translate set. "Ask Omni AI" opens the Quick Ask overlay (same as Alt+A) instead of running a fixed AI action.
 
 ### Fixed
 

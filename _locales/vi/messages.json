@@ -195,6 +195,22 @@
     "message": "Dịch với Omni AI",
     "description": "Context menu translate"
   },
+  "contextMenu_rephrase": {
+    "message": "Diễn đạt lại với Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Thêm emoji với Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Tóm tắt với Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Hỏi Omni AI",
+    "description": "Context menu quick ask"
+  },
   "error_noApiKey": {
     "message": "Chưa cấu hình khóa API. Vui lòng thêm khóa API trong Cài đặt.",
     "description": "No API key error"

@@ -195,6 +195,22 @@
     "message": "Traduzir com Omni AI",
     "description": "Menu de contexto traduzir"
   },
+  "contextMenu_rephrase": {
+    "message": "Reformular com Omni AI",
+    "description": "Menu de contexto reformular"
+  },
+  "contextMenu_emojify": {
+    "message": "Adicionar emoji com Omni AI",
+    "description": "Menu de contexto adicionar emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Resumir com Omni AI",
+    "description": "Menu de contexto resumir"
+  },
+  "contextMenu_ask": {
+    "message": "Perguntar à Omni AI",
+    "description": "Menu de contexto pergunta rápida"
+  },
   "error_noApiKey": {
     "message": "Chave API não configurada. Por favor, adicione sua chave Gemini nas configurações.",
     "description": "Erro de chave ausente"

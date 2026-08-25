@@ -195,6 +195,22 @@
     "message": "Mit Omni AI übersetzen",
     "description": "Kontextmenü Übersetzung"
   },
+  "contextMenu_rephrase": {
+    "message": "Mit Omni AI umformulieren",
+    "description": "Kontextmenü Umformulieren"
+  },
+  "contextMenu_emojify": {
+    "message": "Emoji mit Omni AI hinzufügen",
+    "description": "Kontextmenü Emoji hinzufügen"
+  },
+  "contextMenu_summarize": {
+    "message": "Mit Omni AI zusammenfassen",
+    "description": "Kontextmenü Zusammenfassen"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI fragen",
+    "description": "Kontextmenü Schnellfrage"
+  },
   "error_noApiKey": {
     "message": "API-Schlüssel nicht konfiguriert. Bitte fügen Sie Ihren Schlüssel in den Einstellungen hinzu.",
     "description": "Fehler: Kein API-Schlüssel"
