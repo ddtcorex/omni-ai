@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 const { launchWithExtension, serveFixtureHtml } = require("./extension.fixtures");
 
-const HOST_SEL = "#omni-ai-shadow-host"; // OMNI_UI_HOST_ID, content/content.js:112
+const HOST_SEL = "#omni-ai-shadow-host"; // OMNI_UI_HOST_ID, content/content.js:110
 
 const FIXTURE = `<!doctype html><html><body>
 <p id="target">The quick brown fox jumps over the lazy dog.</p>
