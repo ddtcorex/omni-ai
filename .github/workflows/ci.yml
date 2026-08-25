@@ -36,6 +36,10 @@ jobs:
     continue-on-error: true   # flip to false in Task 12 once smoke spec is stable
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
       - run: npm ci
         if: hashFiles('playwright.config.js') != ''
       - run: npx playwright install --with-deps chromium
