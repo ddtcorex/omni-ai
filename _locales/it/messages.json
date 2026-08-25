@@ -147,6 +147,22 @@
     "message": "Salva Impostazioni",
     "description": "Pulsante salva"
   },
+  "settings_showFloatingButton": {
+    "message": "Mostra il pulsante flottante di Omni AI",
+    "description": "Etichetta preferenza pulsante di azione flottante"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Disattivalo per usare solo scorciatoie da tastiera e menu contestuali.",
+    "description": "Testo guida preferenza pulsante flottante"
+  },
+  "settings_on": {
+    "message": "Attivo",
+    "description": "Opzione impostazione attiva"
+  },
+  "settings_off": {
+    "message": "Disattivo",
+    "description": "Opzione impostazione disattiva"
+  },
   "settings_saved": {
     "message": "Impostazioni salvate!",
     "description": "Conferma salvataggio"

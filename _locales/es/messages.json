@@ -147,6 +147,22 @@
     "message": "Guardar Configuración",
     "description": "Botón de guardar"
   },
+  "settings_showFloatingButton": {
+    "message": "Mostrar botón flotante de Omni AI",
+    "description": "Etiqueta de preferencia del botón de acción flotante"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Desactívalo para usar solo atajos de teclado y menús contextuales.",
+    "description": "Texto de ayuda de la preferencia del botón flotante"
+  },
+  "settings_on": {
+    "message": "Activado",
+    "description": "Opción de ajuste activado"
+  },
+  "settings_off": {
+    "message": "Desactivado",
+    "description": "Opción de ajuste desactivado"
+  },
   "settings_saved": {
     "message": "¡Configuración guardada!",
     "description": "Confirmación de guardado"

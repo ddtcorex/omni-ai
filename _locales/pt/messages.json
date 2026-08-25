@@ -147,6 +147,22 @@
     "message": "Salvar Configurações",
     "description": "Botão salvar"
   },
+  "settings_showFloatingButton": {
+    "message": "Mostrar botão flutuante da Omni AI",
+    "description": "Rótulo de preferência do botão de ação flutuante"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Desative para usar apenas atalhos de teclado e menus de contexto.",
+    "description": "Texto de ajuda da preferência do botão flutuante"
+  },
+  "settings_on": {
+    "message": "Ativado",
+    "description": "Opção de configuração ativada"
+  },
+  "settings_off": {
+    "message": "Desativado",
+    "description": "Opção de configuração desativada"
+  },
   "settings_saved": {
     "message": "Configurações salvas!",
     "description": "Confirmação de salvamento"

@@ -46,14 +46,19 @@ function clearActiveEditorFrame(tabId) {
 
 async function sendToActiveEditor(tabId, message) {
   const frameId = await getActiveEditorFrame(tabId);
-  if (Number.isInteger(frameId) && frameId > 0) {
+  if (Number.isInteger(frameId)) {
     try {
       return await chrome.tabs.sendMessage(tabId, message, { frameId });
     } catch {
       await clearActiveEditorFrame(tabId);
     }
   }
-  return chrome.tabs.sendMessage(tabId, message);
+  // No editor frame is known (or it just failed): target the top frame
+  // explicitly. Omitting frameId here would broadcast to every frame on the
+  // page (manifest.json sets all_frames:true), and chrome.tabs.sendMessage
+  // resolves with whichever frame replies first — a race that can silently
+  // return an unrelated iframe's empty selection instead of the real one.
+  return chrome.tabs.sendMessage(tabId, message, { frameId: 0 });
 }
 
 // ============================================
@@ -206,9 +211,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         rememberActiveEditorFrame(sender.tab.id, sender.frameId)
           .then(() => sendResponse({ success: true }))
           .catch((error) => sendResponse({ success: false, error: error.message }));
-      } else {
-        sendResponse({ success: false });
+        return true;
       }
+      sendResponse({ success: false });
       break;
 
     case "EDITOR_BLURRED":
@@ -216,6 +221,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         clearActiveEditorFrame(sender.tab.id)
           .then(() => sendResponse({ success: true }))
           .catch((error) => sendResponse({ success: false, error: error.message }));
+        return true;
       } else {
         sendResponse({ success: false });
       }

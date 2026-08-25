@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Editor adapter registry for standard inputs, contenteditable composers, open Shadow DOM, and TinyMCE iframe documents.
 - Frame-aware keyboard-command routing for active editors.
 - Settings control for the floating Omni AI button; it is enabled by default and shortcuts remain available when disabled.
+- Translations for the new floating-button settings strings across all 10 locales.
+
+### Fixed
+
+- Keyboard-shortcut and context-menu actions (translate, rephrase, grammar, explain, summarize, quick ask) no longer broadcast `GET_SELECTION`/`SHOW_RESULT` to every frame on the page when no editor frame is being tracked; they now target the top frame explicitly. The broadcast form raced against any other frame on the page (ads, embeds) and could silently return an unrelated frame's empty selection instead of the real one.
 
 ## [2.1.0] - 2026-05-28
 

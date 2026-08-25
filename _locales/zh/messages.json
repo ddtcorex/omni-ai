@@ -147,6 +147,22 @@
     "message": "保存设置",
     "description": "保存按钮"
   },
+  "settings_showFloatingButton": {
+    "message": "显示悬浮 Omni AI 按钮",
+    "description": "悬浮操作按钮偏好设置标签"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "关闭后仅可使用键盘快捷键和右键菜单。",
+    "description": "悬浮操作按钮偏好设置帮助文本"
+  },
+  "settings_on": {
+    "message": "开启",
+    "description": "启用设置选项"
+  },
+  "settings_off": {
+    "message": "关闭",
+    "description": "禁用设置选项"
+  },
   "settings_saved": {
     "message": "设置已保存！",
     "description": "保存确认"

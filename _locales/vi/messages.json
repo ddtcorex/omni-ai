@@ -147,6 +147,22 @@
     "message": "Lưu cài đặt",
     "description": "Save button"
   },
+  "settings_showFloatingButton": {
+    "message": "Hiện nút Omni AI nổi",
+    "description": "Nhãn tùy chọn nút hành động nổi"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Tắt để chỉ dùng phím tắt và menu chuột phải.",
+    "description": "Văn bản trợ giúp cho tùy chọn nút nổi"
+  },
+  "settings_on": {
+    "message": "Bật",
+    "description": "Tùy chọn cài đặt bật"
+  },
+  "settings_off": {
+    "message": "Tắt",
+    "description": "Tùy chọn cài đặt tắt"
+  },
   "settings_saved": {
     "message": "Đã lưu cài đặt!",
     "description": "Save confirmation"

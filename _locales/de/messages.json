@@ -147,6 +147,22 @@
     "message": "Einstellungen speichern",
     "description": "Speichern-Button"
   },
+  "settings_showFloatingButton": {
+    "message": "Schwebende Omni AI-Schaltfläche anzeigen",
+    "description": "Einstellung für die schwebende Aktionsschaltfläche"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Deaktivieren, um nur Tastenkombinationen und Kontextmenüs zu verwenden.",
+    "description": "Hilfetext zur schwebenden Aktionsschaltfläche"
+  },
+  "settings_on": {
+    "message": "An",
+    "description": "Option „Aktiviert“"
+  },
+  "settings_off": {
+    "message": "Aus",
+    "description": "Option „Deaktiviert“"
+  },
   "settings_saved": {
     "message": "Einstellungen gespeichert!",
     "description": "Speicherbestätigung"

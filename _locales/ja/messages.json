@@ -147,6 +147,22 @@
     "message": "設定を保存",
     "description": "保存ボタン"
   },
+  "settings_showFloatingButton": {
+    "message": "フローティングOmni AIボタンを表示",
+    "description": "フローティングアクションボタンの設定ラベル"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "オフにすると、キーボードショートカットとコンテキストメニューのみが使用できます。",
+    "description": "フローティングアクションボタンのヘルプテキスト"
+  },
+  "settings_on": {
+    "message": "オン",
+    "description": "有効設定オプション"
+  },
+  "settings_off": {
+    "message": "オフ",
+    "description": "無効設定オプション"
+  },
   "settings_saved": {
     "message": "設定を保存しました！",
     "description": "保存完了の通知"

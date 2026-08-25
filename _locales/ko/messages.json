@@ -147,6 +147,22 @@
     "message": "설정 저장",
     "description": "저장 버튼"
   },
+  "settings_showFloatingButton": {
+    "message": "떠 있는 Omni AI 버튼 표시",
+    "description": "플로팅 액션 버튼 설정 라벨"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "끄면 키보드 단축키와 컨텍스트 메뉴만 사용할 수 있습니다.",
+    "description": "플로팅 액션 버튼 도움말 텍스트"
+  },
+  "settings_on": {
+    "message": "켜짐",
+    "description": "활성화 설정 옵션"
+  },
+  "settings_off": {
+    "message": "꺼짐",
+    "description": "비활성화 설정 옵션"
+  },
   "settings_saved": {
     "message": "설정이 저장되었습니다!",
     "description": "저장 확인 메시지"

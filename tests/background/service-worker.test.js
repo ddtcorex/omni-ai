@@ -114,7 +114,7 @@ describe("Service Worker Integration", () => {
     );
   });
 
-  it("clears a cached iframe when the editor context becomes static", async () => {
+  it("routes to the top frame (not a broadcast) once the editor context becomes static", async () => {
     await import("../../background/service-worker");
     const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
     messageListener({ type: "EDITOR_FOCUSED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
@@ -126,9 +126,33 @@ describe("Service Worker Integration", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(chromeMock.storage.session.remove).toHaveBeenCalledWith("omni_ai_active_frame_123");
+    // Regression guard: with manifest.json's all_frames:true, omitting frameId
+    // broadcasts to every frame on the page (per chrome.tabs.sendMessage docs)
+    // and Chrome resolves the reply from whichever frame answers first — a race
+    // that silently drops or corrupts the real top-frame selection whenever the
+    // page has any other frame (ads, embeds, trackers). Must target frame 0
+    // explicitly instead of omitting frameId.
     expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
       123,
       expect.objectContaining({ type: "GET_SELECTION" }),
+      { frameId: 0 },
+    );
+  });
+
+  it("routes keyboard commands to the top frame when no editor was ever focused", async () => {
+    await import("../../background/service-worker");
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "Page text", isInput: false });
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_translate", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // A tab that never sent EDITOR_FOCUSED (e.g. the user only ever selected
+    // plain page text) must still target frame 0 explicitly, not broadcast.
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({ type: "GET_SELECTION" }),
+      { frameId: 0 },
     );
   });
 
@@ -278,6 +302,7 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
       123,
       expect.objectContaining({ type: "SHOW_RESULT" }),
+      { frameId: 0 },
     );
   });
 
@@ -301,6 +326,7 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
       123,
       expect.objectContaining({ type: "SHOW_RESULT" }),
+      { frameId: 0 },
     );
   });
 
