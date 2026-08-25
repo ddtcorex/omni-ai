@@ -97,7 +97,7 @@ Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST re
 | `GET_API_KEY` | Read Gemini key |
 | `SIGN_IN` / `SIGN_OUT` / `GET_USER` | Google identity (oauth2 in manifest) |
 
-**Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response *and* falls through to the next `case` (this bug has shipped here — see Known Issues).
+**Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response *and* falls through to the next `case` (a bug of exactly this shape has shipped here before).
 
 ### Provider System
 
