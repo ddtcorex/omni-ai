@@ -26,14 +26,17 @@ test("selecting text mounts the Omni AI shadow UI", async () => {
     // The quick-action button mounts after a 10ms mouseup debounce in
     // content.js handleSelectionChange(), so poll instead of sleeping.
     // The host itself is 0x0 and its <style> is attached eagerly at init —
-    // only shadow-root CONTENT proves the selection UI actually appeared.
+    // only the selection-triggered quick button (.omni-ai-quick-btn, built
+    // in content.js presentQuickActionButton) proves the selection UI
+    // actually appeared; generic [class*='omni'] would also match static
+    // chrome like the overlay host styles.
     await expect
       .poll(
         () =>
           page.evaluate((sel) => {
             const el = document.querySelector(sel);
             const root = el && el.shadowRoot;
-            return root ? root.querySelectorAll("[class*='omni']").length : 0;
+            return root ? root.querySelectorAll(".omni-ai-quick-btn").length : 0;
           }, HOST_SEL),
         { timeout: 5000 },
       )
