@@ -20,7 +20,7 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 
 ## 🧠 Skills Protocol (MANDATORY)
 
-This repo **mandates** the superpowers process skills for every agent session (Claude Code, Codex, DSH, …). They are mounted at `.claude/skills/` and `.agents/skills/` as per-skill symlinks to the single source `~/.maestro-skills/skills/` (same convention as maestro-harness). Never copy or edit the symlinks' targets from here — upgrades happen once at the source.
+This repo **mandates** the superpowers process skills for every agent session (Claude Code, Codex, DSH, …). Skills resolve through your environment's superpowers install — this file only defines **when** each one applies here.
 
 1.  **Invoke `using-superpowers` before ANY response or action** in this repo, and let it route the task.
 2.  Match the trigger, load the required skill FIRST — no exceptions, no rationalizing "it's a small change":
