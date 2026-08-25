@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.2.0] - 2026-08-26
 
 ### Added
 
@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Alt+T "Dịch"/Translate keyboard shortcut now uses the same direction-detecting `smartTranslate()` as the on-page "Smart Translation" card, instead of always force-translating into the primary language regardless of the source text's language. `processSelectedText()` (shared by keyboard shortcuts and the right-click context menu) never had a `smart_translate` case, so the shortcut fell back to the one-way `translate_primary` action.
 - The right-click "Dịch với Omni AI" context-menu item now also uses `smartTranslate()` instead of always translating to the default language, matching the shortcut and menu-card fix above.
 - `chrome.runtime.onInstalled`'s `"update"` branch was an empty no-op, so reloading the unpacked extension (routine during development, and any real auto-update) never recreated the right-click context menu items that Chrome clears on reload, and never re-ran the settings-default merge for keys added after a user's original install. Both now run on `"update"` too, not just `"install"`.
+- Language-preference reads (`primaryLanguage`, `defaultLanguage`) in the service worker now consistently use `chrome.storage.sync`, matching where Settings actually writes them — several quick-action code paths were previously reading from `chrome.storage.local` instead and always fell back to the hardcoded default language.
+- The async `GET_API_KEY` message handler now returns `true`, so its response is no longer dropped by Chrome closing the message channel early.
+- Synced the grammar/rephrase/tone prompt tests with the actual v2.1.0 simple-language prompt wording (the assertions had drifted out of date).
 
 ## [2.1.0] - 2026-05-28
 

@@ -2,7 +2,7 @@
 
 > `CLAUDE.md` at the repo root is a symlink to `AGENTS.md` (same convention as the maestro-harness workspace). Claude Code follows the same rule set as every other agent. **Only edit `AGENTS.md`** — never edit `CLAUDE.md` directly or replace the symlink with a copy.
 
-Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.1.0**. Follow these directives for consistency, performance, and UI quality.
+Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.2.0**. Follow these directives for consistency, performance, and UI quality.
 
 ---
 
