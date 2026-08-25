@@ -177,9 +177,8 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 ## ⚠️ Known Issues (fix on sight — do not copy these patterns)
 
 1. **`GET_API_KEY` missing `return true`** (`background/service-worker.js`): if anyone sends this message, the async `sendResponse` is dropped and execution falls through into `VALIDATE_CONFIG`. No caller exists today, so it is latent — but fix before using it.
-2. **Storage-area mismatch for language prefs**: `settings.js` / `content.js` / `lib/i18n.js` read/write `primaryLanguage` / `defaultLanguage` in `storage.sync`, but the service worker reads them from `storage.local` → background flows ignore the user's language settings.
-3. **Stale tests**: `tests/lib/ai-service.test.js` asserts pre-v2.1.0 prompt wording (2 failures as of this writing).
-4. **Dead code**: `lib/auth.js` and `lib/prompts.js` are imported nowhere.
+2. **Stale tests**: `tests/lib/ai-service.test.js` asserts pre-v2.1.0 prompt wording (2 failures as of this writing).
+3. **Dead code**: `lib/auth.js` and `lib/prompts.js` are imported nowhere.
 
 ---
 

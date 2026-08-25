@@ -497,7 +497,7 @@ async function handleQuickAction(payload) {
   switch (action) {
     case "translate": {
       const { defaultLanguage } =
-        await chrome.storage.local.get("defaultLanguage");
+        await chrome.storage.sync.get("defaultLanguage");
       result = await translateText(
         selectedText,
         options.targetLanguage || defaultLanguage || "en",
@@ -506,9 +506,9 @@ async function handleQuickAction(payload) {
     }
     case "smart_translate": {
       const { primaryLanguage } =
-        await chrome.storage.local.get("primaryLanguage");
+        await chrome.storage.sync.get("primaryLanguage");
       const { defaultLanguage } =
-        await chrome.storage.local.get("defaultLanguage");
+        await chrome.storage.sync.get("defaultLanguage");
       result = await smartTranslate(
         selectedText,
         primaryLanguage || "vi",
@@ -518,13 +518,13 @@ async function handleQuickAction(payload) {
     }
     case "translate_primary": {
       const { primaryLanguage } =
-        await chrome.storage.local.get("primaryLanguage");
+        await chrome.storage.sync.get("primaryLanguage");
       result = await translateText(selectedText, primaryLanguage || "vi");
       break;
     }
     case "translate_default": {
       const { defaultLanguage } =
-        await chrome.storage.local.get("defaultLanguage");
+        await chrome.storage.sync.get("defaultLanguage");
       result = await translateText(selectedText, defaultLanguage || "en");
       break;
     }
@@ -533,7 +533,7 @@ async function handleQuickAction(payload) {
       break;
     case "explain": {
       const { primaryLanguage } =
-        await chrome.storage.local.get("primaryLanguage");
+        await chrome.storage.sync.get("primaryLanguage");
       result = await explainText(selectedText, primaryLanguage || "vi");
       break;
     }
@@ -625,14 +625,14 @@ async function processSelectedText(tabId, text, action, isInput = false) {
     switch (action) {
       case "translate_primary": {
         const { primaryLanguage } =
-          await chrome.storage.local.get("primaryLanguage");
+          await chrome.storage.sync.get("primaryLanguage");
 
         result = await translateText(text, primaryLanguage || "vi");
         break;
       }
       case "translate_default": {
         const { defaultLanguage } =
-          await chrome.storage.local.get("defaultLanguage");
+          await chrome.storage.sync.get("defaultLanguage");
         result = await translateText(text, defaultLanguage || "en");
         break;
       }
