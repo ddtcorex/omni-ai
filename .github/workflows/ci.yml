@@ -42,4 +42,7 @@ jobs:
         if: failure()
         with:
           name: playwright-report
-          path: playwright-report/
+          # test-results/ is what Playwright actually writes on failure by
+          # default; playwright-report/ stays empty unless the HTML reporter
+          # is configured (see docs/FOLLOWUPS.md item 3 before changing it).
+          path: test-results/
