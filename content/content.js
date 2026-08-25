@@ -220,152 +220,36 @@ function isEventInsideOmniUi(event) {
 // Input Strategies
 // ============================================
 
-const strategies = {
-  // Strategy for <input> and <textarea>
-  standard: {
-    id: "standard",
-    isApplicable: (el) => {
-      if (!el) return false;
-      const tagName = el.tagName;
-      if (tagName === "TEXTAREA") return true;
-      if (tagName === "INPUT") {
-        const type = (el.type || "text").toLowerCase();
-        const allowedTypes = ["text", "email", "number", "search", "tel", "url"];
-        return allowedTypes.includes(type);
-      }
-      return false;
-    },
-    getText: (el) => {
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      const text = el.value.substring(start, end);
-      // If no text selected, return full value ONLY if we want to act on the whole input
-      if (!text && el.value.trim().length > 0) {
-        return { text: el.value.trim(), isSelection: false, fullText: true };
-      }
-      return { text: text || "", isSelection: !!text, fullText: false };
-    },
-    getRect: (el) => {
-      // Standard inputs: Button goes to bottom-right corner
-      return el.getBoundingClientRect();
-    },
-    replaceText: (el, newText, state) => {
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      if (state && state.fullText) {
-        el.value = newText;
-      } else {
-        const val = el.value;
-        el.value = val.substring(0, start) + newText + val.substring(end);
-      }
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-    },
+// Fallback used only if content/editor-adapters.js somehow failed to load
+// before this script (manifest.json orders it first; see
+// tests/content/editor-adapters.test.js for that guarantee). Replacement
+// is never attempted through this fallback (see the `id === "static"`
+// guard in replaceSelectedText), so it only needs getText/getRect.
+const staticStrategy = {
+  id: "static",
+  isApplicable: () => true,
+  getText: () => {
+    const selection = window.getSelection();
+    return {
+      text: selection.toString().trim(),
+      isSelection: selection.toString().length > 0,
+    };
   },
-
-  // Strategy for ContentEditable / TinyMCE
-  richText: {
-    id: "richText",
-    isApplicable: (el) => {
-      if (!el) return false;
-      if (el.isContentEditable) return true;
-      if (el.designMode === "on") return true;
-      // Deep check for nested contenteditable
-      let parent = el.parentElement;
-      while (parent && parent !== document.body) {
-        if (parent.isContentEditable || parent.getAttribute("contenteditable") === "true") {
-          return true;
-        }
-        parent = parent.parentElement;
-      }
-      return false;
-    },
-    getText: (el) => {
-      const selection = window.getSelection();
-      const text = selection.toString();
-      if (text) {
-        return { text: text, isSelection: true };
-      }
-      // If no selection, grab innerText (treating as full document)
-      // Note: grabbing innerText from the *root* editable is better
-      const root = getEditableHost(el) || el;
-      return {
-        text: root.innerText.trim(),
-        isSelection: false,
-        fullText: true,
-      };
-    },
-    getRect: (el) => {
-      // Preference: Caret/Selection position
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        if (rect.width > 0 || rect.height > 0) return rect;
-      }
-      // Fallback to element rect
-      const root = getEditableHost(el) || el;
-      return root.getBoundingClientRect();
-    },
-    replaceText: (el, newText, state) => {
-      const root = getEditableHost(el) || el;
-      root.focus();
-
-      if (state && state.lastRange) {
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(state.lastRange);
-      } else if (state && state.fullText) {
-        document.execCommand("selectAll", false, null);
-      }
-
-      document.execCommand("insertText", false, newText);
-    },
-  },
-
-  // Strategy for Static Text (Selection on page)
-  static: {
-    id: "static",
-    isApplicable: () => true, // Fallback
-    getText: () => {
-      const selection = window.getSelection();
-      return {
-        text: selection.toString().trim(),
-        isSelection: selection.toString().length > 0,
-      };
-    },
-    getRect: () => {
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        return selection.getRangeAt(0).getBoundingClientRect();
-      }
-      return null;
-    },
-    replaceText: () => {
-      // Read-only
-    },
+  getRect: () => {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      return selection.getRangeAt(0).getBoundingClientRect();
+    }
+    return null;
   },
 };
 
 function getContext(element) {
   return (
-    /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS?.resolveAdapter(element) || strategies.static
+    /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS?.resolveAdapter(element, {
+      hostname: location.hostname,
+    }) || staticStrategy
   );
-}
-
-// Helper to find the actual contenteditable host (Moved to top level scope)
-function getEditableHost(el) {
-  if (!el) return null;
-  if (el.isContentEditable) {
-    let current = el;
-    while (current && current.parentElement) {
-      if (current.getAttribute && current.getAttribute("contenteditable") === "true") {
-        return current;
-      }
-      if (current.tagName === "BODY") break;
-      current = current.parentElement;
-    }
-  }
-  return el;
 }
 
 // ============================================
@@ -828,7 +712,7 @@ function presentQuickActionButton(
   // Determine valid positioning flag
   const isInput = !!inputElement;
   // If we are in rich text, we want caret-like positioning (false), unless we fell back to element rect?
-  // Our strategies.getRect handles the rect.
+  // The resolved adapter's getRect() handles the rect.
   // usageInputPositioning argument in createQuickBtn determines offset.
   // Standard -> True. RichText -> False (usually). Static -> False.
 
@@ -837,7 +721,7 @@ function presentQuickActionButton(
     const context = getContext(inputElement);
     // Standard inputs use "Input Positioning" (corner)
     // RichText standardly uses caret (False), but if we fallback to element rect we might want corner?
-    // Strategies.richText.getRect tries caret first.
+    // The richText adapter's getRect() tries the caret position first.
     if (context.id === "standard") useInputPositioning = true;
   }
 
