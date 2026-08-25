@@ -156,6 +156,36 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it("routes the quick_translate shortcut through smartTranslate, matching the on-page Smart Translation card", async () => {
+    const AIService = await import("../../lib/ai-service");
+    const History = await import("../../lib/history");
+
+    await import("../../background/service-worker");
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "xin chao", isInput: false });
+    chromeMock.storage.sync.get.mockResolvedValue({ primaryLanguage: "vi", defaultLanguage: "en" });
+    AIService.smartTranslate.mockResolvedValue("Hello");
+    History.addToHistory.mockResolvedValue({});
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_translate", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Regression guard: the Alt+T shortcut previously called translateText()
+    // (a fixed one-way translate to primaryLanguage) instead of the same
+    // direction-detecting smartTranslate() the on-page "Smart Translation"
+    // card uses, so the shortcut behaved differently from that menu action.
+    expect(AIService.smartTranslate).toHaveBeenCalledWith("xin chao", "vi", "en");
+    expect(AIService.translateText).not.toHaveBeenCalled();
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({
+        type: "SHOW_RESULT",
+        payload: expect.objectContaining({ action: "smart_translate", result: "Hello" }),
+      }),
+      { frameId: 0 },
+    );
+  });
+
   it("handles WRITING_ACTION message correctly", async () => {
     // Re-import dependencies to get the fresh mocks associated with the current module registry
     const AIService = await import("../../lib/ai-service");

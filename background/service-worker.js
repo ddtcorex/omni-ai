@@ -105,7 +105,7 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
     if (command === "quick_rephrase") action = "rephrase";
     if (command === "quick_summarize") action = "summarize";
     if (command === "quick_explain") action = "explain";
-    if (command === "quick_translate") action = "translate_primary";
+    if (command === "quick_translate") action = "smart_translate";
 
     if (action) {
       if (!selection) {
@@ -661,6 +661,15 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         /** @type {{ defaultLanguage?: string }} */
         const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
         result = await translateText(text, defaultLanguage || "en");
+        break;
+      }
+      case "smart_translate": {
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { primaryLanguage, defaultLanguage } = await chrome.storage.sync.get([
+          "primaryLanguage",
+          "defaultLanguage",
+        ]);
+        result = await smartTranslate(text, primaryLanguage || "vi", defaultLanguage || "en");
         break;
       }
       case "translate": {
