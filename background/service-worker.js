@@ -223,6 +223,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch((error) =>
           sendResponse({ success: false, error: error.message }),
         );
+      return true;
 
     case "VALIDATE_CONFIG":
       handleValidateConfig(message.payload)

@@ -146,4 +146,23 @@ describe("Service Worker Integration", () => {
     expect(localKeys).not.toContain("defaultLanguage");
     expect(sendResponse).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });
+
+  it("GET_API_KEY keeps channel open and replies asynchronously", async () => {
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({ geminiApiKey: "k-test" });
+    const sendResponse = jest.fn();
+    const returned = listener({ type: "GET_API_KEY" }, {}, sendResponse);
+
+    // Channel must be kept open for the async reply. (Pre-fix, fall-through
+    // into VALIDATE_CONFIG also lands on a `return true`, so this alone does
+    // not discriminate — the call-count assertion below does.)
+    expect(returned).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    // Exactly one response: the GET_API_KEY success. A second call means the
+    // VALIDATE_CONFIG case was reached via fall-through (the bug).
+    expect(sendResponse).toHaveBeenCalledTimes(1);
+    expect(sendResponse).toHaveBeenCalledWith({ success: true, apiKey: "k-test" });
+  });
 });
