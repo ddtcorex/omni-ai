@@ -14,7 +14,7 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code.
 5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before — see Known Issues).
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` (see the strategy objects near the top of `content/content.js`). Always fall back gracefully.
-7.  **i18n**: Any user-facing string goes through `chrome.i18n.getMessage()` / `lib/i18n.js` with keys in `_locales/*/messages.json` (10 locales: de en es fr it ja ko pt vi zh).
+7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 10 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
 ---
 
@@ -188,7 +188,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] New UI renders inside the Shadow DOM root using tokens (`--accent-purple`, `--glass-bg`, …) from `overlay.css` / `settings.css` — never hardcode colors
 - [ ] Every new `onMessage` case that replies asynchronously returns `true`
 - [ ] Text replacement verified for `input` + `textarea` + `contenteditable`
-- [ ] User-facing strings added to `_locales/en/messages.json` (other locales can follow)
+- [ ] Every user-facing string goes through i18n (`_locales/en/messages.json`) — zero hardcoded visible text
 - [ ] `npm test` green; no leftover `console.log`s (warnings/errors OK)
 
 ---
