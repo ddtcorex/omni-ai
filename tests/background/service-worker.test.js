@@ -147,6 +147,93 @@ describe("Service Worker Integration", () => {
     expect(sendResponse).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });
 
+  it("QUICK_ACTION explain reads primaryLanguage from storage.sync", async () => {
+    const AIService = await import("../../lib/ai-service");
+    const History = await import("../../lib/history");
+
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    AIService.explainText.mockResolvedValue("EXPLAINED");
+    History.addToHistory.mockResolvedValue({});
+    chromeMock.tabs.query.mockResolvedValue([{ id: 123, url: "http://example.com" }]);
+    chromeMock.storage.sync.get.mockResolvedValue({ primaryLanguage: "vi" });
+
+    const sendResponse = jest.fn();
+    const returned = listener(
+      { type: "QUICK_ACTION", payload: { action: "explain", preset: "casual", text: "texto" } },
+      {},
+      sendResponse,
+    );
+    expect(returned).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("primaryLanguage");
+    expect(AIService.explainText).toHaveBeenCalledWith("texto", "vi");
+    // regression guard: the local area must not be consulted for these keys
+    const localKeys = chromeMock.storage.local.get.mock.calls.map((c) => c[0]).flat();
+    expect(localKeys).not.toContain("primaryLanguage");
+    expect(localKeys).not.toContain("defaultLanguage");
+    expect(sendResponse).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+  });
+
+  it("context menu legacy translate falls back to defaultLanguage from storage.sync", async () => {
+    const AIService = await import("../../lib/ai-service");
+    const History = await import("../../lib/history");
+
+    await import("../../background/service-worker");
+    const menuListener =
+      chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
+
+    AIService.translateText.mockResolvedValue("TRANSLATED");
+    History.addToHistory.mockResolvedValue({});
+    chromeMock.storage.sync.get.mockResolvedValue({});
+
+    menuListener(
+      { menuItemId: "omni-ai-translate", selectionText: "hola" },
+      { id: 123 },
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Legacy flow must consult storage.sync (never local) before translating
+    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("defaultLanguage");
+    const localKeys = chromeMock.storage.local.get.mock.calls.map((c) => c[0]).flat();
+    expect(localKeys).not.toContain("defaultLanguage");
+    // No configured language -> documented fallback
+    expect(AIService.translateText).toHaveBeenCalledWith("hola", "en");
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({ type: "SHOW_RESULT" }),
+    );
+  });
+
+  it("context menu legacy explain falls back to primaryLanguage from storage.sync", async () => {
+    const AIService = await import("../../lib/ai-service");
+    const History = await import("../../lib/history");
+
+    await import("../../background/service-worker");
+    const menuListener =
+      chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
+
+    AIService.explainText.mockResolvedValue("EXPLAINED");
+    History.addToHistory.mockResolvedValue({});
+    chromeMock.storage.sync.get.mockResolvedValue({});
+
+    menuListener(
+      { menuItemId: "omni-ai-explain", selectionText: "hola" },
+      { id: 123 },
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("primaryLanguage");
+    // No configured language -> same "vi" convention as handleQuickAction's explain
+    expect(AIService.explainText).toHaveBeenCalledWith("hola", "vi");
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({ type: "SHOW_RESULT" }),
+    );
+  });
+
   it("GET_API_KEY keeps channel open and replies asynchronously", async () => {
     await import("../../background/service-worker");
     const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];

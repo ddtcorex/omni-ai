@@ -506,10 +506,8 @@ async function handleQuickAction(payload) {
       break;
     }
     case "smart_translate": {
-      const { primaryLanguage } =
-        await chrome.storage.sync.get("primaryLanguage");
-      const { defaultLanguage } =
-        await chrome.storage.sync.get("defaultLanguage");
+      const { primaryLanguage, defaultLanguage } =
+        await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage"]);
       result = await smartTranslate(
         selectedText,
         primaryLanguage || "vi",
@@ -638,11 +636,19 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         break;
       }
       case "translate": // Context menu legacy
-        result = await translateText(text, "en");
-        break;
+        {
+          const { defaultLanguage } =
+            await chrome.storage.sync.get("defaultLanguage");
+          result = await translateText(text, defaultLanguage || "en");
+          break;
+        }
       case "explain":
-        result = await explainText(text);
-        break;
+        {
+          const { primaryLanguage } =
+            await chrome.storage.sync.get("primaryLanguage");
+          result = await explainText(text, primaryLanguage || "vi");
+          break;
+        }
       case "summarize":
         result = await summarizeText(text);
         break;
