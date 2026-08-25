@@ -1,4 +1,4 @@
-import { addToHistory, getHistory, clearHistory, getStats } from "../../lib/history";
+import { addToHistory, getHistory, clearHistory } from "../../lib/history";
 
 describe("History Service", () => {
   let store = {};

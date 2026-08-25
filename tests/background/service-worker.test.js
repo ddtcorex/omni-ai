@@ -1,6 +1,5 @@
-import * as History from "../../lib/history";
-import * as AIService from "../../lib/ai-service";
-
+// The service worker imports these modules; the path-based mocks below are
+// what the tests assert against, so no namespace imports are needed here.
 jest.mock("../../lib/history");
 jest.mock("../../lib/ai-service");
 

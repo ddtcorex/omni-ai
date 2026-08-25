@@ -1,11 +1,6 @@
 import { getStats, resetStats } from "./lib/history.js";
 import { i18n } from "./lib/i18n.js";
-import {
-  initTheme,
-  getThemePreference,
-  setThemePreference,
-  applyTheme,
-} from "./lib/theme-manager.js";
+import { initTheme, applyTheme } from "./lib/theme-manager.js";
 import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 /**

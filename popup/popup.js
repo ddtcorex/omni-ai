@@ -43,7 +43,6 @@ const elements = {
 // State
 
 let isProcessing = false;
-let currentUser = null;
 let chatHistory = [];
 let conversationPageContext = null;
 let isPageContextLocked = false;
@@ -227,7 +226,6 @@ async function handleSignOut() {
  * Set UI to signed in state
  */
 function setSignedInState(user) {
-  currentUser = user;
   elements.signInBtn.classList.add("hidden");
   elements.userInfo.classList.remove("hidden");
   elements.userAvatar.src = user.picture || getDefaultAvatar(user.name);
@@ -241,7 +239,6 @@ function setSignedInState(user) {
  * Set UI to signed out state
  */
 function setSignedOutState() {
-  currentUser = null;
   elements.signInBtn.classList.remove("hidden");
   elements.userInfo.classList.add("hidden");
   closeUserDropdown();

@@ -66,7 +66,7 @@ async function initializeI18n() {
         const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
         const targetRes = await fetch(targetUrl);
         targetData = await targetRes.json();
-      } catch (e) {
+      } catch {
         console.warn("[Omni AI] Failed to load local messages:", userLang);
       }
     }
@@ -97,7 +97,6 @@ initializeI18n();
 // ============================================
 let overlay = null;
 let isOverlayVisible = false;
-let lastSelection = null;
 let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
 const resultCache = new Map();
@@ -106,7 +105,6 @@ const resultCache = new Map();
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
-let lastMousePosition = null; // Track mouse position for button placement
 
 // Shadow UI root to isolate extension styles from host page CSS.
 const OMNI_UI_HOST_ID = "omni-ai-shadow-host";
@@ -421,9 +419,6 @@ function computeDiff(original, corrected) {
       j++;
     } else {
       // Look ahead to find synchronization point
-      let bestMatchK1 = -1,
-        bestMatchK2 = -1;
-
       // Search for words1[i] in words2 (deletion check)
       // Search for words2[j] in words1 (insertion check)
 
@@ -753,14 +748,10 @@ function setupSelectionListener() {
   };
 
   document.addEventListener("mouseup", (e) => {
-    // Capture mouse position for button placement
-    const mousePos = { x: e.clientX, y: e.clientY };
-    lastMousePosition = mousePos;
-
     if (overlay && !isEventInsideOmniUi(e)) {
       hideOverlay();
     }
-    handleSelectionChange(mousePos);
+    handleSelectionChange({ x: e.clientX, y: e.clientY });
   });
 
   document.addEventListener("keyup", (e) => {
@@ -774,9 +765,8 @@ function setupSelectionListener() {
   });
 
   // Handle paste events
-  document.addEventListener("paste", (e) => {
+  document.addEventListener("paste", () => {
     // Rely on generic detection shortly after paste
-    const target = e.target; // Might be needed for context if focus isn't immediate?
 
     // Slight delay to allow paste to complete
     setTimeout(() => {
@@ -944,7 +934,7 @@ async function showQuickActionMenu(
       currentTheme = data[THEME_KEY] || "system";
       primaryLanguage = data.primaryLanguage || "vi";
       defaultLanguage = data.defaultLanguage || "en";
-    } catch (e) {
+    } catch {
       console.warn("[Omni AI] Failed to fetch settings, using defaults");
     }
   }
@@ -1767,7 +1757,7 @@ function replaceSelectedText(newText, specificElement = null) {
 }
 
 async function showQuickAskOverlay(
-  initialValue = "",
+  _initialValue = "",
   lockedRect = null,
   originalText = null,
   autoQuery = null,
