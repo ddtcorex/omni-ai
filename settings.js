@@ -10,6 +10,7 @@ import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 // DOM Elements
 const elements = {
+  extVersion: document.getElementById("extVersion"),
   geminiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("geminiApiKey")), // Google Key
   apiModel: /** @type {HTMLSelectElement} */ (document.getElementById("apiModel")),
   customModelName: /** @type {HTMLInputElement} */ (document.getElementById("customModelName")),
@@ -58,6 +59,7 @@ let isGeminiKeyVisible = false;
  * Initialize options page
  */
 async function init() {
+  if (elements.extVersion) elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();

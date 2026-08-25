@@ -12,6 +12,8 @@ import { i18n } from "../lib/i18n.js";
 // with runtime guards narrow naturally; unguarded ones are pre-existing
 // presence assumptions, unchanged here.
 const elements = {
+  extVersion: /** @type {HTMLElement | null} */ (document.getElementById("extVersion")),
+
   // Quick Ask
   quickAskInput: /** @type {HTMLTextAreaElement | null} */ (
     document.getElementById("quickAskInput")
@@ -67,6 +69,7 @@ let draftSaveTimer = null;
  * Initialize popup
  */
 async function init() {
+  if (elements.extVersion) elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
