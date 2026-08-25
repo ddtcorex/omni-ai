@@ -13,10 +13,7 @@ async function launchWithExtension() {
   const context = await chromium.launchPersistentContext("", {
     channel: "chromium", // REQUIRED post flag-removal; enables headless
     headless: true,
-    args: [
-      `--disable-extensions-except=${EXT_PATH}`,
-      `--load-extension=${EXT_PATH}`,
-    ],
+    args: [`--disable-extensions-except=${EXT_PATH}`, `--load-extension=${EXT_PATH}`],
   });
   let [sw] = context.serviceWorkers();
   if (!sw) sw = await context.waitForEvent("serviceworker");
