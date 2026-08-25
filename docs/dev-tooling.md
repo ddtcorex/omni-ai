@@ -14,13 +14,13 @@ Omni AI is **zero-build vanilla JS** by directive. The fastest loop that **prese
 
 ## 1. Build/HMR landscape (2025–2026)
 
-| Tool | Vanilla-JS friendly | HMR / reload | Status (Aug 2026) | Verdict here |
-|---|---|---|---|---|
-| **WXT** (wxt.dev) | ✅ vanilla template; JS works | Dev browser w/ ext installed; HMR for pages, reload for bg/content | 🟢 v0.21.4, ~2.2M dl/mo, very active | Best option *if* bundling is ever OK; restructures to `entrypoints/*` |
-| **CRXJS** `@crxjs/vite-plugin` | ✅ wraps existing manifest/layout | Native Vite HMR | 🟢 **v2 stable since 2025-06-10** (2.7.x), peers vite ^3–^8, ~1.64M dl/mo | Least-invasive build option; keeps current file layout |
-| **Plasmo** | 🟡 React-centric DX | Partial | 🔴 Dormant (nothing since 2025-05) | Avoid new investment |
-| **Extension.js** | ✅ ESNext template, content-script HMR claim | ✅ | 🟡 Active but tiny adoption (~22k dl/mo) | Solo-maintainer risk |
-| **chrome-extension-cli** | — | ❌ | 🔴 Dead (2023) | Skip |
+| Tool                           | Vanilla-JS friendly                          | HMR / reload                                                       | Status (Aug 2026)                                                         | Verdict here                                                          |
+| ------------------------------ | -------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **WXT** (wxt.dev)              | ✅ vanilla template; JS works                | Dev browser w/ ext installed; HMR for pages, reload for bg/content | 🟢 v0.21.4, ~2.2M dl/mo, very active                                      | Best option _if_ bundling is ever OK; restructures to `entrypoints/*` |
+| **CRXJS** `@crxjs/vite-plugin` | ✅ wraps existing manifest/layout            | Native Vite HMR                                                    | 🟢 **v2 stable since 2025-06-10** (2.7.x), peers vite ^3–^8, ~1.64M dl/mo | Least-invasive build option; keeps current file layout                |
+| **Plasmo**                     | 🟡 React-centric DX                          | Partial                                                            | 🔴 Dormant (nothing since 2025-05)                                        | Avoid new investment                                                  |
+| **Extension.js**               | ✅ ESNext template, content-script HMR claim | ✅                                                                 | 🟡 Active but tiny adoption (~22k dl/mo)                                  | Solo-maintainer risk                                                  |
+| **chrome-extension-cli**       | —                                            | ❌                                                                 | 🔴 Dead (2023)                                                            | Skip                                                                  |
 
 Note: WXT's comparison page calling CRXJS unmaintained predates CRXJS v2 stable — outdated.
 
@@ -65,7 +65,13 @@ Add `.webext-profile/` and `test-results/` to `.gitignore`. The pinned `manifest
     "strict": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
-  "include": ["lib/**/*.js", "background/**/*.js", "content/**/*.js", "popup/**/*.js", "settings.js"]
+  "include": [
+    "lib/**/*.js",
+    "background/**/*.js",
+    "content/**/*.js",
+    "popup/**/*.js",
+    "settings.js"
+  ]
 }
 ```
 

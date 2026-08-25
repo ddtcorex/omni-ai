@@ -171,12 +171,12 @@ To use the personalization features (syncing settings across devices), you need 
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action                                        |
-| :------- | :-------------------------------------------- |
-| `Alt+O`  | Open Omni AI Popup                            |
+| Shortcut | Action                                       |
+| :------- | :------------------------------------------- |
+| `Alt+O`  | Open Omni AI Popup                           |
 | `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page) |
 | `Alt+R`  | Rephrase (on selected text)                  |
-| `Alt+T`  | Translate to Primary Language                 |
+| `Alt+T`  | Translate to Primary Language                |
 
 _Shortcuts can be customized in `chrome://extensions/shortcuts`_
 

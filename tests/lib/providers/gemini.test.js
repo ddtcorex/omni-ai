@@ -12,9 +12,7 @@ describe("Gemini Provider", () => {
   });
 
   it("throws error if apiKey is missing", async () => {
-    await expect(generateContent("test", {})).rejects.toThrow(
-      "Gemini API key not configured",
-    );
+    await expect(generateContent("test", {})).rejects.toThrow("Gemini API key not configured");
   });
 
   it("calls the correct API endpoint with correct body", async () => {
@@ -59,9 +57,7 @@ describe("Gemini Provider", () => {
 
     const config = { apiKey: "test-key", model: "gemini-2.0-flash" };
 
-    await expect(generateContent("test", config)).rejects.toThrow(
-      "Bad Request",
-    );
+    await expect(generateContent("test", config)).rejects.toThrow("Bad Request");
   });
 
   it("retries on 429 errors", async () => {
@@ -74,9 +70,7 @@ describe("Gemini Provider", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          candidates: [
-            { content: { parts: [{ text: "Success after retry" }] } },
-          ],
+          candidates: [{ content: { parts: [{ text: "Success after retry" }] } }],
         }),
       });
 

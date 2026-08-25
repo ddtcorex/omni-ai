@@ -12,7 +12,9 @@ const elements = {
   quickAskInput: /** @type {HTMLTextAreaElement} */ (document.getElementById("quickAskInput")),
   askBtn: document.getElementById("askBtn"),
   settingsBtn: document.getElementById("settingsBtn"),
-  includePageContext: /** @type {HTMLInputElement} */ (document.getElementById("includePageContext")),
+  includePageContext: /** @type {HTMLInputElement} */ (
+    document.getElementById("includePageContext")
+  ),
   includePageContextLabel: /** @type {HTMLElement | null} */ (
     document.querySelector(".context-toggle .checkbox-label")
   ),
@@ -364,8 +366,7 @@ function scheduleSaveDraftState() {
 
 async function saveDraftState() {
   try {
-    const includeChecked =
-      isPageContextLocked || !!elements.includePageContext?.checked;
+    const includeChecked = isPageContextLocked || !!elements.includePageContext?.checked;
     await chrome.storage.local.set({
       [STORAGE_KEYS.draftState]: {
         query: elements.quickAskInput?.value || "",
@@ -397,10 +398,7 @@ async function loadChatHistory() {
       : [];
 
     const storedContextSession = data[STORAGE_KEYS.pageContextSession];
-    if (
-      storedContextSession?.locked &&
-      storedContextSession?.pageContent?.text
-    ) {
+    if (storedContextSession?.locked && storedContextSession?.pageContent?.text) {
       isPageContextLocked = true;
       conversationPageContext = storedContextSession.pageContent;
     } else {
@@ -480,19 +478,19 @@ async function saveChatHistory() {
  */
 function renderChatHistory() {
   if (!elements.chatContainer) return;
-  
+
   // Clear container but keep empty state
-  elements.chatContainer.innerHTML = '';
+  elements.chatContainer.innerHTML = "";
 
   const visibleMessages = chatHistory.filter((msg) => !msg?.hidden);
 
   if (visibleMessages.length === 0) {
     if (elements.emptyState) {
-        elements.chatContainer.appendChild(elements.emptyState);
-        elements.emptyState.style.display = 'flex';
+      elements.chatContainer.appendChild(elements.emptyState);
+      elements.emptyState.style.display = "flex";
     }
   } else {
-    visibleMessages.forEach(msg => appendBubble(msg.role, msg.content, false));
+    visibleMessages.forEach((msg) => appendBubble(msg.role, msg.content, false));
     scrollToBottom();
   }
 }
@@ -504,14 +502,14 @@ function appendBubble(role, content, animated = true) {
   const bubble = document.createElement("div");
   bubble.className = `chat-bubble ${role}`;
   bubble.innerHTML = formatContent(content);
-  
+
   if (animated) {
-    bubble.style.opacity = '0';
-    bubble.style.transform = 'translateY(10px)';
-    bubble.style.transition = 'all 0.3s ease';
+    bubble.style.opacity = "0";
+    bubble.style.transform = "translateY(10px)";
+    bubble.style.transition = "all 0.3s ease";
     setTimeout(() => {
-        bubble.style.opacity = '1';
-        bubble.style.transform = 'translateY(0)';
+      bubble.style.opacity = "1";
+      bubble.style.transform = "translateY(0)";
     }, 10);
   }
 
@@ -548,7 +546,7 @@ function removeTypingIndicator() {
  */
 function scrollToBottom() {
   setTimeout(() => {
-      elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+    elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
   }, 50);
 }
 
@@ -585,8 +583,7 @@ async function handleQuickAsk() {
 
   setProcessing(true);
 
-  const shouldIncludeContext =
-    isPageContextLocked || elements.includePageContext?.checked || false;
+  const shouldIncludeContext = isPageContextLocked || elements.includePageContext?.checked || false;
   let justIncludedPageContext = false;
 
   if (shouldIncludeContext && !conversationPageContext) {
@@ -615,7 +612,7 @@ async function handleQuickAsk() {
   await saveChatHistory();
 
   elements.quickAskInput.value = "";
-  elements.quickAskInput.style.height = 'auto';
+  elements.quickAskInput.style.height = "auto";
   await saveDraftState();
 
   showTypingIndicator();
@@ -624,30 +621,26 @@ async function handleQuickAsk() {
 
   if (conversationPageContext?.text) {
     const pageTitle =
-      conversationPageContext.title ||
-      i18n.getMessage("popup_context") ||
-      "Current Page";
-    contextParts.push(
-      `Current page content from "${pageTitle}":\n${conversationPageContext.text}`,
-    );
+      conversationPageContext.title || i18n.getMessage("popup_context") || "Current Page";
+    contextParts.push(`Current page content from "${pageTitle}":\n${conversationPageContext.text}`);
   }
 
   const contextMsgs = chatHistory
     .filter((m) => m.role === "user" || m.role === "ai")
     .slice(0, -1)
     .slice(-10);
-  contextMsgs.forEach(m => {
-    contextParts.push(`${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`);
+  contextMsgs.forEach((m) => {
+    contextParts.push(`${m.role === "user" ? "User" : "AI"}: ${m.content}`);
   });
-  
-  const contextString = contextParts.join('\n\n');
+
+  const contextString = contextParts.join("\n\n");
 
   try {
     const response = await chrome.runtime.sendMessage({
       type: "QUICK_ASK",
-      payload: { 
+      payload: {
         query,
-        context: contextString
+        context: contextString,
       },
     });
 
@@ -656,11 +649,10 @@ async function handleQuickAsk() {
     if (response.success) {
       updateStatus(i18n.getMessage("status_ready"), "success");
       const answer = response.data.response || response.data;
-      
+
       chatHistory.push({ role: "ai", content: answer });
       appendBubble("ai", answer);
       await saveChatHistory();
-
     } else {
       updateStatus(i18n.getMessage("status_error"), "error");
       const errorMsg = response.error || "Unknown error";
@@ -681,26 +673,23 @@ async function handleQuickAsk() {
  * Format content (basic markdown support)
  */
 function formatContent(text) {
-    if (!text) return "";
-    // Basic escapes
-    let html = text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    
-    // Bold
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Code blocks
-    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-    
-    // Inline code
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    
-    // Newlines to br
-    html = html.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-    
-    return html;
+  if (!text) return "";
+  // Basic escapes
+  let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Code blocks
+  html = html.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  // Newlines to br
+  html = html.replace(/\n\n/g, "<br><br>").replace(/\n/g, "<br>");
+
+  return html;
 }
 
 // ============================================
@@ -720,7 +709,7 @@ function openSettings() {
 function setProcessing(processing) {
   isProcessing = processing;
   // document.body.classList.toggle("loading", processing); // Don't block whole UI
-  
+
   const btn = elements.askBtn;
   if (processing) {
     if (!btn.dataset.original) {
@@ -745,11 +734,9 @@ function setProcessing(processing) {
  * Update status indicator
  */
 function updateStatus(text, state = "ready") {
-  const statusDot = /** @type {HTMLElement} */ (
-    elements.status.querySelector(".status-dot")
-  );
+  const statusDot = /** @type {HTMLElement} */ (elements.status.querySelector(".status-dot"));
   if (elements.status.lastChild) {
-      elements.status.lastChild.textContent = text;
+    elements.status.lastChild.textContent = text;
   }
 
   statusDot.style.background =

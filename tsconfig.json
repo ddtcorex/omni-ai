@@ -9,5 +9,11 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": ["chrome"]
   },
-  "include": ["lib/**/*.js", "background/**/*.js", "content/**/*.js", "popup/**/*.js", "settings.js"]
+  "include": [
+    "lib/**/*.js",
+    "background/**/*.js",
+    "content/**/*.js",
+    "popup/**/*.js",
+    "settings.js"
+  ]
 }

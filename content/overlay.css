@@ -8,8 +8,7 @@
 .omni-ai-overlay,
 .omni-ai-toast,
 .omni-ai-quick-btn {
-  --ai-font-family:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ai-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Dark Mode (Default) */
   --ai-bg-primary: #0f0f14;
@@ -36,8 +35,7 @@
   --ai-error: #ef4444;
 
   --ai-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --ai-shadow-lg:
-    0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --ai-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
 
   --ai-radius-lg: 12px;
   --ai-radius-md: 8px;
@@ -70,8 +68,7 @@
   --ai-text-tertiary: #94a3b8;
 
   --ai-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --ai-shadow-lg:
-    0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --ai-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 /* Defensive reset against host-page styles */
@@ -503,11 +500,7 @@
   gap: 16px;
   padding: 32px 20px;
   color: var(--ai-text-secondary);
-  background: radial-gradient(
-    circle at center,
-    rgba(139, 92, 246, 0.03) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.03) 0%, transparent 70%);
   width: 100%;
   box-sizing: border-box;
 }

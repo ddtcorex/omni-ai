@@ -92,11 +92,7 @@ describe("Service Worker Integration", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Verify AI Service call
-    expect(AIService.improveText).toHaveBeenCalledWith(
-      "original text",
-      "grammar",
-      "email",
-    );
+    expect(AIService.improveText).toHaveBeenCalledWith("original text", "grammar", "email");
 
     // Verify content script update
     // chromeMock.tabs.sendMessage expectation removed as handleWritingAction does not broadcast SHOW_RESULT
@@ -131,7 +127,10 @@ describe("Service Worker Integration", () => {
 
     const sendResponse = jest.fn();
     const returned = listener(
-      { type: "QUICK_ACTION", payload: { action: "smart_translate", preset: "casual", text: "xin chao" } },
+      {
+        type: "QUICK_ACTION",
+        payload: { action: "smart_translate", preset: "casual", text: "xin chao" },
+      },
       {},
       sendResponse,
     );
@@ -182,17 +181,13 @@ describe("Service Worker Integration", () => {
     const History = await import("../../lib/history");
 
     await import("../../background/service-worker");
-    const menuListener =
-      chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
+    const menuListener = chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
 
     AIService.translateText.mockResolvedValue("TRANSLATED");
     History.addToHistory.mockResolvedValue({});
     chromeMock.storage.sync.get.mockResolvedValue({});
 
-    menuListener(
-      { menuItemId: "omni-ai-translate", selectionText: "hola" },
-      { id: 123 },
-    );
+    menuListener({ menuItemId: "omni-ai-translate", selectionText: "hola" }, { id: 123 });
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Legacy flow must consult storage.sync (never local) before translating
@@ -212,17 +207,13 @@ describe("Service Worker Integration", () => {
     const History = await import("../../lib/history");
 
     await import("../../background/service-worker");
-    const menuListener =
-      chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
+    const menuListener = chromeMock.contextMenus.onClicked.addListener.mock.calls[0][0];
 
     AIService.explainText.mockResolvedValue("EXPLAINED");
     History.addToHistory.mockResolvedValue({});
     chromeMock.storage.sync.get.mockResolvedValue({});
 
-    menuListener(
-      { menuItemId: "omni-ai-explain", selectionText: "hola" },
-      { id: 123 },
-    );
+    menuListener({ menuItemId: "omni-ai-explain", selectionText: "hola" }, { id: 123 });
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("primaryLanguage");

@@ -25,17 +25,17 @@ This repo **mandates** the superpowers process skills for every agent session (C
 1.  **Invoke `using-superpowers` before ANY response or action** in this repo, and let it route the task.
 2.  Match the trigger, load the required skill FIRST — no exceptions, no rationalizing "it's a small change":
 
-| Trigger | Required skill |
-|---|---|
-| New feature / component / behavior change | `brainstorming` |
-| Bug, test failure, unexpected behavior | `systematic-debugging` |
-| Implementing any feature or bugfix | `test-driven-development` |
-| Multi-step work with requirements | `writing-plans` → execute via `subagent-driven-development` or `executing-plans` |
-| About to claim done / commit / PR | `verification-before-completion` |
-| Finished major task / pre-merge | `requesting-code-review` |
-| Received review feedback | `receiving-code-review` |
-| Work needing workspace isolation | `using-git-worktrees` |
-| Creating or editing skills themselves | `writing-skills` |
+| Trigger                                   | Required skill                                                                   |
+| ----------------------------------------- | -------------------------------------------------------------------------------- |
+| New feature / component / behavior change | `brainstorming`                                                                  |
+| Bug, test failure, unexpected behavior    | `systematic-debugging`                                                           |
+| Implementing any feature or bugfix        | `test-driven-development`                                                        |
+| Multi-step work with requirements         | `writing-plans` → execute via `subagent-driven-development` or `executing-plans` |
+| About to claim done / commit / PR         | `verification-before-completion`                                                 |
+| Finished major task / pre-merge           | `requesting-code-review`                                                         |
+| Received review feedback                  | `receiving-code-review`                                                          |
+| Work needing workspace isolation          | `using-git-worktrees`                                                            |
+| Creating or editing skills themselves     | `writing-skills`                                                                 |
 
 3.  Implementation plans live in `docs/superpowers/plans/YYYY-MM-DD-<name>.md` (see the engineering-hygiene plan there as the working example).
 4.  Direct human instructions and this file take precedence over skills; skipping a mandated workflow requires the human to say so explicitly.
@@ -74,28 +74,28 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type | Direction | Purpose |
-|---|---|---|
-| `GET_SELECTION` | bg → content | Return `{ selection, isInput }` for the current selection |
-| `PROCESSING_START` | bg → content | Show spinner state before an async action |
-| `SHOW_RESULT` | bg → content | Render result card `{ action, result, error?, originalText?, isInput? }` |
-| `REPLACE_SELECTION` | bg → content | Swap selection with the AI result |
-| `SHOW_QUICK_ASK_OVERLAY` | bg → content | Open Quick Ask overlay (keyboard command) |
-| `THEME_CHANGED` | bg → all tabs | Re-read theme after `omni_ai_theme` sync change |
-| `PING` / `GET_PAGE_CONTENT` | popup/bg → content | Liveness check / page context for Quick Ask |
+| Type                        | Direction          | Purpose                                                                  |
+| --------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `GET_SELECTION`             | bg → content       | Return `{ selection, isInput }` for the current selection                |
+| `PROCESSING_START`          | bg → content       | Show spinner state before an async action                                |
+| `SHOW_RESULT`               | bg → content       | Render result card `{ action, result, error?, originalText?, isInput? }` |
+| `REPLACE_SELECTION`         | bg → content       | Swap selection with the AI result                                        |
+| `SHOW_QUICK_ASK_OVERLAY`    | bg → content       | Open Quick Ask overlay (keyboard command)                                |
+| `THEME_CHANGED`             | bg → all tabs      | Re-read theme after `omni_ai_theme` sync change                          |
+| `PING` / `GET_PAGE_CONTENT` | popup/bg → content | Liveness check / page context for Quick Ask                              |
 
 Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
-| Type | Purpose |
-|---|---|
-| `QUICK_ASK` | Popup chat query (+ optional page context) |
-| `WRITING_ACTION` | Action request with explicit text |
-| `QUICK_ACTION` | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …) |
-| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt |
-| `GET_API_KEY` | Read Gemini key |
-| `SIGN_IN` / `SIGN_OUT` / `GET_USER` | Google identity (oauth2 in manifest) |
+| Type                                | Purpose                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `QUICK_ASK`                         | Popup chat query (+ optional page context)                                          |
+| `WRITING_ACTION`                    | Action request with explicit text                                                   |
+| `QUICK_ACTION`                      | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …) |
+| `VALIDATE_CONFIG`                   | Test provider credentials with a tiny prompt                                        |
+| `GET_API_KEY`                       | Read Gemini key                                                                     |
+| `SIGN_IN` / `SIGN_OUT` / `GET_USER` | Google identity (oauth2 in manifest)                                                |
 
-**Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response *and* falls through to the next `case` (a bug of exactly this shape has shipped here before).
+**Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
 
 ### Provider System
 
@@ -106,9 +106,9 @@ Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST re
 
 ### Storage Map (the contract)
 
-| Area | Keys |
-|---|---|
-| `sync` | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`, `user` (OAuth profile) |
+| Area    | Keys                                                                                                                                                                                                             |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync`  | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`, `user` (OAuth profile)                                                                                                                                    |
 | `local` | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
 
 ---

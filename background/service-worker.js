@@ -51,9 +51,7 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
   // Handle other commands via selected text
   try {
     // Notify content script to show processing state (spin icon)
-    chrome.tabs
-      .sendMessage(tab.id, { type: "PROCESSING_START" })
-      .catch(() => {});
+    chrome.tabs.sendMessage(tab.id, { type: "PROCESSING_START" }).catch(() => {});
 
     const response = await chrome.tabs
       .sendMessage(tab.id, {
@@ -147,11 +145,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
     chrome.tabs.query({}, (tabs) => {
       tabs.forEach((tab) => {
         if (tab.id) {
-          chrome.tabs
-            .sendMessage(tab.id, { type: "THEME_CHANGED" })
-            .catch(() => {
-              // Tab might be restricted or script not injected, ignore
-            });
+          chrome.tabs.sendMessage(tab.id, { type: "THEME_CHANGED" }).catch(() => {
+            // Tab might be restricted or script not injected, ignore
+          });
         }
       });
     });
@@ -171,66 +167,50 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "SIGN_IN":
       handleSignIn()
         .then((user) => sendResponse({ success: true, user }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     case "SIGN_OUT":
       handleSignOut()
         .then(() => sendResponse({ success: true }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     case "GET_USER":
       getUser()
         .then((user) => sendResponse({ success: true, user }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     // Quick Ask
     case "QUICK_ASK":
       handleQuickAsk(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     case "WRITING_ACTION":
       handleWritingAction(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     case "QUICK_ACTION":
       handleQuickAction(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     case "GET_API_KEY":
       getApiKey()
         .then((key) => sendResponse({ success: true, apiKey: key }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     case "VALIDATE_CONFIG":
       handleValidateConfig(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
-        .catch((error) =>
-          sendResponse({ success: false, error: error.message }),
-        );
+        .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
     default:
@@ -372,15 +352,12 @@ async function saveUserInfo(userInfo) {
  */
 async function revokeToken(token) {
   try {
-    const response = await fetch(
-      `https://oauth2.googleapis.com/revoke?token=${token}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+    const response = await fetch(`https://oauth2.googleapis.com/revoke?token=${token}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-    );
+    });
 
     if (!response.ok) {
       console.warn("[Omni AI] Token revocation failed:", response.status);
@@ -498,36 +475,28 @@ async function handleQuickAction(payload) {
   switch (action) {
     case "translate": {
       /** @type {{ defaultLanguage?: string }} */
-      const { defaultLanguage } =
-        await chrome.storage.sync.get("defaultLanguage");
-      result = await translateText(
-        selectedText,
-        options.targetLanguage || defaultLanguage || "en",
-      );
+      const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+      result = await translateText(selectedText, options.targetLanguage || defaultLanguage || "en");
       break;
     }
     case "smart_translate": {
       /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
-      const { primaryLanguage, defaultLanguage } =
-        await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage"]);
-      result = await smartTranslate(
-        selectedText,
-        primaryLanguage || "vi",
-        defaultLanguage || "en",
-      );
+      const { primaryLanguage, defaultLanguage } = await chrome.storage.sync.get([
+        "primaryLanguage",
+        "defaultLanguage",
+      ]);
+      result = await smartTranslate(selectedText, primaryLanguage || "vi", defaultLanguage || "en");
       break;
     }
     case "translate_primary": {
       /** @type {{ primaryLanguage?: string }} */
-      const { primaryLanguage } =
-        await chrome.storage.sync.get("primaryLanguage");
+      const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
       result = await translateText(selectedText, primaryLanguage || "vi");
       break;
     }
     case "translate_default": {
       /** @type {{ defaultLanguage?: string }} */
-      const { defaultLanguage } =
-        await chrome.storage.sync.get("defaultLanguage");
+      const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
       result = await translateText(selectedText, defaultLanguage || "en");
       break;
     }
@@ -536,8 +505,7 @@ async function handleQuickAction(payload) {
       break;
     case "explain": {
       /** @type {{ primaryLanguage?: string }} */
-      const { primaryLanguage } =
-        await chrome.storage.sync.get("primaryLanguage");
+      const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
       result = await explainText(selectedText, primaryLanguage || "vi");
       break;
     }
@@ -549,16 +517,7 @@ async function handleQuickAction(payload) {
       result = await emojifyText(selectedText);
       break;
     default:
-      if (
-        [
-          "grammar",
-          "rephrase",
-          "tone",
-          "concise",
-          "expand",
-          "clarity",
-        ].includes(action)
-      ) {
+      if (["grammar", "rephrase", "tone", "concise", "expand", "clarity"].includes(action)) {
         // Pass preset as tone via options, not context
         result = await improveText(selectedText, action, "chat", {
           tone: preset,
@@ -629,35 +588,30 @@ async function processSelectedText(tabId, text, action, isInput = false) {
     switch (action) {
       case "translate_primary": {
         /** @type {{ primaryLanguage?: string }} */
-        const { primaryLanguage } =
-          await chrome.storage.sync.get("primaryLanguage");
+        const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
 
         result = await translateText(text, primaryLanguage || "vi");
         break;
       }
       case "translate_default": {
         /** @type {{ defaultLanguage?: string }} */
-        const { defaultLanguage } =
-          await chrome.storage.sync.get("defaultLanguage");
+        const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
         result = await translateText(text, defaultLanguage || "en");
         break;
       }
-      case "translate": // Context menu legacy
-        {
-          /** @type {{ defaultLanguage?: string }} */
-          const { defaultLanguage } =
-            await chrome.storage.sync.get("defaultLanguage");
-          result = await translateText(text, defaultLanguage || "en");
-          break;
-        }
-      case "explain":
-        {
-          /** @type {{ primaryLanguage?: string }} */
-          const { primaryLanguage } =
-            await chrome.storage.sync.get("primaryLanguage");
-          result = await explainText(text, primaryLanguage || "vi");
-          break;
-        }
+      case "translate": {
+        // Context menu legacy
+        /** @type {{ defaultLanguage?: string }} */
+        const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+        result = await translateText(text, defaultLanguage || "en");
+        break;
+      }
+      case "explain": {
+        /** @type {{ primaryLanguage?: string }} */
+        const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+        result = await explainText(text, primaryLanguage || "vi");
+        break;
+      }
       case "summarize":
         result = await summarizeText(text);
         break;
