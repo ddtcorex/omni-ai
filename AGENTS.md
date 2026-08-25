@@ -12,7 +12,7 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 2.  **Manifest V3 Compliance**: Service worker background (`"type": "module"`), no remote code, no MV2 APIs.
 3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `content/overlay.css` and injected as a `<style>` inside the shadow root.
 4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code.
-5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before — see Known Issues).
+5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before).
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` (see the strategy objects near the top of `content/content.js`). Always fall back gracefully.
 7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 10 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
@@ -64,9 +64,7 @@ omni-ai/
 |   |-- providers/           # gemini.js, openai.js, groq.js, custom-gateway.js, index.js
 |   |-- history.js           # History + usage stats (storage.local)
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
-|   |-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
-|   |-- auth.js              # ⚠ currently unused (dead-code candidate)
-|   `-- prompts.js           # ⚠ currently unused (dead-code candidate)
+|   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
 |-- _locales/                # chrome.i18n messages
 |-- scripts/publish.sh       # Strips manifest "key", swaps prod OAuth client_id, zips dist/
 `-- tests/                   # Jest + jest-chrome + jsdom (`npm test`)
@@ -176,7 +174,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 
 ## ⚠️ Known Issues (fix on sight — do not copy these patterns)
 
-1. **Dead code**: `lib/auth.js` and `lib/prompts.js` are imported nowhere.
+None currently. 🎉
 
 ---
 
