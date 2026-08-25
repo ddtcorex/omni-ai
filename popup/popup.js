@@ -9,12 +9,12 @@ import { i18n } from "../lib/i18n.js";
 // DOM Elements
 const elements = {
   // Quick Ask
-  quickAskInput: document.getElementById("quickAskInput"),
+  quickAskInput: /** @type {HTMLTextAreaElement} */ (document.getElementById("quickAskInput")),
   askBtn: document.getElementById("askBtn"),
   settingsBtn: document.getElementById("settingsBtn"),
-  includePageContext: document.getElementById("includePageContext"),
-  includePageContextLabel: document.querySelector(
-    ".context-toggle .checkbox-label",
+  includePageContext: /** @type {HTMLInputElement} */ (document.getElementById("includePageContext")),
+  includePageContextLabel: /** @type {HTMLElement | null} */ (
+    document.querySelector(".context-toggle .checkbox-label")
   ),
 
   // Status
@@ -24,10 +24,10 @@ const elements = {
   userSection: document.getElementById("userSection"),
   signInBtn: document.getElementById("signInBtn"),
   userInfo: document.getElementById("userInfo"),
-  userAvatar: document.getElementById("userAvatar"),
+  userAvatar: /** @type {HTMLImageElement} */ (document.getElementById("userAvatar")),
   userMenuBtn: document.getElementById("userMenuBtn"),
   userDropdown: document.getElementById("userDropdown"),
-  dropdownAvatar: document.getElementById("dropdownAvatar"),
+  dropdownAvatar: /** @type {HTMLImageElement} */ (document.getElementById("dropdownAvatar")),
   userName: document.getElementById("userName"),
   userEmail: document.getElementById("userEmail"),
   signOutBtn: document.getElementById("signOutBtn"),
@@ -86,6 +86,7 @@ function localizeDOM() {
     document.body,
     NodeFilter.SHOW_TEXT,
     null,
+    // @ts-expect-error legacy 4th argument (expandEntityReferences) is ignored by Chromium
     false,
   );
 
@@ -142,7 +143,7 @@ function setupEventListeners() {
 
   // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
-    if (!elements.userSection.contains(e.target)) {
+    if (!elements.userSection.contains(/** @type {Node} */ (e.target))) {
       closeUserDropdown();
     }
   });
@@ -330,7 +331,7 @@ async function fetchCurrentPageContent() {
 async function loadDraftState() {
   try {
     const data = await chrome.storage.local.get(STORAGE_KEYS.draftState);
-    const draft = data[STORAGE_KEYS.draftState];
+    const draft = /** @type {any} */ (data[STORAGE_KEYS.draftState]);
     if (!draft || typeof draft !== "object") return;
 
     if (elements.quickAskInput && typeof draft.query === "string") {
@@ -385,6 +386,7 @@ async function saveDraftState() {
  */
 async function loadChatHistory() {
   try {
+    /** @type {Record<string, any>} */
     const data = await chrome.storage.local.get([
       STORAGE_KEYS.chatHistory,
       STORAGE_KEYS.pageContextSession,
@@ -743,7 +745,9 @@ function setProcessing(processing) {
  * Update status indicator
  */
 function updateStatus(text, state = "ready") {
-  const statusDot = elements.status.querySelector(".status-dot");
+  const statusDot = /** @type {HTMLElement} */ (
+    elements.status.querySelector(".status-dot")
+  );
   if (elements.status.lastChild) {
       elements.status.lastChild.textContent = text;
   }

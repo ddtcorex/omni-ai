@@ -15,27 +15,27 @@ import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
 
 // DOM Elements
 const elements = {
-  geminiApiKey: document.getElementById("geminiApiKey"), // Google Key
-  apiModel: document.getElementById("apiModel"),
-  customModelName: document.getElementById("customModelName"),
+  geminiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("geminiApiKey")), // Google Key
+  apiModel: /** @type {HTMLSelectElement} */ (document.getElementById("apiModel")),
+  customModelName: /** @type {HTMLInputElement} */ (document.getElementById("customModelName")),
   customModelGroup: document.getElementById("customModelGroup"),
   googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
-  groqApiKey: document.getElementById("groqApiKey"),
+  groqApiKey: /** @type {HTMLInputElement} */ (document.getElementById("groqApiKey")),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
-  openaiApiKey: document.getElementById("openaiApiKey"),
+  openaiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("openaiApiKey")),
   openaiKeyGroup: document.getElementById("openaiKeyGroup"),
   customGatewayKeyGroup: document.getElementById("customGatewayKeyGroup"),
-  customGatewayBaseUrl: document.getElementById("customGatewayBaseUrl"),
-  customGatewayApiKey: document.getElementById("customGatewayApiKey"),
+  customGatewayBaseUrl: /** @type {HTMLInputElement} */ (document.getElementById("customGatewayBaseUrl")),
+  customGatewayApiKey: /** @type {HTMLInputElement} */ (document.getElementById("customGatewayApiKey")),
     toggleApiKey: document.getElementById("toggleApiKey"),
-  validateBtn: document.getElementById("validateBtn"),
+  validateBtn: /** @type {HTMLButtonElement} */ (document.getElementById("validateBtn")),
   validationStatus: document.getElementById("validationStatus"),
   // Theme
-  themeSelector: document.getElementById("themeSelector"),
+  themeSelector: /** @type {HTMLSelectElement} */ (document.getElementById("themeSelector")),
   // Preferences
-  defaultPreset: document.getElementById("defaultPreset"),
-  primaryLanguage: document.getElementById("primaryLanguage"),
-  defaultLanguage: document.getElementById("defaultLanguage"),
+  defaultPreset: /** @type {HTMLSelectElement} */ (document.getElementById("defaultPreset")),
+  primaryLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("primaryLanguage")),
+  defaultLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("defaultLanguage")),
   shortcutsLink: document.getElementById("shortcutsLink"),
   saveBtn: document.getElementById("saveBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -117,6 +117,7 @@ function localizeDOM() {
     document.body,
     NodeFilter.SHOW_TEXT,
     null,
+    // @ts-expect-error legacy 4th argument (expandEntityReferences) is ignored by Chromium
     false,
   );
 
@@ -157,7 +158,7 @@ function setupEventListeners() {
   // Theme preview listener
   if (elements.themeSelector) {
     elements.themeSelector.addEventListener("change", (e) => {
-      applyTheme(e.target.value);
+      applyTheme(/** @type {HTMLSelectElement} */ (e.target).value);
     });
   }
 
@@ -417,6 +418,7 @@ async function loadSettings() {
   try {
     // 1. Load Sync Preferences
     const THEME_KEY = "omni_ai_theme";
+    /** @type {Record<string, any>} */
     const prefs = await chrome.storage.sync.get([
       "primaryLanguage",
       "defaultLanguage",
@@ -433,6 +435,7 @@ async function loadSettings() {
       elements.defaultLanguage.value = prefs.defaultLanguage || "en";
 
     // 2. Load Local AI Config
+    /** @type {Record<string, any>} */
     const config = await chrome.storage.local.get([
       "geminiApiKey",
       "groqApiKey",

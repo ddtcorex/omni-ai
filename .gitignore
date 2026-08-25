@@ -39,3 +39,8 @@ extension_info.json
 !CLAUDE.md
 !docs/superpowers/
 !docs/superpowers/**
+
+# Extension dev tooling
+.webext-profile/
+test-results/
+playwright-report/

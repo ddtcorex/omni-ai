@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["chrome"]
+  },
+  "include": ["lib/**/*.js", "background/**/*.js", "content/**/*.js", "popup/**/*.js", "settings.js"]
+}

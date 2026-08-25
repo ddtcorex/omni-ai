@@ -497,6 +497,7 @@ async function handleQuickAction(payload) {
   let result;
   switch (action) {
     case "translate": {
+      /** @type {{ defaultLanguage?: string }} */
       const { defaultLanguage } =
         await chrome.storage.sync.get("defaultLanguage");
       result = await translateText(
@@ -506,6 +507,7 @@ async function handleQuickAction(payload) {
       break;
     }
     case "smart_translate": {
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
       const { primaryLanguage, defaultLanguage } =
         await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage"]);
       result = await smartTranslate(
@@ -516,12 +518,14 @@ async function handleQuickAction(payload) {
       break;
     }
     case "translate_primary": {
+      /** @type {{ primaryLanguage?: string }} */
       const { primaryLanguage } =
         await chrome.storage.sync.get("primaryLanguage");
       result = await translateText(selectedText, primaryLanguage || "vi");
       break;
     }
     case "translate_default": {
+      /** @type {{ defaultLanguage?: string }} */
       const { defaultLanguage } =
         await chrome.storage.sync.get("defaultLanguage");
       result = await translateText(selectedText, defaultLanguage || "en");
@@ -531,6 +535,7 @@ async function handleQuickAction(payload) {
       result = await summarizeText(selectedText, options);
       break;
     case "explain": {
+      /** @type {{ primaryLanguage?: string }} */
       const { primaryLanguage } =
         await chrome.storage.sync.get("primaryLanguage");
       result = await explainText(selectedText, primaryLanguage || "vi");
@@ -623,6 +628,7 @@ async function processSelectedText(tabId, text, action, isInput = false) {
 
     switch (action) {
       case "translate_primary": {
+        /** @type {{ primaryLanguage?: string }} */
         const { primaryLanguage } =
           await chrome.storage.sync.get("primaryLanguage");
 
@@ -630,6 +636,7 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         break;
       }
       case "translate_default": {
+        /** @type {{ defaultLanguage?: string }} */
         const { defaultLanguage } =
           await chrome.storage.sync.get("defaultLanguage");
         result = await translateText(text, defaultLanguage || "en");
@@ -637,6 +644,7 @@ async function processSelectedText(tabId, text, action, isInput = false) {
       }
       case "translate": // Context menu legacy
         {
+          /** @type {{ defaultLanguage?: string }} */
           const { defaultLanguage } =
             await chrome.storage.sync.get("defaultLanguage");
           result = await translateText(text, defaultLanguage || "en");
@@ -644,6 +652,7 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         }
       case "explain":
         {
+          /** @type {{ primaryLanguage?: string }} */
           const { primaryLanguage } =
             await chrome.storage.sync.get("primaryLanguage");
           result = await explainText(text, primaryLanguage || "vi");

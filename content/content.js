@@ -989,6 +989,7 @@ async function showQuickActionMenu(
 
   if (isContextValid()) {
     try {
+      /** @type {Record<string, any>} */
       const data = await chrome.storage.sync.get([
         "primaryLanguage",
         "defaultLanguage",
@@ -1252,6 +1253,7 @@ async function handleAction(action, text, isInput) {
   let preset = "chat";
   let options = {};
   if (action === "tone") {
+    /** @type {{ currentPreset?: string }} */
     const { currentPreset } = await chrome.storage.local.get("currentPreset");
     const validTones = [
       "professional",
@@ -1532,7 +1534,7 @@ function getSelectedText() {
 
 function extractPageContent() {
   try {
-    const bodyClone = document.body.cloneNode(true);
+    const bodyClone = /** @type {HTMLElement} */ (document.body.cloneNode(true));
     const noiseSelectors = [
       "script",
       "style",

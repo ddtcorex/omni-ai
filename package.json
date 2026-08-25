@@ -1,14 +1,20 @@
 {
   "name": "app",
   "version": "2.1.0",
-  "description": "> 🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, OpenAI, Groq, and Custom Gateway.",
-  "main": "settings.js",
+  "description": "🧠 Your All-in-One AI Writing Assistant Chrome Extension. Supercharge your browser with the power of Google Gemini, OpenAI, Groq, and Custom Gateway.",
   "directories": {
     "doc": "docs",
     "lib": "lib"
   },
   "scripts": {
-    "test": "jest"
+    "dev": "web-ext run --target chromium --source-dir . --chromium-profile ./.webext-profile",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:webext": "web-ext lint --source-dir .",
+    "test": "jest",
+    "e2e": "playwright test",
+    "verify": "npm run typecheck && npm test",
+    "package": "bash scripts/publish.sh"
   },
   "repository": {
     "type": "git",
@@ -25,9 +31,17 @@
   "devDependencies": {
     "@babel/core": "^7.28.6",
     "@babel/preset-env": "^7.28.6",
+    "@playwright/test": "^1.62.1",
+    "@types/chrome": "^0.2.7",
     "babel-jest": "^27.5.1",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.11.0",
     "jest": "^27.5.1",
     "jest-chrome": "^0.8.0",
-    "jest-environment-jsdom": "^27.5.1"
+    "jest-environment-jsdom": "^27.5.1",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
+    "web-ext": "^10.6.0"
   }
 }
