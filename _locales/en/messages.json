@@ -553,6 +553,10 @@
     "message": "(Legacy)",
     "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
   },
+  "settings_advanced": {
+    "message": "Advanced",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
   "settings_customModel": {
     "message": "Custom Model Name",
     "description": "Custom model label"

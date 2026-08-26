@@ -296,6 +296,40 @@ body {
   border-bottom: none;
 }
 
+/* Advanced settings disclosure (custom model / custom gateway) */
+.advanced-settings {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.advanced-settings > summary {
+  cursor: pointer;
+  color: var(--accent-purple);
+  font-weight: 600;
+  font-size: 13px;
+  list-style: none;
+}
+
+.advanced-settings > summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced-settings > summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 6px;
+  transition: transform 0.15s ease;
+}
+
+.advanced-settings[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.advanced-settings > .setting-item:first-of-type {
+  margin-top: 12px;
+}
+
 .setting-toggle {
   display: flex;
   align-items: center;

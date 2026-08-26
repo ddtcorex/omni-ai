@@ -49,21 +49,6 @@
               <select id="apiModel" class="setting-select">
                 <!-- Populated by JS -->
               </select>
-              <!-- Custom Model Input -->
-              <div class="setting-item hidden" id="customModelGroup">
-                <label class="setting-label" for="customModelName">
-                  <span class="label-text">__MSG_settings_customModel__</span>
-                  <span class="label-hint">__MSG_settings_customModelHint__</span>
-                </label>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    id="customModelName"
-                    class="setting-input"
-                    placeholder="__MSG_settings_customModelPlaceholder__"
-                  />
-                </div>
-              </div>
 
               <!-- Gemini API Key -->
               <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
@@ -258,58 +243,78 @@
                 </div>
               </div>
 
-              <!-- Custom Gateway -->
-              <div
-                class="setting-item hidden"
-                id="customGatewayKeyGroup"
-                data-provider="customGateway"
-              >
-                <label class="setting-label">
-                  <div class="label-header">
-                    <span class="label-text">__MSG_settings_customGatewayTitle__</span>
-                    <div class="tooltip-trigger">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
-                      <div class="tooltip-popup">
-                        <p>__MSG_settings_tooltip_customGateway__</p>
+              <details class="advanced-settings" id="advancedProviderSettings">
+                <summary>__MSG_settings_advanced__</summary>
+
+                <!-- Custom Model Input (moved here from right after the model select) -->
+                <div class="setting-item hidden" id="customModelGroup">
+                  <label class="setting-label" for="customModelName">
+                    <span class="label-text">__MSG_settings_customModel__</span>
+                    <span class="label-hint">__MSG_settings_customModelHint__</span>
+                  </label>
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      id="customModelName"
+                      class="setting-input"
+                      placeholder="__MSG_settings_customModelPlaceholder__"
+                    />
+                  </div>
+                </div>
+
+                <!-- Custom Gateway (moved here, unchanged internals) -->
+                <div
+                  class="setting-item hidden"
+                  id="customGatewayKeyGroup"
+                  data-provider="customGateway"
+                >
+                  <label class="setting-label">
+                    <div class="label-header">
+                      <span class="label-text">__MSG_settings_customGatewayTitle__</span>
+                      <div class="tooltip-trigger">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="16" x2="12" y2="12"></line>
+                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <div class="tooltip-popup">
+                          <p>__MSG_settings_tooltip_customGateway__</p>
+                        </div>
                       </div>
                     </div>
+                    <span class="label-hint">__MSG_settings_customGatewayHint__</span>
+                  </label>
+
+                  <!-- Base URL -->
+                  <div class="input-group" style="margin-bottom: 8px">
+                    <input
+                      type="text"
+                      id="customGatewayBaseUrl"
+                      class="setting-input"
+                      placeholder="__MSG_settings_customGatewayUrlPlaceholder__"
+                    />
                   </div>
-                  <span class="label-hint">__MSG_settings_customGatewayHint__</span>
-                </label>
+                  <p class="field-note">__MSG_settings_customGatewayUrlNote__</p>
 
-                <!-- Base URL -->
-                <div class="input-group" style="margin-bottom: 8px">
-                  <input
-                    type="text"
-                    id="customGatewayBaseUrl"
-                    class="setting-input"
-                    placeholder="__MSG_settings_customGatewayUrlPlaceholder__"
-                  />
+                  <!-- API Key -->
+                  <div class="input-group" style="margin-bottom: 8px">
+                    <input
+                      type="password"
+                      id="customGatewayApiKey"
+                      class="setting-input"
+                      placeholder="__MSG_settings_customGatewayKeyPlaceholder__"
+                    />
+                  </div>
+                  <p class="field-note">__MSG_settings_customGatewayKeyNote__</p>
                 </div>
-                <p class="field-note">__MSG_settings_customGatewayUrlNote__</p>
-
-                <!-- API Key -->
-                <div class="input-group" style="margin-bottom: 8px">
-                  <input
-                    type="password"
-                    id="customGatewayApiKey"
-                    class="setting-input"
-                    placeholder="__MSG_settings_customGatewayKeyPlaceholder__"
-                  />
-                </div>
-                <p class="field-note">__MSG_settings_customGatewayKeyNote__</p>
-              </div>
+              </details>
 
               <!-- Validation -->
               <div class="setting-item">

@@ -532,6 +532,7 @@
     "description": "New Chat button tooltip"
   },
   "settings_legacyModelPrefix": { "message": "(레거시)" },
+  "settings_advanced": { "message": "고급" },
   "settings_customModel": {
     "message": "사용자 지정 모델 이름",
     "description": "Custom model label"

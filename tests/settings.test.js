@@ -2,7 +2,7 @@ const FIXTURE_IDS = [
   "extVersion", "geminiApiKey", "apiModel", "customModelName", "customModelGroup",
   "googleKeyGroup", "groqApiKey", "groqKeyGroup", "openaiApiKey", "openaiKeyGroup",
   "anthropicApiKey", "anthropicKeyGroup", "customGatewayKeyGroup", "customGatewayBaseUrl",
-  "customGatewayApiKey", "toggleApiKey", "validateBtn", "validationStatus", "themeSelector",
+  "customGatewayApiKey", "advancedProviderSettings", "toggleApiKey", "validateBtn", "validationStatus", "themeSelector",
   "defaultPreset", "showFloatingButton", "primaryLanguage", "defaultLanguage", "shortcutsLink",
   "saveBtn", "saveStatus", "statTotalActions", "statWordsProcessed", "statWordsGenerated",
   "refreshHistory", "clearHistory", "historyList",
@@ -13,6 +13,7 @@ const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko",
 function buildFixture() {
   document.body.innerHTML = FIXTURE_IDS.map((id) => {
     if (id === "apiModel") return `<select id="${id}"></select>`;
+    if (id === "advancedProviderSettings") return `<details id="${id}"><summary></summary></details>`;
     if (["primaryLanguage", "defaultLanguage"].includes(id)) {
       const options = SUPPORTED_LOCALES.map((code) => `<option value="${code}">${code}</option>`).join("");
       return `<select id="${id}">${options}</select>`;
@@ -149,5 +150,14 @@ describe("settings.js", () => {
 
     expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
     jest.useRealTimers();
+  });
+
+  it("auto-expands Advanced when a -custom model is selected", async () => {
+    await Settings.loadSettings();
+    Settings.setupEventListeners();
+    document.getElementById("apiModel").innerHTML = '<option value="google-custom">x</option>';
+    document.getElementById("apiModel").value = "google-custom";
+    document.getElementById("apiModel").dispatchEvent(new Event("change"));
+    expect(document.getElementById("advancedProviderSettings").open).toBe(true);
   });
 });

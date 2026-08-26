@@ -29,6 +29,9 @@ const elements = {
   customGatewayApiKey: /** @type {HTMLInputElement} */ (
     document.getElementById("customGatewayApiKey")
   ),
+  advancedDetails: /** @type {HTMLDetailsElement} */ (
+    document.getElementById("advancedProviderSettings")
+  ),
   toggleApiKey: document.getElementById("toggleApiKey"),
   validateBtn: /** @type {HTMLButtonElement} */ (document.getElementById("validateBtn")),
   validationStatus: document.getElementById("validationStatus"),
@@ -310,6 +313,11 @@ function updateModelVisibility() {
     elements.customModelGroup.classList.remove("hidden");
   } else {
     elements.customModelGroup.classList.add("hidden");
+  }
+
+  const needsAdvanced = modelId.endsWith("-custom") || modelId === "custom-gateway";
+  if (needsAdvanced && elements.advancedDetails) {
+    elements.advancedDetails.open = true;
   }
 
   if (provider) {

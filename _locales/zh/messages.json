@@ -532,6 +532,7 @@
     "description": "New Chat button tooltip"
   },
   "settings_legacyModelPrefix": { "message": "(旧版)" },
+  "settings_advanced": { "message": "高级" },
   "settings_customModel": {
     "message": "自定义模型名称",
     "description": "Custom model label"
