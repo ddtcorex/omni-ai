@@ -10,7 +10,7 @@ WHAT MAKES OMNI AI DIFFERENT
 
 Most AI extensions lock you into a subscription and a single model. Omni AI doesn't.
 
-• Bring Your Own Key (BYOK) — Use your own API key for Gemini, OpenAI, or Groq. Pay providers directly for what you actually use, nothing more.
+• Bring Your Own Key (BYOK) — Use your own API key for Gemini, OpenAI, Groq, or Anthropic Claude. Pay providers directly for what you actually use, nothing more.
 • Custom Gateway Support — Connect any OpenAI-compatible endpoint: DeepSeek, OpenRouter, a self-hosted proxy, or your own gateway.
 • Universal Editor Support — Works inside plain inputs, textareas, and contenteditable rich-text editors (TinyMCE and similar) across the web.
 • Clean, Focused UI — A glassmorphic floating button appears right where you're working and gets out of the way when you don't need it (can be turned off entirely in Settings, keyboard shortcuts still work).
@@ -53,11 +53,11 @@ Google Gemini (free tier available)
 
 OpenAI
 1. Get a key at platform.openai.com/api-keys
-2. Select OpenAI in Settings for GPT-4o / GPT-4o mini
+2. Select OpenAI in Settings for GPT-5.6 Luna / Terra / Sol
 
 Groq (fast inference, free tier available)
 1. Get a key at console.groq.com/keys
-2. Select Groq in Settings for Llama 3.3, DeepSeek-R1, and more
+2. Select Groq in Settings for GPT-OSS 20B, Llama 3.3 70B, and GPT-OSS 120B
 
 Anthropic Claude
 1. Get a key at console.anthropic.com/settings/keys
