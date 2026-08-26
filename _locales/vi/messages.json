@@ -531,6 +531,7 @@
     "message": "Cuộc trò chuyện mới",
     "description": "New Chat button tooltip"
   },
+  "settings_legacyModelPrefix": { "message": "(Cũ)" },
   "settings_customModel": {
     "message": "Tên mô hình tùy chỉnh",
     "description": "Custom model label"

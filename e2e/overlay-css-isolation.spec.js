@@ -20,7 +20,7 @@ async function seedConfig(sw) {
       await new Promise((r) => setTimeout(r, 50));
     }
     await chrome.storage.local.set({
-      apiModel: "gemini-2.0-flash",
+      apiModel: "gemini-3.6-flash",
       geminiApiKey: "fake-key-for-e2e",
       settings: { showFloatingButton: true },
     });

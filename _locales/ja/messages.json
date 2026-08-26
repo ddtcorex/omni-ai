@@ -531,6 +531,7 @@
     "message": "新しいチャット",
     "description": "New Chat button tooltip"
   },
+  "settings_legacyModelPrefix": { "message": "(旧)" },
   "settings_customModel": {
     "message": "カスタムモデル名",
     "description": "Custom model label"

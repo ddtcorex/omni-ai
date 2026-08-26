@@ -1,7 +1,7 @@
 import { getStats, resetStats } from "./lib/history.js";
 import { i18n } from "./lib/i18n.js";
 import { initTheme, applyTheme } from "./lib/theme-manager.js";
-import { AI_PROVIDERS, getProviderByModel } from "./lib/ai-providers.js";
+import { AI_PROVIDERS, getProviderByModel, LEGACY_MODELS, DEFAULT_MODEL } from "./lib/ai-providers.js";
 
 /**
  * Omni AI - Options Page Script
@@ -60,12 +60,11 @@ let isGeminiKeyVisible = false;
 /**
  * Initialize options page
  */
-async function init() {
+export async function init() {
   if (elements.extVersion) elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
-  populateModelSelect();
   await loadSettings();
   await loadStats();
   setupEventListeners();
@@ -75,10 +74,11 @@ async function init() {
 /**
  * Populate AI Models dropdown
  */
-function populateModelSelect() {
+export function populateModelSelect(currentApiModel) {
   const select = elements.apiModel;
-  select.innerHTML = ""; // Clear existing
+  select.innerHTML = "";
 
+  const groupsByProvider = {};
   Object.values(AI_PROVIDERS).forEach((provider) => {
     const group = document.createElement("optgroup");
     group.label = provider.name;
@@ -91,7 +91,19 @@ function populateModelSelect() {
     });
 
     select.appendChild(group);
+    groupsByProvider[provider.id] = group;
   });
+
+  const knownIds = new Set(Object.values(AI_PROVIDERS).flatMap((p) => p.models.map((m) => m.id)));
+  if (currentApiModel && !knownIds.has(currentApiModel) && LEGACY_MODELS[currentApiModel]) {
+    const group = groupsByProvider[LEGACY_MODELS[currentApiModel]];
+    if (group) {
+      const option = document.createElement("option");
+      option.value = currentApiModel;
+      option.textContent = `${i18n.getMessage("settings_legacyModelPrefix")} ${currentApiModel}`;
+      group.insertBefore(option, group.firstChild);
+    }
+  }
 }
 
 /**
@@ -406,7 +418,7 @@ function showValidationStatus(message, type) {
   }
 }
 
-async function loadSettings() {
+export async function loadSettings() {
   try {
     // 1. Load Sync Preferences
     const THEME_KEY = "omni_ai_theme";
@@ -449,7 +461,8 @@ async function loadSettings() {
       elements.customGatewayApiKey.value = config.customGatewayApiKey || "";
 
     // Load custom model name for selected provider
-    const savedModel = config.apiModel || "gemini-2.0-flash";
+    const savedModel = config.apiModel || DEFAULT_MODEL;
+    populateModelSelect(savedModel);
     elements.apiModel.value = savedModel;
     if (savedModel === "custom-gateway" && config.customGatewayModelName) {
       elements.customModelName.value = config.customGatewayModelName;

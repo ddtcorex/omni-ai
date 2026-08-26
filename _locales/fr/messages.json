@@ -531,6 +531,7 @@
     "message": "Nouvelle discussion",
     "description": "New Chat button tooltip"
   },
+  "settings_legacyModelPrefix": { "message": "(Ancien)" },
   "settings_customModel": {
     "message": "Nom du modèle personnalisé",
     "description": "Custom model label"
