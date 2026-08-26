@@ -171,7 +171,8 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 1. Bump `version` in `manifest.json` (+ `package.json`), update `CHANGELOG.md`, and update the version badge in `README.md` (`img.shields.io/badge/version-X.Y.Z-blue`) — the only remaining hardcoded copy; nothing enforces it matches. (`settings.html`'s displayed version is read live from `chrome.runtime.getManifest().version` in `settings.js` `init()` — don't hardcode it there again.)
 2. `npm run verify` + `npx playwright test` + `bash scripts/publish.sh` (confirms `dist/omni-ai-vX.Y.Z.zip` builds cleanly and the dev `manifest.json` — including its pinned `"key"` — is restored afterward).
 3. Commit the version bump directly to `master` (there is no `develop` branch currently — PRs merge feature branches straight into `master`), then `git tag -a vX.Y.Z -m "Release vX.Y.Z"` and `git push origin vX.Y.Z`. The tag push triggers `.github/workflows/release.yml`, which builds the store zip and publishes the GitHub Release automatically — do not run `gh release create` manually.
-4. Upload the built zip to the Chrome Web Store dashboard when ready to ship publicly (not automated — see the commented CWS upload block in `release.yml` for wiring it up).
+4. Before uploading, check `docs/CHROME_WEBSTORE_LISTING.txt` against what actually changed (keyboard shortcuts, context-menu items, feature list) and update it in the same commit if it drifted — it's the source of truth for the CWS dashboard's description field, and nothing enforces it stays in sync (same class of drift as the hardcoded version strings in step 1).
+5. Upload the built zip to the Chrome Web Store dashboard when ready to ship publicly (not automated — see the commented CWS upload block in `release.yml` for wiring it up), pasting `docs/CHROME_WEBSTORE_LISTING.txt`'s content into the description field if it changed.
 
 ---
 
