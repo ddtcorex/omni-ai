@@ -3,6 +3,7 @@ import * as Providers from "../../lib/providers/index";
 
 jest.mock("../../lib/providers/index", () => ({
   getProvider: jest.fn(),
+  getProviderModule: jest.fn(),
 }));
 
 const mockProvider = {
@@ -17,6 +18,7 @@ describe("AI Service", () => {
     store = {};
 
     Providers.getProvider.mockReturnValue(mockProvider);
+    Providers.getProviderModule.mockReturnValue(mockProvider);
 
     // Mock chrome storage implementation to support Promises
     chrome.storage.local.get.mockImplementation((keys) => {
