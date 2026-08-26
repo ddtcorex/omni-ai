@@ -57,6 +57,20 @@ const elements = {
 // State
 let isGeminiKeyVisible = false;
 
+const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko", "zh"];
+
+/**
+ * Map a browser UI-language tag to one of this extension's supported locales.
+ * @param {string|undefined} uiLanguage - e.g. "pt-BR", from chrome.i18n.getUILanguage()
+ * @param {string[]} supported - supported locale codes
+ * @param {string} fallback - locale to use when nothing matches
+ */
+export function detectSupportedLocale(uiLanguage, supported, fallback) {
+  if (!uiLanguage) return fallback;
+  const primary = uiLanguage.split("-")[0].toLowerCase();
+  return supported.includes(primary) ? primary : fallback;
+}
+
 /**
  * Initialize options page
  */
@@ -429,7 +443,12 @@ export async function loadSettings() {
       elements.themeSelector.value = prefs[THEME_KEY] || "system";
       applyTheme(elements.themeSelector.value);
     }
-    if (elements.primaryLanguage) elements.primaryLanguage.value = prefs.primaryLanguage || "vi";
+    const detectedLocale = detectSupportedLocale(
+      chrome.i18n.getUILanguage(),
+      SUPPORTED_LOCALES,
+      "en",
+    );
+    if (elements.primaryLanguage) elements.primaryLanguage.value = prefs.primaryLanguage || detectedLocale;
     if (elements.defaultLanguage) elements.defaultLanguage.value = prefs.defaultLanguage || "en";
 
     // 2. Load Local AI Config
@@ -464,6 +483,9 @@ export async function loadSettings() {
     const savedModel = config.apiModel || DEFAULT_MODEL;
     populateModelSelect(savedModel);
     elements.apiModel.value = savedModel;
+    if (!config.apiModel && !config.geminiApiKey) {
+      elements.geminiApiKey?.focus();
+    }
     if (savedModel === "custom-gateway" && config.customGatewayModelName) {
       elements.customModelName.value = config.customGatewayModelName;
     }
