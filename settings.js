@@ -113,7 +113,7 @@ export function populateModelSelect(currentApiModel) {
 
   const knownIds = new Set(Object.values(AI_PROVIDERS).flatMap((p) => p.models.map((m) => m.id)));
   if (currentApiModel && !knownIds.has(currentApiModel) && LEGACY_MODELS[currentApiModel]) {
-    const group = groupsByProvider[LEGACY_MODELS[currentApiModel]];
+    const group = groupsByProvider[LEGACY_MODELS[currentApiModel].provider];
     if (group) {
       const option = document.createElement("option");
       option.value = currentApiModel;

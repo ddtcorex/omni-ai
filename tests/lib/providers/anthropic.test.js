@@ -12,10 +12,16 @@ describe("Anthropic Provider", () => {
   it("calls the Messages API with x-api-key auth and the anthropic-version header", async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ content: [{ text: "Response Text" }] }),
+      json: async () => ({ content: [{ type: "text", text: "Response Text" }] }),
     });
 
-    const config = { apiKey: "test-key", model: "claude-sonnet-5", temperature: 0.5, maxTokens: 100 };
+    const config = {
+      apiKey: "test-key",
+      model: "claude-sonnet-5",
+      temperature: 0.5,
+      topP: 0.9,
+      maxTokens: 100,
+    };
     const result = await generateContent("Hello", config);
 
     expect(result).toBe("Response Text");
@@ -35,6 +41,26 @@ describe("Anthropic Provider", () => {
     expect(body.model).toBe("claude-sonnet-5");
     expect(body.max_tokens).toBe(100);
     expect(body.messages).toEqual([{ role: "user", content: "Hello" }]);
+    // Sampling params were removed from the Claude Sonnet 5 / Opus 5 request
+    // surface — sending them at all returns HTTP 400, so they must never be
+    // forwarded even when the caller supplies them in config.
+    expect(body).not.toHaveProperty("temperature");
+    expect(body).not.toHaveProperty("top_p");
+  });
+
+  it("returns the text block even when an adaptive-thinking block comes first", async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        content: [
+          { type: "thinking", thinking: "" },
+          { type: "text", text: "Real answer" },
+        ],
+      }),
+    });
+
+    const config = { apiKey: "test-key", model: "claude-opus-5", maxTokens: 100 };
+    await expect(generateContent("Hello", config)).resolves.toBe("Real answer");
   });
 
   it("handles API errors", async () => {

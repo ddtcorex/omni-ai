@@ -1,4 +1,12 @@
-import { getProvider, getProviderModule, Gemini, OpenAI, Groq, CustomGateway } from "../../../lib/providers/index";
+import {
+  getProvider,
+  getProviderModule,
+  Gemini,
+  OpenAI,
+  Groq,
+  CustomGateway,
+  Anthropic,
+} from "../../../lib/providers/index";
 import { AI_PROVIDERS } from "../../../lib/ai-providers";
 
 describe("Provider routing", () => {
@@ -8,11 +16,15 @@ describe("Provider routing", () => {
       openai: OpenAI,
       groq: Groq,
       customGateway: CustomGateway,
+      anthropic: Anthropic,
     };
+
+    // No skip guard on purpose: a provider added to AI_PROVIDERS without an
+    // entry here must fail loudly rather than be silently unasserted.
+    expect(Object.keys(expected).sort()).toEqual(Object.keys(AI_PROVIDERS).sort());
 
     Object.values(AI_PROVIDERS).forEach((provider) => {
       const module = expected[provider.id];
-      if (!module) return; // providers registered in later tasks are covered there
       provider.models.forEach((model) => {
         expect(getProvider(model.id)).toBe(module);
       });
@@ -28,5 +40,12 @@ describe("Provider routing", () => {
     expect(getProviderModule("groq")).toBe(Groq);
     expect(getProviderModule("openai")).toBe(OpenAI);
     expect(getProviderModule("customGateway")).toBe(CustomGateway);
+    expect(getProviderModule("anthropic")).toBe(Anthropic);
+  });
+
+  it("routes a legacy model id to its real provider module, not the Gemini fallback", () => {
+    expect(getProvider("openai-gpt-4o")).toBe(OpenAI);
+    expect(getProvider("groq-llama-3.1-8b")).toBe(Groq);
+    expect(getProvider("gemini-2.0-flash")).toBe(Gemini);
   });
 });

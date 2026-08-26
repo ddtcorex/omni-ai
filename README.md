@@ -1,6 +1,6 @@
 # Omni AI
 
-> 🧠 Your All-in-One AI Browser Companion. Supercharge your Chrome experience with the power of Google Gemini, OpenAI, Groq, and Custom Gateway.
+> 🧠 Your All-in-One AI Browser Companion. Supercharge your Chrome experience with the power of Google Gemini, OpenAI, Groq, Anthropic Claude, and Custom Gateway.
 
 [![Version](https://img.shields.io/badge/version-2.2.0-blue)](https://github.com/ddtcorex/omni-ai)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](LICENSE)
@@ -55,7 +55,7 @@ Track your productivity with the new **Usage Dashboard**:
 
 ### 🛠️ Premium Settings UI
 
-- **Multiple AI Providers**: Support for **Google Gemini** (2.0 Flash, 2.5 Flash, 2.5 Flash Lite), **OpenAI** (GPT-4o, GPT-4o Mini, GPT-4 Turbo), **Groq** (Llama 3.3, Llama 3.1, GPT-OSS 120B), and **Custom Gateway** (OpenAI-compatible).
+- **Multiple AI Providers**: Support for **Google Gemini** (3.6 Flash, 3.5 Flash Lite, 2.5 Pro), **OpenAI** (GPT-5.6 Luna, Terra, Sol), **Groq** (GPT-OSS 20B, Llama 3.3 70B, GPT-OSS 120B), **Anthropic Claude** (Haiku 4.5, Sonnet 5, Opus 5), and **Custom Gateway** (OpenAI-compatible).
 - **Glassmorphic Design**: A sleek, modern settings page (`settings.html`) with smooth animations and high-resolution visuals.
 - **Helper Tooltips**: Interactive instructions and links to help you get your API keys quickly.
 - **Context Presets**: Tailor AI responses for Email, Chat, Social Media, Technical, or Academic contexts.
@@ -84,7 +84,7 @@ cd omni-ai
 
 ### 1. AI Provider Configuration (Required)
 
-You can choose between Google Gemini, OpenAI, Groq, or Custom Gateway as your AI provider.
+You can choose between Google Gemini, OpenAI, Groq, Anthropic Claude, or Custom Gateway as your AI provider.
 
 #### Option A: Google Gemini
 
@@ -93,28 +93,35 @@ You can choose between Google Gemini, OpenAI, Groq, or Custom Gateway as your AI
 3. In Omni AI, go to **Settings** > **AI Model** and select a **Google Gemini** model.
 4. Paste your key and save.
 
-#### Option B: OpenAI (GPT-4)
+#### Option B: OpenAI (GPT-5.6)
 
 1. Go to [OpenAI Platform](https://platform.openai.com/api-keys).
 2. Create a new API Key.
-3. In Omni AI, select an **OpenAI** model.
+3. In Omni AI, select an **OpenAI** model (GPT-5.6 Luna / Terra / Sol).
 4. Paste your key `sk-...` and save.
 
-#### Option C: Groq (Llama 3)
+#### Option C: Groq (fast inference)
 
 1. Go to [Groq Console](https://console.groq.com/keys).
 2. Create a new API Key.
-3. In Omni AI, select a **Groq** model.
+3. In Omni AI, select a **Groq** model (GPT-OSS 20B, Llama 3.3 70B, GPT-OSS 120B).
 4. Paste your key `gsk_...` and save.
 
-#### Option D: Custom Gateway
+#### Option D: Anthropic Claude
+
+1. Go to [Anthropic Console](https://console.anthropic.com/settings/keys).
+2. Create a new API Key.
+3. In Omni AI, select an **Anthropic Claude** model (Haiku 4.5 / Sonnet 5 / Opus 5).
+4. Paste your key `sk-ant-...` and save.
+
+#### Option E: Custom Gateway
 
 Connect to any OpenAI-compatible API endpoint (OpenRouter, LiteLLM, Together AI, your own proxy, etc.):
 
 1. In Omni AI, select **Custom Gateway** from the model dropdown.
 2. Enter your **Base URL** (e.g., `https://openrouter.ai/api/v1`, `https://your-gateway.com/v1`).
 3. Enter your **API Key** (optional for some gateways).
-4. Enter the **Model Name** (e.g., `anthropic/claude-sonnet-4-20250514`).
+4. Enter the **Model Name** (e.g., `anthropic/claude-sonnet-5`).
 5. Click **Validate Configuration** to test.
 
 ---
@@ -128,22 +135,16 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 1. In **Settings**, find the **AI Model** dropdown.
 2. Select the **"Custom Model..."** option for your preferred provider (e.g., _OpenAI Custom Model..._).
 3. A new field **Custom Model Name** will appear.
-4. Enter the Model ID provided by the AI platform (e.g., `gpt-4o-2024-08-06` for OpenAI).
+4. Enter the Model ID **exactly** as the AI platform documents it — it is sent to the provider verbatim, with no short-name expansion or fuzzy matching.
 5. Click **Save Settings**.
-
-#### 🧠 Intelligent Model ID Resolution
-
-Omni AI features a smart resolution system that maps common short names to their official API IDs. You can enter a simplified name, and the extension will automatically use the correct implementation:
-
-- **Groq:** Entering `llama-3.1-8b` automatically maps to `llama-3.1-8b-instant`.
-- **OpenAI:** Entering `gpt-4o` maps to the latest stable `gpt-4o` version.
 
 #### Common Custom Model IDs
 
-- **Groq:** `llama-3.3-70b-versatile`, `deepseek-r1-distill-llama-70b`, `mixtral-8x7b-32768`.
-- **OpenAI:** `gpt-4o`, `gpt-4o-mini`, `o1-preview`.
-- **Google:** `gemini-1.5-pro-latest`, `gemini-2.0-flash-exp`.
-- **Custom Gateway:** Varies by provider (e.g., OpenRouter: `anthropic/claude-sonnet-4-20250514`).
+- **Groq:** `llama-3.1-8b-instant`, `deepseek-r1-distill-llama-70b`, `openai/gpt-oss-120b`.
+- **OpenAI:** `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-5.6-sol`.
+- **Google:** `gemini-2.5-pro`, `gemini-3.6-flash`.
+- **Anthropic Claude:** `claude-opus-5`, `claude-sonnet-5`, `claude-haiku-4-5-20251001`.
+- **Custom Gateway:** Varies by provider (e.g., OpenRouter: `anthropic/claude-sonnet-5`).
 
 ---
 
@@ -219,6 +220,7 @@ omni-ai/
 │       ├── gemini.js
 │       ├── groq.js
 │       ├── openai.js
+│       ├── anthropic.js
 │       └── custom-gateway.js
 ├── assets/                 # Branding & High-res icons
 ├── settings.html           # Main configuration page
@@ -239,7 +241,7 @@ omni-ai/
 - **Manifest V3**: Using the latest Chrome extension standards.
 - **Vanilla JavaScript**: Lightweight, no heavy frameworks, maximum performance.
 - **Modern CSS**: Variables, Flex/Grid, Glassmorphism, and smooth animations.
-- **Provider Architecture**: Easily extendable to add new AI providers (OpenAI, Anthropic, etc.).
+- **Provider Architecture**: Easily extendable to add new AI providers — see `lib/providers/` and the `AI_PROVIDERS` registry.
 
 ---
 
@@ -290,7 +292,7 @@ To publish on the Chrome Web Store, you need a Google Developer account.
 ### Pro Tips for Approval
 
 - **Screenshot Quality**: Use high-quality screenshots. Show the ✨ floating button and the Usage Dashboard.
-- **Clear Description**: Clearly explain that users need an API key (Gemini, OpenAI, Groq) or Custom Gateway to use the extension.
+- **Clear Description**: Clearly explain that users need an API key (Gemini, OpenAI, Groq, Anthropic Claude) or Custom Gateway to use the extension.
 - **Permission Scope**: Chrome reviewers prefer the narrowest permissions possible.
 
 ---

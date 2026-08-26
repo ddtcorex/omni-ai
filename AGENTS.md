@@ -62,7 +62,7 @@ omni-ai/
 |   |-- ai-service.js        # Action functions (improveText, translateText, ...) +
 |   |                        #   generateContent() dispatcher
 |   |-- ai-providers.js      # AI_PROVIDERS registry: models, key-setting names, routing
-|   |-- providers/           # gemini.js, openai.js, groq.js, custom-gateway.js, index.js
+|   |-- providers/           # gemini.js, openai.js, groq.js, anthropic.js, custom-gateway.js, index.js
 |   |-- history.js           # History + usage stats (storage.local)
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
