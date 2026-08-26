@@ -101,7 +101,7 @@ Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST re
 ### Provider System
 
 - Registry: `AI_PROVIDERS` in `lib/ai-providers.js` — each entry declares `id`, `name`, `keySetting` (storage key of its API key), and `models[]`.
-- Routing: model IDs are provider-prefixed — `google-*`, `openai-*`, `groq-*`, `custom-*` — resolved by `getProvider()` in `lib/providers/index.js`. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
+- Routing: `getProvider(modelId)` in `lib/providers/index.js` looks the model up in `AI_PROVIDERS` (via `getProviderByModel()`) and returns that provider's module — model IDs are not required to follow any naming convention. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
 - Every provider module exports `async generateContent(prompt, config)` where `config = { apiKey, model, maxTokens, temperature, topP, baseUrl? }`.
 - Custom models use the `-custom` suffix convention; the actual model name comes from storage (`customModelName` / `customGatewayModelName`).
 
@@ -110,7 +110,7 @@ Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST re
 | Area      | Keys                                                                                                                                                                                                             |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`, `user` (OAuth profile)                                                                                                                                    |
-| `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
+| `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
 | `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                         |
 
 ---
@@ -120,7 +120,7 @@ Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST re
 ### Adding a New AI Provider
 
 1. Create `lib/providers/[name].js` exporting `generateContent(prompt, config)`.
-2. Register it in `lib/providers/index.js` (import, export, and a `modelName.startsWith("<prefix>-")` branch).
+2. Register it in `lib/providers/index.js` — import the module and add one line to the `MODULES` map (`providerId: Module`).
 3. Add the registry entry (models + `keySetting`) to `AI_PROVIDERS` in `lib/ai-providers.js`.
 4. Add key/model inputs to `settings.html` plus load/save wiring in `settings.js`.
 5. Add tests under `tests/lib/providers/`.

@@ -59,6 +59,10 @@ Groq (fast inference, free tier available)
 1. Get a key at console.groq.com/keys
 2. Select Groq in Settings for Llama 3.3, DeepSeek-R1, and more
 
+Anthropic Claude
+1. Get a key at console.anthropic.com/settings/keys
+2. Select Anthropic Claude in Settings for Haiku 4.5 / Sonnet 5 / Opus 5
+
 Custom Gateway (any OpenAI-compatible API)
 1. Get a key from your provider (DeepSeek, OpenRouter, a self-hosted gateway, etc.)
 2. Enter the base URL, your key, and the model name in Settings

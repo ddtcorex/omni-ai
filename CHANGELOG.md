@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Anthropic Claude as a 5th AI provider (Haiku 4.5, Sonnet 5, Opus 5, plus a custom-model slot).
+- Settings now opens automatically on first install, with the browser's UI language detected for the primary-language default and the Gemini key field focused when nothing is configured yet.
+- API keys auto-validate on blur instead of requiring a manual "Validate" click.
+- Advanced provider settings (custom model name, custom gateway) are now collapsed by default under Settings, expanding automatically when relevant.
+
+### Changed
+- Refreshed the default model catalog on Google Gemini, OpenAI, and Groq to each provider's current lineup; a previously-selected model that's no longer offered still appears in Settings, labeled "(Legacy)".
+
+### Fixed
+- The primary-language default no longer hardcodes Vietnamese for users who never set a preference — it now falls back to the browser's detected UI language.
+
+### Internal
+- Model→provider resolution is now driven entirely by the `AI_PROVIDERS` registry instead of guessing provider prefixes from model-name strings in three different places.
+
 ## [2.2.0] - 2026-08-26
 
 ### Added
