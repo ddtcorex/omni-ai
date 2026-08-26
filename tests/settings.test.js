@@ -112,4 +112,42 @@ describe("settings.js", () => {
     await Settings.loadSettings();
     expect(focusSpy).not.toHaveBeenCalled();
   });
+
+  it("auto-validates when a key input loses focus with a new, non-empty value", async () => {
+    jest.useFakeTimers();
+    chrome.storage.local.get.mockResolvedValue({});
+    chrome.runtime.sendMessage.mockResolvedValue({ success: true });
+    await Settings.loadSettings();
+    // Production wiring happens inside init() on "DOMContentLoaded", which
+    // has already fired on jsdom's document by the time this module is
+    // dynamically imported here — so the listener must be attached explicitly.
+    Settings.setupEventListeners();
+
+    const keyInput = document.getElementById("geminiApiKey");
+    keyInput.value = "new-key-value";
+    keyInput.dispatchEvent(new Event("blur"));
+    jest.advanceTimersByTime(500);
+    await Promise.resolve();
+
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "VALIDATE_CONFIG" }),
+    );
+    jest.useRealTimers();
+  });
+
+  it("does not auto-validate on blur when the key value is unchanged", async () => {
+    jest.useFakeTimers();
+    chrome.storage.local.get.mockResolvedValue({ geminiApiKey: "same-key" });
+    await Settings.loadSettings();
+    Settings.setupEventListeners();
+    chrome.runtime.sendMessage.mockClear();
+
+    const keyInput = document.getElementById("geminiApiKey");
+    keyInput.dispatchEvent(new Event("blur"));
+    jest.advanceTimersByTime(500);
+    await Promise.resolve();
+
+    expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
+    jest.useRealTimers();
+  });
 });

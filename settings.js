@@ -182,7 +182,7 @@ async function loadStats() {
 /**
  * Set up event listeners
  */
-function setupEventListeners() {
+export function setupEventListeners() {
   // Model change listener
   elements.apiModel.addEventListener("change", updateModelVisibility);
 
@@ -197,6 +197,34 @@ function setupEventListeners() {
   if (elements.validateBtn) {
     elements.validateBtn.addEventListener("click", validateConfiguration);
   }
+
+  // Auto-validate on key blur (debounced; only when the value actually
+  // changed from what was loaded/last validated for that field). Tracked
+  // per-input (seeded from the value loadSettings() already populated) so a
+  // blur on an untouched, already-saved key never re-triggers a call.
+  const keyInputsForAutoValidate = [
+    elements.geminiApiKey,
+    elements.groqApiKey,
+    elements.openaiApiKey,
+    elements.anthropicApiKey,
+  ];
+
+  let autoValidateTimer;
+  const lastValidatedValues = new Map();
+
+  keyInputsForAutoValidate.forEach((input) => {
+    if (!input) return;
+    lastValidatedValues.set(input, (input.value || "").trim());
+    input.addEventListener("blur", () => {
+      const value = (input.value || "").trim();
+      if (!value || value === lastValidatedValues.get(input)) return;
+      clearTimeout(autoValidateTimer);
+      autoValidateTimer = setTimeout(() => {
+        lastValidatedValues.set(input, value);
+        validateConfiguration();
+      }, 500);
+    });
+  });
 
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener("click", toggleApiKeyVisibility);
@@ -296,7 +324,7 @@ function updateModelVisibility() {
 /**
  * Validate current configuration
  */
-async function validateConfiguration() {
+export async function validateConfiguration() {
   const modelId = elements.apiModel.value;
   const provider = getProviderByModel(modelId);
   if (!provider) return;
