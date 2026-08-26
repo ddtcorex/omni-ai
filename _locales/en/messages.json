@@ -375,6 +375,31 @@
     "message": "Get OpenAI API Key",
     "description": "OpenAI tooltip title"
   },
+  "settings_anthropicKey": {
+    "message": "Anthropic API Key",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Get API key at console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Get Anthropic API Key",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Go to"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console",
+    "description": "Link text for Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Sign up or Log in"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Create new API Key"
+  },
   "settings_shortcuts_customize": {
     "message": "Customize in Chrome",
     "description": "Customize shortcut label"

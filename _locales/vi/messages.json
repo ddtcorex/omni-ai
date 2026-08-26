@@ -375,6 +375,13 @@
     "message": "Lấy Khóa API OpenAI",
     "description": "OpenAI tooltip title"
   },
+  "settings_anthropicKey": { "message": "Khóa API Anthropic" },
+  "settings_anthropicKeyHint": { "message": "Lấy khóa API tại console.anthropic.com" },
+  "settings_tooltip_anthropic": { "message": "Lấy Khóa API Anthropic" },
+  "settings_tooltip_anthropic_s1": { "message": "Truy cập" },
+  "settings_anthropicConsole": { "message": "Anthropic Console" },
+  "settings_tooltip_anthropic_s2": { "message": "Đăng ký hoặc Đăng nhập" },
+  "settings_tooltip_anthropic_s3": { "message": "Tạo Khóa API mới" },
   "settings_shortcuts_customize": {
     "message": "Tùy chỉnh trong Chrome",
     "description": "Customize shortcut label"

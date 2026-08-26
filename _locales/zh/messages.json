@@ -375,6 +375,13 @@
     "message": "获取 OpenAI 密钥",
     "description": "OpenAI 提示标题"
   },
+  "settings_anthropicKey": { "message": "Anthropic API 密钥" },
+  "settings_anthropicKeyHint": { "message": "在 console.anthropic.com 获取密钥" },
+  "settings_tooltip_anthropic": { "message": "获取 Anthropic 密钥" },
+  "settings_tooltip_anthropic_s1": { "message": "前往" },
+  "settings_anthropicConsole": { "message": "Anthropic Console" },
+  "settings_tooltip_anthropic_s2": { "message": "注册或登录账户" },
+  "settings_tooltip_anthropic_s3": { "message": "创建新的 API 密钥" },
   "settings_shortcuts_customize": {
     "message": "在 Chrome 中自定义",
     "description": "自定义快捷键标签"

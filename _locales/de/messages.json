@@ -375,6 +375,13 @@
     "message": "OpenAI-Schlüssel erhalten",
     "description": "Statistik OpenAI"
   },
+  "settings_anthropicKey": { "message": "Anthropic API-Schlüssel" },
+  "settings_anthropicKeyHint": { "message": "API-Schlüssel auf console.anthropic.com erhalten" },
+  "settings_tooltip_anthropic": { "message": "Anthropic-Schlüssel erhalten" },
+  "settings_tooltip_anthropic_s1": { "message": "Gehe zu" },
+  "settings_anthropicConsole": { "message": "Anthropic Console" },
+  "settings_tooltip_anthropic_s2": { "message": "Registrieren oder Anmelden" },
+  "settings_tooltip_anthropic_s3": { "message": "Neuen API-Schlüssel erstellen" },
   "settings_shortcuts_customize": {
     "message": "In Chrome anpassen",
     "description": "Shortcuts Link"

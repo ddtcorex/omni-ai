@@ -375,6 +375,13 @@
     "message": "Ottieni Chiave API OpenAI",
     "description": "Titolo tooltip OpenAI"
   },
+  "settings_anthropicKey": { "message": "Chiave API Anthropic" },
+  "settings_anthropicKeyHint": { "message": "Ottieni la chiave su console.anthropic.com" },
+  "settings_tooltip_anthropic": { "message": "Ottieni Chiave API Anthropic" },
+  "settings_tooltip_anthropic_s1": { "message": "Vai su" },
+  "settings_anthropicConsole": { "message": "Anthropic Console" },
+  "settings_tooltip_anthropic_s2": { "message": "Registrati o accedi" },
+  "settings_tooltip_anthropic_s3": { "message": "Crea una nuova chiave API" },
   "settings_shortcuts_customize": {
     "message": "Personalizza in Chrome",
     "description": "Link scorciatoie"

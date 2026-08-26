@@ -375,6 +375,13 @@
     "message": "OpenAI API 키 발급",
     "description": "OpenAI 툴팁 제목"
   },
+  "settings_anthropicKey": { "message": "Anthropic API 키" },
+  "settings_anthropicKeyHint": { "message": "console.anthropic.com에서 API 키를 받으세요" },
+  "settings_tooltip_anthropic": { "message": "Anthropic API 키 발급" },
+  "settings_tooltip_anthropic_s1": { "message": "다음으로 이동:" },
+  "settings_anthropicConsole": { "message": "Anthropic Console" },
+  "settings_tooltip_anthropic_s2": { "message": "회원가입 또는 로그인합니다" },
+  "settings_tooltip_anthropic_s3": { "message": "새 API 키를 생성합니다" },
   "settings_shortcuts_customize": {
     "message": "Chrome에서 설정 변경",
     "description": "단축키 설정 라벨"

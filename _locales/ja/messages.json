@@ -375,6 +375,13 @@
     "message": "OpenAI APIキーの取得",
     "description": "OpenAIツールチップのタイトル"
   },
+  "settings_anthropicKey": { "message": "Anthropic APIキー" },
+  "settings_anthropicKeyHint": { "message": "console.anthropic.com でAPIキーを取得できます" },
+  "settings_tooltip_anthropic": { "message": "Anthropic APIキーの取得" },
+  "settings_tooltip_anthropic_s1": { "message": "アクセス:" },
+  "settings_anthropicConsole": { "message": "Anthropic Console" },
+  "settings_tooltip_anthropic_s2": { "message": "サインアップまたはログインします" },
+  "settings_tooltip_anthropic_s3": { "message": "新しいAPIキーを作成します" },
   "settings_shortcuts_customize": {
     "message": "Chromeでカスタマイズ",
     "description": "ショートカット設定ラベル"

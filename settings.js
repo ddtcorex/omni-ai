@@ -20,6 +20,8 @@ const elements = {
   groqKeyGroup: document.getElementById("groqKeyGroup"),
   openaiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("openaiApiKey")),
   openaiKeyGroup: document.getElementById("openaiKeyGroup"),
+  anthropicApiKey: /** @type {HTMLInputElement} */ (document.getElementById("anthropicApiKey")),
+  anthropicKeyGroup: document.getElementById("anthropicKeyGroup"),
   customGatewayKeyGroup: document.getElementById("customGatewayKeyGroup"),
   customGatewayBaseUrl: /** @type {HTMLInputElement} */ (
     document.getElementById("customGatewayBaseUrl")
@@ -199,6 +201,7 @@ function setupEventListeners() {
     elements.geminiApiKey,
     elements.groqApiKey,
     elements.openaiApiKey,
+    elements.anthropicApiKey,
     elements.customGatewayBaseUrl,
     elements.customGatewayApiKey,
     elements.apiModel,
@@ -301,6 +304,8 @@ async function validateConfiguration() {
     apiKey = elements.groqApiKey.value.trim();
   } else if (provider.id === "openai") {
     apiKey = elements.openaiApiKey.value.trim();
+  } else if (provider.id === "anthropic") {
+    apiKey = elements.anthropicApiKey.value.trim();
   } else if (provider.id === "customGateway") {
     apiKey = elements.customGatewayApiKey.value.trim();
     baseUrl = elements.customGatewayBaseUrl.value.trim();
@@ -421,6 +426,7 @@ async function loadSettings() {
       "geminiApiKey",
       "groqApiKey",
       "openaiApiKey",
+      "anthropicApiKey",
       "apiModel",
       "customModelName",
       "currentPreset",
@@ -433,6 +439,7 @@ async function loadSettings() {
     if (config.geminiApiKey) elements.geminiApiKey.value = config.geminiApiKey;
     if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
     if (config.openaiApiKey) elements.openaiApiKey.value = config.openaiApiKey;
+    if (config.anthropicApiKey) elements.anthropicApiKey.value = config.anthropicApiKey;
     if (config.customModelName) elements.customModelName.value = config.customModelName;
 
     // Custom Gateway config
@@ -485,6 +492,7 @@ async function saveSettings() {
       geminiApiKey: elements.geminiApiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
       openaiApiKey: elements.openaiApiKey.value.trim(),
+      anthropicApiKey: elements.anthropicApiKey.value.trim(),
       apiModel: elements.apiModel.value,
       customModelName: elements.customModelName.value.trim(),
       currentPreset: elements.defaultPreset.value,

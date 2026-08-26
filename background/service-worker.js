@@ -139,6 +139,7 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
 async function initializeSettings() {
   const defaults = {
     geminiApiKey: "",
+    anthropicApiKey: "",
     currentPreset: "professional",
     customPrompts: [],
     customGatewayBaseUrl: "",

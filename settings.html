@@ -213,6 +213,51 @@
                 </div>
               </div>
 
+              <!-- Anthropic API Key -->
+              <div class="setting-item hidden" id="anthropicKeyGroup" data-provider="anthropic">
+                <label class="setting-label" for="anthropicApiKey">
+                  <div class="label-header">
+                    <span class="label-text">__MSG_settings_anthropicKey__</span>
+                    <div class="tooltip-trigger">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                      </svg>
+                      <div class="tooltip-popup">
+                        <p>__MSG_settings_tooltip_anthropic__</p>
+                        <ol>
+                          <li>
+                            __MSG_settings_tooltip_anthropic_s1__
+                            <a href="https://console.anthropic.com/settings/keys" target="_blank"
+                              >__MSG_settings_anthropicConsole__</a
+                            >
+                          </li>
+                          <li>__MSG_settings_tooltip_anthropic_s2__</li>
+                          <li>__MSG_settings_tooltip_anthropic_s3__</li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="label-hint">__MSG_settings_anthropicKeyHint__</span>
+                </label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    id="anthropicApiKey"
+                    class="setting-input"
+                    placeholder="sk-ant-..."
+                  />
+                </div>
+              </div>
+
               <!-- Custom Gateway -->
               <div
                 class="setting-item hidden"
