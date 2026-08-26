@@ -15,6 +15,7 @@ describe("Service Worker Integration", () => {
       runtime: {
         onInstalled: { addListener: jest.fn() },
         onMessage: { addListener: jest.fn() },
+        getURL: jest.fn((path) => path),
       },
       i18n: { getMessage: jest.fn((key) => key) },
       contextMenus: {
@@ -24,6 +25,7 @@ describe("Service Worker Integration", () => {
       tabs: {
         query: jest.fn().mockResolvedValue([]),
         sendMessage: jest.fn().mockResolvedValue({}),
+        create: jest.fn(),
       },
       storage: {
         local: {
@@ -101,6 +103,20 @@ describe("Service Worker Integration", () => {
         settings: expect.objectContaining({ autoClose: true, showFloatingButton: true }),
       }),
     );
+  });
+
+  it("opens a Settings tab on a fresh install, but not on a dev-reload update", async () => {
+    await import("../../background/service-worker");
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+
+    installed({ reason: "install" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(chromeMock.tabs.create).toHaveBeenCalledWith({ url: "settings.html" });
+
+    chromeMock.tabs.create.mockClear();
+    installed({ reason: "update" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(chromeMock.tabs.create).not.toHaveBeenCalled();
   });
 
   it("routes keyboard commands to the most recently focused editor frame", async () => {
