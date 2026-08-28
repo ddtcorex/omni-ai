@@ -11,6 +11,38 @@
     "message": "Omni AI",
     "description": "Popup title"
   },
+  "sidepanel_title": {
+    "message": "Page Tools",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Summarize",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Smart Translate",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Explain",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Working on it…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Result",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Can't read this page",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Nothing to work with on this page",
+    "description": "Side panel error when the page has no extractable text"
+  },
   "popup_quickAsk": {
     "message": "Ask Omni AI anything...",
     "description": "Quick ask placeholder"

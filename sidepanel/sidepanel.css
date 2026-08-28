@@ -1,0 +1,231 @@
+/* ============================================
+   Omni AI - Side Panel Styles (Page Tools)
+   ============================================ */
+
+:root {
+  --bg-primary: #0f0f14;
+  --bg-secondary: #1a1a24;
+  --bg-tertiary: #252532;
+  --bg-hover: #2d2d3d;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --accent-purple: #8b5cf6;
+  --accent-cyan: #06b6d4;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+
+  --border-color: rgba(255, 255, 255, 0.08);
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+
+  --radius-md: 8px;
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root.omni-ai-light-mode {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-hover: #e2e8f0;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --border-color: rgba(0, 0, 0, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* A side panel's width is controlled by the user dragging Chrome's own
+   panel divider, not by this page -- fill whatever it's given instead of
+   assuming a fixed size (that mistake was made twice already for the old
+   popup, see AGENTS.md / CHANGELOG.md history). */
+.sidepanel-container {
+  width: 100%;
+  height: 100%;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.page-tools {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.page-tools-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--accent-purple);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-icon {
+  font-size: 16px;
+}
+
+.status-line {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.status-line.error {
+  color: var(--error);
+}
+
+.status-line.hidden,
+.result-area.hidden {
+  display: none;
+}
+
+.result-area {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.result-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-xs);
+}
+
+.result-text {
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.version {
+  font-size: 11px;
+  color: var(--text-muted);
+}

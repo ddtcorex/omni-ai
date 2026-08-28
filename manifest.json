@@ -47,6 +47,10 @@
     "open_in_tab": true
   },
 
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  },
+
   "commands": {
     "_execute_action": {
       "description": "__MSG_popup_title__"

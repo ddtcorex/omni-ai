@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omni AI</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="../assets/icons/logo.svg" />
+  </head>
+  <body>
+    <div class="sidepanel-container">
+      <header class="header">
+        <div class="logo">
+          <img src="../assets/icons/logo.svg" alt="Omni AI" class="logo-icon" />
+          <span class="logo-text">__MSG_popup_title__</span>
+        </div>
+        <button id="settingsBtn" class="icon-btn" title="__MSG_settings_title__">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+        </button>
+      </header>
+
+      <main class="page-tools">
+        <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
+
+        <div class="action-buttons">
+          <button id="summarizeBtn" class="action-btn" data-action="summarize">
+            <span class="action-icon">📄</span>
+            <span class="action-label">__MSG_sidepanel_summarize__</span>
+          </button>
+          <button id="translateBtn" class="action-btn" data-action="smart_translate">
+            <span class="action-icon">🌐</span>
+            <span class="action-label">__MSG_sidepanel_translate__</span>
+          </button>
+          <button id="explainBtn" class="action-btn" data-action="explain">
+            <span class="action-icon">💡</span>
+            <span class="action-label">__MSG_sidepanel_explain__</span>
+          </button>
+        </div>
+
+        <div id="statusLine" class="status-line hidden"></div>
+
+        <div id="resultArea" class="result-area hidden">
+          <div class="result-label">__MSG_sidepanel_resultLabel__</div>
+          <div id="resultText" class="result-text"></div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <span class="version" id="extVersion"></span>
+      </footer>
+    </div>
+
+    <script src="sidepanel.js" type="module"></script>
+  </body>
+</html>
