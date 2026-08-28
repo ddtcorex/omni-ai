@@ -84,6 +84,25 @@ test("popup empty-state placeholder disappears once a real message is sent", asy
   }
 });
 
+test("popup fills a resized Quick Ask window instead of leaving dead space", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    // Quick Ask now opens as a real, user-resizable chrome.windows.create
+    // window rather than the old fixed-size action-popup dropdown.
+    await page.setViewportSize({ width: 800, height: 700 });
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/popup/popup.html`);
+
+    const containerWidth = await page.evaluate(
+      () => document.querySelector(".popup-container").getBoundingClientRect().width,
+    );
+    expect(containerWidth).toBeGreaterThan(700);
+  } finally {
+    await context.close();
+  }
+});
+
 test("settings page loads and renders provider configuration", async () => {
   const { context, sw } = await launchWithExtension();
   try {

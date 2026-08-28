@@ -69,6 +69,11 @@
 }
 
 /* Body */
+html,
+body {
+  height: 100%;
+}
+
 body {
   font-family: var(--font-family);
   font-size: 13px;
@@ -80,10 +85,15 @@ body {
 }
 
 /* Popup Container */
+/* Quick Ask is a real, user-resizable chrome.windows.create window (not the
+   fixed-size action-popup this was originally written for) -- fill it and
+   let flex reflow, instead of a hardcoded box that leaves dead space when
+   the window is resized. */
 .popup-container {
-  width: 360px;
-  min-height: 480px;
-  max-height: 600px;
+  width: 100%;
+  height: 100%;
+  min-width: 320px;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);

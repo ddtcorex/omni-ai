@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom Gateway moved to the end of the model dropdown's provider list instead of sitting in the middle.
 - Removed a doubled divider line above the Advanced settings disclosure.
 - "Include this page's content as context for AI responses" now actually includes it — it was silently resolving to the wrong (or no) tab once Quick Ask became a standalone window.
+- Quick Ask now actually fills a resized window instead of staying stuck at its old fixed 360px action-popup size, surrounded by dead space.
 
 ### Internal
 - Model→provider resolution is now driven entirely by the `AI_PROVIDERS` registry instead of guessing provider prefixes from model-name strings in three different places.
