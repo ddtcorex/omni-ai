@@ -56,7 +56,12 @@ omni-ai/
 |   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
 |   |                        #   overlay cards, text replacement, Shadow DOM host
 |   `-- overlay.css          # Styles injected INTO the shadow root via fetch()
-|-- popup/                   # Quick Ask chat popup (auth UI, page-context toggle)
+|-- popup/                   # Quick Ask chat popup (auth UI, page-context toggle) --
+|                             #   opened as a standalone chrome.windows.create window
+|                             #   (background/service-worker.js chrome.action.onClicked),
+|                             #   NOT action.default_popup: that popup type force-closes
+|                             #   on any blur, which broke IME composition (ibus) and
+|                             #   made the Super+Space input-method switch close it mid-type.
 |-- settings.{html,js,css}   # Options dashboard: providers, languages, theme, usage stats
 |-- lib/
 |   |-- ai-service.js        # Action functions (improveText, translateText, ...) +

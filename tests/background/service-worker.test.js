@@ -47,6 +47,12 @@ describe("Service Worker Integration", () => {
       },
       identity: { getAuthToken: jest.fn() },
       commands: { onCommand: { addListener: jest.fn() } },
+      action: { onClicked: { addListener: jest.fn() } },
+      windows: {
+        create: jest.fn().mockResolvedValue({ id: 111 }),
+        update: jest.fn().mockResolvedValue({}),
+        onRemoved: { addListener: jest.fn() },
+      },
     };
 
     global.chrome = chromeMock;
@@ -117,6 +123,44 @@ describe("Service Worker Integration", () => {
     installed({ reason: "update" });
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(chromeMock.tabs.create).not.toHaveBeenCalled();
+  });
+
+  it("opens Quick Ask as a standalone window when the toolbar icon is clicked", async () => {
+    await import("../../background/service-worker");
+    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
+
+    await onClicked();
+
+    expect(chromeMock.windows.create).toHaveBeenCalledWith(
+      expect.objectContaining({ url: "popup/popup.html", type: "popup" }),
+    );
+  });
+
+  it("focuses the existing Quick Ask window instead of opening a second one", async () => {
+    await import("../../background/service-worker");
+    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
+
+    await onClicked();
+    chromeMock.windows.create.mockClear();
+
+    await onClicked();
+
+    expect(chromeMock.windows.create).not.toHaveBeenCalled();
+    expect(chromeMock.windows.update).toHaveBeenCalledWith(111, { focused: true });
+  });
+
+  it("allows opening a new Quick Ask window again after the previous one was closed", async () => {
+    await import("../../background/service-worker");
+    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
+    const onRemoved = chromeMock.windows.onRemoved.addListener.mock.calls[0][0];
+
+    await onClicked();
+    onRemoved(111); // user closed the window
+    chromeMock.windows.create.mockClear();
+
+    await onClicked();
+
+    expect(chromeMock.windows.create).toHaveBeenCalled();
   });
 
   it("routes keyboard commands to the most recently focused editor frame", async () => {

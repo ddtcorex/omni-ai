@@ -86,6 +86,40 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 /**
+ * Quick Ask window management
+ *
+ * The toolbar icon used to be action.default_popup, but Chrome force-closes
+ * that popup type on any blur -- including when an OS-level IME (ibus, the
+ * Super+Space input-method switcher) steals focus, which made typing
+ * Vietnamese in Quick Ask impossible. Opening it as a real window instead
+ * (via chrome.action.onClicked, only fired when no default_popup is set)
+ * behaves like any other browser window and isn't affected.
+ */
+let quickAskWindowId = null;
+
+chrome.action.onClicked.addListener(async () => {
+  if (quickAskWindowId !== null) {
+    await chrome.windows.update(quickAskWindowId, { focused: true });
+    return;
+  }
+
+  const win = await chrome.windows.create({
+    url: chrome.runtime.getURL("popup/popup.html"),
+    type: "popup",
+    width: 380,
+    height: 640,
+    focused: true,
+  });
+  quickAskWindowId = win.id;
+});
+
+chrome.windows.onRemoved.addListener((closedWindowId) => {
+  if (closedWindowId === quickAskWindowId) {
+    quickAskWindowId = null;
+  }
+});
+
+/**
  * Handle keyboard commands
  */
 chrome.commands.onCommand.addListener(async (command, tab) => {

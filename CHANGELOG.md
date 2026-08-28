@@ -15,9 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Refreshed the default model catalog on Google Gemini, OpenAI, and Groq to each provider's current lineup; a previously-selected model that's no longer offered still appears in Settings, labeled "(Legacy)".
+- Quick Ask now opens as a standalone window instead of the toolbar `action` popup — fixes typing Vietnamese via ibus and the Super+Space input-method switch closing it mid-type, both caused by Chrome force-closing `action.default_popup` on any focus loss.
 
 ### Fixed
 - The primary-language default no longer hardcodes Vietnamese for users who never set a preference — it now falls back to the browser's detected UI language.
+- Auto-validate on blur now also covers the Custom Gateway API key and base URL fields (previously silently did nothing there).
+- The "Ask Omni AI anything..." empty-state placeholder no longer stays on screen, overlapping the conversation, once a real message is sent.
+- Custom Gateway moved to the end of the model dropdown's provider list instead of sitting in the middle.
+- Removed a doubled divider line above the Advanced settings disclosure.
 
 ### Internal
 - Model→provider resolution is now driven entirely by the `AI_PROVIDERS` registry instead of guessing provider prefixes from model-name strings in three different places.
