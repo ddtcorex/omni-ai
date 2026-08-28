@@ -297,10 +297,11 @@ body {
 }
 
 /* Advanced settings disclosure (custom model / custom gateway) */
+/* No border-top here: the provider key group right above always ends in
+   its own .setting-item border-bottom, so a second line here would double up. */
 .advanced-settings {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid var(--border-color);
 }
 
 .advanced-settings > summary {
