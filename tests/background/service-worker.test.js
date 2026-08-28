@@ -45,14 +45,8 @@ describe("Service Worker Integration", () => {
         },
         onChanged: { addListener: jest.fn() },
       },
-      identity: { getAuthToken: jest.fn() },
       commands: { onCommand: { addListener: jest.fn() } },
-      action: { onClicked: { addListener: jest.fn() } },
-      windows: {
-        create: jest.fn().mockResolvedValue({ id: 111 }),
-        update: jest.fn().mockResolvedValue({}),
-        onRemoved: { addListener: jest.fn() },
-      },
+      sidePanel: { setPanelBehavior: jest.fn().mockResolvedValue(undefined) },
     };
 
     global.chrome = chromeMock;
@@ -64,6 +58,14 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.runtime.onInstalled.addListener).toHaveBeenCalled();
     expect(chromeMock.runtime.onMessage.addListener).toHaveBeenCalled();
     expect(chromeMock.contextMenus.onClicked.addListener).toHaveBeenCalled();
+  });
+
+  it("configures the toolbar icon to open the side panel directly, not a popup window", async () => {
+    await import("../../background/service-worker");
+
+    expect(chromeMock.sidePanel.setPanelBehavior).toHaveBeenCalledWith({
+      openPanelOnActionClick: true,
+    });
   });
 
   it("preserves existing settings while defaulting showFloatingButton to true on install", async () => {
@@ -123,61 +125,6 @@ describe("Service Worker Integration", () => {
     installed({ reason: "update" });
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(chromeMock.tabs.create).not.toHaveBeenCalled();
-  });
-
-  it("opens Quick Ask as a standalone window when the toolbar icon is clicked", async () => {
-    await import("../../background/service-worker");
-    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
-
-    await onClicked();
-
-    expect(chromeMock.windows.create).toHaveBeenCalledWith(
-      expect.objectContaining({ url: "popup/popup.html", type: "popup" }),
-    );
-  });
-
-  it("focuses the existing Quick Ask window instead of opening a second one", async () => {
-    await import("../../background/service-worker");
-    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
-
-    await onClicked();
-    chromeMock.windows.create.mockClear();
-
-    await onClicked();
-
-    expect(chromeMock.windows.create).not.toHaveBeenCalled();
-    expect(chromeMock.windows.update).toHaveBeenCalledWith(111, { focused: true });
-  });
-
-  it("allows opening a new Quick Ask window again after the previous one was closed", async () => {
-    await import("../../background/service-worker");
-    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
-    const onRemoved = chromeMock.windows.onRemoved.addListener.mock.calls[0][0];
-
-    await onClicked();
-    onRemoved(111); // user closed the window
-    chromeMock.windows.create.mockClear();
-
-    await onClicked();
-
-    expect(chromeMock.windows.create).toHaveBeenCalled();
-  });
-
-  it("remembers the tab that was active when the icon was clicked, for Quick Ask to read page content from", async () => {
-    await import("../../background/service-worker");
-    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
-    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
-
-    // chrome.action.onClicked's callback receives the tab that was active
-    // at click time -- Quick Ask now runs in its own separate window, so
-    // it can no longer resolve "the page the user was looking at" itself
-    // via chrome.tabs.query({currentWindow: true}) (that now means ITS OWN
-    // window). The service worker must hand the tab id over explicitly.
-    await onClicked({ id: 42, url: "https://example.com" });
-
-    const sendResponse = jest.fn();
-    messageListener({ type: "GET_QUICK_ASK_TARGET_TAB" }, {}, sendResponse);
-    expect(sendResponse).toHaveBeenCalledWith({ success: true, tabId: 42 });
   });
 
   it("routes keyboard commands to the most recently focused editor frame", async () => {

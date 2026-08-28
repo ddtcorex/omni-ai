@@ -86,48 +86,11 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 /**
- * Quick Ask window management
- *
- * The toolbar icon used to be action.default_popup, but Chrome force-closes
- * that popup type on any blur -- including when an OS-level IME (ibus, the
- * Super+Space input-method switcher) steals focus, which made typing
- * Vietnamese in Quick Ask impossible. Opening it as a real window instead
- * (via chrome.action.onClicked, only fired when no default_popup is set)
- * behaves like any other browser window and isn't affected.
+ * Open the side panel directly on a toolbar-icon click, instead of Chrome's
+ * default action-popup behavior. This is the entire click-handling story --
+ * no onClicked listener needed, Chrome does it declaratively.
  */
-let quickAskWindowId = null;
-// The tab active when the icon was clicked. Quick Ask now runs in its own
-// top-level window, so its own chrome.tabs.query({currentWindow: true})
-// would resolve to ITS window, not the page the user was reading -- unlike
-// the old action.default_popup, which Chrome special-cased to mean the
-// underlying browsing window. Capturing it here (onClicked receives it
-// directly) and handing it over via GET_QUICK_ASK_TARGET_TAB is the only
-// reliable way for popup.js to find the right tab.
-let quickAskTargetTabId = null;
-
-chrome.action.onClicked.addListener(async (tab) => {
-  quickAskTargetTabId = tab?.id ?? null;
-
-  if (quickAskWindowId !== null) {
-    await chrome.windows.update(quickAskWindowId, { focused: true });
-    return;
-  }
-
-  const win = await chrome.windows.create({
-    url: chrome.runtime.getURL("popup/popup.html"),
-    type: "popup",
-    width: 380,
-    height: 640,
-    focused: true,
-  });
-  quickAskWindowId = win.id;
-});
-
-chrome.windows.onRemoved.addListener((closedWindowId) => {
-  if (closedWindowId === quickAskWindowId) {
-    quickAskWindowId = null;
-  }
-});
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
 /**
  * Handle keyboard commands
@@ -293,25 +256,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       break;
 
-    // Authentication
-    case "SIGN_IN":
-      handleSignIn()
-        .then((user) => sendResponse({ success: true, user }))
-        .catch((error) => sendResponse({ success: false, error: error.message }));
-      return true;
-
-    case "SIGN_OUT":
-      handleSignOut()
-        .then(() => sendResponse({ success: true }))
-        .catch((error) => sendResponse({ success: false, error: error.message }));
-      return true;
-
-    case "GET_USER":
-      getUser()
-        .then((user) => sendResponse({ success: true, user }))
-        .catch((error) => sendResponse({ success: false, error: error.message }));
-      return true;
-
     // Quick Ask
     case "QUICK_ASK":
       handleQuickAsk(message.payload)
@@ -329,10 +273,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       handleQuickAction(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
         .catch((error) => sendResponse({ success: false, error: error.message }));
-      return true;
-
-    case "GET_QUICK_ASK_TARGET_TAB":
-      sendResponse({ success: true, tabId: quickAskTargetTabId });
       return true;
 
     case "GET_API_KEY":
@@ -378,134 +318,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       break;
   }
 });
-
-// ============================================
-// Authentication Handlers
-// ============================================
-
-const USER_INFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
-
-/**
- * Handle sign in with Google
- */
-async function handleSignIn() {
-  try {
-    const token = await getAuthToken(true);
-    if (!token) {
-      throw new Error("Failed to get auth token");
-    }
-
-    const userInfo = await fetchUserInfo(token);
-    await saveUserInfo(userInfo);
-
-    return userInfo;
-  } catch (error) {
-    console.error("[Omni AI] Sign in failed:", error);
-    throw error;
-  }
-}
-
-/**
- * Handle sign out
- */
-async function handleSignOut() {
-  try {
-    const token = await getAuthToken(false);
-
-    if (token) {
-      // Revoke the token
-      await revokeToken(token);
-      // Remove the cached token
-      await chrome.identity.removeCachedAuthToken({ token });
-    }
-
-    // Clear user info from storage
-    await chrome.storage.sync.remove("user");
-  } catch (error) {
-    console.error("[Omni AI] Sign out failed:", error);
-    throw error;
-  }
-}
-
-/**
- * Get current user from storage
- */
-async function getUser() {
-  const result = await chrome.storage.sync.get("user");
-  return result.user || null;
-}
-
-/**
- * Get auth token using Chrome Identity API
- */
-async function getAuthToken(interactive = false) {
-  return new Promise((resolve, reject) => {
-    chrome.identity.getAuthToken({ interactive }, (token) => {
-      if (chrome.runtime.lastError) {
-        if (interactive) {
-          reject(new Error(chrome.runtime.lastError.message));
-        } else {
-          resolve(null);
-        }
-        return;
-      }
-      resolve(token);
-    });
-  });
-}
-
-/**
- * Fetch user info from Google API
- */
-async function fetchUserInfo(token) {
-  const response = await fetch(USER_INFO_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user info: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return {
-    id: data.id,
-    email: data.email,
-    name: data.name,
-    given_name: data.given_name,
-    picture: data.picture,
-    verified_email: data.verified_email,
-  };
-}
-
-/**
- * Save user info to storage
- */
-async function saveUserInfo(userInfo) {
-  await chrome.storage.sync.set({ user: userInfo });
-}
-
-/**
- * Revoke an auth token
- */
-async function revokeToken(token) {
-  try {
-    const response = await fetch(`https://oauth2.googleapis.com/revoke?token=${token}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-
-    if (!response.ok) {
-      console.warn("[Omni AI] Token revocation failed:", response.status);
-    }
-  } catch (error) {
-    console.warn("[Omni AI] Token revocation error:", error);
-  }
-}
 
 // ============================================
 // Action Handlers
