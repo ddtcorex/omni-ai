@@ -163,6 +163,23 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.windows.create).toHaveBeenCalled();
   });
 
+  it("remembers the tab that was active when the icon was clicked, for Quick Ask to read page content from", async () => {
+    await import("../../background/service-worker");
+    const onClicked = chromeMock.action.onClicked.addListener.mock.calls[0][0];
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    // chrome.action.onClicked's callback receives the tab that was active
+    // at click time -- Quick Ask now runs in its own separate window, so
+    // it can no longer resolve "the page the user was looking at" itself
+    // via chrome.tabs.query({currentWindow: true}) (that now means ITS OWN
+    // window). The service worker must hand the tab id over explicitly.
+    await onClicked({ id: 42, url: "https://example.com" });
+
+    const sendResponse = jest.fn();
+    messageListener({ type: "GET_QUICK_ASK_TARGET_TAB" }, {}, sendResponse);
+    expect(sendResponse).toHaveBeenCalledWith({ success: true, tabId: 42 });
+  });
+
   it("routes keyboard commands to the most recently focused editor frame", async () => {
     const AIService = await import("../../lib/ai-service");
     AIService.improveText.mockResolvedValue("Improved");

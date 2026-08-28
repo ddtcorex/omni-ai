@@ -316,14 +316,23 @@ function applyPageContextCheckboxState() {
 
 async function fetchCurrentPageContent() {
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id) return null;
+    // Quick Ask runs in its own top-level window now, so
+    // chrome.tabs.query({currentWindow: true}) from here would resolve to
+    // ITS window, not the page the user was reading -- ask the background
+    // service worker for the tab it captured at icon-click time instead.
+    const targetTab = await chrome.runtime.sendMessage({ type: "GET_QUICK_ASK_TARGET_TAB" });
+    const tabId = targetTab?.success ? targetTab.tabId : null;
+    if (!tabId) {
+      console.warn("[Omni AI] No target tab known for page context");
+      return null;
+    }
 
-    const response = await chrome.tabs.sendMessage(tab.id, {
+    const response = await chrome.tabs.sendMessage(tabId, {
       type: "GET_PAGE_CONTENT",
     });
 
     if (!response?.success || !response?.content) {
+      console.warn("[Omni AI] Page content fetch returned nothing:", response);
       return null;
     }
 

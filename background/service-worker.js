@@ -96,8 +96,18 @@ chrome.runtime.onInstalled.addListener((details) => {
  * behaves like any other browser window and isn't affected.
  */
 let quickAskWindowId = null;
+// The tab active when the icon was clicked. Quick Ask now runs in its own
+// top-level window, so its own chrome.tabs.query({currentWindow: true})
+// would resolve to ITS window, not the page the user was reading -- unlike
+// the old action.default_popup, which Chrome special-cased to mean the
+// underlying browsing window. Capturing it here (onClicked receives it
+// directly) and handing it over via GET_QUICK_ASK_TARGET_TAB is the only
+// reliable way for popup.js to find the right tab.
+let quickAskTargetTabId = null;
 
-chrome.action.onClicked.addListener(async () => {
+chrome.action.onClicked.addListener(async (tab) => {
+  quickAskTargetTabId = tab?.id ?? null;
+
   if (quickAskWindowId !== null) {
     await chrome.windows.update(quickAskWindowId, { focused: true });
     return;
@@ -319,6 +329,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       handleQuickAction(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
         .catch((error) => sendResponse({ success: false, error: error.message }));
+      return true;
+
+    case "GET_QUICK_ASK_TARGET_TAB":
+      sendResponse({ success: true, tabId: quickAskTargetTabId });
       return true;
 
     case "GET_API_KEY":
