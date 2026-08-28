@@ -512,6 +512,15 @@ function renderChatHistory() {
  * Append a bubble
  */
 function appendBubble(role, content, animated = true) {
+  // renderChatHistory() re-appends #emptyState (display:flex) whenever the
+  // chat is empty, then leaves it in the DOM; a bubble appended directly
+  // afterward (the live-chat path, not a full re-render) landed as its
+  // sibling instead of replacing it, so the "Ask Omni AI anything..."
+  // placeholder stayed on screen overlapping the real conversation.
+  if (elements.emptyState) {
+    elements.emptyState.style.display = "none";
+  }
+
   const bubble = document.createElement("div");
   bubble.className = `chat-bubble ${role}`;
   bubble.innerHTML = formatContent(content);

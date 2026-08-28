@@ -63,6 +63,27 @@ test("popup page loads and renders its chat shell", async () => {
   }
 });
 
+test("popup empty-state placeholder disappears once a real message is sent", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/popup/popup.html`);
+
+    await expect(page.locator("#emptyState")).toBeVisible();
+
+    await page.fill("#quickAskInput", "Hello there");
+    await page.click("#askBtn");
+
+    // The "Ask Omni AI anything..." placeholder must not linger as a
+    // sibling of the real chat bubbles it's supposed to be replaced by.
+    await expect(page.locator("#emptyState")).toBeHidden();
+    await expect(page.locator(".chat-bubble.user")).toHaveText("Hello there");
+  } finally {
+    await context.close();
+  }
+});
+
 test("settings page loads and renders provider configuration", async () => {
   const { context, sw } = await launchWithExtension();
   try {
