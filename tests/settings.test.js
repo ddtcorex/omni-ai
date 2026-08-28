@@ -152,6 +152,55 @@ describe("settings.js", () => {
     jest.useRealTimers();
   });
 
+  it("auto-validates on blur for the Custom Gateway API key field too", async () => {
+    jest.useFakeTimers();
+    chrome.storage.local.get.mockResolvedValue({});
+    chrome.runtime.sendMessage.mockResolvedValue({ success: true });
+    await Settings.loadSettings();
+    Settings.setupEventListeners();
+
+    // validateConfiguration() reads the *currently selected* provider off
+    // #apiModel, not off whichever input blurred — so the fixture has to be
+    // in "Custom Gateway is the active provider, with the other required
+    // gateway fields already filled" state for the blur to reach sendMessage.
+    document.getElementById("apiModel").value = "custom-gateway";
+    document.getElementById("customModelName").value = "my-gateway-model";
+    document.getElementById("customGatewayBaseUrl").value = "https://gateway.example.com/v1";
+
+    const keyInput = document.getElementById("customGatewayApiKey");
+    keyInput.value = "new-gateway-key";
+    keyInput.dispatchEvent(new Event("blur"));
+    jest.advanceTimersByTime(500);
+    await Promise.resolve();
+
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "VALIDATE_CONFIG" }),
+    );
+    jest.useRealTimers();
+  });
+
+  it("auto-validates on blur for the Custom Gateway base URL field too", async () => {
+    jest.useFakeTimers();
+    chrome.storage.local.get.mockResolvedValue({});
+    chrome.runtime.sendMessage.mockResolvedValue({ success: true });
+    await Settings.loadSettings();
+    Settings.setupEventListeners();
+
+    document.getElementById("apiModel").value = "custom-gateway";
+    document.getElementById("customModelName").value = "my-gateway-model";
+
+    const urlInput = document.getElementById("customGatewayBaseUrl");
+    urlInput.value = "https://gateway.example.com/v1";
+    urlInput.dispatchEvent(new Event("blur"));
+    jest.advanceTimersByTime(500);
+    await Promise.resolve();
+
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "VALIDATE_CONFIG" }),
+    );
+    jest.useRealTimers();
+  });
+
   it("auto-expands Advanced when a -custom model is selected", async () => {
     await Settings.loadSettings();
     Settings.setupEventListeners();

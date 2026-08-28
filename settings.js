@@ -210,6 +210,8 @@ export function setupEventListeners() {
     elements.groqApiKey,
     elements.openaiApiKey,
     elements.anthropicApiKey,
+    elements.customGatewayApiKey,
+    elements.customGatewayBaseUrl,
   ];
 
   let autoValidateTimer;
