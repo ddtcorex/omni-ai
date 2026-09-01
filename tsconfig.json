@@ -13,7 +13,7 @@
     "lib/**/*.js",
     "background/**/*.js",
     "content/**/*.js",
-    "popup/**/*.js",
+    "sidepanel/**/*.js",
     "settings.js"
   ]
 }

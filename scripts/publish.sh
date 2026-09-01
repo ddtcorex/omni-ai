@@ -47,6 +47,15 @@ with open('manifest.json', 'w') as f:
     json.dump(data, f, indent=2)
 "
 
+# Remove any pre-existing zip before rebuilding. `zip -r` *updates* an
+# existing archive rather than replacing it, so stale entries from a
+# previous build (e.g. a deleted directory) would otherwise silently
+# survive into the new package.
+if [ -f "$ZIP_NAME" ]; then
+    echo "   🗑️  Removing existing $ZIP_NAME..."
+    rm -f "$ZIP_NAME"
+fi
+
 # Create the zip file
 echo "   📦 Creating archive: $ZIP_NAME"
 # Note: Excluding git/idea/vscode related files, though explicit list is safer
@@ -56,7 +65,9 @@ zip -r "$ZIP_NAME" \
     content/ \
     lib/ \
     assets/ \
-    popup/ \
+    sidepanel/sidepanel.html \
+    sidepanel/sidepanel.js \
+    sidepanel/sidepanel.css \
     _locales/ \
     settings.html \
     settings.js \

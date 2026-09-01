@@ -89,8 +89,16 @@ chrome.runtime.onInstalled.addListener((details) => {
  * Open the side panel directly on a toolbar-icon click, instead of Chrome's
  * default action-popup behavior. This is the entire click-handling story --
  * no onClicked listener needed, Chrome does it declaratively.
+ *
+ * Guarded: chrome.sidePanel is undefined on an unsupported/old Chrome. An
+ * unguarded call here would throw synchronously during module evaluation
+ * and abort the rest of this file, silently unregistering every listener
+ * below it (commands, storage, runtime messages, context menus) -- not
+ * just breaking the side panel.
  */
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+chrome.sidePanel
+  ?.setPanelBehavior({ openPanelOnActionClick: true })
+  ?.catch((e) => console.warn("[Omni AI] setPanelBehavior failed:", e));
 
 /**
  * Handle keyboard commands

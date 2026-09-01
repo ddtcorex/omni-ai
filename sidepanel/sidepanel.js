@@ -101,7 +101,13 @@ async function getActivePageContent() {
 
   let response;
   try {
-    response = await chrome.tabs.sendMessage(tab.id, { type: "GET_PAGE_CONTENT" });
+    // Target the top frame explicitly. The content script runs with
+    // all_frames:true (and match_about_blank:true) in manifest.json, so a
+    // sendMessage call with no frameId broadcasts to every frame on the
+    // page and resolves with whichever frame answers first -- usually an
+    // iframe, not the top-level page, which would silently return that
+    // iframe's (often empty) content instead of the real one.
+    response = await chrome.tabs.sendMessage(tab.id, { type: "GET_PAGE_CONTENT" }, { frameId: 0 });
   } catch {
     return { error: i18n.getMessage("sidepanel_cantReadPage") };
   }

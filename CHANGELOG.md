@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The toolbar icon now opens a "Page Tools" side panel (Summarize / Smart Translate / Explain the current page) instead of the Quick Ask chat popup. Quick Ask chat itself is unchanged and still reachable via Alt+A or the right-click "Ask Omni AI" menu.
 - Refreshed the default model catalog on Google Gemini, OpenAI, and Groq to each provider's current lineup; a previously-selected model that's no longer offered still appears in Settings, labeled "(Legacy)".
-- Quick Ask now opens as a standalone window instead of the toolbar `action` popup — fixes typing Vietnamese via ibus and the Super+Space input-method switch closing it mid-type, both caused by Chrome force-closing `action.default_popup` on any focus loss.
 
 ### Removed
 - Google sign-in. It only ever displayed a name/avatar and gated no feature (BYOK is the only model) — removed along with the popup that showed it.
@@ -24,11 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - The primary-language default no longer hardcodes Vietnamese for users who never set a preference — it now falls back to the browser's detected UI language.
 - Auto-validate on blur now also covers the Custom Gateway API key and base URL fields (previously silently did nothing there).
-- The "Ask Omni AI anything..." empty-state placeholder no longer stays on screen, overlapping the conversation, once a real message is sent.
 - Custom Gateway moved to the end of the model dropdown's provider list instead of sitting in the middle.
 - Removed a doubled divider line above the Advanced settings disclosure.
-- "Include this page's content as context for AI responses" now actually includes it — it was silently resolving to the wrong (or no) tab once Quick Ask became a standalone window.
-- Quick Ask now actually fills a resized window instead of staying stuck at its old fixed 360px action-popup size, surrounded by dead space.
 
 ### Internal
 - Model→provider resolution is now driven entirely by the `AI_PROVIDERS` registry instead of guessing provider prefixes from model-name strings in three different places.

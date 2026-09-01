@@ -91,18 +91,17 @@ Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.
 | `REPLACE_SELECTION`         | bg → content       | Swap selection with the AI result                                        |
 | `SHOW_QUICK_ASK_OVERLAY`    | bg → content       | Open Quick Ask overlay (keyboard command)                                |
 | `THEME_CHANGED`             | bg → all tabs      | Re-read theme after `omni_ai_theme` sync change                          |
-| `PING` / `GET_PAGE_CONTENT` | popup/bg → content | Liveness check / page context for Quick Ask                              |
+| `PING` / `GET_PAGE_CONTENT` | sidepanel → content | Liveness check / page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
 
-Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
+Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
-| Type                                | Purpose                                                                             |
-| ----------------------------------- | ----------------------------------------------------------------------------------- |
-| `QUICK_ASK`                         | Popup chat query (+ optional page context)                                          |
-| `WRITING_ACTION`                    | Action request with explicit text                                                   |
-| `QUICK_ACTION`                      | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …) |
-| `VALIDATE_CONFIG`                   | Test provider credentials with a tiny prompt                                        |
-| `GET_API_KEY`                       | Read Gemini key                                                                     |
-| `SIGN_IN` / `SIGN_OUT` / `GET_USER` | Google identity (oauth2 in manifest)                                                |
+| Type              | Purpose                                                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------|
+| `QUICK_ASK`       | In-page Quick Ask overlay query (Alt+A / right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()` — not from a popup |
+| `WRITING_ACTION`  | Action request with explicit text                                                                                                    |
+| `QUICK_ACTION`    | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …), also used by the side panel's Page Tools buttons (summarize / smart_translate / explain) |
+| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                         |
+| `GET_API_KEY`     | Read Gemini key                                                                                                                       |
 
 **Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
 
