@@ -34,9 +34,9 @@ Select text, right-click, and pick: Translate, Rephrase, Add Emoji, Summarize, o
 Write In Place
 Get an AI-improved version of your draft and click Replace to update it directly inside the editor — Gmail, LinkedIn, a CMS, wherever you're typing.
 
-Chat & Quick Ask
+Chat & Page Tools
 • Quick Ask (Alt+A) — a floating overlay to ask about the text you've highlighted without losing your place.
-• Popup Chat — a side panel (click the toolbar icon) that keeps your recent conversation for longer research or brainstorming sessions.
+• Page Tools — click the toolbar icon to open a side panel with one-click Summarize, Smart Translate, and Explain for the entire page you're reading.
 
 Translation
 10 languages supported: English, Vietnamese, Spanish, French, German, Italian, Portuguese, Japanese, Korean, and Chinese. Set your primary language once — Smart Translate then auto-detects the source and translates in whichever direction makes sense.

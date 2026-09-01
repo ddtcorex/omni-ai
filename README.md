@@ -20,10 +20,8 @@ Highlight any text on any website to see the **✨ Omni AI Floating Button**. On
 - **Rephrase** - Rewrite with different words for better flow.
 - **Summarize** - Get the gist of long paragraphs instantly.
 - **Change Tone** - Swiftly switch between Professional, Casual, Formal, and more.
-- **Ask AI** - Direct chat contextually based on your selection.
-- **Persistent Chat** - Popup chat retains history for multi-turn conversations.
-- **Context Awareness** - AI remembers context from previous messages in the popup.
-- **Page Context** - Smarter answers with awareness of the current page title and URL.
+- **Ask AI** - Direct chat contextually based on your selection (Alt+A opens an in-page overlay).
+- **Page Tools** - Click the toolbar icon to open a side panel with one-click Summarize / Smart Translate / Explain for the whole page you're on.
 
 ### 📋 Writing Enhancements
 
@@ -148,26 +146,6 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 
 ---
 
-### 3. Google Sign-In (Optional)
-
-To use the personalization features (syncing settings across devices), you need to configure OAuth.
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/).
-2. Create a new project.
-3. Navigate to **APIs & Services > Credentials**.
-4. Create **OAuth client ID** > **Chrome extension**.
-5. Detailed steps can be found in the [Chrome Identity API docs](https://developer.chrome.com/docs/extensions/reference/identity/).
-6. Copy the `client_id` and paste it into `manifest.json`:
-
-   ```json
-   "oauth2": {
-     "client_id": "YOUR_NEW_CLIENT_ID.apps.googleusercontent.com",
-     ...
-   }
-   ```
-
-7. (Recommended) Copy the `key` from the Developer Dashboard to `manifest.json` to keep the extension ID stable.
-
 ---
 
 ## ⌨️ Keyboard Shortcuts
@@ -226,10 +204,10 @@ omni-ai/
 ├── settings.html           # Main configuration page
 ├── settings.js
 ├── settings.css
-├── popup/                  # Extension Popup
-│   ├── popup.html
-│   ├── popup.js
-│   └── popup.css
+├── sidepanel/               # Page Tools side panel (Summarize/Translate/Explain)
+│   ├── sidepanel.html
+│   ├── sidepanel.js
+│   └── sidepanel.css
 └── scripts/                # Build & Utility scripts
     └── publish.sh          # Automates ID key removal & zipping
 ```
@@ -286,7 +264,7 @@ To publish on the Chrome Web Store, you need a Google Developer account.
    - **Category**: Productivity or Search Tools.
 3. **Privacy & Permissions**:
    - **Single Purpose**: "Unified writing assistant and productivity tool".
-   - **Justification**: Explain `activeTab`, `storage`, `identity`, `contextMenus` usage clearly.
+   - **Justification**: Explain `activeTab`, `storage`, `sidePanel`, `contextMenus` usage clearly.
    - **Privacy Policy**: Link to your privacy policy (GitHub Pages or similar).
 
 ### Pro Tips for Approval

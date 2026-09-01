@@ -14,8 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Advanced provider settings (custom model name, custom gateway) are now collapsed by default under Settings, expanding automatically when relevant.
 
 ### Changed
+- The toolbar icon now opens a "Page Tools" side panel (Summarize / Smart Translate / Explain the current page) instead of the Quick Ask chat popup. Quick Ask chat itself is unchanged and still reachable via Alt+A or the right-click "Ask Omni AI" menu.
 - Refreshed the default model catalog on Google Gemini, OpenAI, and Groq to each provider's current lineup; a previously-selected model that's no longer offered still appears in Settings, labeled "(Legacy)".
 - Quick Ask now opens as a standalone window instead of the toolbar `action` popup — fixes typing Vietnamese via ibus and the Super+Space input-method switch closing it mid-type, both caused by Chrome force-closing `action.default_popup` on any focus loss.
+
+### Removed
+- Google sign-in. It only ever displayed a name/avatar and gated no feature (BYOK is the only model) — removed along with the popup that showed it.
 
 ### Fixed
 - The primary-language default no longer hardcodes Vietnamese for users who never set a preference — it now falls back to the browser's detected UI language.
