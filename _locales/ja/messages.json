@@ -103,18 +103,6 @@
     "message": "エラー",
     "description": "ステータス：エラー"
   },
-  "auth_signIn": {
-    "message": "サインイン",
-    "description": "サインインボタン"
-  },
-  "auth_signOut": {
-    "message": "サインアウト",
-    "description": "サインアウトボタン"
-  },
-  "auth_accountMenu": {
-    "message": "アカウントメニュー",
-    "description": "アカウントメニューボタンのタイトル"
-  },
   "settings_title": {
     "message": "設定",
     "description": "設定ページのタイトル"
@@ -263,10 +251,6 @@
     "message": "思考中...",
     "description": "思考中ステータス"
   },
-  "btn_ask_ai": {
-    "message": "AIに聞く",
-    "description": "AIに聞くボタン"
-  },
   "btn_back": {
     "message": "戻る",
     "description": "戻るボタンのタイトル"
@@ -375,13 +359,27 @@
     "message": "OpenAI APIキーの取得",
     "description": "OpenAIツールチップのタイトル"
   },
-  "settings_anthropicKey": { "message": "Anthropic APIキー" },
-  "settings_anthropicKeyHint": { "message": "console.anthropic.com でAPIキーを取得できます" },
-  "settings_tooltip_anthropic": { "message": "Anthropic APIキーの取得" },
-  "settings_tooltip_anthropic_s1": { "message": "アクセス:" },
-  "settings_anthropicConsole": { "message": "Anthropic Console" },
-  "settings_tooltip_anthropic_s2": { "message": "サインアップまたはログインします" },
-  "settings_tooltip_anthropic_s3": { "message": "新しいAPIキーを作成します" },
+  "settings_anthropicKey": {
+    "message": "Anthropic APIキー"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com でAPIキーを取得できます"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic APIキーの取得"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "アクセス:"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "サインアップまたはログインします"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "新しいAPIキーを作成します"
+  },
   "settings_shortcuts_customize": {
     "message": "Chromeでカスタマイズ",
     "description": "ショートカット設定ラベル"
@@ -527,12 +525,12 @@
     "message": "翻訳に失敗しました",
     "description": "Translation failed message"
   },
-  "btn_new_chat": {
-    "message": "新しいチャット",
-    "description": "New Chat button tooltip"
+  "settings_legacyModelPrefix": {
+    "message": "(旧)"
   },
-  "settings_legacyModelPrefix": { "message": "(旧)" },
-  "settings_advanced": { "message": "詳細設定" },
+  "settings_advanced": {
+    "message": "詳細設定"
+  },
   "settings_customModel": {
     "message": "カスタムモデル名",
     "description": "Custom model label"
@@ -548,18 +546,6 @@
   "settings_customModelPlaceholder": {
     "message": "例: モデルID",
     "description": "Placeholder for settings_customModelPlaceholder"
-  },
-  "include_page_context": {
-    "message": "このページのコンテンツをコンテキストとして含める",
-    "description": "Checkbox label to include page content"
-  },
-  "popup_page_context_included": {
-    "message": "ページ内容が追加され、この会話のコンテキストとして使用されます。",
-    "description": "System message shown after page content is attached to the popup conversation context"
-  },
-  "include_page_context_locked_hint": {
-    "message": "この会話ではページコンテキストが固定されています。変更するには新しいチャットを開始してください。",
-    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   },
   "settings_customGatewayTitle": {
     "message": "Custom Gateway",

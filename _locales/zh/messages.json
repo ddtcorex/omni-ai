@@ -103,18 +103,6 @@
     "message": "错误",
     "description": "错误状态"
   },
-  "auth_signIn": {
-    "message": "登录",
-    "description": "登录按钮"
-  },
-  "auth_signOut": {
-    "message": "退出登录",
-    "description": "退出按钮"
-  },
-  "auth_accountMenu": {
-    "message": "账户菜单",
-    "description": "账户菜单按钮标题"
-  },
   "settings_title": {
     "message": "设置",
     "description": "设置页面标题"
@@ -263,10 +251,6 @@
     "message": "思考中...",
     "description": "思考状态"
   },
-  "btn_ask_ai": {
-    "message": "咨询 AI",
-    "description": "咨询 AI 按钮"
-  },
   "btn_back": {
     "message": "返回",
     "description": "返回按钮标题"
@@ -375,13 +359,27 @@
     "message": "获取 OpenAI 密钥",
     "description": "OpenAI 提示标题"
   },
-  "settings_anthropicKey": { "message": "Anthropic API 密钥" },
-  "settings_anthropicKeyHint": { "message": "在 console.anthropic.com 获取密钥" },
-  "settings_tooltip_anthropic": { "message": "获取 Anthropic 密钥" },
-  "settings_tooltip_anthropic_s1": { "message": "前往" },
-  "settings_anthropicConsole": { "message": "Anthropic Console" },
-  "settings_tooltip_anthropic_s2": { "message": "注册或登录账户" },
-  "settings_tooltip_anthropic_s3": { "message": "创建新的 API 密钥" },
+  "settings_anthropicKey": {
+    "message": "Anthropic API 密钥"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "在 console.anthropic.com 获取密钥"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "获取 Anthropic 密钥"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "前往"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "注册或登录账户"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "创建新的 API 密钥"
+  },
   "settings_shortcuts_customize": {
     "message": "在 Chrome 中自定义",
     "description": "自定义快捷键标签"
@@ -527,12 +525,12 @@
     "message": "翻译失败",
     "description": "Translation failed message"
   },
-  "btn_new_chat": {
-    "message": "新聊天",
-    "description": "New Chat button tooltip"
+  "settings_legacyModelPrefix": {
+    "message": "(旧版)"
   },
-  "settings_legacyModelPrefix": { "message": "(旧版)" },
-  "settings_advanced": { "message": "高级" },
+  "settings_advanced": {
+    "message": "高级"
+  },
   "settings_customModel": {
     "message": "自定义模型名称",
     "description": "Custom model label"
@@ -548,18 +546,6 @@
   "settings_customModelPlaceholder": {
     "message": "例如: 模型ID",
     "description": "Placeholder for settings_customModelPlaceholder"
-  },
-  "include_page_context": {
-    "message": "将此页面内容作为上下文",
-    "description": "Checkbox label to include page content"
-  },
-  "popup_page_context_included": {
-    "message": "页面内容已加入，并将作为本次对话的上下文使用。",
-    "description": "System message shown after page content is attached to the popup conversation context"
-  },
-  "include_page_context_locked_hint": {
-    "message": "该页面上下文在本次对话中已锁定。请开启新对话以更改。",
-    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   },
   "settings_customGatewayTitle": {
     "message": "Custom Gateway",

@@ -135,18 +135,6 @@
     "message": "Error",
     "description": "Status error"
   },
-  "auth_signIn": {
-    "message": "Sign in",
-    "description": "Sign in button"
-  },
-  "auth_signOut": {
-    "message": "Sign out",
-    "description": "Sign out button"
-  },
-  "auth_accountMenu": {
-    "message": "Account menu",
-    "description": "Account menu button title"
-  },
   "settings_title": {
     "message": "Settings",
     "description": "Settings page title"
@@ -294,10 +282,6 @@
   "status_thinking": {
     "message": "Thinking...",
     "description": "Thinking status"
-  },
-  "btn_ask_ai": {
-    "message": "Ask AI",
-    "description": "Ask AI button"
   },
   "btn_back": {
     "message": "Back",
@@ -577,10 +561,6 @@
     "message": "Translation failed",
     "description": "Translation failed message"
   },
-  "btn_new_chat": {
-    "message": "New Chat",
-    "description": "New Chat button tooltip"
-  },
   "settings_legacyModelPrefix": {
     "message": "(Legacy)",
     "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
@@ -624,18 +604,6 @@
   "settings_tooltip_customGateway": {
     "message": "Custom Gateway Configuration",
     "description": "Custom Gateway tooltip title"
-  },
-  "include_page_context": {
-    "message": "Include this page's content as context for AI responses",
-    "description": "Checkbox label to include page content in chat context"
-  },
-  "popup_page_context_included": {
-    "message": "Page content has been included and will be used as context for this conversation.",
-    "description": "System message shown after page content is attached to the popup conversation context"
-  },
-  "include_page_context_locked_hint": {
-    "message": "Page context is locked for this conversation. Start a new chat to change it.",
-    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   },
   "settings_customGatewayUrlNote": {
     "message": "Supports OpenAI-compatible APIs (OpenRouter, LiteLLM, Together AI, etc.)",

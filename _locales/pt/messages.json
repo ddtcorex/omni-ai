@@ -103,18 +103,6 @@
     "message": "Erro",
     "description": "Status erro"
   },
-  "auth_signIn": {
-    "message": "Entrar",
-    "description": "Botão de login"
-  },
-  "auth_signOut": {
-    "message": "Sair",
-    "description": "Botão de logout"
-  },
-  "auth_accountMenu": {
-    "message": "Menu da conta",
-    "description": "Título do menu da conta"
-  },
   "settings_title": {
     "message": "Configurações",
     "description": "Título da página de configurações"
@@ -263,10 +251,6 @@
     "message": "Pensando...",
     "description": "Status pensando"
   },
-  "btn_ask_ai": {
-    "message": "Perguntar à IA",
-    "description": "Botão perguntar IA"
-  },
   "btn_back": {
     "message": "Voltar",
     "description": "Botão voltar"
@@ -375,13 +359,27 @@
     "message": "Obter Chave OpenAI",
     "description": "Título tooltip OpenAI"
   },
-  "settings_anthropicKey": { "message": "Chave API Anthropic" },
-  "settings_anthropicKeyHint": { "message": "Obtenha sua chave em console.anthropic.com" },
-  "settings_tooltip_anthropic": { "message": "Obter Chave Anthropic" },
-  "settings_tooltip_anthropic_s1": { "message": "Vá ao" },
-  "settings_anthropicConsole": { "message": "Anthropic Console" },
-  "settings_tooltip_anthropic_s2": { "message": "Registe-se ou faça login" },
-  "settings_tooltip_anthropic_s3": { "message": "Crie uma nova chave API" },
+  "settings_anthropicKey": {
+    "message": "Chave API Anthropic"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Obtenha sua chave em console.anthropic.com"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Obter Chave Anthropic"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Vá ao"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Registe-se ou faça login"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Crie uma nova chave API"
+  },
   "settings_shortcuts_customize": {
     "message": "Personalizar no Chrome",
     "description": "Link atalhos"
@@ -527,12 +525,12 @@
     "message": "Falha na tradução",
     "description": "Translation failed message"
   },
-  "btn_new_chat": {
-    "message": "Nova conversa",
-    "description": "New Chat button tooltip"
+  "settings_legacyModelPrefix": {
+    "message": "(Legado)"
   },
-  "settings_legacyModelPrefix": { "message": "(Legado)" },
-  "settings_advanced": { "message": "Avançado" },
+  "settings_advanced": {
+    "message": "Avançado"
+  },
   "settings_customModel": {
     "message": "Nome do modelo personalizado",
     "description": "Custom model label"
@@ -548,18 +546,6 @@
   "settings_customModelPlaceholder": {
     "message": "ex: seu-id-de-modelo",
     "description": "Placeholder for settings_customModelPlaceholder"
-  },
-  "include_page_context": {
-    "message": "Incluir conteúdo desta página como contexto",
-    "description": "Checkbox label to include page content"
-  },
-  "popup_page_context_included": {
-    "message": "O conteúdo da página foi incluído e será usado como contexto para esta conversa.",
-    "description": "System message shown after page content is attached to the popup conversation context"
-  },
-  "include_page_context_locked_hint": {
-    "message": "O contexto da página está bloqueado para esta conversa. Inicie um novo chat para alterá-lo.",
-    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   },
   "settings_customGatewayTitle": {
     "message": "Custom Gateway",

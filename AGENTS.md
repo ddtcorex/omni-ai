@@ -56,12 +56,15 @@ omni-ai/
 |   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
 |   |                        #   overlay cards, text replacement, Shadow DOM host
 |   `-- overlay.css          # Styles injected INTO the shadow root via fetch()
-|-- popup/                   # Quick Ask chat popup (auth UI, page-context toggle) --
-|                             #   opened as a standalone chrome.windows.create window
-|                             #   (background/service-worker.js chrome.action.onClicked),
-|                             #   NOT action.default_popup: that popup type force-closes
-|                             #   on any blur, which broke IME composition (ibus) and
-|                             #   made the Super+Space input-method switch close it mid-type.
+|-- sidepanel/                # Page Tools (Summarize / Smart Translate / Explain the
+|                             #   active tab) -- opened via chrome.sidePanel, registered
+|                             #   with chrome.sidePanel.setPanelBehavior({openPanelOnActionClick: true})
+|                             #   in background/service-worker.js. Replaced the old Quick
+|                             #   Ask chat popup (both the action.default_popup and the
+|                             #   later standalone-window versions): a side panel is
+|                             #   docked to the browser window and doesn't force-close on
+|                             #   blur, so it never had the ibus/Super+Space IME bug those
+|                             #   two popup mechanisms did.
 |-- settings.{html,js,css}   # Options dashboard: providers, languages, theme, usage stats
 |-- lib/
 |   |-- ai-service.js        # Action functions (improveText, translateText, ...) +
@@ -114,7 +117,7 @@ Popup/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST re
 
 | Area      | Keys                                                                                                                                                                                                             |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`, `user` (OAuth profile)                                                                                                                                    |
+| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`                                                                                                                                                                    |
 | `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
 | `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                         |
 

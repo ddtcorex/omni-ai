@@ -103,18 +103,6 @@
     "message": "Error",
     "description": "Estado error"
   },
-  "auth_signIn": {
-    "message": "Iniciar sesión",
-    "description": "Botón de inicio de sesión"
-  },
-  "auth_signOut": {
-    "message": "Cerrar sesión",
-    "description": "Botón de cierre de sesión"
-  },
-  "auth_accountMenu": {
-    "message": "Menú de cuenta",
-    "description": "Título del botón del menú de cuenta"
-  },
   "settings_title": {
     "message": "Configuración",
     "description": "Título de la página de ajustes"
@@ -263,10 +251,6 @@
     "message": "Pensando...",
     "description": "Estado pensando"
   },
-  "btn_ask_ai": {
-    "message": "Preguntar a IA",
-    "description": "Botón preguntar a IA"
-  },
   "btn_back": {
     "message": "Volver",
     "description": "Título del botón volver"
@@ -375,13 +359,27 @@
     "message": "Obtener Clave API de OpenAI",
     "description": "Título de tooltip OpenAI"
   },
-  "settings_anthropicKey": { "message": "Clave API de Anthropic" },
-  "settings_anthropicKeyHint": { "message": "Consigue tu clave en console.anthropic.com" },
-  "settings_tooltip_anthropic": { "message": "Obtener Clave API de Anthropic" },
-  "settings_tooltip_anthropic_s1": { "message": "Ve a" },
-  "settings_anthropicConsole": { "message": "Anthropic Console" },
-  "settings_tooltip_anthropic_s2": { "message": "Regístrate o inicia sesión" },
-  "settings_tooltip_anthropic_s3": { "message": "Crea una nueva clave API" },
+  "settings_anthropicKey": {
+    "message": "Clave API de Anthropic"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Consigue tu clave en console.anthropic.com"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Obtener Clave API de Anthropic"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Ve a"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Regístrate o inicia sesión"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Crea una nueva clave API"
+  },
   "settings_shortcuts_customize": {
     "message": "Personalizar en Chrome",
     "description": "Etiqueta de personalización de atajos"
@@ -527,12 +525,12 @@
     "message": "Error de traducción",
     "description": "Translation failed message"
   },
-  "btn_new_chat": {
-    "message": "Nueva conversación",
-    "description": "New Chat button tooltip"
+  "settings_legacyModelPrefix": {
+    "message": "(Antiguo)"
   },
-  "settings_legacyModelPrefix": { "message": "(Antiguo)" },
-  "settings_advanced": { "message": "Avanzado" },
+  "settings_advanced": {
+    "message": "Avanzado"
+  },
   "settings_customModel": {
     "message": "Nombre del modelo personalizado",
     "description": "Custom model label"
@@ -548,18 +546,6 @@
   "settings_customModelPlaceholder": {
     "message": "p. ej. su-id-de-modelo",
     "description": "Placeholder for settings_customModelPlaceholder"
-  },
-  "include_page_context": {
-    "message": "Incluir el contenido de esta página como contexto",
-    "description": "Checkbox label to include page content"
-  },
-  "popup_page_context_included": {
-    "message": "El contenido de la página se ha incluido y se usará como contexto para esta conversación.",
-    "description": "System message shown after page content is attached to the popup conversation context"
-  },
-  "include_page_context_locked_hint": {
-    "message": "El contexto de la página está bloqueado para esta conversación. Inicia un chat nuevo para cambiarlo.",
-    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   },
   "settings_customGatewayTitle": {
     "message": "Custom Gateway",

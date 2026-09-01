@@ -103,18 +103,6 @@
     "message": "오류",
     "description": "오류 상태"
   },
-  "auth_signIn": {
-    "message": "로그인",
-    "description": "로그인 버튼"
-  },
-  "auth_signOut": {
-    "message": "로그아웃",
-    "description": "로그아웃 버튼"
-  },
-  "auth_accountMenu": {
-    "message": "계정 메뉴",
-    "description": "계정 메뉴 버튼 제목"
-  },
   "settings_title": {
     "message": "설정",
     "description": "설정 페이지 제목"
@@ -263,10 +251,6 @@
     "message": "생각 중...",
     "description": "생각 중 상태"
   },
-  "btn_ask_ai": {
-    "message": "AI에게 묻기",
-    "description": "AI에게 묻기 버튼"
-  },
   "btn_back": {
     "message": "뒤로",
     "description": "뒤로 가기 버튼 제목"
@@ -375,13 +359,27 @@
     "message": "OpenAI API 키 발급",
     "description": "OpenAI 툴팁 제목"
   },
-  "settings_anthropicKey": { "message": "Anthropic API 키" },
-  "settings_anthropicKeyHint": { "message": "console.anthropic.com에서 API 키를 받으세요" },
-  "settings_tooltip_anthropic": { "message": "Anthropic API 키 발급" },
-  "settings_tooltip_anthropic_s1": { "message": "다음으로 이동:" },
-  "settings_anthropicConsole": { "message": "Anthropic Console" },
-  "settings_tooltip_anthropic_s2": { "message": "회원가입 또는 로그인합니다" },
-  "settings_tooltip_anthropic_s3": { "message": "새 API 키를 생성합니다" },
+  "settings_anthropicKey": {
+    "message": "Anthropic API 키"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com에서 API 키를 받으세요"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API 키 발급"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "다음으로 이동:"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "회원가입 또는 로그인합니다"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "새 API 키를 생성합니다"
+  },
   "settings_shortcuts_customize": {
     "message": "Chrome에서 설정 변경",
     "description": "단축키 설정 라벨"
@@ -527,12 +525,12 @@
     "message": "번역 실패",
     "description": "Translation failed message"
   },
-  "btn_new_chat": {
-    "message": "새 채팅",
-    "description": "New Chat button tooltip"
+  "settings_legacyModelPrefix": {
+    "message": "(레거시)"
   },
-  "settings_legacyModelPrefix": { "message": "(레거시)" },
-  "settings_advanced": { "message": "고급" },
+  "settings_advanced": {
+    "message": "고급"
+  },
   "settings_customModel": {
     "message": "사용자 지정 모델 이름",
     "description": "Custom model label"
@@ -548,18 +546,6 @@
   "settings_customModelPlaceholder": {
     "message": "예: 사용자-모델-ID",
     "description": "Placeholder for settings_customModelPlaceholder"
-  },
-  "include_page_context": {
-    "message": "이 페이지의 내용을 컨텍스트로 포함",
-    "description": "Checkbox label to include page content"
-  },
-  "popup_page_context_included": {
-    "message": "페이지 콘텐츠가 포함되었으며 이 대화의 컨텍스트로 사용됩니다.",
-    "description": "System message shown after page content is attached to the popup conversation context"
-  },
-  "include_page_context_locked_hint": {
-    "message": "이 대화에서는 페이지 컨텍스트가 고정되었습니다. 변경하려면 새 채팅을 시작하세요.",
-    "description": "Tooltip when include page context checkbox is locked during an active conversation"
   },
   "settings_customGatewayTitle": {
     "message": "Custom Gateway",
