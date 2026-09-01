@@ -127,10 +127,16 @@ async function runPageAction(action) {
       return;
     }
 
-    const response = await chrome.runtime.sendMessage({
-      type: "QUICK_ACTION",
-      payload: { action, text: page.text },
-    });
+    let response;
+    try {
+      response = await chrome.runtime.sendMessage({
+        type: "QUICK_ACTION",
+        payload: { action, text: page.text },
+      });
+    } catch (err) {
+      setStatus(i18n.getMessage("error_prefix") + (err?.message || "Unknown error"), true);
+      return;
+    }
 
     if (response?.success) {
       setStatus("");
