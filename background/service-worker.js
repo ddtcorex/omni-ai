@@ -87,8 +87,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     // Google sign-in (and the "user" profile -- email/name/picture -- it
     // stored) was removed along with the old popup. Existing users who had
     // signed in still carry that profile in sync storage with no remaining
-    // reader; clear it on the update that removes the feature rather than
-    // leaving PII behind indefinitely.
+    // reader. This runs on every future update, not just once, but
+    // removing an already-absent key is a cheap no-op, so that's fine.
     chrome.storage.sync.remove("user").catch(() => {});
   }
 });
