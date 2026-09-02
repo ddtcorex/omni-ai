@@ -58,7 +58,8 @@ and fetched-and-injected into the content-script Shadow DOM by
 | Class | Purpose | Notes |
 | --- | --- | --- |
 | `.ds-icon-btn` | Small (24x24) icon-only button — back/close/settings-gear affordances. | Replaces the three previously-independent `.omni-ai-icon-btn` / `.icon-btn` (settings) / `.icon-btn` (side panel) implementations. |
-| `.ds-btn-primary` | Primary/gradient action button. | Replaces `.omni-ai-btn-primary`, `.save-btn`, `.action-btn`. |
+| `.ds-btn-primary` | Primary/gradient action button, compact (overlay-appropriate) sizing. | Replaces `.omni-ai-btn-primary`, `.save-btn`, `.action-btn`. |
+| `.ds-btn-primary--lg` | Larger sizing modifier for `.ds-btn-primary`, for roomier surfaces (settings, side panel) where the compact default reads as too small. | Add alongside `.ds-btn-primary`, e.g. `class="ds-btn-primary ds-btn-primary--lg"`. Restores the pre-unification `.save-btn` metrics (14px/24px padding, 15px/600 font, lg radius, translateY hover). Currently used by settings' Save button; apply to other settings/side-panel primary actions as needed (see `docs/FOLLOWUPS.md` #15). |
 | `.ds-btn-secondary` | Secondary/flat action button. | Replaces `.omni-ai-btn-secondary`. |
 | `.ds-spinner` | Loading spinner. | Replaces `.omni-ai-spinner`, `.validate-spinner`; also now used by the side panel, which previously had no spinner at all. |
 | `.ds-card` | Base info/result/status card. | Replaces `.omni-ai-context-preview`, `.result-area`, `.validation-message`. |

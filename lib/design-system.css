@@ -59,6 +59,27 @@
   filter: none;
 }
 
+/* Larger variant for roomier surfaces (settings, side panel) where the
+   default overlay-appropriate compact sizing reads as too small — see
+   docs/FOLLOWUPS.md #15. */
+.ds-btn-primary--lg {
+  gap: var(--omni-spacing-sm);
+  padding: 14px 24px;
+  border-radius: var(--omni-radius-lg);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all var(--omni-transition-fast);
+}
+
+.ds-btn-primary--lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+.ds-btn-primary--lg:active {
+  transform: translateY(0);
+}
+
 .ds-btn-secondary {
   display: inline-flex;
   align-items: center;

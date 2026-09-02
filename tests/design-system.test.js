@@ -7,6 +7,7 @@ describe("lib/design-system.css", () => {
   const CLASSES = [
     ".ds-icon-btn",
     ".ds-btn-primary",
+    ".ds-btn-primary--lg",
     ".ds-btn-secondary",
     ".ds-spinner",
     ".ds-card",
