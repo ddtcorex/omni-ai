@@ -66,19 +66,23 @@ test("settings page loads and renders provider configuration", async () => {
   }
 });
 
-test("Save button stays visible (sticky) while scrolling through the middle of the page", async () => {
+test("Save button stays visible (fixed) while scrolling, on a tall-enough window", async () => {
   const { context, sw } = await launchWithExtension();
   try {
     const page = await context.newPage();
+    // Above the 750px min-height media query threshold in settings.css —
+    // see the comment on .save-actions for why the fixed positioning is
+    // gated behind window height at all.
+    await page.setViewportSize({ width: 900, height: 900 });
     const extId = new URL(sw.url()).host;
     await page.goto(`chrome-extension://${extId}/settings.html`);
 
     // Scroll to roughly the middle of the page, NOT the very bottom: since
     // the Save button is the last element in the document, scrolling all
     // the way to document.body.scrollHeight reveals it regardless of
-    // position: sticky (it's just where normal flow ends up). The real
-    // test of "sticky" is a scroll position where normal flow would put
-    // the button well below the viewport but sticky pins it in view.
+    // position: fixed (it's just where normal flow ends up). The real
+    // test is a scroll position where normal flow would put the button
+    // well below the viewport but fixed positioning pins it in view.
     const scrollHeight = await page.evaluate(() => document.body.scrollHeight);
     const viewportHeight = await page.evaluate(() => window.innerHeight);
     await page.evaluate((y) => window.scrollTo(0, y), scrollHeight / 2);
@@ -87,11 +91,38 @@ test("Save button stays visible (sticky) while scrolling through the middle of t
 
     expect(box).not.toBeNull();
     // "Visible in the viewport" — top is non-negative and bottom doesn't
-    // exceed the viewport height. Without position: sticky, at a mid-page
+    // exceed the viewport height. Without position: fixed, at a mid-page
     // scroll offset the button (being the last element, normally far
     // below the fold) would report a y coordinate well past viewportHeight.
     expect(box.y).toBeGreaterThanOrEqual(0);
     expect(box.y + box.height).toBeLessThanOrEqual(viewportHeight + 1); // +1 for sub-pixel rounding
+  } finally {
+    await context.close();
+  }
+});
+
+test("Save button does not overlap Validate Configuration on a short window", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    // Below the 750px threshold — .save-actions falls back to normal
+    // document flow instead of position: fixed. Regression test for the
+    // bug where an unconditional fixed/sticky bar overlapped the Validate
+    // Configuration button on short windows (DevTools open, an
+    // unmaximized browser, etc.), since that button alone can sit close
+    // to where a ~116px-tall fixed bottom bar would otherwise render.
+    await page.setViewportSize({ width: 900, height: 700 });
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/settings.html`);
+
+    const validateBox = await page.locator("#validateBtn").boundingBox();
+    const saveBox = await page.locator("#saveBtn").boundingBox();
+
+    expect(validateBox).not.toBeNull();
+    expect(saveBox).not.toBeNull();
+    // No vertical overlap: Validate Configuration's bottom edge sits at or
+    // above the Save button's top edge.
+    expect(validateBox.y + validateBox.height).toBeLessThanOrEqual(saveBox.y);
   } finally {
     await context.close();
   }

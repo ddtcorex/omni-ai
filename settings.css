@@ -170,6 +170,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--omni-spacing-xl);
+  /* Reserves room for the fixed .save-actions bar (~116px tall) so the
+     last section's content is never covered when scrolled to the end. */
+  padding-bottom: 140px;
 }
 
 /* Settings Section */
@@ -536,25 +539,57 @@ input:focus + .slider {
 }
 
 /* Save Actions Area
-   Sticky to the bottom of the viewport: on a long settings page the Save
-   button would otherwise scroll out of view, so it stays visible (as a
-   floating bar) once the user scrolls past its natural position. */
+   Fixed to the bottom of the viewport on tall-enough windows: on a long
+   settings page the Save button would otherwise scroll out of view, so it
+   stays visible as a floating bar once the user scrolls past its natural
+   position. Gated behind a min-height media query (below) rather than
+   applied unconditionally: .save-actions is the LAST element on the page,
+   with the API Configuration section's content alone reaching ~590px at
+   scroll top — on a short window (DevTools open, an unmaximized browser,
+   etc.) an unconditional fixed/sticky bar would overlap the Validate
+   Configuration button that sits right above it, since there isn't enough
+   vertical room for both. Below the threshold the button simply renders
+   in normal document flow (the original, always-safe behavior). */
 .save-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--omni-spacing-sm);
-  margin-top: var(--omni-spacing-2xl);
   padding: var(--omni-spacing-lg) 0 var(--omni-spacing-xl);
-  position: sticky;
-  bottom: 0;
+  margin-top: var(--omni-spacing-2xl);
   background: var(--omni-glass-heavy);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--omni-border);
   border-radius: var(--omni-radius-lg) var(--omni-radius-lg) 0 0;
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
-  z-index: 10;
+}
+
+/* 750px comfortably clears the API Configuration section's ~590px content
+   height plus the bar's own ~116px, with margin to spare. */
+@media (min-height: 750px) {
+  .main {
+    /* Reserves room for the now out-of-flow fixed bar so the last
+       section's content is never covered when scrolled to the end. */
+    padding-bottom: 140px;
+  }
+
+  .save-actions {
+    /* position: fixed, not sticky: a bottom-anchored sticky last-child
+       renders pinned to the viewport bottom for virtually the ENTIRE
+       scroll range (not just once you've scrolled near the end) —
+       margin/padding on the sticky element itself has no effect on that
+       pinned position. Fixed positioning is unconditional and
+       predictable instead. */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: calc(100% - 2 * var(--omni-spacing-2xl));
+    max-width: 656px; /* .options-container's 720px max-width minus its 2×32px padding */
+    margin: 0 auto;
+    z-index: 10;
+  }
 }
 
 /* .save-btn is now .ds-btn-primary from lib/design-system.css */
