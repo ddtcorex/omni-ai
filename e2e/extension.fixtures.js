@@ -8,7 +8,7 @@ const EXT_PATH = path.resolve(__dirname, "..");
 // Chromium. `channel: "chromium"` is REQUIRED post flag-removal: stable
 // Chrome dropped --load-extension side-loading, and this channel enables
 // headless mode while keeping the MV3 service-worker handle alive across
-// idle suspension (docs/dev-tooling.md §4).
+// idle suspension (docs/DEV-TOOLING.md §4).
 async function launchWithExtension() {
   const context = await chromium.launchPersistentContext("", {
     channel: "chromium", // REQUIRED post flag-removal; enables headless

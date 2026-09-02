@@ -48,9 +48,9 @@ This repo **mandates** the superpowers process skills for every agent session (C
 
 ```
 omni-ai/
-|-- manifest.json            # MV3; SW module; <all_urls> content script; commands; oauth2
+|-- manifest.json            # MV3; SW module; <all_urls> content script; commands; side_panel
 |-- background/
-|   `-- service-worker.js    # Message router, context menus, commands, OAuth, history writes
+|   `-- service-worker.js    # Message router, context menus, commands, side panel registration, history writes
 |-- content/
 |   |-- editor-adapters.js   # Classic-script registry for standard/rich-text/static editors
 |   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
@@ -75,7 +75,7 @@ omni-ai/
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
 |-- _locales/                # chrome.i18n messages
-|-- scripts/publish.sh       # Strips manifest "key", swaps prod OAuth client_id, zips dist/
+|-- scripts/publish.sh       # Strips manifest "key", zips dist/
 `-- tests/                   # Jest + jest-chrome + jsdom (`npm test`)
 ```
 
@@ -91,7 +91,7 @@ Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.
 | `REPLACE_SELECTION`         | bg → content       | Swap selection with the AI result                                        |
 | `SHOW_QUICK_ASK_OVERLAY`    | bg → content       | Open Quick Ask overlay (keyboard command)                                |
 | `THEME_CHANGED`             | bg → all tabs      | Re-read theme after `omni_ai_theme` sync change                          |
-| `PING` / `GET_PAGE_CONTENT` | sidepanel → content | Liveness check / page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
+| `GET_PAGE_CONTENT`          | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
@@ -116,7 +116,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 
 | Area      | Keys                                                                                                                                                                                                             |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`                                                                                                                                                                    |
+| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme` |
 | `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
 | `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                         |
 
@@ -163,6 +163,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] Keyboard shortcuts fire (Alt+A ask, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit).
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
+- [ ] Clicking the toolbar icon opens the side panel (not a popup or a new window); Summarize/Smart Translate/Explain work against a real page and the panel stays open across tab switches
 - [ ] Service worker console clean after idle (no unhandled promise rejections)
 
 ---

@@ -5,7 +5,6 @@
 :root {
   --bg-primary: #0f0f14;
   --bg-secondary: #1a1a24;
-  --bg-tertiary: #252532;
   --bg-hover: #2d2d3d;
 
   --text-primary: #f8fafc;
@@ -13,10 +12,7 @@
   --text-muted: #64748b;
 
   --accent-purple: #8b5cf6;
-  --accent-cyan: #06b6d4;
 
-  --success: #22c55e;
-  --warning: #f59e0b;
   --error: #ef4444;
 
   --border-color: rgba(255, 255, 255, 0.08);
@@ -208,6 +204,16 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--spacing-xs);
+}
+
+.result-source {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-xs);
+}
+
+.result-source:empty {
+  display: none;
 }
 
 .result-text {

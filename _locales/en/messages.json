@@ -43,6 +43,10 @@
     "message": "Nothing to work with on this page",
     "description": "Side panel error when the page has no extractable text"
   },
+  "sidepanel_resultFrom": {
+    "message": "From:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
   "popup_quickAsk": {
     "message": "Ask Omni AI anything...",
     "description": "Quick ask placeholder"

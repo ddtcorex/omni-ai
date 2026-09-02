@@ -574,5 +574,32 @@
   "settings_customGatewayKeyNote": {
     "message": "Optional for some gateways (e.g., OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidepanel_title": {
+    "message": "页面工具"
+  },
+  "sidepanel_summarize": {
+    "message": "总结"
+  },
+  "sidepanel_translate": {
+    "message": "智能翻译"
+  },
+  "sidepanel_explain": {
+    "message": "解释"
+  },
+  "sidepanel_loading": {
+    "message": "处理中…"
+  },
+  "sidepanel_resultLabel": {
+    "message": "结果"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "无法读取此页面"
+  },
+  "sidepanel_noContent": {
+    "message": "此页面没有可处理的内容"
+  },
+  "sidepanel_resultFrom": {
+    "message": "来自:"
   }
 }

@@ -18,6 +18,45 @@ test("side panel loads and renders the three Page Tools buttons", async () => {
   }
 });
 
+test("a successful result shows which page it describes", async () => {
+  const FIXTURE = `<!doctype html><html><head><title>Fixture Article</title></head><body>
+    <p>The quick brown fox jumps over the lazy dog, repeatedly, for testing purposes.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    const extId = new URL(sw.url()).host;
+
+    const panel = await context.newPage();
+    // Stub only the QUICK_ACTION leg of the flow -- GET_PAGE_CONTENT still
+    // goes to the real content script on the real fixture tab, so this
+    // still proves the page's title (not a canned value) reaches the UI.
+    await panel.addInitScript(() => {
+      const real = chrome.runtime.sendMessage.bind(chrome.runtime);
+      chrome.runtime.sendMessage = (...args) => {
+        if (args[0]?.type === "QUICK_ACTION") {
+          return Promise.resolve({ success: true, data: { response: "A fixture article about foxes." } });
+        }
+        return real(...args);
+      };
+    });
+    await panel.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    const pageTab = await context.newPage();
+    await pageTab.goto(`http://127.0.0.1:${port}/`);
+    await pageTab.bringToFront();
+
+    await panel.evaluate(() => document.getElementById("summarizeBtn").click());
+
+    await expect(panel.locator("#resultArea")).toBeVisible();
+    await expect(panel.locator("#resultText")).toHaveText("A fixture article about foxes.");
+    await expect(panel.locator("#resultSource")).toContainText("Fixture Article");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("clicking Summarize reads the active tab's content (not a stray iframe's) and shows a result or a clear provider error", async () => {
   // The blank iframe is the regression check: manifest.json's content
   // script runs with all_frames:true AND match_about_blank:true, so this

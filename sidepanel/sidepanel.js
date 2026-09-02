@@ -14,6 +14,7 @@ const elements = {
   ),
   statusLine: /** @type {HTMLElement | null} */ (document.getElementById("statusLine")),
   resultArea: /** @type {HTMLElement | null} */ (document.getElementById("resultArea")),
+  resultSource: /** @type {HTMLElement | null} */ (document.getElementById("resultSource")),
   resultText: /** @type {HTMLElement | null} */ (document.getElementById("resultText")),
 };
 
@@ -35,12 +36,14 @@ async function init() {
 function localizeDOM() {
   document.title = i18n.getMessage("extName");
 
-  const elementsWithTitle = document.querySelectorAll('[title*="__MSG_"]');
-  elementsWithTitle.forEach((el) => {
-    const val = el.getAttribute("title");
-    if (val && val.includes("__MSG_")) {
-      el.setAttribute("title", val.replace(/__MSG_(\w+)__/g, (match, key) => i18n.getMessage(key) || match));
-    }
+  const elementsWithAttrs = document.querySelectorAll('[title*="__MSG_"], [alt*="__MSG_"]');
+  elementsWithAttrs.forEach((el) => {
+    ["title", "alt"].forEach((attr) => {
+      const val = el.getAttribute(attr);
+      if (val && val.includes("__MSG_")) {
+        el.setAttribute(attr, val.replace(/__MSG_(\w+)__/g, (match, key) => i18n.getMessage(key) || match));
+      }
+    });
   });
 
   const walker = document.createTreeWalker(
@@ -84,14 +87,26 @@ function setButtonsDisabled(disabled) {
   });
 }
 
-function showResult(text) {
+/**
+ * @param {string} text
+ * @param {string} pageTitle - which page this result describes. The panel
+ *   is a single global panel that stays open across tab switches, so a
+ *   result from a previously-viewed page could otherwise look like it's
+ *   about whatever page the user has since scrolled to.
+ */
+function showResult(text, pageTitle) {
   if (!elements.resultArea || !elements.resultText) return;
   elements.resultText.textContent = text;
+  if (elements.resultSource) {
+    elements.resultSource.textContent = pageTitle
+      ? `${i18n.getMessage("sidepanel_resultFrom")} ${pageTitle}`
+      : "";
+  }
   elements.resultArea.classList.remove("hidden");
 }
 
 /**
- * @returns {Promise<{text: string} | {error: string}>}
+ * @returns {Promise<{text: string, title: string} | {error: string}>}
  */
 async function getActivePageContent() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -116,7 +131,7 @@ async function getActivePageContent() {
     return { error: i18n.getMessage("sidepanel_noContent") };
   }
 
-  return { text: response.content };
+  return { text: response.content, title: response.title || tab.title || "" };
 }
 
 async function runPageAction(action) {
@@ -146,7 +161,7 @@ async function runPageAction(action) {
 
     if (response?.success) {
       setStatus("");
-      showResult(response.data.response || response.data);
+      showResult(response.data.response, page.title);
     } else {
       setStatus(i18n.getMessage("error_prefix") + (response?.error || "Unknown error"), true);
     }

@@ -574,5 +574,32 @@
   "settings_customGatewayKeyNote": {
     "message": "Optional for some gateways (e.g., OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidepanel_title": {
+    "message": "Strumenti pagina"
+  },
+  "sidepanel_summarize": {
+    "message": "Riassumi"
+  },
+  "sidepanel_translate": {
+    "message": "Traduzione intelligente"
+  },
+  "sidepanel_explain": {
+    "message": "Spiega"
+  },
+  "sidepanel_loading": {
+    "message": "Elaborazione…"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Risultato"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Impossibile leggere questa pagina"
+  },
+  "sidepanel_noContent": {
+    "message": "Nessun contenuto in questa pagina"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Da:"
   }
 }

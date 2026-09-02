@@ -127,6 +127,19 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.tabs.create).not.toHaveBeenCalled();
   });
 
+  it("clears the stale OAuth 'user' profile from sync storage on update, not on install", async () => {
+    await import("../../background/service-worker");
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+
+    installed({ reason: "install" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(chromeMock.storage.sync.remove).not.toHaveBeenCalled();
+
+    installed({ reason: "update" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(chromeMock.storage.sync.remove).toHaveBeenCalledWith("user");
+  });
+
   it("routes keyboard commands to the most recently focused editor frame", async () => {
     const AIService = await import("../../lib/ai-service");
     AIService.improveText.mockResolvedValue("Improved");

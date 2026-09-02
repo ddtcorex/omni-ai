@@ -146,8 +146,6 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 
 ---
 
----
-
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut | Action                                                        |
@@ -157,7 +155,7 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 | `Alt+T`  | Smart Translate (auto-detects direction between your two configured languages) |
 | `Alt+F`  | Fix Grammar (on selected text)                                   |
 
-Chrome only auto-binds up to 4 shortcuts per extension, so these are the 4 with a default binding. Open Popup, Summarize, and Explain are also available as commands but need to be bound manually — like all shortcuts here, customizable at `chrome://extensions/shortcuts`.
+Chrome only auto-binds up to 4 shortcuts per extension, so these are the 4 with a default binding. Opening the side panel, Summarize, and Explain are also available as commands but need to be bound manually — like all shortcuts here, customizable at `chrome://extensions/shortcuts`.
 
 ---
 
@@ -233,7 +231,7 @@ First, you need to create a clean `.zip` file containing only the necessary file
 
 #### Automated Build Script (Recommended)
 
-We provide a script that automatically handles versioning and removes the development `key` field (required for OAuth locally but forbidden on the Web Store).
+We provide a script that automatically handles versioning and removes the development `key` field (used locally to keep a stable extension ID, but forbidden on the Web Store).
 
 ```bash
 # Make the script executable (first time only)

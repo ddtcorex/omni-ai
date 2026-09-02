@@ -574,5 +574,32 @@
   "settings_customGatewayKeyNote": {
     "message": "Tùy chọn với một số gateway (vd: OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidepanel_title": {
+    "message": "Công cụ trang"
+  },
+  "sidepanel_summarize": {
+    "message": "Tóm tắt"
+  },
+  "sidepanel_translate": {
+    "message": "Dịch thông minh"
+  },
+  "sidepanel_explain": {
+    "message": "Giải thích"
+  },
+  "sidepanel_loading": {
+    "message": "Đang xử lý…"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Kết quả"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Không thể đọc trang này"
+  },
+  "sidepanel_noContent": {
+    "message": "Trang này không có nội dung để xử lý"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Từ:"
   }
 }

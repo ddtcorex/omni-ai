@@ -83,6 +83,14 @@ chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   }
+  if (details.reason === "update") {
+    // Google sign-in (and the "user" profile -- email/name/picture -- it
+    // stored) was removed along with the old popup. Existing users who had
+    // signed in still carry that profile in sync storage with no remaining
+    // reader; clear it on the update that removes the feature rather than
+    // leaving PII behind indefinitely.
+    chrome.storage.sync.remove("user").catch(() => {});
+  }
 });
 
 /**

@@ -574,5 +574,32 @@
   "settings_customGatewayKeyNote": {
     "message": "Optional for some gateways (e.g., OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidepanel_title": {
+    "message": "페이지 도구"
+  },
+  "sidepanel_summarize": {
+    "message": "요약"
+  },
+  "sidepanel_translate": {
+    "message": "스마트 번역"
+  },
+  "sidepanel_explain": {
+    "message": "설명"
+  },
+  "sidepanel_loading": {
+    "message": "처리 중…"
+  },
+  "sidepanel_resultLabel": {
+    "message": "결과"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "이 페이지를 읽을 수 없습니다"
+  },
+  "sidepanel_noContent": {
+    "message": "이 페이지에 처리할 내용이 없습니다"
+  },
+  "sidepanel_resultFrom": {
+    "message": "출처:"
   }
 }

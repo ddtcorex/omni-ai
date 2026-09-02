@@ -574,5 +574,32 @@
   "settings_customGatewayKeyNote": {
     "message": "Optional for some gateways (e.g., OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidepanel_title": {
+    "message": "ページツール"
+  },
+  "sidepanel_summarize": {
+    "message": "要約"
+  },
+  "sidepanel_translate": {
+    "message": "スマート翻訳"
+  },
+  "sidepanel_explain": {
+    "message": "説明"
+  },
+  "sidepanel_loading": {
+    "message": "処理中…"
+  },
+  "sidepanel_resultLabel": {
+    "message": "結果"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "このページを読み取れません"
+  },
+  "sidepanel_noContent": {
+    "message": "このページには処理できるコンテンツがありません"
+  },
+  "sidepanel_resultFrom": {
+    "message": "取得元:"
   }
 }

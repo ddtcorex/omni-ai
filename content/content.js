@@ -552,10 +552,6 @@ function setupMessageListener() {
         sendResponse({ success: true });
         break;
 
-      case "PING":
-        sendResponse({ success: true, active: true });
-        break;
-
       case "GET_PAGE_CONTENT": {
         const content = extractPageContent();
         sendResponse({
