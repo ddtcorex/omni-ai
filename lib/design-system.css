@@ -1,0 +1,129 @@
+/* ============================================
+   Omni AI - Shared Component Classes
+   Consumes tokens from lib/design-tokens.css. Loaded after that file
+   everywhere (content.js's ensureUiStyles(), settings.html, sidepanel.html).
+   See docs/design-system/MASTER.md for usage guidance.
+   ============================================ */
+
+.ds-icon-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--omni-radius-sm);
+  color: var(--omni-text-secondary);
+  cursor: pointer;
+  transition: all var(--omni-transition-fast);
+  padding: 0;
+}
+
+.ds-icon-btn:hover {
+  background: var(--omni-bg-hover);
+  color: var(--omni-text-primary);
+}
+
+.ds-icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ds-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--omni-accent-gradient);
+  color: white;
+  border: none;
+  font-weight: 500;
+  font-family: var(--omni-font-family);
+  padding: 6px 14px;
+  border-radius: var(--omni-radius-sm);
+  cursor: pointer;
+  font-size: var(--omni-font-sm);
+  transition: transform 0.1s, filter 0.1s;
+}
+
+.ds-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.ds-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+.ds-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--omni-bg-hover);
+  color: var(--omni-text-primary);
+  border: 1px solid var(--omni-border);
+  font-family: var(--omni-font-family);
+  padding: 6px 12px;
+  border-radius: var(--omni-radius-sm);
+  cursor: pointer;
+  font-size: var(--omni-font-sm);
+  transition: background var(--omni-transition-fast);
+}
+
+.ds-btn-secondary:hover {
+  background: var(--omni-bg-active);
+  border-color: var(--omni-text-secondary);
+}
+
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ds-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid rgba(139, 92, 246, 0.15);
+  border-top-color: var(--omni-accent);
+  border-radius: 50%;
+  animation: ds-spin 0.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-spinner {
+    animation-duration: 1.5s;
+  }
+}
+
+.ds-card {
+  background: var(--omni-bg-secondary);
+  border: 1px solid var(--omni-border);
+  border-radius: var(--omni-radius-md);
+  padding: var(--omni-spacing-sm) var(--omni-spacing-md);
+  font-family: var(--omni-font-family);
+  color: var(--omni-text-primary);
+}
+
+.ds-card--accent {
+  border-left: 3px solid var(--omni-accent);
+}
+
+.ds-card--success {
+  border-color: var(--omni-success);
+  color: var(--omni-success);
+}
+
+.ds-card--error {
+  border-color: var(--omni-error);
+  color: var(--omni-error);
+}
+
+.ds-card--processing {
+  border-color: var(--omni-accent);
+}
