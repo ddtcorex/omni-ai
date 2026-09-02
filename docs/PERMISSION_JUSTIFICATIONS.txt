@@ -1,0 +1,74 @@
+PERMISSION JUSTIFICATIONS - Omni AI
+
+Source of truth for the Chrome Web Store "Privacy practices" (Phuong thuc bao ve
+quyen rieng tu) permission justification fields. Paste the matching block below
+into the Chrome Web Store Developer Dashboard, Privacy tab, Permission
+justification. Keep this file in sync with manifest.json permissions whenever
+they change.
+
+Verified against source: manifest.json, background/service-worker.js,
+sidepanel/sidepanel.html, sidepanel/sidepanel.js.
+
+====================================================================
+
+sidePanel
+=========
+
+Justification to paste (984 characters - under the 1000 character store limit):
+
+The sidePanel permission opens Omni AI's browser side panel, a docked panel
+that stays attached to the browser window. It hosts the extension's "Page
+Tools": one-click AI actions (Summarize, Smart Translate, Explain) that run on
+the whole page the user is reading.
+
+Clicking the toolbar icon opens the panel via
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }). The
+buttons read the current page's text and send it to the AI provider the user
+configured in Settings to produce a summary, translation, or explanation.
+
+A docked panel is used instead of a popup because a popup closes when it loses
+focus - the moment the user scrolls back into a long article. The side panel
+stays open while the user reads, so the result remains visible.
+
+Data handling: the panel reads page text only when the user invokes a Page Tool,
+sent directly to the user's chosen provider via their own API key, never stored
+or sent to any Omni AI backend, and used only for the requested result.
+
+====================================================================
+
+Declaration for the "Privacy practices" (data collection) questions
+===================================================================
+
+When Google asks whether the extension collects or transmits user data, answer
+truthfully per the code:
+
+- Yes - the extension sends the content of the active page (for Page Tools) and
+  the user's selected text (for Selection Menu actions) to the AI provider the
+  user chooses (Google Gemini, OpenAI, Groq, Anthropic Claude, or a Custom
+  Gateway), using the user's own API key.
+- No - it does NOT send that data to an Omni AI backend/server (none exists),
+  does NOT store it, does NOT use it for advertising, and does NOT sell or
+  share it.
+- This is user-initiated data sent to a third-party provider of the user's
+  choosing, and is limited strictly to producing the requested AI result
+  (summarize, translate, explain, rephrase, grammar, tone, emoji, etc.).
+
+Note on the "third party" wording: declaring that data is sent to a third party
+does NOT contradict the "no Omni AI backend" claim - the third party here is
+the AI provider the user configured, while no Omni AI backend exists. Describe
+it exactly as above.
+
+====================================================================
+
+activeTab (only if Google requests a justification)
+====================================================
+
+The activeTab permission is used by the content script (content/content.js) to
+read the active page's text and selection so the user can run AI actions
+(grammar, rephrase, summarize, translate, explain, emoji, etc.) directly on that
+content. Access is granted only after the user explicitly interacts with the
+extension (clicking the toolbar icon, selecting text, or invoking a command),
+never in the background.
+
+No justification is currently required by the store for this permission. Do not
+add it to the listing unless Google flags it.

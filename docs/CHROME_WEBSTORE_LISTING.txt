@@ -1,95 +1,49 @@
 Omni AI — Your All-in-One AI Writing & Browsing Assistant
 
-Stop switching tabs to use ChatGPT, Gemini, or Claude. Omni AI brings the world's leading AI models directly into your browser — write better emails on Gmail, polish code comments on GitHub, or summarize a research paper, all without leaving the page.
+Omni AI puts the world's leading AI models directly inside your browser, so you never have to switch tabs again. Highlight any text on any page — an email you're drafting, a GitHub comment, a research paper, a foreign article — and get instant AI help right where you're working.
 
-Highlight any text and get instant AI help exactly where you need it: standard inputs, textareas, and rich-text editors like TinyMCE and other contenteditable-based editors.
+WHY INSTALL IT
+The AI you already pay for, working on the pages you already use. No new subscription, no copying text back and forth between browser and ChatGPT/Gemini/Claude, and no lock-in to a single provider. Omni AI bolts AI onto your normal workflow instead of pulling you into another tab.
 
----
-
-WHAT MAKES OMNI AI DIFFERENT
-
-Most AI extensions lock you into a subscription and a single model. Omni AI doesn't.
-
-• Bring Your Own Key (BYOK) — Use your own API key for Gemini, OpenAI, Groq, or Anthropic Claude. Pay providers directly for what you actually use, nothing more.
-• Custom Gateway Support — Connect any OpenAI-compatible endpoint: DeepSeek, OpenRouter, a self-hosted proxy, or your own gateway.
-• Universal Editor Support — Works inside plain inputs, textareas, and contenteditable rich-text editors (TinyMCE and similar) across the web.
-• Clean, Focused UI — A glassmorphic floating button appears right where you're working and gets out of the way when you don't need it (can be turned off entirely in Settings, keyboard shortcuts still work).
-
----
-
-FEATURES
-
-Selection Menu (the floating star icon)
-Highlight text anywhere on the page to trigger it, positioned right at your cursor:
-• Grammar & Spelling Fix
-• Rephrase — fresh, natural wording every time
+WHAT IT DOES
+• Fix Grammar & Spelling — polish anything in one click
+• Rephrase — get fresh, natural wording every time
 • Summarize — turn a 10-minute read into a 30-second one
 • Change Tone — Professional, Casual, Friendly, Direct, or Confident presets
 • Explain — break down jargon, legal text, or technical concepts
+• Translate — 10 languages (English, Vietnamese, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Chinese), with a primary-language shortcut and Smart Translate that auto-detects the source
 • Add Emoji — liven up a message in one click
 
-Right-Click Menu
-Select text, right-click, and pick: Translate, Rephrase, Add Emoji, Summarize, or Ask Omni AI — no need to open the floating button first.
+Works in plain inputs, textareas, and rich-text editors (TinyMCE and other contenteditable-based editors). Trigger it from the floating button, the right-click menu, or keyboard shortcuts. A side panel adds one-click Summarize, Smart Translate, and Explain for the whole page you're reading.
 
-Write In Place
-Get an AI-improved version of your draft and click Replace to update it directly inside the editor — Gmail, LinkedIn, a CMS, wherever you're typing.
-
-Chat & Page Tools
-• Quick Ask (Alt+A) — a floating overlay to ask about the text you've highlighted without losing your place.
-• Page Tools — click the toolbar icon to open a side panel with one-click Summarize, Smart Translate, and Explain for the entire page you're reading.
-
-Translation
-10 languages supported: English, Vietnamese, Spanish, French, German, Italian, Portuguese, Japanese, Korean, and Chinese. Set your primary language once — Smart Translate then auto-detects the source and translates in whichever direction makes sense.
-
----
+WHAT MAKES OMNI AI DIFFERENT
+Most AI extensions lock you into a subscription and a single model. Omni AI doesn't.
+• Bring Your Own Key (BYOK) — use your own API key for Google Gemini, OpenAI, Groq, or Anthropic Claude. Pay the provider directly for what you actually use, nothing more.
+• Custom Gateway Support — connect any OpenAI-compatible endpoint: DeepSeek, OpenRouter, a self-hosted proxy, or your own gateway.
+• Universal Editor Support — plain inputs, textareas, and contenteditable rich-text editors across the web.
+• Clean, Focused UI — a glassmorphic floating button appears where you're working and gets out of the way when you don't need it (can be turned off entirely in Settings).
 
 QUICK SETUP
-
 Omni AI needs one API key to work. Pick a provider:
-
-Google Gemini (free tier available)
-1. Get a key at aistudio.google.com/app/apikey
-2. Omni AI Settings → AI Provider → Google Gemini → paste key → Save
-
-OpenAI
-1. Get a key at platform.openai.com/api-keys
-2. Select OpenAI in Settings for GPT-5.6 Luna / Terra / Sol
-
-Groq (fast inference, free tier available)
-1. Get a key at console.groq.com/keys
-2. Select Groq in Settings for GPT-OSS 20B, Llama 3.3 70B, and GPT-OSS 120B
-
-Anthropic Claude
-1. Get a key at console.anthropic.com/settings/keys
-2. Select Anthropic Claude in Settings for Haiku 4.5 / Sonnet 5 / Opus 5
-
-Custom Gateway (any OpenAI-compatible API)
-1. Get a key from your provider (DeepSeek, OpenRouter, a self-hosted gateway, etc.)
-2. Enter the base URL, your key, and the model name in Settings
-
----
+• Google Gemini — aistudio.google.com/app/apikey (free tier available)
+• OpenAI — platform.openai.com/api-keys
+• Groq — console.groq.com/keys (fast inference, free tier available)
+• Anthropic Claude — console.anthropic.com/settings/keys
+• Custom Gateway — enter your base URL, key, and model in Settings
 
 KEYBOARD SHORTCUTS
-
 • Alt+A — Quick Ask about the current selection
 • Alt+R — Rephrase selected text
 • Alt+T — Smart Translate selected text
 • Alt+F — Fix Grammar on selected text
-
-Summarize and Explain are also available as commands — assign your own shortcut for them (and customize any of the above) at chrome://extensions/shortcuts.
-
----
+Summarize and Explain are also available as commands — assign your own shortcut (and customize any of the above) at chrome://extensions/shortcuts.
 
 USAGE DASHBOARD
-
 Settings → Usage shows total actions run, words processed, and words generated — a quick look at how much time Omni AI is saving you.
 
----
-
 PRIVACY
-
 • No middlemen — your browser talks directly to the AI provider's API. We don't operate a backend that sees your prompts.
 • No tracking — no browsing history, prompt logging, or identity collection.
-• Local storage only — your API keys stay encrypted in your local Chrome profile.
+• Local storage only — your API keys stay in your local Chrome profile.
 
 Install Omni AI and bring AI to every tab you open.
