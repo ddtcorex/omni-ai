@@ -30,7 +30,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/editor-adapters.js", "content/content.js"],
+      "js": ["content/editor-adapters.js", "content/positioning.js", "content/content.js"],
       "css": ["content/overlay.css"],
       "run_at": "document_idle",
       "all_frames": true,
