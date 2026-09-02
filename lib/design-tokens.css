@@ -1,0 +1,121 @@
+/* lib/design-tokens.css */
+
+/* ============================================
+   Omni AI - Design Tokens
+   Single source of truth for all three UI surfaces
+   (content-script overlay, side panel, settings page).
+   See docs/design-system/MASTER.md for usage guidance.
+   ============================================ */
+
+:root,
+:host {
+  --omni-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Color - dark (default) */
+  --omni-bg-primary: #0f0f14;
+  --omni-bg-secondary: #1a1a24;
+  --omni-bg-tertiary: #252532;
+  --omni-bg-hover: #2d2d3d;
+  --omni-bg-active: #383848;
+
+  --omni-glass-bg: rgba(22, 22, 28, 0.75);
+  --omni-glass-heavy: rgba(26, 26, 36, 0.9);
+
+  --omni-border: rgba(255, 255, 255, 0.08);
+  --omni-border-hover: rgba(255, 255, 255, 0.15);
+
+  --omni-text-primary: #f8fafc;
+  --omni-text-secondary: #94a3b8;
+  --omni-text-tertiary: #64748b;
+  --omni-text-muted: #64748b;
+
+  --omni-accent: #8b5cf6;
+  --omni-accent-cyan: #06b6d4;
+  --omni-accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+
+  --omni-success: #22c55e;
+  --omni-warning: #f59e0b;
+  --omni-error: #ef4444;
+
+  --omni-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --omni-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  /* Radius scale */
+  --omni-radius-sm: 6px;
+  --omni-radius-md: 8px;
+  --omni-radius-lg: 14px;
+  --omni-radius-full: 9999px;
+
+  /* Spacing scale */
+  --omni-spacing-xs: 4px;
+  --omni-spacing-sm: 8px;
+  --omni-spacing-md: 12px;
+  --omni-spacing-lg: 16px;
+  --omni-spacing-xl: 24px;
+  --omni-spacing-2xl: 32px;
+
+  /* Typography scale */
+  --omni-font-xs: 10px;
+  --omni-font-sm: 12px;
+  --omni-font-md: 13px;
+
+  /* Transitions */
+  --omni-transition-fast: 150ms ease;
+  --omni-transition-normal: 250ms ease;
+}
+
+/* Light-mode overrides: plain-document surfaces (settings.html, sidepanel.html) */
+:root.omni-ai-light-mode {
+  --omni-bg-primary: #ffffff;
+  --omni-bg-secondary: #f8fafc;
+  --omni-bg-tertiary: #f1f5f9;
+  --omni-bg-hover: #e2e8f0;
+  --omni-bg-active: #cbd5e1;
+
+  --omni-glass-bg: rgba(255, 255, 255, 0.75);
+  --omni-glass-heavy: rgba(245, 247, 250, 0.9);
+
+  --omni-border: rgba(0, 0, 0, 0.08);
+  --omni-border-hover: rgba(0, 0, 0, 0.12);
+
+  --omni-text-primary: #0f172a;
+  --omni-text-secondary: #475569;
+  --omni-text-tertiary: #94a3b8;
+  --omni-text-muted: #94a3b8;
+
+  --omni-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --omni-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Light-mode overrides: the Shadow-DOM overlay surface. :host() matches only
+   the shadow host itself (content.js's #omni-ai-shadow-host div, out in the
+   host page's light DOM) when it carries .omni-ai-light-mode — never an
+   ancestor. content.js's applyTheme() only ever toggles this class on the
+   shadow host (see ensureUiRoot()/theme wiring), so :host() is the correct,
+   tightest-possible selector: it matches this codebase's only real usage and,
+   unlike :host-context(), cannot be triggered by a hostile host page adding
+   the class to its own <html>/<body>.
+   Values are identical to the :root.omni-ai-light-mode block above by design —
+   duplicated here only because :host() and :root are separate selector
+   contexts that CSS cannot merge into one rule. */
+:host(.omni-ai-light-mode) {
+  --omni-bg-primary: #ffffff;
+  --omni-bg-secondary: #f8fafc;
+  --omni-bg-tertiary: #f1f5f9;
+  --omni-bg-hover: #e2e8f0;
+  --omni-bg-active: #cbd5e1;
+
+  --omni-glass-bg: rgba(255, 255, 255, 0.75);
+  --omni-glass-heavy: rgba(245, 247, 250, 0.9);
+
+  --omni-border: rgba(0, 0, 0, 0.08);
+  --omni-border-hover: rgba(0, 0, 0, 0.12);
+
+  --omni-text-primary: #0f172a;
+  --omni-text-secondary: #475569;
+  --omni-text-tertiary: #94a3b8;
+  --omni-text-muted: #94a3b8;
+
+  --omni-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --omni-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}

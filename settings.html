@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>__MSG_extName__ - __MSG_settings_title__</title>
+    <link rel="stylesheet" href="lib/design-tokens.css" />
+    <link rel="stylesheet" href="lib/design-system.css" />
     <link rel="stylesheet" href="settings.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -332,7 +334,7 @@
                   </svg>
                   <span>__MSG_settings_validate__</span>
                 </button>
-                <div id="validationStatus" class="validation-message"></div>
+                <div id="validationStatus" class="ds-card"></div>
               </div>
             </div>
             <!-- closes .setting-item opened above; browser previously implied this close; do not move -->
@@ -476,7 +478,7 @@
               __MSG_settings_history__
             </h2>
             <div class="history-actions">
-              <button id="refreshHistory" class="icon-btn" title="__MSG_btn_refresh__">
+              <button id="refreshHistory" class="ds-icon-btn" title="__MSG_btn_refresh__">
                 <svg
                   width="16"
                   height="16"
@@ -492,7 +494,7 @@
                   ></path>
                 </svg>
               </button>
-              <button id="clearHistory" class="icon-btn danger" title="__MSG_btn_clearHistory__">
+              <button id="clearHistory" class="ds-icon-btn danger" title="__MSG_btn_clearHistory__">
                 <svg
                   width="16"
                   height="16"
@@ -620,7 +622,7 @@
         </section>
         <!-- Save Actions -->
         <div class="save-actions">
-          <button id="saveBtn" class="save-btn full-width">
+          <button id="saveBtn" class="ds-btn-primary ds-btn-primary--lg full-width">
             <svg
               width="18"
               height="18"

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The toolbar icon now opens a "Page Tools" side panel (Summarize / Smart Translate / Explain the current page) instead of the Quick Ask chat popup. Quick Ask chat itself is unchanged and still reachable via Alt+A or the right-click "Ask Omni AI" menu.
 - Refreshed the default model catalog on Google Gemini, OpenAI, and Groq to each provider's current lineup; a previously-selected model that's no longer offered still appears in Settings, labeled "(Legacy)".
+- Unified theme handling: the in-page overlay now uses the same canonical default as Settings/side panel instead of its own ad-hoc logic. If you never touched the theme selector and your OS is set to dark, the in-page overlay's previous ad-hoc default was `"system"` (so it followed your OS); the canonical default is `"light"`, so the overlay may now appear light instead of dark until you explicitly pick a theme in Settings.
 
 ### Removed
 - Google sign-in. It only ever displayed a name/avatar and gated no feature (BYOK is the only model) — removed along with the popup that showed it.

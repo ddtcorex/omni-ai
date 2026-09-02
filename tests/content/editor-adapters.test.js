@@ -74,7 +74,7 @@ describe("editor adapter registry", () => {
     const manifest = require("../../manifest.json");
     const contentScript = manifest.content_scripts[0];
 
-    expect(contentScript.js).toEqual(["content/editor-adapters.js", "content/content.js"]);
+    expect(contentScript.js).toEqual(["content/editor-adapters.js", "content/positioning.js", "content/content.js"]);
     expect(contentScript.all_frames).toBe(true);
     expect(contentScript.match_about_blank).toBe(true);
   });
