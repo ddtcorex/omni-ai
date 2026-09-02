@@ -68,7 +68,14 @@ and fetched-and-injected into the content-script Shadow DOM by
 ## Accessibility & motion baseline
 
 - Minimum 4.5:1 text contrast for every token color pair used for text on a
-  background token.
+  background token, **except** two pre-existing, carried-over tokens that do
+  not currently meet this target and are documented here as a known
+  exception rather than silently non-compliant: `--omni-text-tertiary` /
+  `--omni-text-muted`. Light-mode `#94a3b8` on `#ffffff` is ≈2.5:1; dark-mode
+  `#64748b` on `#0f0f14` is ≈4.0:1. Both were carried over from before the
+  design-system unification, not newly introduced by it — fixing them means
+  changing the actual color values, which needs its own reviewed visual
+  pass, not a documentation-only correction.
 - Every focusable element defined by a `.ds-*` class shows a visible
   `focus-visible` outline (browser default is acceptable; do not remove it
   with `outline: none` without providing an equivalent replacement).
