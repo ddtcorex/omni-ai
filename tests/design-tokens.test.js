@@ -29,7 +29,50 @@ describe("lib/design-tokens.css", () => {
 
   test("defines light-mode overrides for both plain-document and shadow-DOM contexts", () => {
     expect(css).toMatch(/:root\.omni-ai-light-mode\s*\{/);
-    expect(css).toMatch(/:host-context\(\.omni-ai-light-mode\)\s*\{/);
+    // :host() (not :host-context()) is deliberate: it matches only the shadow
+    // host element itself, never an ancestor, so a hostile host page cannot
+    // flip the overlay's theme by adding the class to its own <html>. See I6.
+    expect(css).toMatch(/:host\(\.omni-ai-light-mode\)\s*\{/);
+    expect(css).not.toMatch(/:host-context\(\.omni-ai-light-mode\)\s*\{/);
+  });
+});
+
+describe("no var(--...) usage references an undefined or non-canonical token", () => {
+  // Every var(--x) usage across JS/HTML/CSS surfaces must use the canonical
+  // --omni-* namespace AND actually be defined in lib/design-tokens.css.
+  // This is the regression guard for two real bugs that slipped past every
+  // earlier review pass: a 17-instance `var(--ai-*)` regression in
+  // content.js, and settings.js's `var(--success)`/`var(--error)` (C2) —
+  // both used dead, unprefixed token names that no rule here caught because
+  // the "legacy token names" block above only checks CSS :root definitions,
+  // never var() usages, and never looks at JS or HTML at all.
+  const tokensCss = fs.readFileSync(path.join(__dirname, "../lib/design-tokens.css"), "utf8");
+
+  const definedTokens = new Set(
+    Array.from(tokensCss.matchAll(/(--[a-zA-Z0-9-]+)\s*:/g)).map((m) => m[1]),
+  );
+
+  const SURFACE_FILES = [
+    "../content/content.js",
+    "../settings.js",
+    "../sidepanel/sidepanel.js",
+    "../settings.html",
+    "../sidepanel/sidepanel.html",
+    "../content/overlay.css",
+    "../settings.css",
+    "../sidepanel/sidepanel.css",
+  ];
+
+  test.each(SURFACE_FILES)("%s only uses --omni-* tokens defined in design-tokens.css", (relPath) => {
+    const filePath = path.join(__dirname, relPath);
+    const content = fs.readFileSync(filePath, "utf8");
+    const usages = Array.from(content.matchAll(/var\((--[a-zA-Z0-9-]+)/g)).map((m) => m[1]);
+
+    const invalid = usages.filter(
+      (token) => !token.startsWith("--omni-") || !definedTokens.has(token),
+    );
+
+    expect(invalid).toEqual([]);
   });
 });
 

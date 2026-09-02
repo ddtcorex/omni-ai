@@ -10,7 +10,7 @@ const elements = {
   extVersion: /** @type {HTMLElement | null} */ (document.getElementById("extVersion")),
   settingsBtn: /** @type {HTMLElement | null} */ (document.getElementById("settingsBtn")),
   actionButtons: /** @type {NodeListOf<HTMLButtonElement>} */ (
-    document.querySelectorAll(".ds-btn-primary")
+    document.querySelectorAll("[data-action]")
   ),
   statusLine: /** @type {HTMLElement | null} */ (document.getElementById("statusLine")),
   resultArea: /** @type {HTMLElement | null} */ (document.getElementById("resultArea")),

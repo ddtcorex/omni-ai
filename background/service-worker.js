@@ -630,9 +630,10 @@ async function processSelectedText(tabId, text, action, isInput = false) {
       type: "SHOW_RESULT",
       payload: {
         action,
-        original: text,
+        originalText: text,
         result: `Error: ${error.message}`,
         error: true,
+        isInput,
       },
     });
   }

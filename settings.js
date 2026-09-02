@@ -425,14 +425,14 @@ function setButtonLoading(isLoading) {
     btn.classList.add("loading");
     btn.disabled = true;
     const svg = btn.querySelector("svg");
-    if (svg) svg.classList.add("ds-spinner");
+    if (svg) svg.classList.add("ds-spin-icon");
     // Change icon to refresh/spinner
     btn.querySelector("span").textContent = i18n.getMessage("settings_checking");
   } else {
     btn.classList.remove("loading");
     btn.disabled = false;
     const svg = btn.querySelector("svg");
-    if (svg) svg.classList.remove("ds-spinner");
+    if (svg) svg.classList.remove("ds-spin-icon");
     btn.querySelector("span").textContent = i18n.getMessage("settings_validate");
   }
 }
@@ -603,7 +603,7 @@ async function saveSettings() {
  */
 function showSaveStatus(message, type = "success") {
   elements.saveStatus.textContent = message;
-  elements.saveStatus.style.color = type === "success" ? "var(--success)" : "var(--error)";
+  elements.saveStatus.style.color = type === "success" ? "var(--omni-success)" : "var(--omni-error)";
   elements.saveStatus.classList.add("visible");
 
   setTimeout(() => {

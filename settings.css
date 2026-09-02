@@ -546,6 +546,9 @@ input:focus + .slider {
 }
 
 /* .save-btn is now .ds-btn-primary from lib/design-system.css */
+.ds-btn-primary.full-width {
+  width: 100%;
+}
 .save-status {
   font-size: 13px;
   color: var(--omni-success);
@@ -595,6 +598,11 @@ input:focus + .slider {
 }
 
 /* .icon-btn is now .ds-icon-btn from lib/design-system.css */
+.ds-icon-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--omni-error);
+  border-color: rgba(239, 68, 68, 0.2);
+}
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -780,11 +788,26 @@ input:focus + .slider {
   cursor: wait;
 }
 
-/* .validate-spinner is now .ds-spinner from lib/design-system.css */
+/* .validate-spinner is now .ds-spin-icon (applied to the existing checkmark
+   SVG) from lib/design-system.css */
 
 /* Validation Status Message */
-/* base .validation-message is now .ds-card from lib/design-system.css */
-.ds-card.visible,
+/* base .validation-message is now .ds-card from lib/design-system.css, but
+   .ds-card has no hidden-by-default state of its own (other .ds-card uses,
+   e.g. the Quick Ask context preview, must stay visible by default). Scope
+   the show/hide contract to #validationStatus specifically. */
+#validationStatus {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all var(--omni-transition-normal);
+}
+
+#validationStatus.visible,
 .validation-message.visible {
   opacity: 1;
   transform: translateY(0);

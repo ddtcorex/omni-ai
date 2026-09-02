@@ -146,10 +146,17 @@ function ensureUiRoot() {
   return omniUiRoot;
 }
 
+// Keyed on the host element itself (not just "has this ever run"): ensureUiRoot()
+// deliberately re-creates the shadow host when the previous one is no longer
+// connected to the DOM (e.g. a host page rewrites document.body, or an SPA
+// route swap). Without this key, the memoized promise from the FIRST host
+// would keep being returned and the new host would never get themed.
+let omniUiThemeHost = null;
 let omniUiThemeInitPromise = null;
 
 function ensureUiTheme(host) {
-  if (!omniUiThemeInitPromise) {
+  if (omniUiThemeHost !== host) {
+    omniUiThemeHost = host;
     omniUiThemeInitPromise = import(chrome.runtime.getURL("lib/theme-manager.js"))
       .then((mod) => mod.initTheme(host))
       .catch((error) => {
@@ -206,8 +213,9 @@ function ensureUiStyles(root = ensureUiRoot()) {
 
 function ensureUiRootReady() {
   const root = ensureUiRoot();
-  ensureUiTheme(omniUiHost);
-  return ensureUiStyles(root).then(() => root);
+  // Await both so the first paint never shows the default theme before the
+  // async theme class lands (avoids a flash of the wrong theme).
+  return Promise.all([ensureUiStyles(root), ensureUiTheme(omniUiHost)]).then(() => root);
 }
 
 function isEventInsideOmniUi(event) {
@@ -523,12 +531,14 @@ function setupMessageListener() {
       }
 
       case "SHOW_RESULT":
-        lastMenuContext = {
-          text: message.payload.originalText || "",
-          anchorRect: currentAnchorRect || getSelectionRect(),
-          lockedPosition: null,
-          isInput: message.payload.isInput,
-        };
+        if (message.payload.originalText) {
+          lastMenuContext = {
+            text: message.payload.originalText,
+            anchorRect: currentAnchorRect || getSelectionRect(),
+            lockedPosition: null,
+            isInput: message.payload.isInput,
+          };
+        }
         showResultOverlay(message.payload, message.payload.isInput);
         sendResponse({ success: true });
         break;
@@ -1205,7 +1215,7 @@ function getSelectionRect() {
         }
         const bounding = range.getBoundingClientRect();
         if (bounding && (bounding.width || bounding.height)) return bounding;
-      } catch (_) {}
+      } catch {}
     }
     if (lastRange) {
       try {
@@ -1222,7 +1232,7 @@ function getSelectionRect() {
           };
         }
         return lastRange.getBoundingClientRect();
-      } catch (_) {}
+      } catch {}
     }
   }
   const activeElement = document.activeElement;

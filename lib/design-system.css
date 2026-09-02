@@ -101,6 +101,19 @@
   }
 }
 
+/* Rotation-only variant of ds-spin for decorating an EXISTING icon (e.g. a
+   button's own checkmark SVG) in place, without imposing .ds-spinner's fixed
+   28px size/border/border-radius which would visually replace the icon. */
+.ds-spin-icon {
+  animation: ds-spin 0.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-spin-icon {
+    animation-duration: 1.5s;
+  }
+}
+
 .ds-card {
   background: var(--omni-bg-secondary);
   border: 1px solid var(--omni-border);
