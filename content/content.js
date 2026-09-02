@@ -146,6 +146,19 @@ function ensureUiRoot() {
   return omniUiRoot;
 }
 
+let omniUiThemeInitPromise = null;
+
+function ensureUiTheme(host) {
+  if (!omniUiThemeInitPromise) {
+    omniUiThemeInitPromise = import(chrome.runtime.getURL("lib/theme-manager.js"))
+      .then((mod) => mod.initTheme(host))
+      .catch((error) => {
+        console.warn("[Omni AI] Failed to initialize theme:", error);
+      });
+  }
+  return omniUiThemeInitPromise;
+}
+
 function ensureUiStyles(root = ensureUiRoot()) {
   let styleTag = root.querySelector("style[data-omni-ai-shadow-style='true']");
   if (!styleTag) {
@@ -163,15 +176,19 @@ function ensureUiStyles(root = ensureUiRoot()) {
     if (!isContextValid()) {
       omniUiStylePromise = Promise.resolve("");
     } else {
-      omniUiStylePromise = fetch(chrome.runtime.getURL("content/overlay.css"))
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Failed to load overlay CSS: ${response.status}`);
-          }
-          return response.text();
-        })
-        .then((cssText) => {
-          omniUiCssText = cssText || "";
+      const sheetPaths = ["lib/design-tokens.css", "lib/design-system.css", "content/overlay.css"];
+      omniUiStylePromise = Promise.all(
+        sheetPaths.map((p) =>
+          fetch(chrome.runtime.getURL(p)).then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to load ${p}: ${response.status}`);
+            }
+            return response.text();
+          }),
+        ),
+      )
+        .then((sheets) => {
+          omniUiCssText = sheets.join("\n");
           return omniUiCssText;
         })
         .catch((error) => {
@@ -189,6 +206,7 @@ function ensureUiStyles(root = ensureUiRoot()) {
 
 function ensureUiRootReady() {
   const root = ensureUiRoot();
+  ensureUiTheme(omniUiHost);
   return ensureUiStyles(root).then(() => root);
 }
 
@@ -463,28 +481,6 @@ function init() {
   setupFloatingButtonPreference();
   setupMessageListener();
   setupSelectionListener();
-  initTheme();
-}
-
-/**
- * Initialize Theme logic
- */
-async function initTheme() {
-  if (!isContextValid()) return;
-  const THEME_KEY = "omni_ai_theme";
-  try {
-    const { [THEME_KEY]: themePreference = "system" } = await chrome.storage.sync.get(THEME_KEY);
-
-    let effectiveTheme = themePreference;
-    if (themePreference === "system") {
-      effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
-
-    const isLight = effectiveTheme === "light";
-    document.documentElement.classList.toggle("omni-ai-light-mode", isLight);
-  } catch (e) {
-    console.warn("[Omni AI] Failed to initialize theme:", e);
-  }
 }
 
 /**
@@ -548,7 +544,10 @@ function setupMessageListener() {
       }
 
       case "THEME_CHANGED":
-        initTheme();
+        // ensureUiTheme's internal chrome.storage.onChanged listener (set up once
+        // the shadow host exists) already re-applies theme on change; this call is
+        // a harmless no-op once initialized, and a safety net if it hasn't run yet.
+        ensureUiTheme(omniUiHost);
         sendResponse({ success: true });
         break;
 
@@ -733,21 +732,6 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
 
   const uiReady = ensureUiRootReady();
 
-  // Theme check
-  const THEME_KEY = "omni_ai_theme";
-  let themePreference = "system";
-  if (isContextValid()) {
-    const data = await chrome.storage.sync.get(THEME_KEY).catch(() => ({}));
-    themePreference = data[THEME_KEY] || "system";
-  }
-  let effectiveTheme = themePreference;
-  if (themePreference === "system") {
-    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-  if (effectiveTheme === "light") {
-    button.classList.add("omni-ai-light-mode");
-  }
-
   // Position - Use mouse position if provided (for text selection)
   let top, left;
   if (mousePosition) {
@@ -833,16 +817,13 @@ async function showQuickActionMenu(
   };
 
   // Fetch settings
-  const THEME_KEY = "omni_ai_theme";
-  let currentTheme = "system";
   let primaryLanguage = "vi";
   let defaultLanguage = "en";
 
   if (isContextValid()) {
     try {
       /** @type {Record<string, any>} */
-      const data = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage", THEME_KEY]);
-      currentTheme = data[THEME_KEY] || "system";
+      const data = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage"]);
       primaryLanguage = data.primaryLanguage || "vi";
       defaultLanguage = data.defaultLanguage || "en";
     } catch {
@@ -873,7 +854,7 @@ async function showQuickActionMenu(
   await ensureUiRootReady();
 
   // Create Overlay
-  overlay = createOverlayElement(currentTheme);
+  overlay = createOverlayElement();
 
   // Header
   const header = `
@@ -1297,23 +1278,11 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
 // Helpers
 // ============================================
 
-function createOverlayElement(themePreference = "system") {
+function createOverlayElement() {
   const el = document.createElement("div");
   el.className = "omni-ai-overlay";
-
-  let effectiveTheme = themePreference;
-  if (themePreference === "system") {
-    effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-
-  // Dark is default in CSS (lines 13-15)
-  // Light is an override (line 55)
-  if (effectiveTheme === "light") {
-    el.classList.add("omni-ai-light-mode");
-  } else {
-    el.classList.remove("omni-ai-light-mode");
-  }
-
+  // Theme is inherited from the shadow host via :host-context(.omni-ai-light-mode)
+  // in lib/design-tokens.css — no per-element class needed.
   return el;
 }
 
@@ -1483,10 +1452,6 @@ async function showResultOverlay(payload, isInput = false) {
     await ensureUiRootReady();
     const el = document.createElement("div");
     el.className = "omni-ai-overlay";
-    // Check theme
-    if (document.documentElement.classList.contains("omni-ai-light-mode")) {
-      el.classList.add("omni-ai-light-mode");
-    }
     overlay = el;
     ensureUiRoot().appendChild(overlay);
 
@@ -1681,13 +1646,7 @@ async function showQuickAskOverlay(
   await ensureUiRootReady();
 
   if (!overlay) {
-    const THEME_KEY = "omni_ai_theme";
-    let currentTheme = "system";
-    if (isContextValid()) {
-      const data = await chrome.storage.sync.get(THEME_KEY).catch(() => ({}));
-      currentTheme = data[THEME_KEY] || "system";
-    }
-    overlay = createOverlayElement(currentTheme);
+    overlay = createOverlayElement();
     ensureUiRoot().appendChild(overlay);
   }
 
