@@ -394,8 +394,8 @@ function updateSmartFixCard(card, originalText, correctedText, isInput, activeEl
         <div class="omni-ai-suggestion-label">${i18n.getMessage("overlay_suggested_fix")}</div>
         <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; white-space: pre-wrap;">${diffHtml}</div>
         <div style="display:flex; gap:8px; margin-top:8px;">
-            <button class="omni-ai-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_accept")}</button>
-            <button class="omni-ai-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_dismiss")}</button>
+            <button class="ds-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_accept")}</button>
+            <button class="ds-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_dismiss")}</button>
         </div>
      </div>
   `;
@@ -433,7 +433,7 @@ function updateTranslateCard(card, result, text, isInput) {
       <div class="omni-ai-suggestion-info">
           <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
             <span>${i18n.getMessage("overlay_smart_translation")}</span>
-            <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
+            <button class="ds-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
@@ -514,7 +514,7 @@ function setupMessageListener() {
           }
           // Show loading spinner inside button
           if (quickActionBtn) {
-            quickActionBtn.innerHTML = `<div class="omni-ai-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
+            quickActionBtn.innerHTML = `<div class="ds-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
             quickActionBtn.style.cursor = "wait";
           }
         }
@@ -523,6 +523,12 @@ function setupMessageListener() {
       }
 
       case "SHOW_RESULT":
+        lastMenuContext = {
+          text: message.payload.originalText || "",
+          anchorRect: currentAnchorRect || getSelectionRect(),
+          lockedPosition: null,
+          isInput: message.payload.isInput,
+        };
         showResultOverlay(message.payload, message.payload.isInput);
         sendResponse({ success: true });
         break;
@@ -751,6 +757,22 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
     return;
   }
 
+  const BUTTON_SIZE = 22;
+  if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
+    const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
+      top,
+      left,
+      BUTTON_SIZE,
+      BUTTON_SIZE,
+      window.scrollX,
+      window.scrollY,
+      window.innerWidth,
+      window.innerHeight,
+    );
+    top = clamped.top;
+    left = clamped.left;
+  }
+
   button.style.top = `${top}px`;
   button.style.left = `${left}px`;
 
@@ -876,7 +898,7 @@ async function showQuickActionMenu(
     <div class="omni-ai-quick-fix-section">
       <div class="omni-ai-suggestion-card" id="omniAiMagicFix">
         <div class="omni-ai-suggestion-icon">
-           <div class="omni-ai-spinner" style="width:14px;height:14px;border-width:2px;"></div>
+           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
         </div>
         <div class="omni-ai-suggestion-info">
             <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("status_thinking")}</div>
@@ -891,7 +913,7 @@ async function showQuickActionMenu(
     <div class="omni-ai-quick-fix-section">
       <div class="omni-ai-suggestion-card" id="omniAiTranslateCard">
         <div class="omni-ai-suggestion-icon">
-           <div class="omni-ai-spinner" style="width:14px;height:14px;border-width:2px;"></div>
+           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
         </div>
         <div class="omni-ai-suggestion-info">
             <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_smart_translation")}...</div>
@@ -1164,6 +1186,45 @@ async function handleAskAction(query, originalText, isInput) {
  * Get rect for current selection, supporting both normal text and inputs
  */
 function getSelectionRect() {
+  if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      try {
+        const range = sel.getRangeAt(0);
+        const rects = range.getClientRects();
+        const endPoint = /** @type {any} */ (self).OMNI_POSITIONING.getRectEndPoint(rects);
+        if (endPoint) {
+          return {
+            top: endPoint.top,
+            left: endPoint.left,
+            bottom: endPoint.top,
+            right: endPoint.left,
+            width: 0,
+            height: 0,
+          };
+        }
+        const bounding = range.getBoundingClientRect();
+        if (bounding && (bounding.width || bounding.height)) return bounding;
+      } catch (_) {}
+    }
+    if (lastRange) {
+      try {
+        const rects = lastRange.getClientRects();
+        const endPoint = /** @type {any} */ (self).OMNI_POSITIONING.getRectEndPoint(rects);
+        if (endPoint) {
+          return {
+            top: endPoint.top,
+            left: endPoint.left,
+            bottom: endPoint.top,
+            right: endPoint.left,
+            width: 0,
+            height: 0,
+          };
+        }
+        return lastRange.getBoundingClientRect();
+      } catch (_) {}
+    }
+  }
   const activeElement = document.activeElement;
   const context = getContext(activeElement);
   return context.getRect(activeElement);
@@ -1258,6 +1319,21 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     const maxTop = viewportHeight + window.scrollY - overlayHeight - 10;
     if (top < minTop) top = minTop;
     if (top > maxTop) top = maxTop;
+
+    if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
+      const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
+        top,
+        left,
+        overlay.offsetWidth || overlayWidth,
+        overlay.offsetHeight || overlayHeight,
+        window.scrollX,
+        window.scrollY,
+        window.innerWidth,
+        window.innerHeight,
+      );
+      top = clamped.top;
+      left = clamped.left;
+    }
 
     overlay.style.top = `${Math.round(top)}px`;
     overlay.style.left = `${Math.round(left)}px`;
@@ -1411,7 +1487,7 @@ function showLoadingInOverlay() {
   // Inject Loading HTML
   content.innerHTML = `
     <div class="omni-ai-loading">
-      <div class="omni-ai-spinner"></div>
+      <div class="ds-spinner"></div>
       <div class="omni-ai-shimmer-text">${i18n.getMessage("status_processing")}</div>
     </div>`;
   content.style.display = "block";
@@ -1478,22 +1554,22 @@ async function showResultOverlay(payload, isInput = false) {
 
   // Footer buttons logic
   const replaceBtnHtml = isInput
-    ? `<button class="omni-ai-btn-primary" id="omniAiReplace">${i18n.getMessage("overlay_replace")}</button>`
+    ? `<button class="ds-btn-primary" id="omniAiReplace">${i18n.getMessage("overlay_replace")}</button>`
     : ``;
 
   overlay.innerHTML = `
     <div class="omni-ai-overlay-header">
-        <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
+        <button class="ds-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
         <span style="font-weight:600;font-size:14px;margin-left:5px;flex:1;">${i18n.getMessage("overlay_result")}</span>
         <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>
     <div class="omni-ai-content-area">
-        ${action === "quick_ask" && query ? `<div class="omni-ai-context-preview" style="margin-top:0;"><div class="omni-ai-context-label">${i18n.getMessage("quick_ask_title")}</div><div class="omni-ai-context-content" style="-webkit-line-clamp: 3;">${query}</div></div>` : ""}
+        ${action === "quick_ask" && query ? `<div class="ds-card ds-card--accent" style="margin-top:0;"><div class="omni-ai-context-label">${i18n.getMessage("quick_ask_title")}</div><div class="omni-ai-context-content" style="-webkit-line-clamp: 3;">${query}</div></div>` : ""}
         ${safeAction === "tone" ? renderToneSelector(preset || "professional") : ""}
         <div class="omni-ai-result-text">${contentHtml}</div>
     </div>
     <div class="omni-ai-footer-actions">
-        <button class="omni-ai-btn-secondary" id="omniAiCopy">${i18n.getMessage("overlay_copy")}</button>
+        <button class="ds-btn-secondary" id="omniAiCopy">${i18n.getMessage("overlay_copy")}</button>
         ${replaceBtnHtml}
     </div>
   `;
@@ -1543,7 +1619,7 @@ async function showResultOverlay(payload, isInput = false) {
           // UI Update
           const resultTextEl = overlay.querySelector(".omni-ai-result-text");
           resultTextEl.style.opacity = "0.5";
-          resultTextEl.innerHTML = '<div class="omni-ai-spinner" style="margin:20px auto;"></div>';
+          resultTextEl.innerHTML = '<div class="ds-spinner" style="margin:20px auto;"></div>';
 
           // Optimistic Chip Update
           overlay.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
@@ -1658,7 +1734,7 @@ async function showQuickAskOverlay(
 
   const header = `
   <div class="omni-ai-overlay-header">
-     <button class="omni-ai-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
+     <button class="ds-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
      <div class="omni-ai-brand" style="flex:1; margin-left: 8px;">${i18n.getMessage("quick_ask_title")}</div>
      <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
   </div>`;
@@ -1668,7 +1744,7 @@ async function showQuickAskOverlay(
     const truncated =
       originalText.length > 120 ? originalText.substring(0, 117) + "..." : originalText;
     contextBlock = `
-    <div class="omni-ai-context-preview">
+    <div class="ds-card ds-card--accent">
       <div class="omni-ai-context-label">${i18n.getMessage("popup_context")}</div>
       <div class="omni-ai-context-content">${truncated}</div>
     </div>`;
@@ -1687,7 +1763,7 @@ async function showQuickAskOverlay(
       </div>
       
       <div id="omniAiLoading" class="omni-ai-loading" style="display:none; padding: 20px 0;">
-         <div class="omni-ai-spinner"></div>
+         <div class="ds-spinner"></div>
          <div class="omni-ai-shimmer-text">${i18n.getMessage("status_thinking")}</div>
       </div>
       
@@ -1696,7 +1772,7 @@ async function showQuickAskOverlay(
       </div>
   </div>
   <div class="omni-ai-footer-actions">
-      <button class="omni-ai-btn-secondary" id="omniAiQuickCopy" style="display:none;">${i18n.getMessage("overlay_copy")}</button>
+      <button class="ds-btn-secondary" id="omniAiQuickCopy" style="display:none;">${i18n.getMessage("overlay_copy")}</button>
   </div>
   `;
 

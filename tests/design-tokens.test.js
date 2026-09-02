@@ -32,3 +32,20 @@ describe("lib/design-tokens.css", () => {
     expect(css).toMatch(/:host-context\(\.omni-ai-light-mode\)\s*\{/);
   });
 });
+
+describe("no legacy token names remain in any surface", () => {
+  const overlayCss = fs.readFileSync(path.join(__dirname, "../content/overlay.css"), "utf8");
+  const settingsCss = fs.readFileSync(path.join(__dirname, "../settings.css"), "utf8");
+  const sidepanelCss = fs.readFileSync(path.join(__dirname, "../sidepanel/sidepanel.css"), "utf8");
+
+  test.each([
+    ["content/overlay.css", overlayCss],
+    ["settings.css", settingsCss],
+    ["sidepanel/sidepanel.css", sidepanelCss],
+  ])("%s no longer defines its own --ai-*/unprefixed token :root block", (_name, css) => {
+    expect(css).not.toMatch(/--ai-[a-z-]+\s*:/);
+    expect(css).not.toMatch(/--accent-purple\s*:/);
+    expect(css).not.toMatch(/--bg-primary\s*:/);
+    expect(css).not.toMatch(/--radius-md\s*:/);
+  });
+});

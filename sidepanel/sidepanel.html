@@ -22,7 +22,7 @@
           <img src="../assets/icons/logo.svg" alt="__MSG_extName__" class="logo-icon" />
           <span class="logo-text">__MSG_popup_title__</span>
         </div>
-        <button id="settingsBtn" class="icon-btn" title="__MSG_settings_title__">
+        <button id="settingsBtn" class="ds-icon-btn" title="__MSG_settings_title__">
           <svg
             width="20"
             height="20"
@@ -45,23 +45,24 @@
         <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
 
         <div class="action-buttons">
-          <button id="summarizeBtn" class="action-btn" data-action="summarize">
+          <button id="summarizeBtn" class="ds-btn-primary" data-action="summarize">
             <span class="action-icon">📄</span>
             <span class="action-label">__MSG_sidepanel_summarize__</span>
           </button>
-          <button id="translateBtn" class="action-btn" data-action="smart_translate">
+          <button id="translateBtn" class="ds-btn-primary" data-action="smart_translate">
             <span class="action-icon">🌐</span>
             <span class="action-label">__MSG_sidepanel_translate__</span>
           </button>
-          <button id="explainBtn" class="action-btn" data-action="explain">
+          <button id="explainBtn" class="ds-btn-primary" data-action="explain">
             <span class="action-icon">💡</span>
             <span class="action-label">__MSG_sidepanel_explain__</span>
           </button>
         </div>
 
         <div id="statusLine" class="status-line hidden"></div>
+        <div id="loadingSpinner" class="ds-spinner hidden" style="margin: 12px auto"></div>
 
-        <div id="resultArea" class="result-area hidden">
+        <div id="resultArea" class="ds-card hidden">
           <div class="result-label">__MSG_sidepanel_resultLabel__</div>
           <div id="resultSource" class="result-source"></div>
           <div id="resultText" class="result-text"></div>

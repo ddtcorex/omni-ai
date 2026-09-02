@@ -425,14 +425,14 @@ function setButtonLoading(isLoading) {
     btn.classList.add("loading");
     btn.disabled = true;
     const svg = btn.querySelector("svg");
-    if (svg) svg.classList.add("validate-spinner");
+    if (svg) svg.classList.add("ds-spinner");
     // Change icon to refresh/spinner
     btn.querySelector("span").textContent = i18n.getMessage("settings_checking");
   } else {
     btn.classList.remove("loading");
     btn.disabled = false;
     const svg = btn.querySelector("svg");
-    if (svg) svg.classList.remove("validate-spinner");
+    if (svg) svg.classList.remove("ds-spinner");
     btn.querySelector("span").textContent = i18n.getMessage("settings_validate");
   }
 }
@@ -444,9 +444,17 @@ function showValidationStatus(message, type) {
   const el = elements.validationStatus;
   if (!el) return;
 
-  // Reset classes
-  el.className = "validation-message visible";
-  el.classList.add(type);
+  // Reset classes (now ds-card)
+  el.className = "ds-card visible";
+  const typeClass =
+    type === "success"
+      ? "ds-card--success"
+      : type === "error"
+        ? "ds-card--error"
+        : type === "processing"
+          ? "ds-card--processing"
+          : type;
+  el.classList.add(typeClass);
 
   // Icon based on type
   let icon = "";

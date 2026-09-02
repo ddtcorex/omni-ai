@@ -53,6 +53,7 @@ omni-ai/
 |   `-- service-worker.js    # Message router, context menus, commands, side panel registration, history writes
 |-- content/
 |   |-- editor-adapters.js   # Classic-script registry for standard/rich-text/static editors
+|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint (classic script, tested via tests/content/positioning.test.js)
 |   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
 |   |                        #   overlay cards, text replacement, Shadow DOM host
 |   `-- overlay.css          # Styles injected INTO the shadow root via fetch()
@@ -67,6 +68,8 @@ omni-ai/
 |                             #   two popup mechanisms did.
 |-- settings.{html,js,css}   # Options dashboard: providers, languages, theme, usage stats
 |-- lib/
+|   |-- design-tokens.css    # Canonical --omni-* custom properties (see docs/design-system/MASTER.md)
+|   |-- design-system.css    # Shared component classes: .ds-icon-btn, .ds-btn-*, .ds-spinner, .ds-card (see docs/design-system/MASTER.md)
 |   |-- ai-service.js        # Action functions (improveText, translateText, ...) +
 |   |                        #   generateContent() dispatcher
 |   |-- ai-providers.js      # AI_PROVIDERS registry: models, key-setting names, routing
@@ -164,6 +167,8 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
 - [ ] Clicking the toolbar icon opens the side panel (not a popup or a new window); Summarize/Smart Translate/Explain work against a real page and the panel stays open across tab switches
+- [ ] Floating button and result card stay fully on-screen when a selection/focus is near each of the four viewport edges (regression check for the design-system plan's clampToViewport fix)
+- [ ] "Back" button returns to the action menu after both a click-triggered AND a keyboard-shortcut-triggered (Alt+R/T/F) result
 - [ ] Service worker console clean after idle (no unhandled promise rejections)
 
 ---

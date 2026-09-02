@@ -10,12 +10,13 @@ const elements = {
   extVersion: /** @type {HTMLElement | null} */ (document.getElementById("extVersion")),
   settingsBtn: /** @type {HTMLElement | null} */ (document.getElementById("settingsBtn")),
   actionButtons: /** @type {NodeListOf<HTMLButtonElement>} */ (
-    document.querySelectorAll(".action-btn")
+    document.querySelectorAll(".ds-btn-primary")
   ),
   statusLine: /** @type {HTMLElement | null} */ (document.getElementById("statusLine")),
   resultArea: /** @type {HTMLElement | null} */ (document.getElementById("resultArea")),
   resultSource: /** @type {HTMLElement | null} */ (document.getElementById("resultSource")),
   resultText: /** @type {HTMLElement | null} */ (document.getElementById("resultText")),
+  loadingSpinner: /** @type {HTMLElement | null} */ (document.getElementById("loadingSpinner")),
 };
 
 async function init() {
@@ -85,6 +86,9 @@ function setButtonsDisabled(disabled) {
   elements.actionButtons.forEach((btn) => {
     btn.disabled = disabled;
   });
+  if (elements.loadingSpinner) {
+    elements.loadingSpinner.classList.toggle("hidden", !disabled);
+  }
 }
 
 /**
