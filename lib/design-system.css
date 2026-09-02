@@ -1,0 +1,170 @@
+/* ============================================
+   Omni AI - Shared Component Classes
+   Consumes tokens from lib/design-tokens.css. Loaded after that file
+   everywhere (content.js's ensureUiStyles(), settings.html, sidepanel.html).
+   See docs/design-system/MASTER.md for usage guidance.
+   ============================================ */
+
+.ds-icon-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--omni-radius-sm);
+  color: var(--omni-text-secondary);
+  cursor: pointer;
+  transition: all var(--omni-transition-fast);
+  padding: 0;
+}
+
+.ds-icon-btn:hover {
+  background: var(--omni-bg-hover);
+  color: var(--omni-text-primary);
+}
+
+.ds-icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ds-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--omni-accent-gradient);
+  color: white;
+  border: none;
+  font-weight: 500;
+  font-family: var(--omni-font-family);
+  padding: 6px 14px;
+  border-radius: var(--omni-radius-sm);
+  cursor: pointer;
+  font-size: var(--omni-font-sm);
+  transition: transform 0.1s, filter 0.1s;
+}
+
+.ds-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.ds-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+/* Larger variant for roomier surfaces (settings, side panel) where the
+   default overlay-appropriate compact sizing reads as too small — see
+   docs/FOLLOWUPS.md #15. */
+.ds-btn-primary--lg {
+  gap: var(--omni-spacing-sm);
+  padding: 14px 24px;
+  border-radius: var(--omni-radius-lg);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all var(--omni-transition-fast);
+}
+
+.ds-btn-primary--lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+.ds-btn-primary--lg:active {
+  transform: translateY(0);
+}
+
+.ds-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--omni-bg-hover);
+  color: var(--omni-text-primary);
+  border: 1px solid var(--omni-border);
+  font-family: var(--omni-font-family);
+  padding: 6px 12px;
+  border-radius: var(--omni-radius-sm);
+  cursor: pointer;
+  font-size: var(--omni-font-sm);
+  transition: background var(--omni-transition-fast);
+}
+
+.ds-btn-secondary:hover {
+  background: var(--omni-bg-active);
+  border-color: var(--omni-text-secondary);
+}
+
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ds-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid rgba(139, 92, 246, 0.15);
+  border-top-color: var(--omni-accent);
+  border-radius: 50%;
+  animation: ds-spin 0.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-spinner {
+    animation-duration: 1.5s;
+  }
+}
+
+/* Rotation-only variant of ds-spin for decorating an EXISTING icon (e.g. a
+   button's own checkmark SVG) in place, without imposing .ds-spinner's fixed
+   28px size/border/border-radius which would visually replace the icon. */
+.ds-spin-icon {
+  animation: ds-spin 0.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-spin-icon {
+    animation-duration: 1.5s;
+  }
+}
+
+.ds-card {
+  background: var(--omni-bg-secondary);
+  border: 1px solid var(--omni-border);
+  border-radius: var(--omni-radius-md);
+  padding: var(--omni-spacing-sm) var(--omni-spacing-md);
+  font-family: var(--omni-font-family);
+  color: var(--omni-text-primary);
+}
+
+.ds-card--accent {
+  border-left: 3px solid var(--omni-accent);
+  /* Restores .omni-ai-context-preview's old margin-bottom: this modifier
+     is only ever used as a "quoted context" block immediately followed by
+     another element (a reply/result, or an input field) — see
+     docs/FOLLOWUPS.md #15. Scoped to the modifier, not the base .ds-card,
+     since the settings/side-panel plain .ds-card usages are typically the
+     last/only element in their container and don't need trailing space. */
+  margin-bottom: var(--omni-spacing-md);
+}
+
+.ds-card--success {
+  border-color: var(--omni-success);
+  color: var(--omni-success);
+}
+
+.ds-card--error {
+  border-color: var(--omni-error);
+  color: var(--omni-error);
+}
+
+.ds-card--processing {
+  border-color: var(--omni-accent);
+}

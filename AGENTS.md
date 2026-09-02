@@ -10,7 +10,7 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 
 1.  **Stick to Vanilla**: No React, Vue, Tailwind, or bundler. Plain **ES modules (ES6+)** + modern CSS. The browser loads source files directly — there is no compile step in the dev loop.
 2.  **Manifest V3 Compliance**: Service worker background (`"type": "module"`), no remote code, no MV2 APIs.
-3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `content/overlay.css` and injected as a `<style>` inside the shadow root.
+3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `lib/design-tokens.css`, `lib/design-system.css`, and `content/overlay.css` (in that order) and injected as a single `<style>` inside the shadow root.
 4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code.
 5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before).
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` through `content/editor-adapters.js`. Always fall back gracefully.
@@ -53,6 +53,7 @@ omni-ai/
 |   `-- service-worker.js    # Message router, context menus, commands, side panel registration, history writes
 |-- content/
 |   |-- editor-adapters.js   # Classic-script registry for standard/rich-text/static editors
+|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint (classic script, tested via tests/content/positioning.test.js)
 |   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
 |   |                        #   overlay cards, text replacement, Shadow DOM host
 |   `-- overlay.css          # Styles injected INTO the shadow root via fetch()
@@ -67,6 +68,8 @@ omni-ai/
 |                             #   two popup mechanisms did.
 |-- settings.{html,js,css}   # Options dashboard: providers, languages, theme, usage stats
 |-- lib/
+|   |-- design-tokens.css    # Canonical --omni-* custom properties (see docs/design-system/MASTER.md)
+|   |-- design-system.css    # Shared component classes: .ds-icon-btn, .ds-btn-*, .ds-spinner, .ds-card (see docs/design-system/MASTER.md)
 |   |-- ai-service.js        # Action functions (improveText, translateText, ...) +
 |   |                        #   generateContent() dispatcher
 |   |-- ai-providers.js      # AI_PROVIDERS registry: models, key-setting names, routing
@@ -141,7 +144,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 
 ### Editing Content-Script UI
 
-All markup/styles live inside the Shadow DOM root. To style: edit `content/overlay.css` (fetched into the shadow root — keep it self-contained, no reliance on page styles). Keep the `.omni-ai-*` class prefix inside the shadow tree.
+All markup/styles live inside the Shadow DOM root. To style: use the shared `--omni-*` tokens (`lib/design-tokens.css`) and `.ds-*` component classes (`lib/design-system.css`) where possible, and edit `content/overlay.css` for overlay-specific rules (fetched into the shadow root along with the two shared files — keep it self-contained, no reliance on page styles). Keep the `.omni-ai-*` class prefix inside the shadow tree.
 
 ---
 
@@ -164,6 +167,8 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
 - [ ] Clicking the toolbar icon opens the side panel (not a popup or a new window); Summarize/Smart Translate/Explain work against a real page and the panel stays open across tab switches
+- [ ] Floating button and result card stay fully on-screen when a selection/focus is near each of the four viewport edges (regression check for the design-system plan's clampToViewport fix)
+- [ ] "Back" button returns to the action menu after both a click-triggered AND a keyboard-shortcut-triggered (Alt+R/T/F) result
 - [ ] Service worker console clean after idle (no unhandled promise rejections)
 
 ---
@@ -193,7 +198,7 @@ None currently. 🎉
 ## ✅ Agent Checklist (before you finish)
 
 - [ ] No framework imports, no bundler assumptions — files still load raw in the browser
-- [ ] New UI renders inside the Shadow DOM root using tokens (`--accent-purple`, `--glass-bg`, …) from `overlay.css` / `settings.css` — never hardcode colors
+- [ ] New UI renders inside the Shadow DOM root using tokens (`--omni-accent`, `--omni-glass-bg`, …) from `lib/design-tokens.css` / components from `lib/design-system.css` — never hardcode colors
 - [ ] Every new `onMessage` case that replies asynchronously returns `true`
 - [ ] Text replacement verified for `input` + `textarea` + `contenteditable`
 - [ ] Every user-facing string goes through i18n (`_locales/en/messages.json`) — zero hardcoded visible text

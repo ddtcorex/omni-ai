@@ -201,6 +201,22 @@ describe("settings.js", () => {
     jest.useRealTimers();
   });
 
+  it("uses the shared ds-card class for the validation message, not the old validation-message-only class", async () => {
+    chrome.storage.local.get.mockResolvedValue({});
+    await Settings.loadSettings();
+
+    // Drive validateConfiguration() into its synchronous error branch (no
+    // Custom Gateway base URL set) so showValidationStatus() runs without
+    // needing to mock chrome.runtime.sendMessage.
+    document.getElementById("apiModel").value = "custom-gateway";
+    document.getElementById("customModelName").value = "my-gateway-model";
+    await Settings.validateConfiguration();
+
+    const el = document.getElementById("validationStatus");
+    expect(el.className).toContain("ds-card");
+    expect(el.className).not.toContain("validation-message");
+  });
+
   it("auto-expands Advanced when a -custom model is selected", async () => {
     await Settings.loadSettings();
     Settings.setupEventListeners();
