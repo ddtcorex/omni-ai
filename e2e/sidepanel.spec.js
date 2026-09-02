@@ -18,6 +18,25 @@ test("side panel loads and renders the three Page Tools buttons", async () => {
   }
 });
 
+test("uses the shared design tokens, not its own local --accent-purple copy", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    const accentValue = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue("--omni-accent").trim(),
+    );
+    expect(accentValue).toBe("#8b5cf6");
+
+    const summarizeBtnClass = await page.locator("#summarizeBtn").getAttribute("class");
+    expect(summarizeBtnClass).toContain("ds-btn-primary");
+  } finally {
+    await context.close();
+  }
+});
+
 test("a successful result shows which page it describes", async () => {
   const FIXTURE = `<!doctype html><html><head><title>Fixture Article</title></head><body>
     <p>The quick brown fox jumps over the lazy dog, repeatedly, for testing purposes.</p>

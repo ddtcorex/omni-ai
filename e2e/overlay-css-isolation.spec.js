@@ -159,6 +159,37 @@ test("applies the light theme class to the shadow host on a real extension load"
   }
 });
 
+test("overlay CSS uses the shared --omni- token prefix, not the old --ai- prefix", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.locator("#target").click();
+    await page.locator("#target").dispatchEvent("mouseup");
+    // Selecting text mounts the shadow UI host and injects the merged
+    // design-tokens.css + design-system.css + overlay.css sheet (see
+    // content.js's ensureUiStyles()) as a single <style> tag inside it.
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
+
+    const cssText = await page.evaluate(() => {
+      const host = document.getElementById("omni-ai-shadow-host");
+      const styleTag = host.shadowRoot.querySelector("style[data-omni-ai-shadow-style='true']");
+      return styleTag ? styleTag.textContent : "";
+    });
+
+    expect(cssText).toContain("--omni-accent");
+    expect(cssText).not.toContain("--ai-accent");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("stays isolated from host-page CSS even if the shadow host's inline style is stripped", async () => {
   const FIXTURE = `<!doctype html><html><body>
     <input id="target" type="text" value="Hello world, this is a test." />

@@ -206,3 +206,128 @@ test("hides the floating button when showFloatingButton is disabled", async () =
     server.close();
   }
 });
+
+test("floating button stays fully on-screen when selection is near the bottom-right edge", async () => {
+  const FIXTURE = `<!doctype html><html><body style="margin:0">
+    <div style="height:2000px"></div>
+    <p id="edge-text" style="position:absolute; bottom:10px; right:10px; width:200px;">
+      Text near the bottom right corner of the page for edge positioning.
+    </p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+
+    const text = page.locator("#edge-text");
+    await text.evaluate((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+    const box = await text.boundingBox();
+    await page.mouse.move(box.x + box.width - 5, box.y + box.height - 5);
+    await page.mouse.up();
+
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
+
+    const btnBox = await page.evaluate(() => {
+      const host = document.getElementById("omni-ai-shadow-host");
+      const btn = host.shadowRoot.querySelector(".omni-ai-quick-btn");
+      if (!btn) return null;
+      const rect = btn.getBoundingClientRect();
+      return { right: rect.right, bottom: rect.bottom };
+    });
+
+    expect(btnBox).not.toBeNull();
+    expect(btnBox.right).toBeLessThanOrEqual(await page.evaluate(() => window.innerWidth));
+    expect(btnBox.bottom).toBeLessThanOrEqual(await page.evaluate(() => window.innerHeight));
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Back button returns to the action menu after a keyboard-shortcut-triggered result", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="text">The quick brown fox jumps over the lazy dog for shortcut testing.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.locator("#text").evaluate((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+    });
+
+    // Simulate the background script's SHOW_RESULT (what Alt+R ultimately sends)
+    // rather than driving a real OS-level keyboard shortcut, which Playwright
+    // cannot reliably trigger for a browser-action command in a test profile.
+    // Query by URL rather than {active:true, currentWindow:true} -- under
+    // Playwright's CDP-driven persistent context, "active" doesn't reliably
+    // track the fixture page (a separate tab, with no URL visible to the
+    // extension, was observed as the "active" one instead). Retry briefly:
+    // the content script's onMessage listener may not be registered yet on
+    // the very first tick after navigation.
+    await sw.evaluate(async (port) => {
+      const tabs = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      const message = {
+        type: "SHOW_RESULT",
+        payload: {
+          action: "rephrase",
+          result: "Rephrased result.",
+          originalText: "The quick brown fox jumps over the lazy dog for shortcut testing.",
+          isInput: false,
+        },
+      };
+      let lastError;
+      for (let i = 0; i < 20; i++) {
+        try {
+          await chrome.tabs.sendMessage(tabs[0].id, message, { frameId: 0 });
+          lastError = null;
+          break;
+        } catch (err) {
+          lastError = err;
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+      if (lastError) throw lastError;
+    }, port);
+
+    // showResultOverlay() renders the result card inside the shadow root;
+    // wait for the Back button to exist before clicking it.
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const host = document.getElementById("omni-ai-shadow-host");
+          return !!host && !!host.shadowRoot.querySelector("#omniAiBack");
+        }),
+      )
+      .toBe(true);
+
+    await page.evaluate(() => {
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector("#omniAiBack")
+        .click();
+    });
+
+    const menuVisible = await page.evaluate(() => {
+      const host = document.getElementById("omni-ai-shadow-host");
+      return !!host.shadowRoot.querySelector(".omni-ai-menu-grid");
+    });
+    expect(menuVisible).toBe(true);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

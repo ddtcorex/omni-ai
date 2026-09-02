@@ -376,11 +376,11 @@ function updateSmartFixCard(card, originalText, correctedText, isInput, activeEl
 
   if (originalText.trim() === correctedText.trim()) {
     card.innerHTML = `
-        <div class="omni-ai-suggestion-icon" style="background:rgba(34,197,94,0.1);color:var(--ai-success)">
+        <div class="omni-ai-suggestion-icon" style="background:rgba(34,197,94,0.1);color:var(--omni-success)">
            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
         <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="color:var(--ai-success)">${i18n.getMessage("overlay_no_issues")}</div>
+            <div class="omni-ai-suggestion-label" style="color:var(--omni-success)">${i18n.getMessage("overlay_no_issues")}</div>
             <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_no_issues_content")}</div>
         </div>
     `;
@@ -437,7 +437,7 @@ function updateTranslateCard(card, result, text, isInput) {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
-          <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--ai-text-primary); font-weight:500; white-space: pre-wrap;">${result}</div>
+          <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--omni-text-primary); font-weight:500; white-space: pre-wrap;">${result}</div>
       </div>
   `;
 
@@ -448,7 +448,7 @@ function updateTranslateCard(card, result, text, isInput) {
       e.stopPropagation();
       navigator.clipboard.writeText(result);
       // Visual feedback
-      copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--ai-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--omni-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
       setTimeout(() => {
         copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
       }, 1500);
@@ -966,7 +966,7 @@ async function showQuickActionMenu(
     <div class="omni-ai-input-wrapper" style="padding: 0 12px 12px;">
        <div style="position:relative; width:100%;">
          <textarea class="omni-ai-input" placeholder="${i18n.getMessage("popup_quickAsk")}" id="omniAiInlineInput" style="padding-right: 42px; display: block; margin: 0;"></textarea>
-         <button id="omniAiInputBtn" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:var(--ai-accent-gradient); color:white; cursor:pointer; width:28px; height:28px; border-radius:var(--ai-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
+         <button id="omniAiInputBtn" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:var(--omni-accent-gradient); color:white; cursor:pointer; width:28px; height:28px; border-radius:var(--omni-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
          </button>
        </div>
@@ -998,9 +998,9 @@ async function showQuickActionMenu(
         } else if (card) {
           // Show error or revert
           card.innerHTML = `
-              <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
+              <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
               <div class="omni-ai-suggestion-info">
-                  <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
+                  <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
                   <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_analysis_failed")}</div>
               </div>
            `;
@@ -1032,9 +1032,9 @@ async function showQuickActionMenu(
           } else {
             // Error State logic (moved to helper or kept here)
             card.innerHTML = `
-               <div class="omni-ai-suggestion-icon" style="color:var(--ai-error);background:rgba(239,68,68,0.1)">!</div>
+               <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
                <div class="omni-ai-suggestion-info">
-                   <div class="omni-ai-suggestion-label" style="color:var(--ai-error)">${i18n.getMessage("overlay_error")}</div>
+                   <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
                    <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_translation_failed")}</div>
                </div>
             `;
@@ -1499,14 +1499,14 @@ function renderToneSelector(activeTone) {
     .map((tone) => {
       const isActive = tone.toLowerCase() === activeTone.toLowerCase();
       const style = isActive
-        ? "background:rgba(139,92,246,0.15); color:var(--ai-accent); border:1px solid rgba(139,92,246,0.3);"
-        : "background:transparent; color:var(--ai-text-secondary); border:1px solid var(--ai-border);";
+        ? "background:rgba(139,92,246,0.15); color:var(--omni-accent); border:1px solid rgba(139,92,246,0.3);"
+        : "background:transparent; color:var(--omni-text-secondary); border:1px solid var(--omni-border);";
       const label = i18n.getMessage("tone_" + tone.toLowerCase()) || tone;
       return `<button class="omni-ai-tone-chip" data-tone="${tone.toLowerCase()}" style="padding:3px 10px; border-radius:100px; font-size:11px; cursor:pointer; font-weight:500; white-space:nowrap; transition:all 0.2s; ${style}">${label}</button>`;
     })
     .join("");
 
-  return `<div class="omni-ai-tone-selector" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--ai-border);">${chips}</div>`;
+  return `<div class="omni-ai-tone-selector" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--omni-border);">${chips}</div>`;
 }
 
 async function showResultOverlay(payload, isInput = false) {
@@ -1625,8 +1625,8 @@ async function showResultOverlay(payload, isInput = false) {
           overlay.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
             const isActive = chip.dataset.tone === newTone;
             chip.style.background = isActive ? "rgba(139,92,246,0.15)" : "transparent";
-            chip.style.color = isActive ? "var(--ai-accent)" : "var(--ai-text-secondary)";
-            chip.style.borderColor = isActive ? "rgba(139,92,246,0.3)" : "var(--ai-border)";
+            chip.style.color = isActive ? "var(--omni-accent)" : "var(--omni-text-secondary)";
+            chip.style.borderColor = isActive ? "rgba(139,92,246,0.3)" : "var(--omni-border)";
           });
 
           // Fetch
@@ -1756,7 +1756,7 @@ async function showQuickAskOverlay(
       <div class="omni-ai-input-wrapper" style="padding:0;">
         <div style="position:relative; width:100%;">
           <textarea class="omni-ai-input" id="omniAiQuickInput" placeholder="${i18n.getMessage("popup_quickAsk")}" style="min-height:100px; margin-bottom: 0; padding-right: 42px; display: block;"></textarea>
-          <button id="omniAiInputBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:var(--ai-accent-gradient); color:white; cursor:pointer; width:30px; height:30px; border-radius:var(--ai-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
+          <button id="omniAiInputBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:var(--omni-accent-gradient); color:white; cursor:pointer; width:30px; height:30px; border-radius:var(--omni-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           </button>
         </div>
@@ -1852,10 +1852,10 @@ function showErrorInOverlay(msg) {
   if (overlay) {
     overlay.innerHTML = `
         <div class="omni-ai-overlay-header">
-            <div class="omni-ai-brand" style="color:var(--ai-error);">${i18n.getMessage("overlay_error")}</div>
+            <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
             <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
         </div>
-        <div class="omni-ai-content-area" style="color:var(--ai-text-secondary);">
+        <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
             ${msg}
         </div>`;
     overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
