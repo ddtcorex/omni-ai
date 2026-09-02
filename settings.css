@@ -555,14 +555,19 @@ input:focus + .slider {
   flex-direction: column;
   align-items: center;
   gap: var(--omni-spacing-sm);
-  padding: var(--omni-spacing-lg) 0 var(--omni-spacing-xl);
+  /* Horizontal padding centers the ~656px-wide content (matching
+     .options-container's cards) via max(), while never going below the
+     container's own 32px side padding on narrow viewports — this lets the
+     bar's background/border/shadow span the full window edge-to-edge
+     (see the fixed-position rule below) without the button itself
+     stretching wider than the cards above it. */
+  padding: var(--omni-spacing-lg) max(var(--omni-spacing-2xl), calc(50% - 328px))
+    var(--omni-spacing-xl);
   margin-top: var(--omni-spacing-2xl);
   background: var(--omni-glass-heavy);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--omni-border);
-  border-radius: var(--omni-radius-lg) var(--omni-radius-lg) 0 0;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* 750px comfortably clears the API Configuration section's ~590px content
@@ -585,9 +590,11 @@ input:focus + .slider {
     bottom: 0;
     left: 0;
     right: 0;
-    width: calc(100% - 2 * var(--omni-spacing-2xl));
-    max-width: 656px; /* .options-container's 720px max-width minus its 2×32px padding */
-    margin: 0 auto;
+    width: 100%;
+    /* Edge-to-edge (no inset, no border-radius) reads as an anchored
+       bottom bar; an inset rounded floating card looked disconnected
+       from the window instead. */
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
     z-index: 10;
   }
 }
