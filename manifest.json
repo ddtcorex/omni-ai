@@ -97,6 +97,7 @@
         "assets/icons/*.png",
         "_locales/*/messages.json",
         "lib/i18n.js",
+        "lib/theme-manager.js",
         "lib/design-tokens.css",
         "lib/design-system.css",
         "content/overlay.css"

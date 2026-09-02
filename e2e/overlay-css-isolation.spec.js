@@ -115,6 +115,50 @@ test("wraps a long unbroken token in the auto grammar-check suggestion card", as
   }
 });
 
+test("applies the light theme class to the shadow host on a real extension load", async () => {
+  // Regression test for a Critical bug: lib/theme-manager.js was never added
+  // to manifest.json's web_accessible_resources, so content.js's
+  // ensureUiTheme()'s dynamic import(chrome.runtime.getURL("lib/theme-manager.js"))
+  // failed on every real page load ("Denying load of ... Resources must be
+  // listed in the web_accessible_resources manifest key"), and the shadow
+  // host never got .omni-ai-light-mode. This is invisible to jsdom-based
+  // Jest tests (no real extension resource-loading enforcement), which is
+  // exactly how it shipped despite `npm run verify` being green.
+  const FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ omni_ai_theme: "light" });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.locator("#target").click();
+    await page.locator("#target").dispatchEvent("mouseup");
+    // Selecting text mounts the shadow UI host (createQuickBtn ->
+    // ensureUiRootReady() -> ensureUiTheme(omniUiHost)).
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const host = document.getElementById("omni-ai-shadow-host");
+            return host ? host.classList.contains("omni-ai-light-mode") : false;
+          }),
+        { timeout: 5000 },
+      )
+      .toBe(true);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("stays isolated from host-page CSS even if the shadow host's inline style is stripped", async () => {
   const FIXTURE = `<!doctype html><html><body>
     <input id="target" type="text" value="Hello world, this is a test." />
