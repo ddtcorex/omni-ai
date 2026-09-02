@@ -169,7 +169,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 
 ## 🚀 Dev Loop & Tooling (speed)
 
-- **Load unpacked** from `chrome://extensions` (dev mode). After edits: refresh the extension card (service worker / manifest changes) and reload target tabs (content-script changes). There is no HMR by default — see `docs/dev-tooling.md` for the recommended speed stack (auto-reload, lint, typecheck, E2E).
+- **Load unpacked** from `chrome://extensions` (dev mode). After edits: refresh the extension card (service worker / manifest changes) and reload target tabs (content-script changes). There is no HMR by default — see `docs/DEV-TOOLING.md` for the recommended speed stack (auto-reload, lint, typecheck, E2E).
 - The `manifest.json` `"key"` field pins a stable extension ID in dev; `scripts/publish.sh` strips it for store builds. Never change `key` casually.
 - Debugging surfaces: SW inspector via `chrome://extensions` → "Inspect views: service worker"; content-script logs in page DevTools console (filter `[Omni AI]`).
 

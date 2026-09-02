@@ -1,7 +1,7 @@
 # Contributing to Omni AI
 
 Agent/human contributors alike: `AGENTS.md` is the technical handbook (architecture, message protocol,
-storage contract, checklists) and `docs/dev-tooling.md` documents the toolchain. This file covers HOW we work.
+storage contract, checklists) and `docs/DEV-TOOLING.md` documents the toolchain. This file covers HOW we work.
 Work lands via our GitFlow-lite branch model (`feature/*` → `develop` → `master`;
 see [Branching Model](#branching-model-gitflow-lite) below).
 
