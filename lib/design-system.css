@@ -146,6 +146,13 @@
 
 .ds-card--accent {
   border-left: 3px solid var(--omni-accent);
+  /* Restores .omni-ai-context-preview's old margin-bottom: this modifier
+     is only ever used as a "quoted context" block immediately followed by
+     another element (a reply/result, or an input field) — see
+     docs/FOLLOWUPS.md #15. Scoped to the modifier, not the base .ds-card,
+     since the settings/side-panel plain .ds-card usages are typically the
+     last/only element in their container and don't need trailing space. */
+  margin-bottom: var(--omni-spacing-md);
 }
 
 .ds-card--success {
