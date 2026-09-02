@@ -535,14 +535,26 @@ input:focus + .slider {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Save Actions Area */
+/* Save Actions Area
+   Sticky to the bottom of the viewport: on a long settings page the Save
+   button would otherwise scroll out of view, so it stays visible (as a
+   floating bar) once the user scrolls past its natural position. */
 .save-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--omni-spacing-sm);
   margin-top: var(--omni-spacing-2xl);
-  padding-bottom: var(--omni-spacing-2xl);
+  padding: var(--omni-spacing-lg) 0 var(--omni-spacing-xl);
+  position: sticky;
+  bottom: 0;
+  background: var(--omni-glass-heavy);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--omni-border);
+  border-radius: var(--omni-radius-lg) var(--omni-radius-lg) 0 0;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 10;
 }
 
 /* .save-btn is now .ds-btn-primary from lib/design-system.css */
