@@ -43,7 +43,7 @@
   "homepage": "https://github.com/ddtcorex/omni-ai#readme",
   "devDependencies": {
     "@babel/core": "^7.28.6",
-    "@babel/preset-env": "^7.28.6",
+    "@babel/preset-env": "^8.0.2",
     "@playwright/test": "^1.62.1",
     "@types/chrome": "^0.2.7",
     "babel-jest": "^30.5.1",
