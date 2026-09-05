@@ -25,6 +25,7 @@ module.exports = {
     "!scripts/**",
     "!coverage/**",
     "!dist/**",
+    "!.claude/**",
   ],
   coverageThreshold: {
     // Global floor: a regression tripwire, not a target. Note: Jest buckets
