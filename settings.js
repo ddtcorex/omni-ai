@@ -1,12 +1,24 @@
 import { getStats, resetStats } from "./lib/history.js";
 import { i18n } from "./lib/i18n.js";
-import { initTheme, applyTheme } from "./lib/theme-manager.js";
+import {
+  initTheme,
+  applyTheme,
+  getThemePreference,
+  setThemePreference,
+} from "./lib/theme-manager.js";
 import {
   AI_PROVIDERS,
   getProviderByModel,
   LEGACY_MODELS,
   DEFAULT_MODEL,
 } from "./lib/ai-providers.js";
+import {
+  getSyncPreferences,
+  setSyncPreferences,
+  getLocalAiConfig,
+  setLocalAiConfig,
+  getSettingsBag,
+} from "./lib/storage.js";
 
 /**
  * Omni AI - Options Page Script
@@ -487,12 +499,12 @@ function showValidationStatus(message, type) {
 export async function loadSettings() {
   try {
     // 1. Load Sync Preferences
-    const THEME_KEY = "omni_ai_theme";
+    const currentTheme = await getThemePreference();
     /** @type {Record<string, any>} */
-    const prefs = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage", THEME_KEY]);
+    const prefs = await getSyncPreferences();
 
     if (elements.themeSelector) {
-      elements.themeSelector.value = prefs[THEME_KEY] || "system";
+      elements.themeSelector.value = currentTheme;
       applyTheme(elements.themeSelector.value);
     }
     const detectedLocale = detectSupportedLocale(
@@ -506,19 +518,7 @@ export async function loadSettings() {
 
     // 2. Load Local AI Config
     /** @type {Record<string, any>} */
-    const config = await chrome.storage.local.get([
-      "geminiApiKey",
-      "groqApiKey",
-      "openaiApiKey",
-      "anthropicApiKey",
-      "apiModel",
-      "customModelName",
-      "currentPreset",
-      "customGatewayBaseUrl",
-      "customGatewayApiKey",
-      "customGatewayModelName",
-      "settings",
-    ]);
+    const config = await getLocalAiConfig();
 
     if (config.geminiApiKey) elements.geminiApiKey.value = config.geminiApiKey;
     if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
@@ -563,19 +563,18 @@ export async function loadSettings() {
  * Save settings to storage
  */
 async function saveSettings() {
-  const THEME_KEY = "omni_ai_theme";
   try {
     // Preferences to Sync
     const preferences = {
       primaryLanguage: elements.primaryLanguage.value,
       defaultLanguage: elements.defaultLanguage.value,
-      [THEME_KEY]: elements.themeSelector.value,
     };
-    await chrome.storage.sync.set(preferences);
+    await setSyncPreferences(preferences);
+    await setThemePreference(elements.themeSelector.value);
 
     // AI Config to Local
     /** @type {Record<string, any>} */
-    const existingLocalSettings = await chrome.storage.local.get("settings");
+    const existingLocalSettings = await getSettingsBag();
     const aiConfig = {
       geminiApiKey: elements.geminiApiKey.value.trim(),
       groqApiKey: elements.groqApiKey.value.trim(),
@@ -587,7 +586,7 @@ async function saveSettings() {
       customGatewayBaseUrl: elements.customGatewayBaseUrl.value.trim(),
       customGatewayApiKey: elements.customGatewayApiKey.value.trim(),
       settings: {
-        ...(existingLocalSettings.settings || {}),
+        ...(existingLocalSettings || {}),
         showFloatingButton: elements.showFloatingButton?.value !== "off",
       },
     };
@@ -596,7 +595,7 @@ async function saveSettings() {
     if (elements.apiModel.value === "custom-gateway") {
       aiConfig.customGatewayModelName = elements.customModelName.value.trim();
     }
-    await chrome.storage.local.set(aiConfig);
+    await setLocalAiConfig(aiConfig);
 
     showSaveStatus(i18n.getMessage("settings_saved"), "success");
   } catch (error) {
