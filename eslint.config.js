@@ -25,6 +25,19 @@ module.exports = [
     },
   },
   {
+    ignores: ["lib/providers/**"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "CallExpression[callee.name='fetch']",
+          message:
+            "Only lib/providers/*.js may call fetch() directly (Provider Pattern, AGENTS.md Core Directive #4). Route AI-provider calls through lib/ai-service.js. If this is a legitimate non-AI fetch (a local extension resource via chrome.runtime.getURL, for example), add a commented eslint-disable-next-line explaining why.",
+        },
+      ],
+    },
+  },
+  {
     files: ["tests/**/*.js", "e2e/**/*.js"],
     languageOptions: { globals: { ...globals.node, ...globals.jest } },
   },

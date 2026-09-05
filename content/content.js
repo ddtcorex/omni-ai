@@ -57,6 +57,7 @@ async function initializeI18n() {
     // Standard chrome.i18n is available, but the user wants custom override logic
     // We'll fetch the JSON files manually as fallback to simulate i18n module
     const enUrl = chrome.runtime.getURL("_locales/en/messages.json");
+    // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.
     const enRes = await fetch(enUrl);
     const enData = await enRes.json();
 
@@ -64,6 +65,7 @@ async function initializeI18n() {
     if (userLang !== "en") {
       try {
         const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
+        // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.
         const targetRes = await fetch(targetUrl);
         targetData = await targetRes.json();
       } catch {
@@ -186,6 +188,7 @@ function ensureUiStyles(root = ensureUiRoot()) {
       const sheetPaths = ["lib/design-tokens.css", "lib/design-system.css", "content/overlay.css"];
       omniUiStylePromise = Promise.all(
         sheetPaths.map((p) =>
+          // eslint-disable-next-line no-restricted-syntax -- local extension resource (design tokens/overlay CSS via chrome.runtime.getURL), not an AI provider call.
           fetch(chrome.runtime.getURL(p)).then((response) => {
             if (!response.ok) {
               throw new Error(`Failed to load ${p}: ${response.status}`);
