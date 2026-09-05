@@ -362,7 +362,10 @@ describe("Service Worker Integration", () => {
     expect(returned).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith("primaryLanguage");
+    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith([
+      "primaryLanguage",
+      "defaultLanguage",
+    ]);
     expect(AIService.explainText).toHaveBeenCalledWith("texto", "vi");
     // regression guard: the local area must not be consulted for these keys
     const localKeys = chromeMock.storage.local.get.mock.calls.map((c) => c[0]).flat();

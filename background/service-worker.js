@@ -1,4 +1,5 @@
 import { addToHistory } from "../lib/history.js";
+import { getSyncPreferences, getApiKey as getStoredApiKey } from "../lib/storage.js";
 import {
   quickAsk,
   improveText,
@@ -442,29 +443,26 @@ async function handleQuickAction(payload) {
   let result;
   switch (action) {
     case "translate": {
-      /** @type {{ defaultLanguage?: string }} */
-      const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { defaultLanguage } = await getSyncPreferences();
       result = await translateText(selectedText, options.targetLanguage || defaultLanguage || "en");
       break;
     }
     case "smart_translate": {
       /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
-      const { primaryLanguage, defaultLanguage } = await chrome.storage.sync.get([
-        "primaryLanguage",
-        "defaultLanguage",
-      ]);
+      const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
       result = await smartTranslate(selectedText, primaryLanguage || "vi", defaultLanguage || "en");
       break;
     }
     case "translate_primary": {
-      /** @type {{ primaryLanguage?: string }} */
-      const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { primaryLanguage } = await getSyncPreferences();
       result = await translateText(selectedText, primaryLanguage || "vi");
       break;
     }
     case "translate_default": {
-      /** @type {{ defaultLanguage?: string }} */
-      const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { defaultLanguage } = await getSyncPreferences();
       result = await translateText(selectedText, defaultLanguage || "en");
       break;
     }
@@ -472,8 +470,8 @@ async function handleQuickAction(payload) {
       result = await summarizeText(selectedText, options);
       break;
     case "explain": {
-      /** @type {{ primaryLanguage?: string }} */
-      const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { primaryLanguage } = await getSyncPreferences();
       result = await explainText(selectedText, primaryLanguage || "vi");
       break;
     }
@@ -555,37 +553,34 @@ async function processSelectedText(tabId, text, action, isInput = false) {
 
     switch (action) {
       case "translate_primary": {
-        /** @type {{ primaryLanguage?: string }} */
-        const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { primaryLanguage } = await getSyncPreferences();
 
         result = await translateText(text, primaryLanguage || "vi");
         break;
       }
       case "translate_default": {
-        /** @type {{ defaultLanguage?: string }} */
-        const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { defaultLanguage } = await getSyncPreferences();
         result = await translateText(text, defaultLanguage || "en");
         break;
       }
       case "smart_translate": {
         /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
-        const { primaryLanguage, defaultLanguage } = await chrome.storage.sync.get([
-          "primaryLanguage",
-          "defaultLanguage",
-        ]);
+        const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
         result = await smartTranslate(text, primaryLanguage || "vi", defaultLanguage || "en");
         break;
       }
       case "translate": {
         // Context menu legacy
-        /** @type {{ defaultLanguage?: string }} */
-        const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { defaultLanguage } = await getSyncPreferences();
         result = await translateText(text, defaultLanguage || "en");
         break;
       }
       case "explain": {
-        /** @type {{ primaryLanguage?: string }} */
-        const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { primaryLanguage } = await getSyncPreferences();
         result = await explainText(text, primaryLanguage || "vi");
         break;
       }
@@ -651,6 +646,5 @@ async function processSelectedText(tabId, text, action, isInput = false) {
  * Get API key from storage
  */
 async function getApiKey() {
-  const result = await chrome.storage.local.get("geminiApiKey");
-  return result.geminiApiKey || "";
+  return (await getStoredApiKey("geminiApiKey")) || "";
 }
