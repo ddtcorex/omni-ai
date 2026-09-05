@@ -46,7 +46,7 @@
     "@babel/preset-env": "^7.28.6",
     "@playwright/test": "^1.62.1",
     "@types/chrome": "^0.2.7",
-    "babel-jest": "^27.5.1",
+    "babel-jest": "^30.5.1",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.11.0",
