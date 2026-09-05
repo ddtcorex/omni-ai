@@ -683,14 +683,15 @@ function reportEditorFocus(element, context = getContext(element)) {
 function setupFloatingButtonPreference() {
   if (!isContextValid()) return;
 
-  chrome.storage.local
-    .get("settings")
-    .then((data) => {
-      floatingButtonEnabled = /** @type {any} */ (data).settings?.showFloatingButton !== false;
+  import(chrome.runtime.getURL("lib/storage.js"))
+    .then(({ getSettingsBag }) => getSettingsBag())
+    .then((settings) => {
+      floatingButtonEnabled = settings?.showFloatingButton !== false;
       if (!floatingButtonEnabled) hideQuickActionButton();
     })
     .catch(() => {});
 
+  // eslint-disable-next-line no-restricted-syntax -- observes changes to the "settings" bag lib/storage.js owns; a generic onChanged listener doesn't fit a per-key typed accessor.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local" || !changes.settings) return;
     floatingButtonEnabled =

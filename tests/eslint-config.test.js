@@ -75,3 +75,22 @@ describe("Provider Pattern ESLint rule", () => {
     expect(messages.some((m) => /fetch/i.test(m.message))).toBe(false);
   });
 });
+
+describe("Storage Map ESLint rule", () => {
+  test("flags a direct chrome.storage.local.get() call in a non-owner file", () => {
+    const messages = lintTextViaRealEslint('chrome.storage.local.get("x");\n', "settings.js");
+    expect(messages.some((m) => /storage/i.test(m.message))).toBe(true);
+  });
+
+  test("does not flag chrome.storage usage inside lib/storage.js itself", () => {
+    const messages = lintTextViaRealEslint('chrome.storage.local.get("x");\n', "lib/storage.js");
+    expect(messages.some((m) => /storage/i.test(m.message))).toBe(false);
+  });
+
+  test("does not flag chrome.storage usage inside lib/theme-manager.js or lib/history.js", () => {
+    for (const filePath of ["lib/theme-manager.js", "lib/history.js"]) {
+      const messages = lintTextViaRealEslint('chrome.storage.sync.get("x");\n', filePath);
+      expect(messages.some((m) => /storage/i.test(m.message))).toBe(false);
+    }
+  });
+});
