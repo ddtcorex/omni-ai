@@ -11,8 +11,8 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 1.  **Stick to Vanilla**: No React, Vue, Tailwind, or bundler. Plain **ES modules (ES6+)** + modern CSS. The browser loads source files directly — there is no compile step in the dev loop.
 2.  **Manifest V3 Compliance**: Service worker background (`"type": "module"`), no remote code, no MV2 APIs.
 3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `lib/design-tokens.css`, `lib/design-system.css`, and `content/overlay.css` (in that order) and injected as a single `<style>` inside the shadow root.
-4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code.
-5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before).
+4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code. Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose — a handful of legitimate local-resource fetches (CSS/i18n) carry documented inline `eslint-disable` exceptions.
+5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before). Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose — only `lib/storage.js`, `lib/theme-manager.js`, and `lib/history.js` may call `chrome.storage.*` directly; every other read/write goes through `lib/storage.js`.
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` through `content/editor-adapters.js`. Always fall back gracefully.
 7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 10 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
@@ -76,6 +76,7 @@ omni-ai/
 |   |-- providers/           # gemini.js, openai.js, groq.js, anthropic.js, custom-gateway.js, index.js
 |   |-- history.js           # History + usage stats (storage.local)
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
+|   |-- storage.js           # Typed owner for the remaining Storage Map keys (languages, API keys/model/preset, custom-gateway config, settings bag)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
 |-- _locales/                # chrome.i18n messages
 |-- scripts/publish.sh       # Strips manifest "key", zips dist/
