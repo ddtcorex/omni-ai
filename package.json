@@ -53,7 +53,7 @@
     "husky": "^9.1.7",
     "jest": "^27.5.1",
     "jest-chrome": "^0.8.0",
-    "jest-environment-jsdom": "^27.5.1",
+    "jest-environment-jsdom": "^30.5.1",
     "lint-staged": "^17.5.0",
     "prettier": "^3.9.6",
     "typescript": "^7.0.2",
