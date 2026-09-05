@@ -35,13 +35,13 @@ Prompt-wording changes in `lib/ai-service.js` MUST update `tests/lib/ai-service.
 
 Run this matrix manually after changing content scripts. Each site must keep Copy available if direct replacement is rejected.
 
-| Site | Selected replace | Full-draft replace | Shortcut routing | Copy fallback |
-| --- | --- | --- | --- | --- |
-| TinyMCE 6/7 iframe demo | Required | Required | Required | Required |
-| Discord | Required | Required | Required | Required |
-| Telegram Web | Required | Required | Required | Required |
-| Slack | Required | Required | Required | Required |
-| Microsoft Teams | Required | Required | Required | Required |
+| Site                    | Selected replace | Full-draft replace | Shortcut routing | Copy fallback |
+| ----------------------- | ---------------- | ------------------ | ---------------- | ------------- |
+| TinyMCE 6/7 iframe demo | Required         | Required           | Required         | Required      |
+| Discord                 | Required         | Required           | Required         | Required      |
+| Telegram Web            | Required         | Required           | Required         | Required      |
+| Slack                   | Required         | Required           | Required         | Required      |
+| Microsoft Teams         | Required         | Required           | Required         | Required      |
 
 ## PR Checklist
 

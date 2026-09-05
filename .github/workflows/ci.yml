@@ -20,7 +20,11 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run verify
+      - name: web-ext lint (manifest/CSP validation, non-blocking)
+        run: npm run lint:webext
+        continue-on-error: true
 
   # Playwright smoke E2E — blocking quality gate (since Task 12).
   # Runs the specs under e2e/ only: playwright.config.js scopes testDir +

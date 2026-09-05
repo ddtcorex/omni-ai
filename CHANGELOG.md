@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.3.0] - 2026-09-03
 
 ### Added
+
 - Anthropic Claude as a 5th AI provider (Haiku 4.5, Sonnet 5, Opus 5, plus a custom-model slot).
 - Settings now opens automatically on first install, with the browser's UI language detected for the primary-language default and the Gemini key field focused when nothing is configured yet.
 - API keys auto-validate on blur instead of requiring a manual "Validate" click.
@@ -15,15 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A unified vanilla-CSS design system (`lib/design-tokens.css`, `lib/design-system.css`) shared across the content-script overlay, side panel, and settings page — consistent colors, spacing, and component styling everywhere instead of three independently-drifted stylesheets.
 
 ### Changed
+
 - The toolbar icon now opens a "Page Tools" side panel (Summarize / Smart Translate / Explain the current page) instead of the Quick Ask chat popup. Quick Ask chat itself is unchanged and still reachable via Alt+A or the right-click "Ask Omni AI" menu.
 - Refreshed the default model catalog on Google Gemini, OpenAI, and Groq to each provider's current lineup; a previously-selected model that's no longer offered still appears in Settings, labeled "(Legacy)".
 - Unified theme handling: the in-page overlay now uses the same canonical default as Settings/side panel instead of its own ad-hoc logic. If you never touched the theme selector and your OS is set to dark, the in-page overlay's previous ad-hoc default was `"system"` (so it followed your OS); the canonical default is `"light"`, so the overlay may now appear light instead of dark until you explicitly pick a theme in Settings.
 - Settings: the "Save Settings" button now stays visible at the bottom of the window while scrolling through a long settings page, on tall-enough windows, as a full-width bar.
 
 ### Removed
+
 - Google sign-in. It only ever displayed a name/avatar and gated no feature (BYOK is the only model) — removed along with the popup that showed it.
 
 ### Fixed
+
 - The primary-language default no longer hardcodes Vietnamese for users who never set a preference — it now falls back to the browser's detected UI language.
 - Auto-validate on blur now also covers the Custom Gateway API key and base URL fields (previously silently did nothing there).
 - Custom Gateway moved to the end of the model dropdown's provider list instead of sitting in the middle.
@@ -34,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed a doubled divider line above the Advanced settings disclosure.
 
 ### Internal
+
 - Model→provider resolution is now driven entirely by the `AI_PROVIDERS` registry instead of guessing provider prefixes from model-name strings in three different places.
 
 ## [2.2.0] - 2026-08-26

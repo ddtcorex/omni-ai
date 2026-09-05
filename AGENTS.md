@@ -11,8 +11,8 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 1.  **Stick to Vanilla**: No React, Vue, Tailwind, or bundler. Plain **ES modules (ES6+)** + modern CSS. The browser loads source files directly — there is no compile step in the dev loop.
 2.  **Manifest V3 Compliance**: Service worker background (`"type": "module"`), no remote code, no MV2 APIs.
 3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `lib/design-tokens.css`, `lib/design-system.css`, and `content/overlay.css` (in that order) and injected as a single `<style>` inside the shadow root.
-4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code.
-5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before).
+4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code. Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose — a handful of legitimate local-resource fetches (CSS/i18n) carry documented inline `eslint-disable` exceptions.
+5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before). Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose — only `lib/storage.js`, `lib/theme-manager.js`, and `lib/history.js` may call `chrome.storage.*` directly; every other read/write goes through `lib/storage.js`.
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` through `content/editor-adapters.js`. Always fall back gracefully.
 7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 10 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
@@ -76,6 +76,7 @@ omni-ai/
 |   |-- providers/           # gemini.js, openai.js, groq.js, anthropic.js, custom-gateway.js, index.js
 |   |-- history.js           # History + usage stats (storage.local)
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
+|   |-- storage.js           # Typed owner for the remaining Storage Map keys (languages, API keys/model/preset, custom-gateway config, settings bag)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
 |-- _locales/                # chrome.i18n messages
 |-- scripts/publish.sh       # Strips manifest "key", zips dist/
@@ -86,25 +87,25 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type                        | Direction          | Purpose                                                                  |
-| --------------------------- | ------------------ | ------------------------------------------------------------------------ |
-| `GET_SELECTION`             | bg → content       | Return `{ selection, isInput }` for the current selection                |
-| `PROCESSING_START`          | bg → content       | Show spinner state before an async action                                |
-| `SHOW_RESULT`               | bg → content       | Render result card `{ action, result, error?, originalText?, isInput? }` |
-| `REPLACE_SELECTION`         | bg → content       | Swap selection with the AI result                                        |
-| `SHOW_QUICK_ASK_OVERLAY`    | bg → content       | Open Quick Ask overlay (keyboard command)                                |
-| `THEME_CHANGED`             | bg → all tabs      | Re-read theme after `omni_ai_theme` sync change                          |
-| `GET_PAGE_CONTENT`          | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
+| Type                     | Direction           | Purpose                                                                                        |
+| ------------------------ | ------------------- | ---------------------------------------------------------------------------------------------- |
+| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                      |
+| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                      |
+| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                       |
+| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                              |
+| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                      |
+| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                |
+| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
-| Type              | Purpose                                                                                                                              |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------|
-| `QUICK_ASK`       | In-page Quick Ask overlay query (Alt+A / right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()` — not from a popup |
-| `WRITING_ACTION`  | Action request with explicit text                                                                                                    |
+| Type              | Purpose                                                                                                                                                                       |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUICK_ASK`       | In-page Quick Ask overlay query (Alt+A / right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()` — not from a popup                                          |
+| `WRITING_ACTION`  | Action request with explicit text                                                                                                                                             |
 | `QUICK_ACTION`    | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …), also used by the side panel's Page Tools buttons (summarize / smart_translate / explain) |
-| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                         |
-| `GET_API_KEY`     | Read Gemini key                                                                                                                       |
+| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                                                                  |
+| `GET_API_KEY`     | Read Gemini key                                                                                                                                                               |
 
 **Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
 
@@ -117,11 +118,11 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 
 ### Storage Map (the contract)
 
-| Area      | Keys                                                                                                                                                                                                             |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme` |
+| Area      | Keys                                                                                                                                                                                                                                |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`                                                                                                                                                                               |
 | `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
-| `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                         |
+| `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                                             |
 
 ---
 

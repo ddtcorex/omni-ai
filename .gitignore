@@ -45,3 +45,4 @@ extension_info.json
 .webext-profile/
 test-results/
 playwright-report/
+coverage/

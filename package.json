@@ -9,12 +9,25 @@
   "scripts": {
     "dev": "web-ext run --target chromium --source-dir . --chromium-profile ./.webext-profile",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "lint:webext": "web-ext lint --source-dir .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "e2e": "playwright test",
-    "verify": "npm run typecheck && npm run lint && npm test",
-    "package": "bash scripts/publish.sh"
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage",
+    "package": "bash scripts/publish.sh",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --max-warnings 0",
+      "prettier --check"
+    ],
+    "*.{css,html,md,json}": [
+      "prettier --check"
+    ]
   },
   "repository": {
     "type": "git",
@@ -37,9 +50,11 @@
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.11.0",
+    "husky": "^9.1.7",
     "jest": "^27.5.1",
     "jest-chrome": "^0.8.0",
     "jest-environment-jsdom": "^27.5.1",
+    "lint-staged": "^17.5.0",
     "prettier": "^3.9.6",
     "typescript": "^7.0.2",
     "web-ext": "^10.6.0"

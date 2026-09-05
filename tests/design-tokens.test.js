@@ -63,17 +63,20 @@ describe("no var(--...) usage references an undefined or non-canonical token", (
     "../sidepanel/sidepanel.css",
   ];
 
-  test.each(SURFACE_FILES)("%s only uses --omni-* tokens defined in design-tokens.css", (relPath) => {
-    const filePath = path.join(__dirname, relPath);
-    const content = fs.readFileSync(filePath, "utf8");
-    const usages = Array.from(content.matchAll(/var\((--[a-zA-Z0-9-]+)/g)).map((m) => m[1]);
+  test.each(SURFACE_FILES)(
+    "%s only uses --omni-* tokens defined in design-tokens.css",
+    (relPath) => {
+      const filePath = path.join(__dirname, relPath);
+      const content = fs.readFileSync(filePath, "utf8");
+      const usages = Array.from(content.matchAll(/var\((--[a-zA-Z0-9-]+)/g)).map((m) => m[1]);
 
-    const invalid = usages.filter(
-      (token) => !token.startsWith("--omni-") || !definedTokens.has(token),
-    );
+      const invalid = usages.filter(
+        (token) => !token.startsWith("--omni-") || !definedTokens.has(token),
+      );
 
-    expect(invalid).toEqual([]);
-  });
+      expect(invalid).toEqual([]);
+    },
+  );
 });
 
 describe("no legacy token names remain in any surface", () => {

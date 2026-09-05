@@ -1,4 +1,5 @@
 import { addToHistory } from "../lib/history.js";
+import { getSyncPreferences, getApiKey as getStoredApiKey } from "../lib/storage.js";
 import {
   quickAsk,
   improveText,
@@ -28,6 +29,7 @@ function activeEditorFrameKey(tabId) {
 async function getActiveEditorFrame(tabId) {
   if (activeEditorFrames.has(tabId)) return activeEditorFrames.get(tabId);
 
+  // eslint-disable-next-line no-restricted-syntax -- ephemeral, per-tab, session-scoped frame-routing state; not a Storage Map preference/secret, doesn't fit lib/storage.js's typed-key model.
   const stored = await chrome.storage.session.get(activeEditorFrameKey(tabId));
   const frameId = stored[activeEditorFrameKey(tabId)];
   if (Number.isInteger(frameId)) activeEditorFrames.set(tabId, frameId);
@@ -36,11 +38,13 @@ async function getActiveEditorFrame(tabId) {
 
 function rememberActiveEditorFrame(tabId, frameId) {
   activeEditorFrames.set(tabId, frameId);
+  // eslint-disable-next-line no-restricted-syntax -- see getActiveEditorFrame above.
   return chrome.storage.session.set({ [activeEditorFrameKey(tabId)]: frameId });
 }
 
 function clearActiveEditorFrame(tabId) {
   activeEditorFrames.delete(tabId);
+  // eslint-disable-next-line no-restricted-syntax -- see getActiveEditorFrame above.
   return chrome.storage.session.remove(activeEditorFrameKey(tabId));
 }
 
@@ -89,6 +93,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     // signed in still carry that profile in sync storage with no remaining
     // reader. This runs on every future update, not just once, but
     // removing an already-absent key is a cheap no-op, so that's fine.
+    // eslint-disable-next-line no-restricted-syntax -- one-time legacy-key cleanup (stale OAuth profile from a removed sign-in feature); no ongoing owner, doesn't fit a per-key typed accessor.
     chrome.storage.sync.remove("user").catch(() => {});
   }
 });
@@ -180,12 +185,14 @@ async function initializeSettings() {
   };
 
   /** @type {Record<string, any>} */
+  // eslint-disable-next-line no-restricted-syntax -- one-time (well, on every install/update) bulk read-merge-write of every default; doesn't fit a per-key typed accessor.
   const existing = await chrome.storage.local.get(null);
   const merged = {
     ...defaults,
     ...existing,
     settings: { ...defaults.settings, ...(existing.settings || {}) },
   };
+  // eslint-disable-next-line no-restricted-syntax -- see above.
   await chrome.storage.local.set(merged);
 }
 
@@ -227,6 +234,7 @@ function createContextMenus() {
 /**
  * Handle storage changes
  */
+// eslint-disable-next-line no-restricted-syntax -- observes omni_ai_theme changes to broadcast THEME_CHANGED to tabs; lib/theme-manager.js owns the key itself but has no concept of "broadcast to all tabs" (a service-worker-only capability).
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && changes.omni_ai_theme) {
     // Notify all tabs to update their theme
@@ -442,29 +450,26 @@ async function handleQuickAction(payload) {
   let result;
   switch (action) {
     case "translate": {
-      /** @type {{ defaultLanguage?: string }} */
-      const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { defaultLanguage } = await getSyncPreferences();
       result = await translateText(selectedText, options.targetLanguage || defaultLanguage || "en");
       break;
     }
     case "smart_translate": {
       /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
-      const { primaryLanguage, defaultLanguage } = await chrome.storage.sync.get([
-        "primaryLanguage",
-        "defaultLanguage",
-      ]);
+      const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
       result = await smartTranslate(selectedText, primaryLanguage || "vi", defaultLanguage || "en");
       break;
     }
     case "translate_primary": {
-      /** @type {{ primaryLanguage?: string }} */
-      const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { primaryLanguage } = await getSyncPreferences();
       result = await translateText(selectedText, primaryLanguage || "vi");
       break;
     }
     case "translate_default": {
-      /** @type {{ defaultLanguage?: string }} */
-      const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { defaultLanguage } = await getSyncPreferences();
       result = await translateText(selectedText, defaultLanguage || "en");
       break;
     }
@@ -472,8 +477,8 @@ async function handleQuickAction(payload) {
       result = await summarizeText(selectedText, options);
       break;
     case "explain": {
-      /** @type {{ primaryLanguage?: string }} */
-      const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+      /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+      const { primaryLanguage } = await getSyncPreferences();
       result = await explainText(selectedText, primaryLanguage || "vi");
       break;
     }
@@ -555,37 +560,34 @@ async function processSelectedText(tabId, text, action, isInput = false) {
 
     switch (action) {
       case "translate_primary": {
-        /** @type {{ primaryLanguage?: string }} */
-        const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { primaryLanguage } = await getSyncPreferences();
 
         result = await translateText(text, primaryLanguage || "vi");
         break;
       }
       case "translate_default": {
-        /** @type {{ defaultLanguage?: string }} */
-        const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { defaultLanguage } = await getSyncPreferences();
         result = await translateText(text, defaultLanguage || "en");
         break;
       }
       case "smart_translate": {
         /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
-        const { primaryLanguage, defaultLanguage } = await chrome.storage.sync.get([
-          "primaryLanguage",
-          "defaultLanguage",
-        ]);
+        const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
         result = await smartTranslate(text, primaryLanguage || "vi", defaultLanguage || "en");
         break;
       }
       case "translate": {
         // Context menu legacy
-        /** @type {{ defaultLanguage?: string }} */
-        const { defaultLanguage } = await chrome.storage.sync.get("defaultLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { defaultLanguage } = await getSyncPreferences();
         result = await translateText(text, defaultLanguage || "en");
         break;
       }
       case "explain": {
-        /** @type {{ primaryLanguage?: string }} */
-        const { primaryLanguage } = await chrome.storage.sync.get("primaryLanguage");
+        /** @type {{ primaryLanguage?: string, defaultLanguage?: string }} */
+        const { primaryLanguage } = await getSyncPreferences();
         result = await explainText(text, primaryLanguage || "vi");
         break;
       }
@@ -651,6 +653,5 @@ async function processSelectedText(tabId, text, action, isInput = false) {
  * Get API key from storage
  */
 async function getApiKey() {
-  const result = await chrome.storage.local.get("geminiApiKey");
-  return result.geminiApiKey || "";
+  return (await getStoredApiKey("geminiApiKey")) || "";
 }

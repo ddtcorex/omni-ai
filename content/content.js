@@ -39,24 +39,21 @@ let i18n = {
 // Initialize localization
 async function initializeI18n() {
   try {
-    const { primaryLanguage } = await new Promise((resolve) => {
-      if (!isContextValid()) {
-        resolve({ primaryLanguage: "en" });
-        return;
+    let primaryLanguage = "en";
+    if (isContextValid()) {
+      try {
+        const { getPrimaryLanguage } = await import(chrome.runtime.getURL("lib/storage.js"));
+        primaryLanguage = (await getPrimaryLanguage()) || "en";
+      } catch {
+        primaryLanguage = "en";
       }
-      chrome.storage.sync.get("primaryLanguage", (data) => {
-        if (chrome.runtime.lastError) {
-          resolve({ primaryLanguage: "en" });
-        } else {
-          resolve(data || { primaryLanguage: "en" });
-        }
-      });
-    });
+    }
     const userLang = primaryLanguage || "en";
 
     // Standard chrome.i18n is available, but the user wants custom override logic
     // We'll fetch the JSON files manually as fallback to simulate i18n module
     const enUrl = chrome.runtime.getURL("_locales/en/messages.json");
+    // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.
     const enRes = await fetch(enUrl);
     const enData = await enRes.json();
 
@@ -64,6 +61,7 @@ async function initializeI18n() {
     if (userLang !== "en") {
       try {
         const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
+        // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.
         const targetRes = await fetch(targetUrl);
         targetData = await targetRes.json();
       } catch {
@@ -186,6 +184,7 @@ function ensureUiStyles(root = ensureUiRoot()) {
       const sheetPaths = ["lib/design-tokens.css", "lib/design-system.css", "content/overlay.css"];
       omniUiStylePromise = Promise.all(
         sheetPaths.map((p) =>
+          // eslint-disable-next-line no-restricted-syntax -- local extension resource (design tokens/overlay CSS via chrome.runtime.getURL), not an AI provider call.
           fetch(chrome.runtime.getURL(p)).then((response) => {
             if (!response.ok) {
               throw new Error(`Failed to load ${p}: ${response.status}`);
@@ -684,14 +683,15 @@ function reportEditorFocus(element, context = getContext(element)) {
 function setupFloatingButtonPreference() {
   if (!isContextValid()) return;
 
-  chrome.storage.local
-    .get("settings")
-    .then((data) => {
-      floatingButtonEnabled = /** @type {any} */ (data).settings?.showFloatingButton !== false;
+  import(chrome.runtime.getURL("lib/storage.js"))
+    .then(({ getSettingsBag }) => getSettingsBag())
+    .then((settings) => {
+      floatingButtonEnabled = settings?.showFloatingButton !== false;
       if (!floatingButtonEnabled) hideQuickActionButton();
     })
     .catch(() => {});
 
+  // eslint-disable-next-line no-restricted-syntax -- observes changes to the "settings" bag lib/storage.js owns; a generic onChanged listener doesn't fit a per-key typed accessor.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local" || !changes.settings) return;
     floatingButtonEnabled =
@@ -854,8 +854,8 @@ async function showQuickActionMenu(
 
   if (isContextValid()) {
     try {
-      /** @type {Record<string, any>} */
-      const data = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage"]);
+      const { getSyncPreferences } = await import(chrome.runtime.getURL("lib/storage.js"));
+      const data = await getSyncPreferences();
       primaryLanguage = data.primaryLanguage || "vi";
       defaultLanguage = data.defaultLanguage || "en";
     } catch {
@@ -1102,8 +1102,8 @@ async function handleAction(action, text, isInput) {
   let preset = "chat";
   let options = {};
   if (action === "tone") {
-    /** @type {{ currentPreset?: string }} */
-    const { currentPreset } = await chrome.storage.local.get("currentPreset");
+    const { getCurrentPreset } = await import(chrome.runtime.getURL("lib/storage.js"));
+    const currentPreset = await getCurrentPreset();
     const validTones = ["professional", "casual", "friendly", "direct", "confident"];
     if (currentPreset && validTones.includes(currentPreset.toLowerCase())) {
       preset = currentPreset;

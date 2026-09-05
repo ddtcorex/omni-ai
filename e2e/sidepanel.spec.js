@@ -54,7 +54,10 @@ test("a successful result shows which page it describes", async () => {
       const real = chrome.runtime.sendMessage.bind(chrome.runtime);
       chrome.runtime.sendMessage = (...args) => {
         if (args[0]?.type === "QUICK_ACTION") {
-          return Promise.resolve({ success: true, data: { response: "A fixture article about foxes." } });
+          return Promise.resolve({
+            success: true,
+            data: { response: "A fixture article about foxes." },
+          });
         }
         return real(...args);
       };

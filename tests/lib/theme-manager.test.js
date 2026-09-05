@@ -1,4 +1,9 @@
-import { THEMES, applyTheme, getThemePreference, setThemePreference } from "../../lib/theme-manager.js";
+import {
+  THEMES,
+  applyTheme,
+  getThemePreference,
+  setThemePreference,
+} from "../../lib/theme-manager.js";
 
 describe("theme-manager", () => {
   beforeEach(() => {
