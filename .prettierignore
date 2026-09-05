@@ -4,6 +4,7 @@ package-lock.json
 .webext-profile/
 playwright-report/
 test-results/
+coverage/
 # Process artifacts: never reformat SDD task briefs/reports or the living plan
 # documents other tasks execute from.
 .superpowers/
