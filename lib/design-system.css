@@ -44,7 +44,9 @@
   border-radius: var(--omni-radius-sm);
   cursor: pointer;
   font-size: var(--omni-font-sm);
-  transition: transform 0.1s, filter 0.1s;
+  transition:
+    transform 0.1s,
+    filter 0.1s;
 }
 
 .ds-btn-primary:hover {

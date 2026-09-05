@@ -148,12 +148,12 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action                                                        |
-| :------- | :-------------------------------------------------------------- |
-| `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page)                     |
-| `Alt+R`  | Rephrase (on selected text)                                      |
+| Shortcut | Action                                                                         |
+| :------- | :----------------------------------------------------------------------------- |
+| `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page)                                   |
+| `Alt+R`  | Rephrase (on selected text)                                                    |
 | `Alt+T`  | Smart Translate (auto-detects direction between your two configured languages) |
-| `Alt+F`  | Fix Grammar (on selected text)                                   |
+| `Alt+F`  | Fix Grammar (on selected text)                                                 |
 
 Chrome only auto-binds up to 4 shortcuts per extension, so these are the 4 with a default binding. Opening the side panel, Summarize, and Explain are also available as commands but need to be bound manually — like all shortcuts here, customizable at `chrome://extensions/shortcuts`.
 

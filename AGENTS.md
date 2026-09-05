@@ -86,25 +86,25 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type                        | Direction          | Purpose                                                                  |
-| --------------------------- | ------------------ | ------------------------------------------------------------------------ |
-| `GET_SELECTION`             | bg → content       | Return `{ selection, isInput }` for the current selection                |
-| `PROCESSING_START`          | bg → content       | Show spinner state before an async action                                |
-| `SHOW_RESULT`               | bg → content       | Render result card `{ action, result, error?, originalText?, isInput? }` |
-| `REPLACE_SELECTION`         | bg → content       | Swap selection with the AI result                                        |
-| `SHOW_QUICK_ASK_OVERLAY`    | bg → content       | Open Quick Ask overlay (keyboard command)                                |
-| `THEME_CHANGED`             | bg → all tabs      | Re-read theme after `omni_ai_theme` sync change                          |
-| `GET_PAGE_CONTENT`          | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
+| Type                     | Direction           | Purpose                                                                                        |
+| ------------------------ | ------------------- | ---------------------------------------------------------------------------------------------- |
+| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                      |
+| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                      |
+| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                       |
+| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                              |
+| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                      |
+| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                |
+| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
-| Type              | Purpose                                                                                                                              |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------|
-| `QUICK_ASK`       | In-page Quick Ask overlay query (Alt+A / right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()` — not from a popup |
-| `WRITING_ACTION`  | Action request with explicit text                                                                                                    |
+| Type              | Purpose                                                                                                                                                                       |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUICK_ASK`       | In-page Quick Ask overlay query (Alt+A / right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()` — not from a popup                                          |
+| `WRITING_ACTION`  | Action request with explicit text                                                                                                                                             |
 | `QUICK_ACTION`    | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …), also used by the side panel's Page Tools buttons (summarize / smart_translate / explain) |
-| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                         |
-| `GET_API_KEY`     | Read Gemini key                                                                                                                       |
+| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                                                                  |
+| `GET_API_KEY`     | Read Gemini key                                                                                                                                                               |
 
 **Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
 
@@ -117,11 +117,11 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 
 ### Storage Map (the contract)
 
-| Area      | Keys                                                                                                                                                                                                             |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme` |
+| Area      | Keys                                                                                                                                                                                                                                |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`                                                                                                                                                                               |
 | `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
-| `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                         |
+| `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                                             |
 
 ---
 

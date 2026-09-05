@@ -19,9 +19,9 @@ module.exports = [
       globals: { ...globals.browser, ...globals.serviceworker, chrome: "readonly" },
     },
     rules: {
-      "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "no-var": "warn",
-      eqeqeq: ["warn", "smart"],
+      eqeqeq: ["error", "smart"],
     },
   },
   {

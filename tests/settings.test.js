@@ -1,11 +1,37 @@
 const FIXTURE_IDS = [
-  "extVersion", "geminiApiKey", "apiModel", "customModelName", "customModelGroup",
-  "googleKeyGroup", "groqApiKey", "groqKeyGroup", "openaiApiKey", "openaiKeyGroup",
-  "anthropicApiKey", "anthropicKeyGroup", "customGatewayKeyGroup", "customGatewayBaseUrl",
-  "customGatewayApiKey", "advancedProviderSettings", "toggleApiKey", "validateBtn", "validationStatus", "themeSelector",
-  "defaultPreset", "showFloatingButton", "primaryLanguage", "defaultLanguage", "shortcutsLink",
-  "saveBtn", "saveStatus", "statTotalActions", "statWordsProcessed", "statWordsGenerated",
-  "refreshHistory", "clearHistory", "historyList",
+  "extVersion",
+  "geminiApiKey",
+  "apiModel",
+  "customModelName",
+  "customModelGroup",
+  "googleKeyGroup",
+  "groqApiKey",
+  "groqKeyGroup",
+  "openaiApiKey",
+  "openaiKeyGroup",
+  "anthropicApiKey",
+  "anthropicKeyGroup",
+  "customGatewayKeyGroup",
+  "customGatewayBaseUrl",
+  "customGatewayApiKey",
+  "advancedProviderSettings",
+  "toggleApiKey",
+  "validateBtn",
+  "validationStatus",
+  "themeSelector",
+  "defaultPreset",
+  "showFloatingButton",
+  "primaryLanguage",
+  "defaultLanguage",
+  "shortcutsLink",
+  "saveBtn",
+  "saveStatus",
+  "statTotalActions",
+  "statWordsProcessed",
+  "statWordsGenerated",
+  "refreshHistory",
+  "clearHistory",
+  "historyList",
 ];
 
 const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko", "zh"];
@@ -13,15 +39,25 @@ const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko",
 function buildFixture() {
   document.body.innerHTML = FIXTURE_IDS.map((id) => {
     if (id === "apiModel") return `<select id="${id}"></select>`;
-    if (id === "advancedProviderSettings") return `<details id="${id}"><summary></summary></details>`;
+    if (id === "advancedProviderSettings")
+      return `<details id="${id}"><summary></summary></details>`;
     if (["primaryLanguage", "defaultLanguage"].includes(id)) {
-      const options = SUPPORTED_LOCALES.map((code) => `<option value="${code}">${code}</option>`).join("");
+      const options = SUPPORTED_LOCALES.map(
+        (code) => `<option value="${code}">${code}</option>`,
+      ).join("");
       return `<select id="${id}">${options}</select>`;
     }
     if (["themeSelector", "defaultPreset", "showFloatingButton"].includes(id)) {
       return `<select id="${id}"><option value="">-</option></select>`;
     }
-    if (id === "toggleApiKey" || id === "validateBtn" || id === "shortcutsLink" || id === "saveBtn" || id === "refreshHistory" || id === "clearHistory") {
+    if (
+      id === "toggleApiKey" ||
+      id === "validateBtn" ||
+      id === "shortcutsLink" ||
+      id === "saveBtn" ||
+      id === "refreshHistory" ||
+      id === "clearHistory"
+    ) {
       return `<button id="${id}"><svg></svg><span></span></button>`;
     }
     return `<div id="${id}"></div>`;

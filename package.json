@@ -9,11 +9,13 @@
   "scripts": {
     "dev": "web-ext run --target chromium --source-dir . --chromium-profile ./.webext-profile",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "lint:webext": "web-ext lint --source-dir .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "jest",
     "e2e": "playwright test",
-    "verify": "npm run typecheck && npm run lint && npm test",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run lint:webext && npm test",
     "package": "bash scripts/publish.sh"
   },
   "repository": {

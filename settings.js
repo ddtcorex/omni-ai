@@ -1,7 +1,12 @@
 import { getStats, resetStats } from "./lib/history.js";
 import { i18n } from "./lib/i18n.js";
 import { initTheme, applyTheme } from "./lib/theme-manager.js";
-import { AI_PROVIDERS, getProviderByModel, LEGACY_MODELS, DEFAULT_MODEL } from "./lib/ai-providers.js";
+import {
+  AI_PROVIDERS,
+  getProviderByModel,
+  LEGACY_MODELS,
+  DEFAULT_MODEL,
+} from "./lib/ai-providers.js";
 
 /**
  * Omni AI - Options Page Script
@@ -78,7 +83,8 @@ export function detectSupportedLocale(uiLanguage, supported, fallback) {
  * Initialize options page
  */
 export async function init() {
-  if (elements.extVersion) elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
+  if (elements.extVersion)
+    elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
@@ -494,7 +500,8 @@ export async function loadSettings() {
       SUPPORTED_LOCALES,
       "en",
     );
-    if (elements.primaryLanguage) elements.primaryLanguage.value = prefs.primaryLanguage || detectedLocale;
+    if (elements.primaryLanguage)
+      elements.primaryLanguage.value = prefs.primaryLanguage || detectedLocale;
     if (elements.defaultLanguage) elements.defaultLanguage.value = prefs.defaultLanguage || "en";
 
     // 2. Load Local AI Config
@@ -603,7 +610,8 @@ async function saveSettings() {
  */
 function showSaveStatus(message, type = "success") {
   elements.saveStatus.textContent = message;
-  elements.saveStatus.style.color = type === "success" ? "var(--omni-success)" : "var(--omni-error)";
+  elements.saveStatus.style.color =
+    type === "success" ? "var(--omni-success)" : "var(--omni-error)";
   elements.saveStatus.classList.add("visible");
 
   setTimeout(() => {

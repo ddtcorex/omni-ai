@@ -14,7 +14,9 @@ describe("AI_PROVIDERS registry", () => {
 
   it("every LEGACY_MODELS entry points at a real provider id, and is NOT also a current model", () => {
     const providerIds = new Set(Object.keys(AI_PROVIDERS));
-    const allCurrentIds = new Set(Object.values(AI_PROVIDERS).flatMap((p) => p.models.map((m) => m.id)));
+    const allCurrentIds = new Set(
+      Object.values(AI_PROVIDERS).flatMap((p) => p.models.map((m) => m.id)),
+    );
     Object.entries(LEGACY_MODELS).forEach(([modelId, { provider, apiModel }]) => {
       expect(providerIds.has(provider)).toBe(true);
       expect(allCurrentIds.has(modelId)).toBe(false);

@@ -386,7 +386,10 @@ describe("Service Worker Integration", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Must consult storage.sync (never local) for both languages
-    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith(["primaryLanguage", "defaultLanguage"]);
+    expect(chromeMock.storage.sync.get).toHaveBeenCalledWith([
+      "primaryLanguage",
+      "defaultLanguage",
+    ]);
     const localKeys = chromeMock.storage.local.get.mock.calls.map((c) => c[0]).flat();
     expect(localKeys).not.toContain("defaultLanguage");
     // No configured languages -> documented fallbacks

@@ -42,7 +42,10 @@ function localizeDOM() {
     ["title", "alt"].forEach((attr) => {
       const val = el.getAttribute(attr);
       if (val && val.includes("__MSG_")) {
-        el.setAttribute(attr, val.replace(/__MSG_(\w+)__/g, (match, key) => i18n.getMessage(key) || match));
+        el.setAttribute(
+          attr,
+          val.replace(/__MSG_(\w+)__/g, (match, key) => i18n.getMessage(key) || match),
+        );
       }
     });
   });
@@ -58,7 +61,10 @@ function localizeDOM() {
   while ((node = walker.nextNode())) {
     const text = node.nodeValue;
     if (text.includes("__MSG_")) {
-      node.nodeValue = text.replace(/__MSG_(\w+)__/g, (match, key) => i18n.getMessage(key) || match);
+      node.nodeValue = text.replace(
+        /__MSG_(\w+)__/g,
+        (match, key) => i18n.getMessage(key) || match,
+      );
     }
   }
 }

@@ -71,9 +71,7 @@ test("replaces a partial input selection via the quick-action menu", async () =>
     await expect(replaceBtn).toBeVisible({ timeout: 5000 });
     await replaceBtn.click();
 
-    await expect(page.locator("#target")).toHaveValue(
-      "Hello WORLD-IMPROVED, this is a test.",
-    );
+    await expect(page.locator("#target")).toHaveValue("Hello WORLD-IMPROVED, this is a test.");
   } finally {
     await context.close();
     server.close();
