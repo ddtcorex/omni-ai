@@ -39,19 +39,15 @@ let i18n = {
 // Initialize localization
 async function initializeI18n() {
   try {
-    const { primaryLanguage } = await new Promise((resolve) => {
-      if (!isContextValid()) {
-        resolve({ primaryLanguage: "en" });
-        return;
+    let primaryLanguage = "en";
+    if (isContextValid()) {
+      try {
+        const { getPrimaryLanguage } = await import(chrome.runtime.getURL("lib/storage.js"));
+        primaryLanguage = (await getPrimaryLanguage()) || "en";
+      } catch {
+        primaryLanguage = "en";
       }
-      chrome.storage.sync.get("primaryLanguage", (data) => {
-        if (chrome.runtime.lastError) {
-          resolve({ primaryLanguage: "en" });
-        } else {
-          resolve(data || { primaryLanguage: "en" });
-        }
-      });
-    });
+    }
     const userLang = primaryLanguage || "en";
 
     // Standard chrome.i18n is available, but the user wants custom override logic
@@ -857,8 +853,8 @@ async function showQuickActionMenu(
 
   if (isContextValid()) {
     try {
-      /** @type {Record<string, any>} */
-      const data = await chrome.storage.sync.get(["primaryLanguage", "defaultLanguage"]);
+      const { getSyncPreferences } = await import(chrome.runtime.getURL("lib/storage.js"));
+      const data = await getSyncPreferences();
       primaryLanguage = data.primaryLanguage || "vi";
       defaultLanguage = data.defaultLanguage || "en";
     } catch {
@@ -1105,8 +1101,8 @@ async function handleAction(action, text, isInput) {
   let preset = "chat";
   let options = {};
   if (action === "tone") {
-    /** @type {{ currentPreset?: string }} */
-    const { currentPreset } = await chrome.storage.local.get("currentPreset");
+    const { getCurrentPreset } = await import(chrome.runtime.getURL("lib/storage.js"));
+    const currentPreset = await getCurrentPreset();
     const validTones = ["professional", "casual", "friendly", "direct", "confident"];
     if (currentPreset && validTones.includes(currentPreset.toLowerCase())) {
       preset = currentPreset;
