@@ -17,9 +17,19 @@ describe("eslint.config.js severities", () => {
     expect(pkg.scripts.lint).toContain("--max-warnings 0");
   });
 
-  test("verify script runs format:check and lint:webext", () => {
+  test("verify script runs format:check but not lint:webext", () => {
+    // web-ext lint fails on 2 Firefox-only manifest errors (BACKGROUND_SERVICE_WORKER_NOFALLBACK,
+    // ADDON_ID_REQUIRED) that are inapplicable to this Chrome-only MV3 extension and unfixable
+    // without adding Firefox-only manifest fields purely to satisfy an irrelevant linter. Ruling:
+    // lint:webext stays out of the blocking verify chain; see .github/workflows/ci.yml for its
+    // non-blocking CI step instead.
     const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json"), "utf8"));
     expect(pkg.scripts.verify).toContain("format:check");
-    expect(pkg.scripts.verify).toContain("lint:webext");
+    expect(pkg.scripts.verify).not.toContain("lint:webext");
+  });
+
+  test("lint:webext remains available as its own manually-runnable script", () => {
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "../package.json"), "utf8"));
+    expect(pkg.scripts["lint:webext"]).toBe("web-ext lint --source-dir .");
   });
 });
