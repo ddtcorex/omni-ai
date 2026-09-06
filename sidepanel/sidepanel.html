@@ -41,7 +41,19 @@
         </button>
       </header>
 
+      <nav class="tab-nav" role="tablist">
+        <button id="tabChat" class="tab-btn active" role="tab" aria-selected="true" data-view="chatView">
+          <span class="tab-icon">💬</span>
+          <span class="tab-label">__MSG_sidebar_tab_chat__</span>
+        </button>
+        <button id="tabTools" class="tab-btn" role="tab" aria-selected="false" data-view="toolsView">
+          <span class="tab-icon">🛠️</span>
+          <span class="tab-label">__MSG_sidebar_tab_tools__</span>
+        </button>
+      </nav>
+
       <main class="page-tools">
+        <section id="toolsView" class="tab-view">
         <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
 
         <div class="action-buttons">
@@ -67,6 +79,37 @@
           <div id="resultSource" class="result-source"></div>
           <div id="resultText" class="result-text"></div>
         </div>
+        </section>
+
+        <section id="chatView" class="tab-view hidden">
+          <div class="chat-page-context">
+            <label class="chat-context-toggle">
+              <input type="checkbox" id="includeContext" checked />
+              <span>__MSG_sidebar_chat_includeContext__</span>
+            </label>
+            <details class="chat-context-details">
+              <summary>__MSG_sidebar_chat_pageContext__</summary>
+              <pre id="pageContextPreview" class="chat-context-preview"></pre>
+            </details>
+          </div>
+
+          <div id="chatMessages" class="chat-messages">
+            <div class="chat-empty" id="chatEmpty">__MSG_sidebar_chat_empty__</div>
+          </div>
+
+          <div class="chat-error hidden" id="chatError">__MSG_sidebar_chat_error__</div>
+
+          <div class="chat-input-row">
+            <textarea
+              id="chatInput"
+              class="chat-input"
+              rows="2"
+              placeholder="__MSG_sidebar_chat_placeholder__"
+            ></textarea>
+            <button id="chatSend" class="ds-btn-primary chat-send">__MSG_sidebar_chat_send__</button>
+            <button id="chatStop" class="ds-btn-secondary chat-stop hidden">__MSG_sidebar_chat_stop__</button>
+          </div>
+        </section>
       </main>
 
       <footer class="footer">
