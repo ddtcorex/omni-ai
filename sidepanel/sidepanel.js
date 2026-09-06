@@ -28,8 +28,12 @@ const elements = {
   chatSend: /** @type {HTMLElement | null} */ (document.getElementById("chatSend")),
   chatStop: /** @type {HTMLElement | null} */ (document.getElementById("chatStop")),
   chatError: /** @type {HTMLElement | null} */ (document.getElementById("chatError")),
-  includeContext: /** @type {HTMLInputElement | null} */ (document.getElementById("includeContext")),
-  pageContextPreview: /** @type {HTMLElement | null} */ (document.getElementById("pageContextPreview")),
+  includeContext: /** @type {HTMLInputElement | null} */ (
+    document.getElementById("includeContext")
+  ),
+  pageContextPreview: /** @type {HTMLElement | null} */ (
+    document.getElementById("pageContextPreview")
+  ),
 };
 
 /** @type {{role:string, content:string}[]} */
@@ -231,9 +235,17 @@ async function refreshPageContext() {
     return;
   }
   const page = await getActivePageContent();
-  currentPageContext = "text" in page ? "" : buildPageContextString(page);
+  if ("error" in page) {
+    currentPageContext = "";
+    if (elements.pageContextPreview) {
+      elements.pageContextPreview.textContent = i18n.getMessage("sidepanel_cantReadPage");
+    }
+    return;
+  }
+  currentPageContext = buildPageContextString(page);
   if (elements.pageContextPreview) {
-    elements.pageContextPreview.textContent = currentPageContext || i18n.getMessage("sidepanel_cantReadPage");
+    elements.pageContextPreview.textContent =
+      currentPageContext || i18n.getMessage("sidepanel_cantReadPage");
   }
 }
 

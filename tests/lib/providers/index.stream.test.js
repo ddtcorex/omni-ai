@@ -1,8 +1,12 @@
 import { generateContentStream } from "../../../lib/providers/index.js";
 
-jest.mock("../../../lib/providers/gemini.js", () => ({
-  generateContent: async (prompt) => `gemini-fallback:${prompt}`,
-}), { virtual: false });
+jest.mock(
+  "../../../lib/providers/gemini.js",
+  () => ({
+    generateContent: async (prompt) => `gemini-fallback:${prompt}`,
+  }),
+  { virtual: false },
+);
 
 function sseOpenAI(text) {
   return `data: ${JSON.stringify({ choices: [{ delta: { content: text } }] })}\n\n`;

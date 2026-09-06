@@ -42,11 +42,23 @@
       </header>
 
       <nav class="tab-nav" role="tablist">
-        <button id="tabChat" class="tab-btn active" role="tab" aria-selected="true" data-view="chatView">
+        <button
+          id="tabChat"
+          class="tab-btn active"
+          role="tab"
+          aria-selected="true"
+          data-view="chatView"
+        >
           <span class="tab-icon">💬</span>
           <span class="tab-label">__MSG_sidebar_tab_chat__</span>
         </button>
-        <button id="tabTools" class="tab-btn" role="tab" aria-selected="false" data-view="toolsView">
+        <button
+          id="tabTools"
+          class="tab-btn"
+          role="tab"
+          aria-selected="false"
+          data-view="toolsView"
+        >
           <span class="tab-icon">🛠️</span>
           <span class="tab-label">__MSG_sidebar_tab_tools__</span>
         </button>
@@ -54,31 +66,31 @@
 
       <main class="page-tools">
         <section id="toolsView" class="tab-view hidden">
-        <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
+          <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
 
-        <div class="action-buttons">
-          <button id="summarizeBtn" class="ds-btn-primary" data-action="summarize">
-            <span class="action-icon">📄</span>
-            <span class="action-label">__MSG_sidepanel_summarize__</span>
-          </button>
-          <button id="translateBtn" class="ds-btn-primary" data-action="smart_translate">
-            <span class="action-icon">🌐</span>
-            <span class="action-label">__MSG_sidepanel_translate__</span>
-          </button>
-          <button id="explainBtn" class="ds-btn-primary" data-action="explain">
-            <span class="action-icon">💡</span>
-            <span class="action-label">__MSG_sidepanel_explain__</span>
-          </button>
-        </div>
+          <div class="action-buttons">
+            <button id="summarizeBtn" class="ds-btn-primary" data-action="summarize">
+              <span class="action-icon">📄</span>
+              <span class="action-label">__MSG_sidepanel_summarize__</span>
+            </button>
+            <button id="translateBtn" class="ds-btn-primary" data-action="smart_translate">
+              <span class="action-icon">🌐</span>
+              <span class="action-label">__MSG_sidepanel_translate__</span>
+            </button>
+            <button id="explainBtn" class="ds-btn-primary" data-action="explain">
+              <span class="action-icon">💡</span>
+              <span class="action-label">__MSG_sidepanel_explain__</span>
+            </button>
+          </div>
 
-        <div id="statusLine" class="status-line hidden"></div>
-        <div id="loadingSpinner" class="ds-spinner hidden" style="margin: 12px auto"></div>
+          <div id="statusLine" class="status-line hidden"></div>
+          <div id="loadingSpinner" class="ds-spinner hidden" style="margin: 12px auto"></div>
 
-        <div id="resultArea" class="ds-card hidden">
-          <div class="result-label">__MSG_sidepanel_resultLabel__</div>
-          <div id="resultSource" class="result-source"></div>
-          <div id="resultText" class="result-text"></div>
-        </div>
+          <div id="resultArea" class="ds-card hidden">
+            <div class="result-label">__MSG_sidepanel_resultLabel__</div>
+            <div id="resultSource" class="result-source"></div>
+            <div id="resultText" class="result-text"></div>
+          </div>
         </section>
 
         <section id="chatView" class="tab-view">
@@ -106,8 +118,12 @@
               rows="2"
               placeholder="__MSG_sidebar_chat_placeholder__"
             ></textarea>
-            <button id="chatSend" class="ds-btn-primary chat-send">__MSG_sidebar_chat_send__</button>
-            <button id="chatStop" class="ds-btn-secondary chat-stop hidden">__MSG_sidebar_chat_stop__</button>
+            <button id="chatSend" class="ds-btn-primary chat-send">
+              __MSG_sidebar_chat_send__
+            </button>
+            <button id="chatStop" class="ds-btn-secondary chat-stop hidden">
+              __MSG_sidebar_chat_stop__
+            </button>
           </div>
         </section>
       </main>

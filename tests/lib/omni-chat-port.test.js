@@ -74,7 +74,10 @@ test("aborts streaming on disconnect", async () => {
     return "x";
   };
   const port = fakePort();
-  const handler = createOmniChatHandler({ generateContentStream: streaming, getChatConfig: fakeConfig });
+  const handler = createOmniChatHandler({
+    generateContentStream: streaming,
+    getChatConfig: fakeConfig,
+  });
   await handler(port);
   port.emit({ type: "chat", message: "hi" });
   port.disconnect();

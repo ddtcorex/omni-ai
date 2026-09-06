@@ -1,4 +1,8 @@
-import { buildChatPrompt, buildPageContextString, PAGE_CONTEXT_MAX_CHARS } from "../../lib/sidebar-chat.js";
+import {
+  buildChatPrompt,
+  buildPageContextString,
+  PAGE_CONTEXT_MAX_CHARS,
+} from "../../lib/sidebar-chat.js";
 
 test("includes system instruction and page context when present", () => {
   const prompt = buildChatPrompt({
@@ -27,7 +31,10 @@ test("serializes chat history", () => {
   const prompt = buildChatPrompt({
     userMessage: "follow up",
     pageContext: "",
-    history: [{ role: "user", content: "first" }, { role: "assistant", content: "reply" }],
+    history: [
+      { role: "user", content: "first" },
+      { role: "assistant", content: "reply" },
+    ],
   });
   expect(prompt).toContain("User: first");
   expect(prompt).toContain("Assistant: reply");

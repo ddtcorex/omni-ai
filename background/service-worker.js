@@ -1,5 +1,9 @@
 import { addToHistory } from "../lib/history.js";
-import { getSyncPreferences, getApiKey as getStoredApiKey, getCustomGatewayConfig } from "../lib/storage.js";
+import {
+  getSyncPreferences,
+  getApiKey as getStoredApiKey,
+  getCustomGatewayConfig,
+} from "../lib/storage.js";
 import {
   quickAsk,
   improveText,
@@ -664,9 +668,9 @@ async function getApiKey() {
 // ============================================
 
 const PROVIDER_KEY_MAP = {
+  google: "geminiApiKey",
   openai: "openaiApiKey",
   groq: "groqApiKey",
-  gemini: "geminiApiKey",
   anthropic: "anthropicApiKey",
   customGateway: "customGatewayApiKey",
 };
@@ -675,7 +679,7 @@ async function getChatConfig(modelId, temperature) {
   const { activeModel, temperature: prefTemp } = await getSyncPreferences();
   const model = modelId || activeModel;
   const providerInfo = getProviderByModel(model);
-  const providerId = providerInfo?.provider || "gemini";
+  const providerId = providerInfo?.id || "google";
   const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
 
   const config = { apiKey, model, temperature: temperature ?? prefTemp ?? 0.7 };
