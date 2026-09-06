@@ -616,5 +616,41 @@
   "settings_customGatewayKeyNote": {
     "message": "Optional for some gateways (e.g., OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Tools",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Ask about this page…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Send",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Stop",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Page context",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Include page context",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Start a conversation about the current page.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Something went wrong. Please try again.",
+    "description": "Chat error message"
   }
 }

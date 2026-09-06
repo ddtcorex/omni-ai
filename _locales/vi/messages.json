@@ -601,5 +601,41 @@
   },
   "sidepanel_resultFrom": {
     "message": "Từ:"
+  },
+  "sidebar_tab_chat": {
+    "message": "Trò chuyện",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Công cụ",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Hỏi về trang này…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Gửi",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Dừng",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Ngữ cảnh trang",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Bao gồm ngữ cảnh trang",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Bắt đầu cuộc trò chuyện về trang hiện tại.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "description": "Chat error message"
   }
 }

@@ -601,5 +601,41 @@
   },
   "sidepanel_resultFrom": {
     "message": "来自:"
+  },
+  "sidebar_tab_chat": {
+    "message": "聊天",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "工具",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "询问此页面…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "发送",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "停止",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "页面上下文",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "包含页面上下文",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "开始关于当前页面的对话。",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "出错了，请重试。",
+    "description": "Chat error message"
   }
 }

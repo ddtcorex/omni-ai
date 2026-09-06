@@ -601,5 +601,41 @@
   },
   "sidepanel_resultFrom": {
     "message": "取得元:"
+  },
+  "sidebar_tab_chat": {
+    "message": "チャット",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "ツール",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "このページについて質問…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "送信",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "停止",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "ページのコンテキスト",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "ページのコンテキストを含める",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "現在のページについて会話を始めましょう。",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "問題が発生しました。もう一度お試しください。",
+    "description": "Chat error message"
   }
 }
