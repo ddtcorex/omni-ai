@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-09-06
+
+### Internal
+
+- **Code Quality System**: honest whole-repo coverage collection (previously `content.js` and `sidepanel.js` were invisible in reports), per-path coverage floors enforced by `npm run verify`, ESLint enforcement of the Provider Pattern (no `fetch()` outside `lib/providers/**`) and the Storage Map contract (no `chrome.storage.*` outside `lib/storage.js`/`lib/theme-manager.js`/`lib/history.js`), Prettier formatting/format-check gate, and a Husky + lint-staged pre-commit hook.
+- Added `lib/storage.js` as the typed owner for the remaining Storage Map keys (sync preferences, local AI config); `settings.js`, `lib/i18n.js`, `lib/ai-service.js`, `content.js`, and `background/service-worker.js` now read/write through it instead of calling `chrome.storage.*` directly.
+- Added Dependabot, a production-scoped `npm audit` CI gate, CODEOWNERS, and a PR template mirroring this file's Agent Checklist.
+- Excluded `.claude/**` from Jest coverage collection.
+- Documented Chrome Web Store permission justifications (`docs/PERMISSION_JUSTIFICATIONS.txt`).
+- Dependency maintenance: `@types/chrome` 0.2.7 → 0.2.8, `babel-jest` 27.5.1 → 30.5.1.
+
 ## [2.3.0] - 2026-09-03
 
 ### Added
