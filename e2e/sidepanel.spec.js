@@ -7,6 +7,7 @@ test("side panel loads and renders the three Page Tools buttons", async () => {
     const page = await context.newPage();
     const extId = new URL(sw.url()).host;
     await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+    await page.locator("#tabTools").click();
 
     await expect(page).toHaveTitle("Omni AI");
     await expect(page.locator("#summarizeBtn")).toBeVisible();
@@ -63,6 +64,7 @@ test("a successful result shows which page it describes", async () => {
       };
     });
     await panel.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+    await panel.locator("#tabTools").click();
 
     const pageTab = await context.newPage();
     await pageTab.goto(`http://127.0.0.1:${port}/`);
@@ -105,6 +107,7 @@ test("clicking Summarize reads the active tab's content (not a stray iframe's) a
     // test only ever exercised the "can't read this page" error branch.
     const panel = await context.newPage();
     await panel.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+    await panel.locator("#tabTools").click();
 
     const pageTab = await context.newPage();
     await pageTab.goto(`http://127.0.0.1:${port}/`);

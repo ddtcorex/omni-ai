@@ -690,8 +690,10 @@ async function getChatConfig(modelId, temperature) {
 
 const omniChatHandler = createOmniChatHandler({ generateContentStream, getChatConfig });
 
-chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === "omni-chat") {
-    omniChatHandler(port);
-  }
-});
+if (chrome.runtime?.onConnect) {
+  chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "omni-chat") {
+      omniChatHandler(port);
+    }
+  });
+}
