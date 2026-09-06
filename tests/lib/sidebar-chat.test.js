@@ -1,4 +1,4 @@
-import { buildChatPrompt, PAGE_CONTEXT_MAX_CHARS } from "../../lib/sidebar-chat.js";
+import { buildChatPrompt, buildPageContextString, PAGE_CONTEXT_MAX_CHARS } from "../../lib/sidebar-chat.js";
 
 test("includes system instruction and page context when present", () => {
   const prompt = buildChatPrompt({
@@ -38,4 +38,15 @@ test("handles missing page context and history", () => {
   const prompt = buildChatPrompt({ userMessage: "hi" });
   expect(prompt).toContain("hi");
   expect(typeof prompt).toBe("string");
+});
+
+test("buildPageContextString includes title/url/text", () => {
+  const ctx = buildPageContextString({ title: "Example", url: "https://x.com", text: "sel" });
+  expect(ctx).toContain("Title: Example");
+  expect(ctx).toContain("URL: https://x.com");
+  expect(ctx).toContain("Selected text:\nsel");
+});
+
+test("buildPageContextString handles empty", () => {
+  expect(buildPageContextString({})).toBe("");
 });

@@ -5,6 +5,7 @@
 
 import { i18n } from "../lib/i18n.js";
 import { initTheme } from "../lib/theme-manager.js";
+import { buildPageContextString } from "../lib/sidebar-chat.js";
 
 const elements = {
   extVersion: /** @type {HTMLElement | null} */ (document.getElementById("extVersion")),
@@ -17,7 +18,25 @@ const elements = {
   resultSource: /** @type {HTMLElement | null} */ (document.getElementById("resultSource")),
   resultText: /** @type {HTMLElement | null} */ (document.getElementById("resultText")),
   loadingSpinner: /** @type {HTMLElement | null} */ (document.getElementById("loadingSpinner")),
+  tabChat: /** @type {HTMLElement | null} */ (document.getElementById("tabChat")),
+  tabTools: /** @type {HTMLElement | null} */ (document.getElementById("tabTools")),
+  chatView: /** @type {HTMLElement | null} */ (document.getElementById("chatView")),
+  toolsView: /** @type {HTMLElement | null} */ (document.getElementById("toolsView")),
+  chatMessages: /** @type {HTMLElement | null} */ (document.getElementById("chatMessages")),
+  chatEmpty: /** @type {HTMLElement | null} */ (document.getElementById("chatEmpty")),
+  chatInput: /** @type {HTMLTextAreaElement | null} */ (document.getElementById("chatInput")),
+  chatSend: /** @type {HTMLElement | null} */ (document.getElementById("chatSend")),
+  chatStop: /** @type {HTMLElement | null} */ (document.getElementById("chatStop")),
+  chatError: /** @type {HTMLElement | null} */ (document.getElementById("chatError")),
+  includeContext: /** @type {HTMLInputElement | null} */ (document.getElementById("includeContext")),
+  pageContextPreview: /** @type {HTMLElement | null} */ (document.getElementById("pageContextPreview")),
 };
+
+/** @type {{role:string, content:string}[]} */
+const chatHistory = [];
+let chatPort = null;
+let currentPageContext = "";
+let isStreaming = false;
 
 async function init() {
   if (elements.extVersion) {
@@ -27,6 +46,8 @@ async function init() {
   await initTheme();
   localizeDOM();
   setupEventListeners();
+  setupTabs();
+  setupChat();
 }
 
 /**
@@ -178,6 +199,129 @@ async function runPageAction(action) {
   } finally {
     setButtonsDisabled(false);
   }
+}
+
+// ============================================
+// Tabs
+// ============================================
+function setupTabs() {
+  const tabs = [elements.tabChat, elements.tabTools];
+  tabs.forEach((tab) => {
+    tab?.addEventListener("click", () => {
+      const target = tab.dataset.view;
+      [elements.tabChat, elements.tabTools].forEach((t) => {
+        const active = t === tab;
+        t?.classList.toggle("active", active);
+        t?.setAttribute("aria-selected", String(active));
+      });
+      elements.chatView?.classList.toggle("hidden", target !== "chatView");
+      elements.toolsView?.classList.toggle("hidden", target !== "toolsView");
+      if (target === "chatView") refreshPageContext();
+    });
+  });
+}
+
+// ============================================
+// Chat
+// ============================================
+async function refreshPageContext() {
+  if (!elements.includeContext?.checked) {
+    currentPageContext = "";
+    if (elements.pageContextPreview) elements.pageContextPreview.textContent = "";
+    return;
+  }
+  const page = await getActivePageContent();
+  currentPageContext = "text" in page ? "" : buildPageContextString(page);
+  if (elements.pageContextPreview) {
+    elements.pageContextPreview.textContent = currentPageContext || i18n.getMessage("sidepanel_cantReadPage");
+  }
+}
+
+function addChatMessage(role, text) {
+  if (elements.chatEmpty) elements.chatEmpty.classList.add("hidden");
+  const bubble = document.createElement("div");
+  bubble.className = `chat-msg ${role}`;
+  bubble.textContent = text;
+  elements.chatMessages?.appendChild(bubble);
+  elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
+  return bubble;
+}
+
+function setStreamingUI(on) {
+  isStreaming = on;
+  elements.chatSend?.classList.toggle("hidden", on);
+  elements.chatStop?.classList.toggle("hidden", !on);
+  elements.chatInput?.toggleAttribute("disabled", on);
+}
+
+function connectChatPort() {
+  if (chatPort) return chatPort;
+  chatPort = chrome.runtime.connect({ name: "omni-chat" });
+  return chatPort;
+}
+
+function sendChatMessage() {
+  if (isStreaming) return;
+  const message = elements.chatInput?.value.trim();
+  if (!message) return;
+
+  addChatMessage("user", message);
+  elements.chatInput.value = "";
+  elements.chatError?.classList.add("hidden");
+
+  const port = connectChatPort();
+  const assistantBubble = addChatMessage("assistant", "");
+  let acc = "";
+
+  setStreamingUI(true);
+
+  port.onMessage.addListener(function handler(msg) {
+    if (!msg) return;
+    if (msg.type === "chunk") {
+      acc += msg.text;
+      assistantBubble.textContent = acc;
+      elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
+    } else if (msg.type === "done") {
+      chatHistory.push({ role: "user", content: message });
+      chatHistory.push({ role: "assistant", content: msg.text });
+      port.onMessage.removeListener(handler);
+      setStreamingUI(false);
+    } else if (msg.type === "error") {
+      if (elements.chatError) {
+        elements.chatError.textContent = msg.error || i18n.getMessage("sidebar_chat_error");
+        elements.chatError.classList.remove("hidden");
+      }
+      port.onMessage.removeListener(handler);
+      setStreamingUI(false);
+    }
+  });
+
+  port.postMessage({
+    type: "chat",
+    message,
+    pageContext: currentPageContext,
+    history: chatHistory.slice(),
+  });
+}
+
+function stopChat() {
+  if (chatPort) {
+    chatPort.disconnect();
+    chatPort = null;
+  }
+  setStreamingUI(false);
+}
+
+function setupChat() {
+  elements.chatSend?.addEventListener("click", sendChatMessage);
+  elements.chatStop?.addEventListener("click", stopChat);
+  elements.chatInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendChatMessage();
+    }
+  });
+  elements.includeContext?.addEventListener("change", refreshPageContext);
 }
 
 document.addEventListener("DOMContentLoaded", init);
