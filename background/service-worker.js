@@ -1,5 +1,5 @@
 import { addToHistory } from "../lib/history.js";
-import { getSyncPreferences, getApiKey as getStoredApiKey } from "../lib/storage.js";
+import { getSyncPreferences, getApiKey as getStoredApiKey, getCustomGatewayConfig } from "../lib/storage.js";
 import {
   quickAsk,
   improveText,
@@ -11,6 +11,9 @@ import {
   generateContent,
   smartTranslate,
 } from "../lib/ai-service.js";
+import { generateContentStream } from "../lib/providers/index.js";
+import { createOmniChatHandler } from "../lib/omni-chat-port.js";
+import { getProviderByModel } from "../lib/ai-providers.js";
 
 /**
  * Omni AI - Service Worker
@@ -655,3 +658,40 @@ async function processSelectedText(tabId, text, action, isInput = false) {
 async function getApiKey() {
   return (await getStoredApiKey("geminiApiKey")) || "";
 }
+
+// ============================================
+// Omni Chat (Sidebar) streaming port
+// ============================================
+
+const PROVIDER_KEY_MAP = {
+  openai: "openaiApiKey",
+  groq: "groqApiKey",
+  gemini: "geminiApiKey",
+  anthropic: "anthropicApiKey",
+  customGateway: "customGatewayApiKey",
+};
+
+async function getChatConfig(modelId, temperature) {
+  const { activeModel, temperature: prefTemp } = await getSyncPreferences();
+  const model = modelId || activeModel;
+  const providerInfo = getProviderByModel(model);
+  const providerId = providerInfo?.provider || "gemini";
+  const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
+
+  const config = { apiKey, model, temperature: temperature ?? prefTemp ?? 0.7 };
+
+  if (providerId === "customGateway") {
+    const gw = await getCustomGatewayConfig();
+    config.baseUrl = gw.customGatewayBaseUrl;
+    if (gw.customGatewayModelName) config.model = gw.customGatewayModelName;
+  }
+  return config;
+}
+
+const omniChatHandler = createOmniChatHandler({ generateContentStream, getChatConfig });
+
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name === "omni-chat") {
+    omniChatHandler(port);
+  }
+});
