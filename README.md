@@ -221,6 +221,30 @@ omni-ai/
 
 ---
 
+## 🤝 Contributing & CI Gate
+
+`master` is **branch-protected**: you cannot push to it directly, and a PR can
+only merge when **both** GitHub checks are green — `verify` and `e2e (playwright)`
+— and the branch is up to date with `master`. Contributors (human or AI agent)
+must therefore run the local equivalent of the pipeline **before** pushing:
+
+```bash
+npm run verify          # typecheck + ESLint + Prettier --check + Jest coverage
+npx playwright test     # E2E: extension loads in MV3, side panel, smoke
+```
+
+- Never push a known-red state and rely on CI to catch it. Fix locally and
+  re-run until both commands are green.
+- Keep your feature branch rebased/up to date with `master` so the
+  "up-to-date before merge" check passes.
+- Exact CI invocations live in `.github/workflows/ci.yml` — treat that file as
+  the source of truth for what the gate runs.
+
+See `AGENTS.md` ("Pre-Push Gate") for the full agent checklist that mirrors this
+pipeline.
+
+---
+
 ## 📦 Publishing to the Chrome Web Store
 
 Follow this guide to publish **Omni AI** to the official Chrome Web Store.

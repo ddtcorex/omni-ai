@@ -172,6 +172,28 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] "Back" button returns to the action menu after both a click-triggered AND a keyboard-shortcut-triggered (Alt+R/T/F) result
 - [ ] Service worker console clean after idle (no unhandled promise rejections)
 
+### Pre-Push Gate (mandatory — mirrors the GitHub pipeline)
+
+`master` is branch-protected: a PR cannot merge unless **both** CI checks are
+green — `verify` (typecheck → lint → format:check → test:coverage) and
+`e2e (playwright)` — and the branch is up to date with `master`. This is not a
+formality: an agent MUST run the **local equivalent of the full pipeline** and
+confirm it is green _before_ pushing any code to GitHub. Do not push and hope CI
+catches it.
+
+Local gate (must all pass before `git push`):
+
+1. `npm run verify` — `tsc --noEmit` (typecheck) + ESLint (`--max-warnings 0`) +
+   Prettier (`--check`) + Jest coverage (`./lib/providers/` functions ≥ 65%).
+2. `npx playwright test` — the Playwright E2E suite (extension loads in MV3,
+   side panel, smoke). Needs `npx playwright install chromium` once.
+3. Only after BOTH are green may the agent push the feature branch and
+   open/update the PR.
+
+If either is red locally, fix the root cause and re-run — never push a known-red
+state. The CI job commands in `.github/workflows/ci.yml` are the source of truth
+for the exact invocations; keep them in sync with this gate.
+
 ---
 
 ## 🚀 Dev Loop & Tooling (speed)
