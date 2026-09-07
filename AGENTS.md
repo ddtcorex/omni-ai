@@ -78,6 +78,10 @@ omni-ai/
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
 |   |-- storage.js           # Typed owner for the remaining Storage Map keys (languages, API keys/model/preset, custom-gateway config, settings bag)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
+|   |-- sidebar-chat.js      # Sidebar Chat helpers: buildChatPrompt() (page context + history
+|   |                        #   + user message; PAGE_CONTEXT_MAX_CHARS = 8000) shared by SW + UI
+|   `-- omni-chat-port.js    # Streaming chat Port handler: wires chrome.runtime Port "omni-chat"
+|                            #   to the streaming provider; pure logic + injected deps (testable)
 |-- _locales/                # chrome.i18n messages
 |-- scripts/publish.sh       # Strips manifest "key", zips dist/
 `-- tests/                   # Jest + jest-chrome + jsdom (`npm test`)
@@ -114,6 +118,8 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 - Registry: `AI_PROVIDERS` in `lib/ai-providers.js` — each entry declares `id`, `name`, `keySetting` (storage key of its API key), and `models[]`.
 - Routing: `getProvider(modelId)` in `lib/providers/index.js` looks the model up in `AI_PROVIDERS` (via `getProviderByModel()`) and returns that provider's module — model IDs are not required to follow any naming convention. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
 - Every provider module exports `async generateContent(prompt, config)` where `config = { apiKey, model, maxTokens, temperature, topP, baseUrl? }`.
+- Every provider module ALSO exports `async generateContentStream(prompt, config, onChunk, signal)` — the streaming entry point used by Sidebar Chat. It calls `onChunk(textChunk)` for each token/line and honors an `AbortSignal` (`signal`) for cancellation. `lib/providers/index.js`'s `generateContentStream()` is the dispatcher (same routing as `generateContent`) and throws if the resolved provider does not implement streaming.
+- Sidebar Chat wiring: `sidepanel/sidepanel.js` opens a `chrome.runtime.connect({ name: "omni-chat" })` Port; the service worker's `onConnect` listener hands the Port to `createOmniChatHandler()` from `lib/omni-chat-port.js`, which resolves chat config via `getChatConfig()` and streams the reply from `generateContentStream()`. `lib/sidebar-chat.js` `buildChatPrompt()` assembles page context (capped at `PAGE_CONTEXT_MAX_CHARS = 8000`) + history + the latest message.
 - Custom models use the `-custom` suffix convention; the actual model name comes from storage (`customModelName` / `customGatewayModelName`).
 
 ### Storage Map (the contract)
