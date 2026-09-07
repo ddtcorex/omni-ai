@@ -319,11 +319,17 @@ test("Back button returns to the action menu after a keyboard-shortcut-triggered
         .click();
     });
 
-    const menuVisible = await page.evaluate(() => {
-      const host = document.getElementById("omni-ai-shadow-host");
-      return !!host.shadowRoot.querySelector(".omni-ai-menu-grid");
-    });
-    expect(menuVisible).toBe(true);
+    // The menu grid re-renders asynchronously after the Back click (shadow DOM
+    // swap), so poll for it instead of reading it in the same tick -- a direct
+    // synchronous read raced on slower CI runners (flaky e2e).
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const host = document.getElementById("omni-ai-shadow-host");
+          return !!host.shadowRoot.querySelector(".omni-ai-menu-grid");
+        }),
+      )
+      .toBe(true);
   } finally {
     await context.close();
     server.close();
