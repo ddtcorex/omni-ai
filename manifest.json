@@ -6,13 +6,11 @@
   "default_locale": "en",
   "author": "ddtcorex",
   "homepage_url": "https://github.com/ddtcorex/omni-ai",
-
   "icons": {
     "16": "assets/icons/icon-16.png",
     "48": "assets/icons/icon-48.png",
     "128": "assets/icons/icon-128.png"
   },
-
   "action": {
     "default_icon": {
       "16": "assets/icons/icon-16.png",
@@ -21,12 +19,11 @@
     },
     "default_title": "__MSG_extName__"
   },
-
   "background": {
     "service_worker": "background/service-worker.js",
-    "type": "module"
+    "type": "module",
+    "scripts": ["background/service-worker.js"]
   },
-
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -37,20 +34,15 @@
       "match_about_blank": true
     }
   ],
-
   "permissions": ["storage", "activeTab", "contextMenus", "sidePanel"],
-
   "host_permissions": ["https://*/*", "http://*/*"],
-
   "options_ui": {
     "page": "settings.html",
     "open_in_tab": true
   },
-
   "side_panel": {
     "default_path": "sidepanel/sidepanel.html"
   },
-
   "commands": {
     "_execute_action": {
       "description": "__MSG_popup_title__"
@@ -90,7 +82,6 @@
       "description": "__MSG_action_explain__"
     }
   },
-
   "web_accessible_resources": [
     {
       "resources": [
@@ -106,6 +97,10 @@
       "matches": ["<all_urls>"]
     }
   ],
-
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm0a3wgnRwVA23FcaTW7BtxNUqFzDyd40bH2s3a9kn3hhRaYof5afPqA2e9W/l6gp4pjO4E+aq60obYTKY0iIp8NjPvX8Rjq5P6uZL3WBGy/dOfgiiAVrPACeKDdIeJ1MBdYznrI8hkx3kQEoSxv94cV25h4DpFj6urR8L4rVf6ElErjEvHJEvglzUer5iSqKgVcZ5l9TsgwfpRPC4BF9WnZAMQnqGieJOP9Zski4Xlp0QvD5tWpkvbqVG3CKDBfjTZ1DsxJhI+M0acjUATKpcjhtItIr6R0ByBYwIQ3FQQEliltgkjd5l/zGK75LFEu8jT4BYxPSYdzl8IFO60MtxwIDAQAB"
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm0a3wgnRwVA23FcaTW7BtxNUqFzDyd40bH2s3a9kn3hhRaYof5afPqA2e9W/l6gp4pjO4E+aq60obYTKY0iIp8NjPvX8Rjq5P6uZL3WBGy/dOfgiiAVrPACeKDdIeJ1MBdYznrI8hkx3kQEoSxv94cV25h4DpFj6urR8L4rVf6ElErjEvHJEvglzUer5iSqKgVcZ5l9TsgwfpRPC4BF9WnZAMQnqGieJOP9Zski4Xlp0QvD5tWpkvbqVG3CKDBfjTZ1DsxJhI+M0acjUATKpcjhtItIr6R0ByBYwIQ3FQQEliltgkjd5l/zGK75LFEu8jT4BYxPSYdzl8IFO60MtxwIDAQAB",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "omni-ai@ddtcorex"
+    }
+  }
 }
