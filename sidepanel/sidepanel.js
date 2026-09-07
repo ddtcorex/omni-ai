@@ -46,12 +46,22 @@ async function init() {
   if (elements.extVersion) {
     elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
   }
-  await i18n.init();
-  await initTheme();
-  localizeDOM();
+  // Wire up UI listeners SYNCHRONOUSLY — never gate interactivity (tab switching,
+  // chat send) behind the async i18n/theme init below. On slow CI runners the
+  // awaits can outlast Playwright's click, leaving tab listeners unattached and
+  // the panel unresponsive (flaky e2e). Listeners attach immediately; i18n/theme
+  // apply afterward and are isolated so a failure there can't break the UI.
   setupEventListeners();
   setupTabs();
   setupChat();
+
+  try {
+    await i18n.init();
+    await initTheme();
+    localizeDOM();
+  } catch (err) {
+    console.error("[Omni AI] sidepanel i18n/theme init failed:", err);
+  }
 }
 
 /**
