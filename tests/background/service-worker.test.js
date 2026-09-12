@@ -2,6 +2,7 @@
 // what the tests assert against, so no namespace imports are needed here.
 jest.mock("../../lib/history");
 jest.mock("../../lib/ai-service");
+jest.mock("../../lib/providers/index");
 
 describe("Service Worker Integration", () => {
   let chromeMock;
@@ -15,6 +16,7 @@ describe("Service Worker Integration", () => {
       runtime: {
         onInstalled: { addListener: jest.fn() },
         onMessage: { addListener: jest.fn() },
+        onConnect: { addListener: jest.fn() },
         getURL: jest.fn((path) => path),
       },
       i18n: { getMessage: jest.fn((key) => key) },
@@ -483,5 +485,48 @@ describe("Service Worker Integration", () => {
     // VALIDATE_CONFIG case was reached via fall-through (the bug).
     expect(sendResponse).toHaveBeenCalledTimes(1);
     expect(sendResponse).toHaveBeenCalledWith({ success: true, apiKey: "k-test" });
+  });
+
+  it("omni-chat port resolves the configured model/provider (e.g. Custom Gateway) instead of always defaulting to Gemini", async () => {
+    // Regression test: getChatConfig() used to read a nonexistent "activeModel"
+    // key off chrome.storage.sync (Storage Map only ever put primaryLanguage/
+    // defaultLanguage/omni_ai_theme there), so it always fell through to the
+    // "google" provider default regardless of what the user actually
+    // configured (apiModel lives in chrome.storage.local).
+    chromeMock.storage.local.get.mockResolvedValue({
+      apiModel: "custom-gateway",
+      customGatewayApiKey: "gw-secret-key",
+      customGatewayBaseUrl: "https://gw.example.com/v1",
+      customGatewayModelName: "my-custom-model",
+      geminiApiKey: "should-not-be-used",
+    });
+
+    const providers = await import("../../lib/providers/index");
+    providers.generateContentStream.mockResolvedValue("assistant reply");
+
+    await import("../../background/service-worker");
+    const handlePort = chromeMock.runtime.onConnect.addListener.mock.calls[0][0];
+
+    const port = {
+      name: "omni-chat",
+      onMessage: { addListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn() },
+      postMessage: jest.fn(),
+    };
+    handlePort(port);
+    const onMessage = port.onMessage.addListener.mock.calls[0][0];
+
+    await onMessage({ type: "chat", message: "hi", pageContext: "", history: [] });
+
+    expect(providers.generateContentStream).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        apiKey: "gw-secret-key",
+        baseUrl: "https://gw.example.com/v1",
+        model: "my-custom-model",
+      }),
+      expect.any(Function),
+      expect.any(Object),
+    );
   });
 });

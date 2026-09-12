@@ -13,6 +13,11 @@ test("sidebar chat tab renders and sends a message", async () => {
     await expect(page.locator("#chatView")).toBeVisible();
     await expect(page.locator("#toolsView")).toBeHidden();
 
+    // The chat input's placeholder must be localized, not left as the raw
+    // __MSG_ key -- localizeDOM()'s attribute walk previously only covered
+    // title/alt, silently skipping placeholder.
+    await expect(page.locator("#chatInput")).not.toHaveAttribute("placeholder", /__MSG_/);
+
     // Switch to tools then back to chat
     await page.locator("#tabTools").click();
     await expect(page.locator("#toolsView")).toBeVisible();

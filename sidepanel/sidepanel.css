@@ -81,6 +81,7 @@ body {
   color: var(--omni-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  margin-bottom: var(--omni-spacing-sm);
 }
 
 .action-buttons {
@@ -97,6 +98,8 @@ body {
 .status-line {
   font-size: 12px;
   color: var(--omni-text-secondary);
+  text-align: center;
+  margin-top: var(--omni-spacing-xs);
 }
 
 .status-line.error {
@@ -111,6 +114,10 @@ body {
 }
 
 /* .result-area is now .ds-card from lib/design-system.css */
+#resultArea {
+  margin-top: var(--omni-spacing-xs);
+}
+
 .result-label {
   font-size: 11px;
   font-weight: 600;
@@ -215,6 +222,10 @@ body {
   margin-top: 6px;
 }
 
+.chat-context-details summary {
+  cursor: pointer;
+}
+
 .chat-context-preview {
   max-height: 120px;
   overflow: auto;
@@ -285,7 +296,7 @@ body {
 
 .chat-input-row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--omni-spacing-sm);
   padding: var(--omni-spacing-sm) var(--omni-spacing-md);
   border-top: 1px solid var(--omni-border);

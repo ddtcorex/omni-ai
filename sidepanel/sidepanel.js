@@ -72,9 +72,11 @@ async function init() {
 function localizeDOM() {
   document.title = i18n.getMessage("extName");
 
-  const elementsWithAttrs = document.querySelectorAll('[title*="__MSG_"], [alt*="__MSG_"]');
+  const elementsWithAttrs = document.querySelectorAll(
+    '[title*="__MSG_"], [alt*="__MSG_"], [placeholder*="__MSG_"]',
+  );
   elementsWithAttrs.forEach((el) => {
-    ["title", "alt"].forEach((attr) => {
+    ["title", "alt", "placeholder"].forEach((attr) => {
       const val = el.getAttribute(attr);
       if (val && val.includes("__MSG_")) {
         el.setAttribute(
