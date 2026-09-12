@@ -220,7 +220,7 @@ for the exact invocations; keep them in sync with this gate.
 
 ## ⚠️ Known Issues (fix on sight — do not copy these patterns)
 
-None currently. 🎉
+- **Never add `background.scripts` to `manifest.json`.** It is an MV2-only key; Chrome refuses to load an MV3 manifest that declares it alongside `background.service_worker`, with exactly the error `'background.scripts' requires manifest version of 2 or lower`. It was added once to silence `web-ext lint`'s `BACKGROUND_SERVICE_WORKER_NOFALLBACK` warning, which is Firefox-only, non-blocking (`continue-on-error: true` in `.github/workflows/ci.yml`), and already ruled inapplicable to this Chrome-only MV3 extension (see `tests/eslint-config.test.js`'s "verify script runs format:check but not lint:webext" test). `tests/manifest.test.js` guards against this regressing again.
 
 ---
 
