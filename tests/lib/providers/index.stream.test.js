@@ -8,6 +8,17 @@ jest.mock(
   { virtual: false },
 );
 
+jest.mock(
+  "../../../lib/providers/custom-gateway.js",
+  () => ({
+    generateContentStream: async (prompt, config, onChunk) => {
+      onChunk(`custom-gateway:${prompt}`);
+      return `custom-gateway:${prompt}`;
+    },
+  }),
+  { virtual: false },
+);
+
 function sseOpenAI(text) {
   return `data: ${JSON.stringify({ choices: [{ delta: { content: text } }] })}\n\n`;
 }
@@ -44,4 +55,22 @@ test("falls back to one-shot generateContent when provider lacks stream", async 
   );
   expect(full).toBe("gemini-fallback:hi");
   expect(chunks).toEqual(["gemini-fallback:hi"]);
+});
+
+test("uses config.provider to route correctly even when the model id isn't in the registry (Custom Gateway with a user-typed upstream model name)", async () => {
+  // Regression: getChatConfig() overwrites config.model with the raw
+  // customGatewayModelName the user typed (e.g. "gpt-4o-mini"), which never
+  // matches any AI_PROVIDERS models[].id. Without an explicit provider hint,
+  // getProvider(config.model) silently falls back to Gemini -- so the
+  // Custom Gateway API key gets sent to Google's real endpoint, which
+  // rejects it with "API key not valid. Please pass a valid API key."
+  const chunks = [];
+  const full = await generateContentStream(
+    "hi",
+    { apiKey: "k", model: "gpt-4o-mini", provider: "customGateway" },
+    (t) => chunks.push(t),
+    new AbortController().signal,
+  );
+  expect(full).toBe("custom-gateway:hi");
+  expect(chunks).toEqual(["custom-gateway:hi"]);
 });

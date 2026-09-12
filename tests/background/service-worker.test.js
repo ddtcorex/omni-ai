@@ -524,6 +524,12 @@ describe("Service Worker Integration", () => {
         apiKey: "gw-secret-key",
         baseUrl: "https://gw.example.com/v1",
         model: "my-custom-model",
+        // config.model is overwritten with the user's raw upstream model
+        // name above, which never matches an AI_PROVIDERS registry id -- the
+        // explicit provider hint is what lets generateContentStream() route
+        // correctly instead of silently falling back to Gemini (see
+        // tests/lib/providers/index.stream.test.js for that half of the fix).
+        provider: "customGateway",
       }),
       expect.any(Function),
       expect.any(Object),

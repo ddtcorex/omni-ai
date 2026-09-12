@@ -682,7 +682,7 @@ async function getChatConfig(modelId, temperature) {
   const providerId = providerInfo?.id || "google";
   const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
 
-  const config = { apiKey, model, temperature: temperature ?? 0.7 };
+  const config = { apiKey, model, provider: providerId, temperature: temperature ?? 0.7 };
 
   if (providerId === "customGateway") {
     const gw = await getCustomGatewayConfig();
