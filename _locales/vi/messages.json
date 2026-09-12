@@ -211,6 +211,30 @@
     "message": "Lỗi: ",
     "description": "Error prefix"
   },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Chưa cấu hình API key của Gemini",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Chưa cấu hình API key của OpenAI",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Chưa cấu hình API key của Groq",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Chưa cấu hình API key của Anthropic",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Chưa cấu hình Base URL của Custom Gateway",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Chưa cấu hình API key cho",
+    "description": "Prefix concatenated with a model id, e.g. 'Chưa cấu hình API key cho gemini-3.6-flash'"
+  },
   "settings_defaultTone": {
     "message": "Giọng văn mặc định",
     "description": "Default tone label"

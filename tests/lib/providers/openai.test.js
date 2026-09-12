@@ -11,11 +11,12 @@ describe("OpenAI Provider", () => {
   beforeEach(() => {
     jest.resetModules();
     global.fetch = jest.fn();
+    chrome.i18n.getMessage.mockImplementation((key) => key);
     generateContent = require("../../../lib/providers/openai").generateContent;
   });
 
-  it("throws when apiKey is missing and never calls fetch", async () => {
-    await expect(generateContent("p", {})).rejects.toThrow("OpenAI API key not configured");
+  it("throws a localized error when apiKey is missing and never calls fetch", async () => {
+    await expect(generateContent("p", {})).rejects.toThrow("error_apiKeyNotConfigured_openai");
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
