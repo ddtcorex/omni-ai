@@ -985,7 +985,11 @@ async function showFlashActions(text, inputElement) {
   const GAP = 6;
   const rowWidth = selectedActions.length * ICON_SIZE + (selectedActions.length - 1) * GAP;
   const btnRect = quickActionBtn.getBoundingClientRect();
-  let top = btnRect.top + window.scrollY;
+  // Align centers, not tops: the icon's own rendered height doesn't always
+  // exactly equal its authored size (e.g. residual scale from its entrance
+  // animation), so matching tops alone can leave the row's true center a
+  // couple px off from the icon's -- aligning centers is robust to that.
+  let top = btnRect.top + btnRect.height / 2 - ICON_SIZE / 2 + window.scrollY;
   let left = btnRect.right + window.scrollX + GAP;
 
   if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {

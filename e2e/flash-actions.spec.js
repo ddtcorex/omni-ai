@@ -429,3 +429,65 @@ test("Replace fails gracefully (overlay stays open) when the field is removed en
     server.close();
   }
 });
+
+test("the flash row is vertically centered on the floating icon, not just top-aligned", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase"]);
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    const iconBox = await quickBtn.boundingBox();
+    const iconCenter = iconBox.y + iconBox.height / 2;
+
+    await quickBtn.hover();
+    const flashBtn = page.locator('[data-flash-action="rephrase"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+
+    const flashBox = await flashBtn.boundingBox();
+    const flashCenter = flashBox.y + flashBox.height / 2;
+
+    // Was previously top-aligned (row.top = icon.top), which drifts a couple
+    // px off-center whenever the icon's rendered height doesn't exactly
+    // equal its authored size (e.g. residual scale from its entrance
+    // animation) -- aligning centers directly is robust to that.
+    expect(Math.abs(flashCenter - iconCenter)).toBeLessThan(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a hovered flash button scales up by the same factor as the floating icon", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase"]);
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+
+    const flashBtn = page.locator('[data-flash-action="rephrase"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.hover();
+    await page.waitForTimeout(200); // let the hover-in transition finish
+
+    const hoveredBox = await flashBtn.boundingBox();
+    // 22px base * 1.15, matching .omni-ai-quick-btn:hover's own scale factor.
+    expect(hoveredBox.width).toBeCloseTo(25.3, 0);
+    expect(hoveredBox.height).toBeCloseTo(25.3, 0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
