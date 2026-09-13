@@ -11,10 +11,19 @@
  * API that is not listed here, it throws a TypeError instead of silently
  * receiving `undefined`, so the gap cannot be missed.
  *
- * Defaults mirror jest-chrome's: every method is a bare `jest.fn()` returning
- * `undefined`, and value properties (`runtime.id`, `runtime.lastError`) are
- * `undefined`. Tests keep configuring implementations themselves with
- * `mockResolvedValue` / `mockImplementation`, exactly as before.
+ * Methods, value properties and storage areas mirror jest-chrome's defaults
+ * exactly: every method is a bare `jest.fn()` returning `undefined`,
+ * `runtime.id` and `runtime.lastError` are `undefined`, and each storage area
+ * is `{ clear, get, getBytesInUse, remove, set }` of `jest.fn()`s. Tests keep
+ * configuring implementations themselves with `mockResolvedValue` /
+ * `mockImplementation`, exactly as before.
+ *
+ * Events are the one deliberate departure: they track the listeners registered
+ * through them, so `hasListener` / `hasListeners` answer truthfully and
+ * `callListeners` (the idiom docs/superpowers/plans/2026-09-07-sidebar-chat-streaming.md
+ * teaches for driving `chrome.runtime.onConnect`) works without reaching into
+ * `addListener.mock.calls`. jest-chrome's argument-count validation on
+ * `addListener` is intentionally not reproduced; no test here depends on it.
  *
  * Call sites this covers, keep in sync when the extension adopts a new API:
  * - lib/storage.js, lib/history.js, lib/theme-manager.js: storage.*, storage.onChanged
@@ -28,11 +37,24 @@
  */
 
 function createEvent() {
+  const listeners = new Set();
+
   return {
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    hasListener: jest.fn(() => false),
-    hasListeners: jest.fn(() => false),
+    addListener: jest.fn((listener) => {
+      listeners.add(listener);
+    }),
+    removeListener: jest.fn((listener) => {
+      listeners.delete(listener);
+    }),
+    hasListener: jest.fn((listener) => listeners.has(listener)),
+    hasListeners: jest.fn(() => listeners.size > 0),
+    getListeners: jest.fn(() => Array.from(listeners)),
+    clearListeners: jest.fn(() => {
+      listeners.clear();
+    }),
+    callListeners: jest.fn((...args) => {
+      for (const listener of listeners) listener(...args);
+    }),
     dispatch: jest.fn(),
   };
 }
@@ -51,6 +73,8 @@ function createChromeMock() {
   return {
     runtime: {
       id: undefined,
+      // Plain writable property, like jest-chrome's; jest-chrome validated the
+      // assigned shape, which no test here relies on.
       lastError: undefined,
       getManifest: jest.fn(),
       getURL: jest.fn(),

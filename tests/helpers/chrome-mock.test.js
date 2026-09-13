@@ -70,6 +70,9 @@ describe("chrome-mock helper", () => {
       expect(typeof event.addListener.mockImplementation).toBe("function");
       expect(typeof event.removeListener).toBe("function");
       expect(typeof event.hasListener).toBe("function");
+      // callListeners is how the repo's own plan docs drive onConnect; it must
+      // exist so that idiom does not throw.
+      expect(typeof event.callListeners).toBe("function");
     }
   });
 
@@ -107,5 +110,31 @@ describe("chrome-mock helper", () => {
 
     expect(chrome.runtime.onMessage.addListener).toHaveBeenCalledWith(listener);
     expect(listener).toHaveBeenCalledWith({ type: "PING" }, {}, expect.any(Function));
+  });
+
+  it("tracks registered listeners so hasListener and callListeners are truthful", () => {
+    const chrome = createChromeMock();
+    const first = jest.fn();
+    const second = jest.fn();
+
+    expect(chrome.runtime.onConnect.hasListeners()).toBe(false);
+
+    chrome.runtime.onConnect.addListener(first);
+    chrome.runtime.onConnect.addListener(second);
+    expect(chrome.runtime.onConnect.hasListener(first)).toBe(true);
+    expect(chrome.runtime.onConnect.hasListeners()).toBe(true);
+    expect(chrome.runtime.onConnect.getListeners()).toEqual([first, second]);
+
+    // The idiom the repo's plan docs teach for driving a Port.
+    chrome.runtime.onConnect.callListeners({ name: "omni-chat" });
+    expect(first).toHaveBeenCalledWith({ name: "omni-chat" });
+    expect(second).toHaveBeenCalledWith({ name: "omni-chat" });
+
+    chrome.runtime.onConnect.removeListener(first);
+    expect(chrome.runtime.onConnect.hasListener(first)).toBe(false);
+    expect(chrome.runtime.onConnect.getListeners()).toEqual([second]);
+
+    chrome.runtime.onConnect.clearListeners();
+    expect(chrome.runtime.onConnect.hasListeners()).toBe(false);
   });
 });
