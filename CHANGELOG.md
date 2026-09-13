@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **43 translation languages, up from 10.** `lib/languages.js` is the new single source of truth for the language list (code, English name, native name); the Settings language pickers render it behind a search box with a "Common" group, the LLM prompts resolve names from it, and the overlay shows the right name for any of them. A saved code the registry does not know stays selectable, so no preference is lost.
+- The language picker's search placeholder and its two optgroup labels were added to all 10 locales.
+
+### Changed
+
+- Removed the two duplicated 13-entry `languageNames` maps from `lib/ai-service.js`; a guard test keeps them from coming back.
+- `lib/i18n.js` and the content script no longer request `_locales/<language>/messages.json` for a translation language with no locale directory, which removes a failed request and a console warning on every page load.
+
 ## [2.4.0] - 2026-09-06
 
 ### Internal

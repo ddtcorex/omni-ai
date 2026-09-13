@@ -426,6 +426,18 @@
   "lang_zh": {
     "message": "中国語"
   },
+  "settings_languageSearchPlaceholder": {
+    "message": "言語を検索",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "よく使う",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "すべての言語",
+    "description": "Second optgroup label listing every supported language"
+  },
   "settings_confirmClearHistory": {
     "message": "利用履歴をすべて消去してもよろしいですか？",
     "description": "履歴消去の確認"

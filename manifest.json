@@ -90,6 +90,7 @@
         "assets/icons/*.png",
         "_locales/*/messages.json",
         "lib/i18n.js",
+        "lib/languages.js",
         "lib/theme-manager.js",
         "lib/storage.js",
         "lib/design-tokens.css",

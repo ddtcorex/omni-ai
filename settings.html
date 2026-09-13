@@ -439,18 +439,15 @@
                 <span class="label-text">__MSG_settings_primaryLanguage__</span>
                 <span class="label-hint">__MSG_settings_primaryLanguageHint__</span>
               </label>
-              <select id="primaryLanguage" class="setting-select">
-                <option value="en">__MSG_lang_en__</option>
-                <option value="vi">__MSG_lang_vi__</option>
-                <option value="es">__MSG_lang_es__</option>
-                <option value="fr">__MSG_lang_fr__</option>
-                <option value="de">__MSG_lang_de__</option>
-                <option value="it">__MSG_lang_it__</option>
-                <option value="pt">__MSG_lang_pt__</option>
-                <option value="ja">__MSG_lang_ja__</option>
-                <option value="ko">__MSG_lang_ko__</option>
-                <option value="zh">__MSG_lang_zh__</option>
-              </select>
+              <input
+                type="search"
+                id="primaryLanguageSearch"
+                class="setting-input language-search"
+                placeholder="__MSG_settings_languageSearchPlaceholder__"
+                aria-label="__MSG_settings_languageSearchPlaceholder__"
+                autocomplete="off"
+              />
+              <select id="primaryLanguage" class="setting-select"></select>
             </div>
 
             <div class="setting-item">
@@ -458,18 +455,15 @@
                 <span class="label-text">__MSG_settings_language__</span>
                 <span class="label-hint">__MSG_settings_languageHint__</span>
               </label>
-              <select id="defaultLanguage" class="setting-select">
-                <option value="en">__MSG_lang_en__</option>
-                <option value="vi">__MSG_lang_vi__</option>
-                <option value="es">__MSG_lang_es__</option>
-                <option value="fr">__MSG_lang_fr__</option>
-                <option value="de">__MSG_lang_de__</option>
-                <option value="it">__MSG_lang_it__</option>
-                <option value="pt">__MSG_lang_pt__</option>
-                <option value="ja">__MSG_lang_ja__</option>
-                <option value="ko">__MSG_lang_ko__</option>
-                <option value="zh">__MSG_lang_zh__</option>
-              </select>
+              <input
+                type="search"
+                id="defaultLanguageSearch"
+                class="setting-input language-search"
+                placeholder="__MSG_settings_languageSearchPlaceholder__"
+                aria-label="__MSG_settings_languageSearchPlaceholder__"
+                autocomplete="off"
+              />
+              <select id="defaultLanguage" class="setting-select"></select>
             </div>
           </div>
         </section>

@@ -23,6 +23,8 @@ const FIXTURE_IDS = [
   "showFloatingButton",
   "primaryLanguage",
   "defaultLanguage",
+  "primaryLanguageSearch",
+  "defaultLanguageSearch",
   "shortcutsLink",
   "saveBtn",
   "saveStatus",
@@ -48,21 +50,33 @@ const FLASH_ACTION_IDS = [
   "explain",
 ];
 
-const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko", "zh"];
-
 function buildFixture() {
   document.body.innerHTML = FIXTURE_IDS.map((id) => {
     if (id === "apiModel") return `<select id="${id}"></select>`;
     if (id === "advancedProviderSettings")
       return `<details id="${id}"><summary></summary></details>`;
     if (["primaryLanguage", "defaultLanguage"].includes(id)) {
-      const options = SUPPORTED_LOCALES.map(
-        (code) => `<option value="${code}">${code}</option>`,
-      ).join("");
-      return `<select id="${id}">${options}</select>`;
+      // The options are rendered from lib/languages.js at runtime, which is
+      // exactly what these tests exercise, so the fixture ships an empty select.
+      return `<div><input id="${id}Search" type="search" /><select id="${id}"></select></div>`;
     }
     if (["themeSelector", "defaultPreset", "showFloatingButton"].includes(id)) {
       return `<select id="${id}"><option value="">-</option></select>`;
+    }
+    if (
+      [
+        "geminiApiKey",
+        "groqApiKey",
+        "openaiApiKey",
+        "anthropicApiKey",
+        "customGatewayApiKey",
+        "customGatewayBaseUrl",
+        "customModelName",
+      ].includes(id)
+    ) {
+      // Real inputs, not divs: saveSettings() calls .trim() on these, so a div
+      // fixture made every Save click throw after the language had been written.
+      return `<input id="${id}" />`;
     }
     if (id === "flashActionsList") {
       const boxes = FLASH_ACTION_IDS.map(
@@ -359,5 +373,115 @@ describe("settings.js", () => {
       explainBox.dispatchEvent(new Event("change", { bubbles: true }));
       expect(boxes.every((b) => !(/** @type {HTMLInputElement} */ (b).disabled))).toBe(true);
     });
+  });
+});
+
+describe("language pickers", () => {
+  let Settings;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    buildFixture();
+    global.fetch = jest.fn().mockResolvedValue({ json: async () => ({}) });
+    chrome.i18n.getMessage.mockImplementation((key) => key);
+    chrome.i18n.getUILanguage = jest.fn().mockReturnValue("en-US");
+    chrome.storage.sync.get.mockResolvedValue({});
+    chrome.storage.local.get.mockResolvedValue({});
+    Settings = await import("../settings.js");
+  });
+
+  it("renders every registry language, grouped into common and all", () => {
+    Settings.populateLanguageSelect(document.getElementById("primaryLanguage"));
+    const select = document.getElementById("primaryLanguage");
+    const groups = Array.from(select.querySelectorAll("optgroup"));
+    expect(groups).toHaveLength(2);
+    expect(Array.from(select.options)).toHaveLength(43);
+  });
+
+  it("keeps a saved code that the registry does not know", async () => {
+    Settings.wireLanguagePicker(
+      document.getElementById("primaryLanguageSearch"),
+      document.getElementById("primaryLanguage"),
+    );
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "xx-legacy" });
+    await Settings.loadSettings();
+    expect(document.getElementById("primaryLanguage").value).toBe("xx-legacy");
+  });
+
+  it("narrows the options as the search box is typed into", () => {
+    const select = document.getElementById("primaryLanguage");
+    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+    // The value that is currently selected stays selectable: dropping it would
+    // blank select.value and Save would then persist an empty language.
+    select.value = "en";
+
+    const input = document.getElementById("primaryLanguageSearch");
+    input.value = "viet";
+    input.dispatchEvent(new Event("input"));
+
+    expect(Array.from(select.options).map((option) => option.value)).toEqual(["vi", "en"]);
+  });
+
+  it("does not lose the current selection while the search box is filtering", () => {
+    const select = document.getElementById("primaryLanguage");
+    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+    select.value = "ja";
+
+    const input = document.getElementById("primaryLanguageSearch");
+    input.value = "viet";
+    input.dispatchEvent(new Event("input"));
+
+    expect(select.value).toBe("ja");
+  });
+});
+
+describe("language picker save path", () => {
+  let Settings;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    buildFixture();
+    global.fetch = jest.fn().mockResolvedValue({ json: async () => ({}) });
+    chrome.i18n.getMessage.mockImplementation((key) => key);
+    chrome.i18n.getUILanguage = jest.fn().mockReturnValue("en-US");
+    chrome.storage.sync.get.mockResolvedValue({});
+    chrome.storage.local.get.mockResolvedValue({});
+    Settings = await import("../settings.js");
+  });
+
+  it("keeps an unknown saved code selectable while a query is active", async () => {
+    const select = document.getElementById("primaryLanguage");
+    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "xx-legacy" });
+    await Settings.loadSettings();
+    expect(select.value).toBe("xx-legacy");
+
+    const input = document.getElementById("primaryLanguageSearch");
+    input.value = "viet";
+    input.dispatchEvent(new Event("input"));
+
+    expect(select.value).toBe("xx-legacy");
+    expect(Array.from(select.options).map((option) => option.value)).toEqual(["vi", "xx-legacy"]);
+  });
+
+  it("does not persist a blanked language when Save runs while the search box is filtering", async () => {
+    const select = document.getElementById("primaryLanguage");
+    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "ja", defaultLanguage: "en" });
+    await Settings.loadSettings();
+    // A real theme value, so the save path exercises theme persistence instead
+    // of throwing on the fixture's empty select.
+    document.getElementById("themeSelector").value = "dark";
+    Settings.setupEventListeners();
+
+    const input = document.getElementById("primaryLanguageSearch");
+    input.value = "viet";
+    input.dispatchEvent(new Event("input"));
+
+    document.getElementById("saveBtn").click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const [saved] = chrome.storage.sync.set.mock.calls.at(-1);
+    expect(saved.primaryLanguage).toBe("ja");
   });
 });

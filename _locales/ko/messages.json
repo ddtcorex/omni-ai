@@ -426,6 +426,18 @@
   "lang_zh": {
     "message": "중국어"
   },
+  "settings_languageSearchPlaceholder": {
+    "message": "언어 검색",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "자주 사용",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "모든 언어",
+    "description": "Second optgroup label listing every supported language"
+  },
   "settings_confirmClearHistory": {
     "message": "모든 사용 기록을 삭제하시겠습니까?",
     "description": "기록 삭제 확인"

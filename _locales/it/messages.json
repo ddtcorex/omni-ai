@@ -426,6 +426,18 @@
   "lang_zh": {
     "message": "Cinese"
   },
+  "settings_languageSearchPlaceholder": {
+    "message": "Cerca lingue",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Comuni",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Tutte le lingue",
+    "description": "Second optgroup label listing every supported language"
+  },
   "settings_confirmClearHistory": {
     "message": "Vuoi davvero cancellare tutta la cronologia?",
     "description": "Conferma cancellazione cronologia"

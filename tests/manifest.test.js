@@ -73,3 +73,44 @@ describe("command_openQuickMenu i18n key", () => {
     expect(messages.command_openQuickMenu.message.length).toBeGreaterThan(0);
   });
 });
+
+describe("content script resource exposure", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8"));
+  const contentSource = fs.readFileSync(path.join(__dirname, "../content/content.js"), "utf8");
+
+  // Every block, not just the first, with `*` honoured anywhere in a pattern
+  // (the manifest uses a trailing wildcard for icons and a middle one for
+  // locales).
+  const exposedPatterns = manifest.web_accessible_resources.flatMap((entry) => entry.resources);
+  const toMatcher = (pattern) =>
+    new RegExp(
+      `^${pattern
+        .split("*")
+        .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .join("[^/]*")}$`,
+    );
+  const isExposed = (resourcePath) =>
+    exposedPatterns.some((pattern) => toMatcher(pattern).test(resourcePath));
+
+  test("every locally bundled resource the content script loads is web-accessible", () => {
+    // The content script runs in the page, so anything it pulls in through
+    // chrome.runtime.getURL must be listed in web_accessible_resources or the
+    // fetch/import rejects at runtime inside a real extension. Scanning the
+    // path literals rather than one import form also covers the CSS sheet list,
+    // an icon, a locale JSON and a subdirectory module.
+    const requested = [
+      ...new Set(
+        [...contentSource.matchAll(/["'`]((?:lib|content|assets|_locales)\/[^"'`$]+?)["'`]/g)].map(
+          (match) => match[1],
+        ),
+      ),
+    ];
+    expect(requested.length).toBeGreaterThan(0);
+    requested.forEach((resourcePath) => {
+      expect({ resourcePath, exposed: isExposed(resourcePath) }).toEqual({
+        resourcePath,
+        exposed: true,
+      });
+    });
+  });
+});

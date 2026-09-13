@@ -1,4 +1,10 @@
-import { generateContent, improveText, smartTranslate } from "../../lib/ai-service";
+import {
+  generateContent,
+  improveText,
+  smartTranslate,
+  translateText,
+  explainText,
+} from "../../lib/ai-service";
 import * as Providers from "../../lib/providers/index";
 
 jest.mock("../../lib/providers/index", () => ({
@@ -149,5 +155,34 @@ describe("AI Service", () => {
     expect(callArgs[0]).toContain("If the text is in English, translate it to Vietnamese");
     expect(callArgs[0]).toContain("Otherwise, translate it to English");
     expect(callArgs[0]).toContain("STRICTLY preserve all original formatting");
+  });
+
+  it("translateText names a language that only the shared registry knows", async () => {
+    store["geminiApiKey"] = "key";
+    mockProvider.generateContent.mockResolvedValue("Translated Text");
+
+    await translateText("Hello", "jv");
+
+    const callArgs = mockProvider.generateContent.mock.calls[0];
+    expect(callArgs[0]).toContain("Translate the following text to Javanese.");
+  });
+
+  it("explainText names a language that only the shared registry knows", async () => {
+    store["geminiApiKey"] = "key";
+    mockProvider.generateContent.mockResolvedValue("Explanation");
+
+    await explainText("Hello", "am");
+
+    const callArgs = mockProvider.generateContent.mock.calls[0];
+    expect(callArgs[0]).toContain("in Amharic");
+  });
+
+  it("keeps resolving the languages the old inline maps carried", async () => {
+    store["geminiApiKey"] = "key";
+    mockProvider.generateContent.mockResolvedValue("Translated Text");
+
+    await translateText("Hello", "zh");
+
+    expect(mockProvider.generateContent.mock.calls[0][0]).toContain("Chinese (Simplified)");
   });
 });

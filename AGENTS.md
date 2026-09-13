@@ -16,6 +16,8 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` through `content/editor-adapters.js`. Always fall back gracefully.
 7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 10 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
+    **Exception, reference data:** `lib/languages.js` holds the translation language registry (code, English name, native name) and is deliberately NOT duplicated into `_locales`. A language's own name is data, and 43 languages x 10 locales of translated names would be machine-translated noise. Every other string this extension shows a user, including the language picker's search placeholder and its optgroup labels, still goes through `_locales`. The maintainer approved this carve-out on 2026-09-13.
+
 ---
 
 ## 🧠 Skills Protocol (MANDATORY)
@@ -76,6 +78,9 @@ omni-ai/
 |   |-- providers/           # gemini.js, openai.js, groq.js, anthropic.js, custom-gateway.js, index.js
 |   |-- history.js           # History + usage stats (storage.local)
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
+|   |-- languages.js         # Translation language registry (43 codes): single source
+|   |                        #   of truth for prompt names + the Settings pickers;
+|   |                        #   UI_LOCALE_CODES lists the _locales/ dirs that ship
 |   |-- storage.js           # Typed owner for the remaining Storage Map keys (languages, API keys/model/preset, custom-gateway config, settings bag)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
 |   |-- sidebar-chat.js      # Sidebar Chat helpers: buildChatPrompt() (page context + history
@@ -149,6 +154,12 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 2. Route it in `handleQuickAction()` in `background/service-worker.js`.
 3. Add the button + icon to `showQuickActionMenu()` in `content/content.js`.
 4. Add display-name mapping and i18n keys in `_locales/*/messages.json`.
+
+### Adding a Translation Language
+
+1. Add one `{ code, name, native }` entry to `lib/languages.js`, keeping the array sorted by `name`.
+2. Run `env -u NODE_ENV npx jest tests/lib/languages.test.js`; the count assertion and the sort assertion both fail until the entry is right.
+3. Nothing else needs touching: the Settings pickers, the prompt names and the overlay labels all read that one list. The language's display name is reference data and deliberately does not get an `_locales` key — see core directive 7.
 
 ### Editing Content-Script UI
 

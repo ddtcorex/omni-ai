@@ -424,6 +424,11 @@ body {
   color: var(--omni-text-primary);
 }
 
+/* Language pickers pair a search box with the select it filters. */
+.language-search {
+  margin-bottom: var(--omni-spacing-sm);
+}
+
 /* Toggle Switch */
 .switch {
   position: relative;

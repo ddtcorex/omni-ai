@@ -19,6 +19,7 @@ systematic-debugging → bugs, TDD → implementation, verification-before-compl
 - Storage areas are a contract: prefs → `chrome.storage.sync`, secrets/config → `chrome.storage.local`
 - Any async `onMessage` reply must `return true`
 - User-facing strings go through `_locales/*/messages.json` (add to `en` first)
+- Language _names_ are the one exception: they live in `lib/languages.js`, not in `_locales`. That registry is reference data (43 codes, each with an English and a native name) read by the Settings pickers, the LLM prompts and the overlay labels. UI copy around those pickers, such as the search placeholder and the optgroup labels, still needs `_locales` keys.
 
 ## Commit Convention (Conventional Commits)
 
