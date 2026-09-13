@@ -116,6 +116,25 @@ const FLASH_ACTION_LABEL_KEYS = {
   summarize: "action_summarize",
   explain: "action_explain",
 };
+// The row always renders in this fixed order, regardless of the order the
+// selected actions happen to be stored in (settings.flashActions) -- an
+// already-saved install can carry a stale order from before this list was
+// last reordered, and chrome.storage.local isn't reset by a dev reload.
+// Deliberately its own list, not Object.keys(FLASH_ACTION_LABEL_KEYS): that
+// object's key order matches the Settings checkbox layout (an unrelated,
+// earlier decision) and has grammar before rephrase -- DEFAULT_FLASH_ACTIONS
+// above wants rephrase before grammar.
+const FLASH_ACTION_CANONICAL_ORDER = [
+  "translate_primary",
+  "translate_default",
+  "rephrase",
+  "grammar",
+  "reply",
+  "emoji",
+  "tone",
+  "summarize",
+  "explain",
+];
 const FLASH_ACTION_ICONS = {
   translate_primary: ICONS.translate,
   translate_default: ICONS.translate,
@@ -923,6 +942,12 @@ async function showFlashActions(text, isInput) {
     }
   }
   if (!quickActionBtn || !selectedActions.length) return;
+
+  selectedActions = selectedActions
+    .slice()
+    .sort(
+      (a, b) => FLASH_ACTION_CANONICAL_ORDER.indexOf(a) - FLASH_ACTION_CANONICAL_ORDER.indexOf(b),
+    );
 
   hideFlashActions();
 

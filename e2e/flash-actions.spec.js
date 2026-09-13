@@ -82,6 +82,35 @@ test("the default flash actions render Translate first, then Rephrase and Gramma
   }
 });
 
+test("the flash row renders in canonical order regardless of the order saved in storage", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    // Simulate a pre-existing install whose settings.flashActions was
+    // persisted in the OLD order, before Translate was moved first --
+    // chrome.storage.local survives a dev "Reload extension", so this is a
+    // real state a user's browser can be in even after a code update.
+    await seedConfig(sw, ["grammar", "rephrase", "translate_primary"]);
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+    await page.waitForTimeout(650);
+
+    const order = await page
+      .locator(".omni-ai-flash-btn")
+      .evaluateAll((els) => els.map((el) => el.dataset.flashAction));
+    expect(order).toEqual(["translate_primary", "rephrase", "grammar"]);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("hovering the floating icon for the configured delay reveals the configured flash actions", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
