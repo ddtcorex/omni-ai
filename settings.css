@@ -574,8 +574,8 @@ input:focus + .slider {
    position. Gated behind a min-height media query (below) rather than
    applied unconditionally: .save-actions is the LAST element on the page,
    with the API Configuration section's content alone reaching ~590px at
-   scroll top — on a short window (DevTools open, an unmaximized browser,
-   etc.) an unconditional fixed/sticky bar would overlap the Validate
+   scroll top. On a short window (DevTools open, an unmaximized browser,
+   etc.), an unconditional fixed/sticky bar would overlap the Validate
    Configuration button that sits right above it, since there isn't enough
    vertical room for both. Below the threshold the button simply renders
    in normal document flow (the original, always-safe behavior). */
@@ -586,7 +586,7 @@ input:focus + .slider {
   gap: var(--omni-spacing-sm);
   /* Horizontal padding centers the ~656px-wide content (matching
      .options-container's cards) via max(), while never going below the
-     container's own 32px side padding on narrow viewports — this lets the
+     container's own 32px side padding on narrow viewports, which lets the
      bar's background/border/shadow span the full window edge-to-edge
      (see the fixed-position rule below) without the button itself
      stretching wider than the cards above it. */
@@ -611,8 +611,8 @@ input:focus + .slider {
   .save-actions {
     /* position: fixed, not sticky: a bottom-anchored sticky last-child
        renders pinned to the viewport bottom for virtually the ENTIRE
-       scroll range (not just once you've scrolled near the end) —
-       margin/padding on the sticky element itself has no effect on that
+       scroll range (not just once you've scrolled near the end).
+       Margin/padding on the sticky element itself has no effect on that
        pinned position. Fixed positioning is unconditional and
        predictable instead. */
     position: fixed;

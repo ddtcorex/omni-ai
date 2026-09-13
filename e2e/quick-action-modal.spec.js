@@ -60,7 +60,7 @@ test("replaces a partial input selection via the quick-action menu", async () =>
     await quickBtn.click();
 
     // showQuickActionMenu() awaits chrome.storage.sync.get() before it builds
-    // the menu DOM and binds click handlers (content.js ~line 848) — give
+    // the menu DOM and binds click handlers (content.js ~line 848). Give
     // that a beat so the click below lands after listeners are attached.
     const rephraseBtn = page.locator('[data-action="rephrase"]');
     await expect(rephraseBtn).toBeVisible();
@@ -99,7 +99,7 @@ test("replaces the full input value when nothing is selected", async () => {
     await quickBtn.click();
 
     // showQuickActionMenu() awaits chrome.storage.sync.get() before it builds
-    // the menu DOM and binds click handlers (content.js ~line 848) — give
+    // the menu DOM and binds click handlers (content.js ~line 848). Give
     // that a beat so the click below lands after listeners are attached.
     const replyBtn = page.locator('[data-action="reply"]');
     await expect(replyBtn).toBeVisible();
@@ -147,7 +147,7 @@ test("replaces a selection inside a contenteditable composer", async () => {
     await quickBtn.click();
 
     // showQuickActionMenu() awaits chrome.storage.sync.get() before it builds
-    // the menu DOM and binds click handlers (content.js ~line 848) — give
+    // the menu DOM and binds click handlers (content.js ~line 848). Give
     // that a beat so the click below lands after listeners are attached.
     const rephraseBtn = page.locator('[data-action="rephrase"]');
     await expect(rephraseBtn).toBeVisible();

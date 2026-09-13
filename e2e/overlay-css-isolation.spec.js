@@ -202,7 +202,7 @@ test("stays isolated from host-page CSS even if the shadow host's inline style i
 
     const page = await context.newPage();
     // Aggressive host-page CSS the shadow tree's own top-level classes
-    // don't explicitly reset (text-align, cursor) — a stand-in for the
+    // don't explicitly reset (text-align, cursor), a stand-in for the
     // kind of global reset/framework CSS real sites ship.
     await page.addStyleTag({
       content: `* { text-align: right !important; cursor: not-allowed !important; }`,
@@ -214,8 +214,8 @@ test("stays isolated from host-page CSS even if the shadow host's inline style i
     await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
 
     // Simulate a page script stripping the shadow host's inline style
-    // attribute (a full DOM reset, a "declutter" cleanup script, etc.) —
-    // the only isolation content.js applies is a one-time inline style, so
+    // attribute (a full DOM reset, a "declutter" cleanup script, etc.).
+    // The only isolation content.js applies is a one-time inline style, so
     // this used to remove all protection until overlay.css got its own
     // :host rule.
     await page.evaluate(() => {

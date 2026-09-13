@@ -10,7 +10,7 @@ const { execFileSync } = require("child_process");
 // so `require("eslint")` crashes inside Jest with "Cannot use import
 // statement outside a module" even though plain Node resolves the same
 // package fine. Shelling out sidesteps Jest's module resolver while still
-// exercising the genuine ESLint API against the genuine flat config — no
+// exercising the genuine ESLint API against the genuine flat config. No
 // mocking of ESLint or the rule itself.
 function lintTextViaRealEslint(code, filePath) {
   const script = `

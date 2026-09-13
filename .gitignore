@@ -32,7 +32,7 @@ npm-debug.log*
 key.pem
 extension_info.json
 
-# AI agent infra — kept LOCAL, not tracked (skills symlinks point at
+# AI agent infra: kept LOCAL, not tracked (skills symlinks point at
 # machine-local ~/.maestro-skills and would dangle in fresh clones;
 # CLAUDE.md symlink convention and plan docs stay tracked)
 .claude/

@@ -1,16 +1,16 @@
-# MASTER — Omni AI Design System
+# MASTER: Omni AI Design System
 
 Single source of truth for the tokens and shared component classes used
 across all three UI surfaces: the content-script overlay (Shadow DOM), the
 side panel (`sidepanel/`), and the settings page. Adapted from the
 `maestro-design` skill's persist pattern, but plain CSS custom
-properties/classes — no Tailwind, no build step (see `AGENTS.md` Core
+properties/classes: no Tailwind, no build step (see `AGENTS.md` Core
 Directive #1).
 
 ## Files
 
-- `lib/design-tokens.css` — every `--omni-*` custom property.
-- `lib/design-system.css` — shared component classes (`.ds-*`).
+- `lib/design-tokens.css`: every `--omni-*` custom property.
+- `lib/design-system.css`: shared component classes (`.ds-*`).
 
 Both are loaded via `<link>` in `settings.html`/`sidepanel/sidepanel.html`,
 and fetched-and-injected into the content-script Shadow DOM by
@@ -18,7 +18,7 @@ and fetched-and-injected into the content-script Shadow DOM by
 
 ## Adding a new token
 
-1. Check this doc and `lib/design-tokens.css` first — a close-enough token
+1. Check this doc and `lib/design-tokens.css` first: a close-enough token
    probably already exists (e.g. don't add `--omni-spacing-13px`; use the
    existing scale).
 2. If genuinely new, add it to `lib/design-tokens.css`'s `:root, :host`
@@ -38,26 +38,26 @@ and fetched-and-injected into the content-script Shadow DOM by
 
 ## Token reference
 
-| Token                                                                                          | Purpose                                                                                                                                                                                 |
-| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--omni-bg-primary` / `--omni-bg-secondary` / `--omni-bg-tertiary`                             | Surface background layers, darkest to lightest (dark mode) / lightest to darkest (light mode).                                                                                          |
-| `--omni-bg-hover` / `--omni-bg-active`                                                         | Interactive-state backgrounds.                                                                                                                                                          |
-| `--omni-glass-bg` / `--omni-glass-heavy`                                                       | Translucent backdrop-filter backgrounds (overlay-heavy usage; settings/side panel use these sparingly).                                                                                 |
-| `--omni-border` / `--omni-border-hover`                                                        | Default and hover border colors.                                                                                                                                                        |
-| `--omni-text-primary` / `--omni-text-secondary` / `--omni-text-tertiary` / `--omni-text-muted` | Text hierarchy. `-tertiary` and `-muted` are intentionally distinct (tertiary skews slightly lighter in dark mode) — don't collapse them without checking both surfaces' current usage. |
-| `--omni-accent` / `--omni-accent-cyan` / `--omni-accent-gradient`                              | Brand purple, secondary cyan, and the two-color gradient used on primary actions.                                                                                                       |
-| `--omni-success` / `--omni-warning` / `--omni-error`                                           | Status colors.                                                                                                                                                                          |
-| `--omni-shadow-sm` / `--omni-shadow-lg`                                                        | Elevation.                                                                                                                                                                              |
-| `--omni-radius-sm` / `-md` / `-lg` / `-full`                                                   | Corner radius scale — `-md` is 8px (not settings.css's old 10px; the overlay's 8px value won during unification since it was more common across surfaces).                              |
-| `--omni-spacing-xs` through `-2xl`                                                             | 4/8/12/16/24/32px scale.                                                                                                                                                                |
-| `--omni-font-xs` / `-sm` / `-md`                                                               | Overlay's compact font sizes; settings/side panel mostly set their own larger body text directly rather than from this scale — this scale exists primarily for the overlay's dense UI.  |
-| `--omni-transition-fast` / `-normal`                                                           | 150ms / 250ms eased transitions.                                                                                                                                                        |
+| Token                                                                                          | Purpose                                                                                                                                                                                |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--omni-bg-primary` / `--omni-bg-secondary` / `--omni-bg-tertiary`                             | Surface background layers, darkest to lightest (dark mode) / lightest to darkest (light mode).                                                                                         |
+| `--omni-bg-hover` / `--omni-bg-active`                                                         | Interactive-state backgrounds.                                                                                                                                                         |
+| `--omni-glass-bg` / `--omni-glass-heavy`                                                       | Translucent backdrop-filter backgrounds (overlay-heavy usage; settings/side panel use these sparingly).                                                                                |
+| `--omni-border` / `--omni-border-hover`                                                        | Default and hover border colors.                                                                                                                                                       |
+| `--omni-text-primary` / `--omni-text-secondary` / `--omni-text-tertiary` / `--omni-text-muted` | Text hierarchy. `-tertiary` and `-muted` are intentionally distinct (tertiary skews slightly lighter in dark mode); don't collapse them without checking both surfaces' current usage. |
+| `--omni-accent` / `--omni-accent-cyan` / `--omni-accent-gradient`                              | Brand purple, secondary cyan, and the two-color gradient used on primary actions.                                                                                                      |
+| `--omni-success` / `--omni-warning` / `--omni-error`                                           | Status colors.                                                                                                                                                                         |
+| `--omni-shadow-sm` / `--omni-shadow-lg`                                                        | Elevation.                                                                                                                                                                             |
+| `--omni-radius-sm` / `-md` / `-lg` / `-full`                                                   | Corner radius scale: `-md` is 8px (not settings.css's old 10px; the overlay's 8px value won during unification since it was more common across surfaces).                              |
+| `--omni-spacing-xs` through `-2xl`                                                             | 4/8/12/16/24/32px scale.                                                                                                                                                               |
+| `--omni-font-xs` / `-sm` / `-md`                                                               | Overlay's compact font sizes; settings/side panel mostly set their own larger body text directly rather than from this scale; this scale exists primarily for the overlay's dense UI.  |
+| `--omni-transition-fast` / `-normal`                                                           | 150ms / 250ms eased transitions.                                                                                                                                                       |
 
 ## Component reference
 
 | Class                                            | Purpose                                                                                                                                 | Notes                                                                                                                                                                                                                                                                                                                                     |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.ds-icon-btn`                                   | Small (24x24) icon-only button — back/close/settings-gear affordances.                                                                  | Replaces the three previously-independent `.omni-ai-icon-btn` / `.icon-btn` (settings) / `.icon-btn` (side panel) implementations.                                                                                                                                                                                                        |
+| `.ds-icon-btn`                                   | Small (24x24) icon-only button: back/close/settings-gear affordances.                                                                   | Replaces the three previously-independent `.omni-ai-icon-btn` / `.icon-btn` (settings) / `.icon-btn` (side panel) implementations.                                                                                                                                                                                                        |
 | `.ds-btn-primary`                                | Primary/gradient action button, compact (overlay-appropriate) sizing.                                                                   | Replaces `.omni-ai-btn-primary`, `.save-btn`, `.action-btn`.                                                                                                                                                                                                                                                                              |
 | `.ds-btn-primary--lg`                            | Larger sizing modifier for `.ds-btn-primary`, for roomier surfaces (settings, side panel) where the compact default reads as too small. | Add alongside `.ds-btn-primary`, e.g. `class="ds-btn-primary ds-btn-primary--lg"`. Restores the pre-unification `.save-btn` metrics (14px/24px padding, 15px/600 font, lg radius, translateY hover). Currently used by settings' Save button; apply to other settings/side-panel primary actions as needed (see `docs/FOLLOWUPS.md` #15). |
 | `.ds-btn-secondary`                              | Secondary/flat action button.                                                                                                           | Replaces `.omni-ai-btn-secondary`.                                                                                                                                                                                                                                                                                                        |
@@ -74,7 +74,7 @@ and fetched-and-injected into the content-script Shadow DOM by
   exception rather than silently non-compliant: `--omni-text-tertiary` /
   `--omni-text-muted`. Light-mode `#94a3b8` on `#ffffff` is ≈2.5:1; dark-mode
   `#64748b` on `#0f0f14` is ≈4.0:1. Both were carried over from before the
-  design-system unification, not newly introduced by it — fixing them means
+  design-system unification, not newly introduced by it; fixing them means
   changing the actual color values, which needs its own reviewed visual
   pass, not a documentation-only correction.
 - Every focusable element defined by a `.ds-*` class shows a visible
@@ -95,5 +95,5 @@ Shadow DOM host element (not the arbitrary host page's own `<html>`). The
 overlay's light-mode token overrides are defined with
 `:host-context(.omni-ai-light-mode)` in `lib/design-tokens.css`, which
 matches when the shadow host carries that class and cascades the overrides
-to every element inside the shadow tree — no per-element class toggling is
+to every element inside the shadow tree; no per-element class toggling is
 needed or should be reintroduced.

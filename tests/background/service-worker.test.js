@@ -111,7 +111,7 @@ describe("Service Worker Integration", () => {
   it("recreates context menus and seeds new setting defaults on update, not just install", async () => {
     // Reloading an unpacked extension in chrome://extensions (a routine dev
     // action per AGENTS.md's Dev Loop) fires onInstalled with reason
-    // "update", not "install" — and Chrome clears the extension's context
+    // "update", not "install", and Chrome clears the extension's context
     // menu items on that reload. If update is a no-op, the menu never comes
     // back, and any new settings default introduced after a user's original
     // install (e.g. showFloatingButton) never gets seeded for them either.
@@ -210,7 +210,7 @@ describe("Service Worker Integration", () => {
     expect(chromeMock.storage.session.remove).toHaveBeenCalledWith("omni_ai_active_frame_123");
     // Regression guard: with manifest.json's all_frames:true, omitting frameId
     // broadcasts to every frame on the page (per chrome.tabs.sendMessage docs)
-    // and Chrome resolves the reply from whichever frame answers first — a race
+    // and Chrome resolves the reply from whichever frame answers first, a race
     // that silently drops or corrupts the real top-frame selection whenever the
     // page has any other frame (ads, embeds, trackers). Must target frame 0
     // explicitly instead of omitting frameId.
@@ -513,7 +513,7 @@ describe("Service Worker Integration", () => {
 
     // Channel must be kept open for the async reply. (Pre-fix, fall-through
     // into VALIDATE_CONFIG also lands on a `return true`, so this alone does
-    // not discriminate — the call-count assertion below does.)
+    // not discriminate; the call-count assertion below does.)
     expect(returned).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 0));
     // Exactly one response: the GET_API_KEY success. A second call means the

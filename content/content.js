@@ -1620,7 +1620,7 @@ function createOverlayElement() {
   const el = document.createElement("div");
   el.className = "omni-ai-overlay";
   // Theme is inherited from the shadow host via :host-context(.omni-ai-light-mode)
-  // in lib/design-tokens.css — no per-element class needed.
+  // in lib/design-tokens.css, so no per-element class is needed.
   return el;
 }
 

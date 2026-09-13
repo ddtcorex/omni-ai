@@ -191,7 +191,7 @@ describe("settings.js", () => {
     await Settings.loadSettings();
     // Production wiring happens inside init() on "DOMContentLoaded", which
     // has already fired on jsdom's document by the time this module is
-    // dynamically imported here — so the listener must be attached explicitly.
+    // dynamically imported here, so the listener must be attached explicitly.
     Settings.setupEventListeners();
 
     const keyInput = document.getElementById("geminiApiKey");
@@ -230,7 +230,7 @@ describe("settings.js", () => {
     Settings.setupEventListeners();
 
     // validateConfiguration() reads the *currently selected* provider off
-    // #apiModel, not off whichever input blurred — so the fixture has to be
+    // #apiModel, not off whichever input blurred, so the fixture has to be
     // in "Custom Gateway is the active provider, with the other required
     // gateway fields already filled" state for the blur to reach sendMessage.
     document.getElementById("apiModel").value = "custom-gateway";

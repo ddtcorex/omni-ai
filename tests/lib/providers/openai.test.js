@@ -40,7 +40,7 @@ describe("OpenAI Provider", () => {
     expect(body.model).toBe("gpt-4o-mini"); // resolved via getApiModelName (apiModel lookup)
     expect(body.messages).toEqual([{ role: "user", content: "prompt" }]);
     expect(body.temperature).toBe(0.3);
-    expect(body.max_completion_tokens).toBe(4096); // OpenAI newer param — NOT legacy max_tokens
+    expect(body.max_completion_tokens).toBe(4096); // OpenAI newer param, NOT legacy max_tokens
     expect(body.max_tokens).toBeUndefined();
   });
 

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a "Chat" tab to the Omni AI Side Panel that streams token-by-token answers grounded in the active page's content, using a long-lived Port to the Service Worker (which calls `lib/providers/*` — UI never fetches AI APIs directly).
+**Goal:** Add a "Chat" tab to the Omni AI Side Panel that streams token-by-token answers grounded in the active page's content, using a long-lived Port to the Service Worker (which calls `lib/providers/*`; UI never fetches AI APIs directly).
 
 **Architecture:** A `chrome.runtime.connect({name:"omni-chat"})` Port carries the prompt from the Sidebar to the Service Worker; the SW resolves config from storage and calls a new `generateContentStream()` on the matching provider module, posting `chunk`/`done`/`error` messages back as tokens arrive. The Sidebar appends chunks to an assistant bubble. v1 uses a single-prompt-with-history approach (no provider messages-array refactor).
 
@@ -14,7 +14,7 @@
 
 - All AI traffic MUST go through `lib/ai-service.js` → `lib/providers/*`; UI must never call `fetch` against an AI API. (AGENTS.md Provider Pattern; enforced by `eslint.config.js` `no-restricted-syntax`.)
 - Every user-visible string MUST use `chrome.i18n.getMessage()` via `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit; other locales may follow later but the key MUST exist. (AGENTS.md i18n mandate.)
-- Sidebar/page UI uses `--omni-*` tokens and `.ds-*` classes — never hardcoded colors. (`sidepanel/` is a real page, NOT a Shadow DOM root.)
+- Sidebar/page UI uses `--omni-*` tokens and `.ds-*` classes, never hardcoded colors. (`sidepanel/` is a real page, NOT a Shadow DOM root.)
 - `chrome.storage.sync` = user-following prefs (languages, theme); `chrome.storage.local` = secrets/machine config. Do not mix.
 - `npm run verify` (typecheck + lint + jest) and `npx playwright test` MUST be green before completion.
 - Follow the existing provider export shape: each `lib/providers/*.js` exports `generateContent(prompt, config)`; we ADD `generateContentStream(prompt, config, onChunk, signal)`.
@@ -111,7 +111,7 @@ test("abort stops reading", async () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx jest tests/lib/providers/openai.stream.test.js`
-Expected: FAIL — `generateContentStream` is not exported.
+Expected: FAIL, `generateContentStream` is not exported.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -186,7 +186,7 @@ Modify `lib/providers/groq.js`: Groq's API is OpenAI-compatible. Add:
 ```js
 export { generateContentStream } from "./openai.js";
 ```
-(import at top: `import { generateContentStream } from "./openai.js";` then `export { generateContentStream };` — or re-export inline). Confirm `groq.js` already imports `getApiModelName` similarly; the re-export keeps one SSE implementation.
+(import at top: `import { generateContentStream } from "./openai.js";` then `export { generateContentStream };`, or re-export inline). Confirm `groq.js` already imports `getApiModelName` similarly; the re-export keeps one SSE implementation.
 
 - [ ] **Step 6: Commit**
 
@@ -231,7 +231,7 @@ test("parses Gemini SSE text parts", async () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `npx jest tests/lib/providers/gemini.stream.test.js`
-Expected: FAIL — export missing.
+Expected: FAIL, export missing.
 
 - [ ] **Step 3: Implement**
 
@@ -531,7 +531,7 @@ test("routes to provider module by model", async () => {
 
 - [ ] **Step 2: Run test to verify it fails** → FAIL (no dispatcher export).
 
-- [ ] **Step 3: Implement** — append to `lib/providers/index.js`:
+- [ ] **Step 3: Implement** (append to `lib/providers/index.js`):
 
 ```js
 export async function generateContentStream(prompt, config, onChunk, signal) {
@@ -594,7 +594,7 @@ test("PAGE_CONTEXT_MAX_CHARS is 8000", () => {
 
 - [ ] **Step 2: Run test to verify it fails** → FAIL (export missing).
 
-- [ ] **Step 3: Implement** — append to `lib/ai-service.js`:
+- [ ] **Step 3: Implement** (append to `lib/ai-service.js`):
 
 ```js
 export const PAGE_CONTEXT_MAX_CHARS = 8000;
@@ -672,7 +672,7 @@ test("onConnect omni-chat streams chunks back", async () => {
 
 - [ ] **Step 2: Run test to verify it fails** → FAIL.
 
-- [ ] **Step 3: Implement** — in `background/service-worker.js`:
+- [ ] **Step 3: Implement** (in `background/service-worker.js`):
 
 Add import near top:
 ```js
@@ -708,7 +708,7 @@ chrome.runtime.onConnect.addListener((port) => {
 });
 ```
 
-> Note: `getStoredApiKey` already imported (line 2). For non-Gemini default models the apiKey must match the model's provider; for v1 the SW resolves the configured `apiModel` and its key via the same logic `generateContent` uses. Simplest correct v1: reuse the existing `getApiKey` resolution by calling `generateContent`'s internal key logic — extract a small `resolveConfig()` helper in `service-worker.js` that mirrors `ai-service.js` (model → providerId → keySetting). Implement `resolveConfig()` and use it for both `QUICK_ACTION` parity and the chat port. Keep it minimal.
+> Note: `getStoredApiKey` already imported (line 2). For non-Gemini default models the apiKey must match the model's provider; for v1 the SW resolves the configured `apiModel` and its key via the same logic `generateContent` uses. Simplest correct v1: reuse the existing `getApiKey` resolution by calling `generateContent`'s internal key logic. Extract a small `resolveConfig()` helper in `service-worker.js` that mirrors `ai-service.js` (model → providerId → keySetting). Implement `resolveConfig()` and use it for both `QUICK_ACTION` parity and the chat port. Keep it minimal.
 
 - [ ] **Step 4: Run test to verify it passes** → PASS.
 
@@ -734,7 +734,7 @@ git commit -m "feat(sw): omni-chat port streams responses, resolves config from 
   `sidepanel_chat_send`, `sidepanel_chat_stop`, `sidepanel_chat_new`,
   `sidepanel_chat_context`, `sidepanel_chat_empty`, `sidepanel_chat_error`.
 
-- [ ] **Step 1: Add en keys** — edit `_locales/en/messages.json`, add inside the root object:
+- [ ] **Step 1: Add en keys**: edit `_locales/en/messages.json`, add inside the root object:
 ```json
   "sidepanel_tab_tools": { "message": "Tools" },
   "sidepanel_tab_chat": { "message": "Chat" },
@@ -746,9 +746,9 @@ git commit -m "feat(sw): omni-chat port streams responses, resolves config from 
   "sidepanel_chat_empty": { "message": "Ask a question about the page you're viewing." },
   "sidepanel_chat_error": { "message": "Chat failed: %s" }
 ```
-(insert before the final `}`; keep JSON valid — add trailing comma to the preceding entry.)
+(insert before the final `}`; keep JSON valid, add trailing comma to the preceding entry.)
 
-- [ ] **Step 2: Add same keys to the other 9 locales** (`vi`, `ja`, `ko`, `zh_CN`, `zh_TW`, `fr`, `de`, `es`, `pt_BR` — whatever exists under `_locales/`). For each, set the `message` to the English text (echo) so the key exists and the build does not break; native translations can follow later in a separate pass. Use a quick script:
+- [ ] **Step 2: Add same keys to the other 9 locales** (`vi`, `ja`, `ko`, `zh_CN`, `zh_TW`, `fr`, `de`, `es`, `pt_BR`, whatever exists under `_locales/`). For each, set the `message` to the English text (echo) so the key exists and the build does not break; native translations can follow later in a separate pass. Use a quick script:
 ```bash
 for d in _locales/*/; do
   [ "$d" = "_locales/en/" ] && continue
@@ -766,7 +766,7 @@ git commit -m "feat(i18n): add Sidebar Chat keys to all locales"
 
 ---
 
-## Task 9: Sidebar HTML — tab nav + chat panel
+## Task 9: Sidebar HTML (tab nav + chat panel)
 
 **Files:**
 - Modify: `sidepanel/sidepanel.html`
@@ -777,7 +777,7 @@ git commit -m "feat(i18n): add Sidebar Chat keys to all locales"
   `#chatPanel`, `#chatContext`, `#chatMessages`, `#chatInput`, `#chatSend`,
   `#chatStop`, `#chatNew`.
 
-- [ ] **Step 1: Add tab nav + wrap existing main in `#toolsPanel`, add `#chatPanel`** — edit `sidepanel.html`:
+- [ ] **Step 1: Add tab nav + wrap existing main in `#toolsPanel`, add `#chatPanel`**: edit `sidepanel.html`:
 
 Insert after `<div class="sidepanel-container">` opening (after header, before existing `<main class="page-tools">`):
 
@@ -805,7 +805,7 @@ After `</main>` (before `<footer>`), add:
 </section>
 ```
 
-- [ ] **Step 2: Validate HTML** — open in a quick check or rely on Playwright later. Ensure no unclosed tags (mirror the settings.html fix discipline from Task 6 memory: verify DOM node count via jsdom if a parser is handy).
+- [ ] **Step 2: Validate HTML**: open in a quick check or rely on Playwright later. Ensure no unclosed tags (mirror the settings.html fix discipline from Task 6 memory: verify DOM node count via jsdom if a parser is handy).
 
 - [ ] **Step 3: Commit**
 
@@ -816,7 +816,7 @@ git commit -m "feat(sidepanel): add tab nav and Chat panel markup"
 
 ---
 
-## Task 10: Sidebar CSS — tabs + chat
+## Task 10: Sidebar CSS (tabs + chat)
 
 **Files:**
 - Modify: `sidepanel/sidepanel.css`
@@ -871,7 +871,7 @@ git commit -m "feat(sidepanel): chat + tab styles using design tokens"
 
 ---
 
-## Task 11: Sidebar JS — tab switch, page context, chat/stream/port
+## Task 11: Sidebar JS (tab switch, page context, chat/stream/port)
 
 **Files:**
 - Modify: `sidepanel/sidepanel.js`
@@ -906,7 +906,7 @@ test("appendChunk adds text to last assistant bubble", () => {
 
 - [ ] **Step 2: Run test to verify it fails** → FAIL (functions not exported).
 
-- [ ] **Step 3: Implement** — extend `sidepanel.js`:
+- [ ] **Step 3: Implement** (extend `sidepanel.js`):
 
 Add imports:
 ```js
@@ -1073,7 +1073,7 @@ git commit -m "feat(sidepanel): tab switch, page context, streaming chat over Po
 **Interfaces:**
 - Consumes: existing `e2e/extension.fixtures.js` Side Panel opener.
 
-- [ ] **Step 1: Extend e2e smoke** — add a test that opens the Side Panel, clicks the Chat tab, asserts `#chatPanel` is visible and `#toolsPanel` is hidden. Do NOT assert real streaming (network/mock-dependent; covered by unit tests).
+- [ ] **Step 1: Extend e2e smoke**: add a test that opens the Side Panel, clicks the Chat tab, asserts `#chatPanel` is visible and `#toolsPanel` is hidden. Do NOT assert real streaming (network/mock-dependent; covered by unit tests).
 
 ```js
 test("side panel chat tab renders", async ({ sidePanelPage }) => {
@@ -1108,6 +1108,6 @@ git commit -m "test(e2e): side panel chat tab visibility smoke"
 
 ## Self-Review Notes (run by planner)
 
-1. **Spec coverage:** §3 providers → Tasks 1–5 ✓. §4 SW port → Task 7 ✓. §5 page context → Task 11 (`ensurePageContext`) ✓. §6 buildChatPrompt → Task 6 ✓. §7 UI → Tasks 9–10 ✓. §8 logic → Task 11 ✓. §9 i18n → Task 8 ✓. §10 files → all touched ✓. §11 testing → Tasks 1–5,6,11,12 ✓. §12 risks → token growth accepted (v1), truncation constant `PAGE_CONTEXT_MAX_CHARS` ✓, reasoning_content marker `🧠 ` decided in Task 3 ✓.
-2. **Placeholder scan:** No TBD/TODO. Task 7 notes a possible `resolveConfig()` extraction — that is an explicit, bounded implementation instruction, not a placeholder.
-3. **Type consistency:** `generateContentStream(prompt, config, onChunk, signal)` signature is identical across Tasks 1–5 and the dispatcher (Task 5). Sidebar calls `chrome.runtime.connect({name:"omni-chat"})` and posts `{type:"CHAT_STREAM", prompt}`; SW listens for `name==="omni-chat"` and handles `msg.type==="CHAT_STREAM"` ✓. `buildChatPrompt({pageContext, history, question})` matches Task 6 impl and Task 11 call ✓. `appendChunk(text)` exported and used in Task 11 + tested in Task 11 ✓. i18n keys in Task 8 match those referenced in Tasks 9–11 ✓.
+1. **Spec coverage:** §3 providers → Tasks 1-5 ✓. §4 SW port → Task 7 ✓. §5 page context → Task 11 (`ensurePageContext`) ✓. §6 buildChatPrompt → Task 6 ✓. §7 UI → Tasks 9-10 ✓. §8 logic → Task 11 ✓. §9 i18n → Task 8 ✓. §10 files → all touched ✓. §11 testing → Tasks 1-5,6,11,12 ✓. §12 risks → token growth accepted (v1), truncation constant `PAGE_CONTEXT_MAX_CHARS` ✓, reasoning_content marker `🧠 ` decided in Task 3 ✓.
+2. **Placeholder scan:** No TBD/TODO. Task 7 notes a possible `resolveConfig()` extraction. That is an explicit, bounded implementation instruction, not a placeholder.
+3. **Type consistency:** `generateContentStream(prompt, config, onChunk, signal)` signature is identical across Tasks 1-5 and the dispatcher (Task 5). Sidebar calls `chrome.runtime.connect({name:"omni-chat"})` and posts `{type:"CHAT_STREAM", prompt}`; SW listens for `name==="omni-chat"` and handles `msg.type==="CHAT_STREAM"` ✓. `buildChatPrompt({pageContext, history, question})` matches Task 6 impl and Task 11 call ✓. `appendChunk(text)` exported and used in Task 11 + tested in Task 11 ✓. i18n keys in Task 8 match those referenced in Tasks 9-11 ✓.

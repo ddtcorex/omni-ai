@@ -89,14 +89,14 @@
 
 /* Light-mode overrides: the Shadow-DOM overlay surface. :host() matches only
    the shadow host itself (content.js's #omni-ai-shadow-host div, out in the
-   host page's light DOM) when it carries .omni-ai-light-mode — never an
+   host page's light DOM) when it carries .omni-ai-light-mode, never an
    ancestor. content.js's applyTheme() only ever toggles this class on the
    shadow host (see ensureUiRoot()/theme wiring), so :host() is the correct,
    tightest-possible selector: it matches this codebase's only real usage and,
    unlike :host-context(), cannot be triggered by a hostile host page adding
    the class to its own <html>/<body>.
-   Values are identical to the :root.omni-ai-light-mode block above by design —
-   duplicated here only because :host() and :root are separate selector
+   Values are identical to the :root.omni-ai-light-mode block above by design.
+   Duplicated here only because :host() and :root are separate selector
    contexts that CSS cannot merge into one rule. */
 :host(.omni-ai-light-mode) {
   --omni-bg-primary: #ffffff;

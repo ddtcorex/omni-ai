@@ -25,7 +25,7 @@ test("selecting text mounts the Omni AI shadow UI", async () => {
     await expect(host).toHaveCount(1);
     // The quick-action button mounts after a 10ms mouseup debounce in
     // content.js handleSelectionChange(), so poll instead of sleeping.
-    // The host itself is 0x0 and its <style> is attached eagerly at init —
+    // The host itself is 0x0 and its <style> is attached eagerly at init;
     // only the selection-triggered quick button (.omni-ai-quick-btn, built
     // in content.js presentQuickActionButton) proves the selection UI
     // actually appeared; generic [class*='omni'] would also match static
@@ -58,7 +58,7 @@ test("settings page loads and renders provider configuration", async () => {
     await expect(page).toHaveTitle(/Omni AI/);
     await expect(page.locator("#apiModel")).toBeVisible();
     // Provider key groups start collapsed (class "hidden") until their
-    // provider tab is selected — assert DOM attachment, not visibility.
+    // provider tab is selected, so assert DOM attachment, not visibility.
     await expect(page.locator("#geminiApiKey")).toBeAttached();
     await expect(page.locator("#customGatewayBaseUrl")).toBeAttached();
   } finally {
@@ -70,8 +70,8 @@ test("Save button stays visible (fixed) while scrolling, on a tall-enough window
   const { context, sw } = await launchWithExtension();
   try {
     const page = await context.newPage();
-    // Above the 750px min-height media query threshold in settings.css —
-    // see the comment on .save-actions for why the fixed positioning is
+    // Above the 750px min-height media query threshold in settings.css.
+    // See the comment on .save-actions for why the fixed positioning is
     // gated behind window height at all.
     await page.setViewportSize({ width: 900, height: 900 });
     const extId = new URL(sw.url()).host;
@@ -90,7 +90,7 @@ test("Save button stays visible (fixed) while scrolling, on a tall-enough window
     const box = await page.locator("#saveBtn").boundingBox();
 
     expect(box).not.toBeNull();
-    // "Visible in the viewport" — top is non-negative and bottom doesn't
+    // "Visible in the viewport": top is non-negative and bottom doesn't
     // exceed the viewport height. Without position: fixed, at a mid-page
     // scroll offset the button (being the last element, normally far
     // below the fold) would report a y coordinate well past viewportHeight.
@@ -105,7 +105,7 @@ test("Save button does not overlap Validate Configuration on a short window", as
   const { context, sw } = await launchWithExtension();
   try {
     const page = await context.newPage();
-    // Below the 750px threshold — .save-actions falls back to normal
+    // Below the 750px threshold, .save-actions falls back to normal
     // document flow instead of position: fixed. Regression test for the
     // bug where an unconditional fixed/sticky bar overlapped the Validate
     // Configuration button on short windows (DevTools open, an

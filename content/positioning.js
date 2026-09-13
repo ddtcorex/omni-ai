@@ -63,8 +63,8 @@
 
   /**
    * Given the list of client rects a Range produces (Range.getClientRects()),
-   * return the point nearest to where a multi-line selection visually ends —
-   * the last rect's bottom-right corner — instead of the bounding box of the
+   * return the point nearest to where a multi-line selection visually ends
+   * (the last rect's bottom-right corner) instead of the bounding box of the
    * whole selection. Falls back to a single rect's own bottom-right corner
    * when there's only one (the common single-line case).
    *

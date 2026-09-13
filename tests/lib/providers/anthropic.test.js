@@ -45,7 +45,7 @@ describe("Anthropic Provider", () => {
     expect(body.max_tokens).toBe(100);
     expect(body.messages).toEqual([{ role: "user", content: "Hello" }]);
     // Sampling params were removed from the Claude Sonnet 5 / Opus 5 request
-    // surface — sending them at all returns HTTP 400, so they must never be
+    // surface. Sending them at all returns HTTP 400, so they must never be
     // forwarded even when the caller supplies them in config.
     expect(body).not.toHaveProperty("temperature");
     expect(body).not.toHaveProperty("top_p");
