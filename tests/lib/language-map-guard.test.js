@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { LANGUAGES } = require("../../lib/languages.js");
 
 const read = (...parts) => fs.readFileSync(path.join(__dirname, "../..", ...parts), "utf8");
 
@@ -64,5 +65,17 @@ describe("the language registry stays the single source of truth", () => {
 
   test("the content script no longer builds a language label from an i18n key", () => {
     expect(contentSource).not.toMatch(/getMessage\(`lang_\$\{/);
+  });
+
+  test("the quick-action menu's LANGUAGE_FLAGS covers every registry language, not just the original 10", () => {
+    // Extract the object literal by name so this test fails loudly (rather
+    // than silently passing) if the constant is ever renamed or removed.
+    const match = contentSource.match(/const LANGUAGE_FLAGS = \{([\s\S]*?)\n\};/);
+    expect(match).not.toBeNull();
+    const body = match[1];
+    const missing = LANGUAGES.map((language) => language.code).filter(
+      (code) => !new RegExp(`(^|\\s)(${code}|"${code}")\\s*:`, "m").test(body),
+    );
+    expect(missing).toEqual([]);
   });
 });
