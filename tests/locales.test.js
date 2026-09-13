@@ -200,8 +200,11 @@ describe("catalogues translate UI copy, not just brand names", () => {
 
   test.each(SENTENCES)("%s is translated in every catalogue", (key) => {
     const english = readMessages("en")[key].message;
+    // `en_GB` is an English variant, so it may legitimately match `en` on a
+    // sentence with no US/UK difference; only non-English catalogues are held
+    // to this.
     const untranslated = localeDirs
-      .filter((locale) => locale !== "en")
+      .filter((locale) => !locale.startsWith("en"))
       .filter((locale) => readMessages(locale)[key].message === english);
     expect(untranslated).toEqual([]);
   });
