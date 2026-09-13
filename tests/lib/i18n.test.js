@@ -41,14 +41,14 @@ describe("i18n locale loading", () => {
   });
 
   test("maps a regional variant onto the locale directory that ships", async () => {
-    // zh-TW is a translation language; its strings come from the zh directory.
+    // zh-TW is a translation language and wave 7 shipped its own directory.
     chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "zh-TW" });
 
     await i18n.init();
 
     expect(global.fetch.mock.calls.map((call) => call[0])).toEqual([
       "chrome-extension://test/_locales/en/messages.json",
-      "chrome-extension://test/_locales/zh/messages.json",
+      "chrome-extension://test/_locales/zh_TW/messages.json",
     ]);
   });
 

@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "以 AI 模型驅動的全方位 AI 助理，具備寫作增強、快速操作與智慧工具",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "開啟 Omni AI 面板",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "頁面工具",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "總結",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "智慧翻譯",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "解釋",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "處理中…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "結果",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "無法讀取此頁面",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "此頁面沒有可處理的內容",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "來自:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "向 Omni AI 提問任何事...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "顯示快速操作選單",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "上下文",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "寫作增強",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "快速操作",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "電子郵件",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "聊天",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "社群媒體",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "技術文件",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "學術論文",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "文法修正",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "修正拼字與文法",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "提高清晰度",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "修改語氣",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "精簡化",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "擴充內容",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "潤色改寫",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "翻譯",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "內容總結",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "快速回覆",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "加入表情符號",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "就緒",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "處理中...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "錯誤",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "設定",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API 金鑰",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "從 Google AI Studio 取得您的 API 金鑰",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI 模型",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "選擇要使用的 AI 模型",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "預設上下文",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "翻譯目標語言",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "儲存設定",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "顯示懸浮 Omni AI 按鈕",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "關閉後僅可使用鍵盤快速鍵和右鍵選單。",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "快速操作",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "將滑鼠停留在懸浮圖示上時顯示這些操作，無需開啟完整選單即可執行（最多 4 個）。",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "翻譯為主要語言",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "翻譯為預設語言",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "開啟",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "關閉",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "設定已儲存！",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "複製",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "取代原文",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "解釋說明",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "到 $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "使用 Omni AI 改進",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "使用 Omni AI 解釋",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "使用 Omni AI 翻譯",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "使用 Omni AI 改寫",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "使用 Omni AI 加入表情符號",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "使用 Omni AI 總結",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "詢問 Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "未設定 API 金鑰。請在設定中加入您的 Gemini API 金鑰。",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "輸入您的 Gemini API 金鑰...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "錯誤：",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "未設定 Gemini API 金鑰",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "未設定 OpenAI API 金鑰",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "未設定 Groq API 金鑰",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "未設定 Anthropic API 金鑰",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "未設定 Custom Gateway 基礎 URL",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "未設定 $MODEL$ 的 API 金鑰",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "預設語氣",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "寫作增強和回覆時的預設語氣",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "專業/商務",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "隨性/日常",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "友善",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "直接",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "自信",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "快速提問",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "結果",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "思考中...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "返回",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "已複製！",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "未選取文字。請先選取一段文字。",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "您的 AI 助理",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "主題外觀",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "選擇您喜歡的主題風格",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "跟隨系統",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "深色模式",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "淺色模式",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "主要語言",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "用於快速操作的常用語言",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "驗證設定",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "鍵盤快速鍵",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "使用紀錄",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "總操作次數",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "已處理字數",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "已生成字數",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "關於 Omni AI",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "回報問題",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "清除紀錄",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API 金鑰",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "在 console.groq.com 取得免費金鑰",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API 金鑰",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "在 platform.openai.com 取得金鑰",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "取得 Gemini 金鑰",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "取得 Groq 金鑰",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "取得 OpenAI 金鑰",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API 金鑰",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "在 console.anthropic.com 取得金鑰",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "取得 Anthropic 金鑰",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "前往 Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "註冊或登入帳號"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "建立新的 API 金鑰"
+  },
+  "settings_shortcuts_customize": {
+    "message": "在 Chrome 中自訂",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "您可以在 Chrome 設定頁面管理快速鍵",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "重新整理",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "翻譯時的預設目標語言",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "英語"
+  },
+  "lang_vi": {
+    "message": "越南語"
+  },
+  "lang_es": {
+    "message": "西班牙語"
+  },
+  "lang_fr": {
+    "message": "法語"
+  },
+  "lang_de": {
+    "message": "德語"
+  },
+  "lang_it": {
+    "message": "義大利語"
+  },
+  "lang_pt": {
+    "message": "葡萄牙語"
+  },
+  "lang_ja": {
+    "message": "日語"
+  },
+  "lang_ko": {
+    "message": "韓語"
+  },
+  "lang_zh": {
+    "message": "中文"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "搜尋語言",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "常用",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "所有語言",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "您確定要清除所有使用紀錄嗎？",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "請先輸入 API 金鑰或端點。",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "正在驗證...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "設定有效！可以開始使用。",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "連線檢查失敗",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "檢查中...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "無法儲存設定",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "前往 Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "點擊 'Create API Key'"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "將金鑰複製到剪貼簿"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "前往 Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "註冊或登入帳號"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "建立新的 API 金鑰"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "前往 OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "註冊或登入帳號"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "建立新的 API 金鑰"
+  },
+  "overlay_suggested_fix": {
+    "message": "建議修改",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "接受",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "忽略",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "未發現問題",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "文字看起來很棒！",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "智慧翻譯",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "錯誤",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "翻譯失敗",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(舊版)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "進階",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "自訂模型名稱",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "輸入自訂模型 ID",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "請輸入自訂模型名稱",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "例如: 模型 ID",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "連線到任何相容於 OpenAI 的 API 端點",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "e.g. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "輸入您的 API 金鑰...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway 設定",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "支援相容於 OpenAI 的 API（OpenRouter、LiteLLM、Together AI 等）",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "部分閘道為選填（例如 OpenRouter 免費方案）",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "聊天",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "工具",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "詢問此頁面…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "傳送",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "停止",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "頁面上下文",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "包含頁面上下文",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "開始關於目前頁面的對話。",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "發生錯誤，請重試。",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "清除對話",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "確定要清除此對話嗎？",
+    "description": "Clear chat session confirmation"
+  }
+}

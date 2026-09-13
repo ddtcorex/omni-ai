@@ -196,8 +196,14 @@ describe("toLocaleDir", () => {
   });
 
   test("maps a hyphenated code to Chrome's underscore directory name", () => {
-    // zh_TW does not ship yet; the iOS locale plan's wave 7 adds it.
-    expect(toLocaleDir("zh-TW")).toBe("zh");
+    // Wave 7 shipped the regional directories, so these now resolve to
+    // themselves rather than falling back to the base language.
+    expect(toLocaleDir("zh-TW")).toBe("zh_TW");
+    expect(toLocaleDir("zh-HK")).toBe("zh_HK");
+    expect(toLocaleDir("es-419")).toBe("es_419");
+    expect(toLocaleDir("pt-PT")).toBe("pt_PT");
+    expect(toLocaleDir("fr-CA")).toBe("fr_CA");
+    expect(toLocaleDir("en-GB")).toBe("en_GB");
   });
 
   test("resolves a regional variant to its base language when no directory ships", () => {
