@@ -62,4 +62,27 @@ describe("testing stack", () => {
     expect(setup).toMatch(/global\.chrome\s*=/);
     expect(setup).toContain("tests/helpers/chrome-mock");
   });
+
+  /**
+   * Husky 9 prints a deprecation warning on every git operation for a hook that
+   * still carries the old shim, and Husky 10 refuses to run it at all. That
+   * would silently disable the pre-push gate this repo depends on, so the two
+   * shim lines are guarded here rather than left to review discipline.
+   */
+  it("keeps every husky hook on the v9+ form, with no deprecated shim lines", () => {
+    const huskyDir = path.join(repoRoot, ".husky");
+    const hooks = fs
+      .readdirSync(huskyDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name);
+
+    expect(hooks.length).toBeGreaterThan(0);
+
+    for (const hook of hooks) {
+      const source = fs.readFileSync(path.join(huskyDir, hook), "utf8");
+
+      expect(source).not.toContain("_/husky.sh");
+      expect(source).not.toMatch(/^#!\/usr\/bin\/env sh$/m);
+    }
+  });
 });

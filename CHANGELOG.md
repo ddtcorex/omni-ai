@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Internal
+
+- **The pre-push hook uses the current Husky form.** `.husky/pre-push` still carried the two shim lines Husky 9 deprecates (`#!/usr/bin/env sh` and sourcing `_/husky.sh`). They print a deprecation warning on every push, and Husky 10 refuses to run a hook that has them, which would silently disable the pre-push gate this repo relies on. Removed, so the hook is a plain executable script like `.husky/pre-commit` already was. `tests/testing-stack.test.js` now fails if any hook reintroduces either line.
+
 ## [2.5.0] - 2026-09-14
 
 ### Added

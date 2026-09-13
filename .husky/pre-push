@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Pre-push gate: mirrors the GitHub branch-protection CI.
 # A push is blocked unless BOTH the unit/typecheck/lint pipeline and the
 # Playwright E2E suite are green locally. Keep in sync with AGENTS.md
