@@ -447,3 +447,20 @@ The browser probe was extended for this, and it is the check that matters: Chrom
 No literal `$MODEL$` survives in any of them, and the model id lands in the language-natural position.
 
 One test bug was mine, not the implementation's: the markup assertion first required `</a>` with no whitespace, but Prettier puts the anchor's closing bracket on its own line. The regex now allows whitespace before both `>`.
+
+**Wave 2** executed 2026-09-13 on `chore/i18n-wave-2`: `tr ta te mr gu th`, 6 x 182 keys, produced the same way as wave 1 (six parallel translator agents, one per language, identical rules plus the two added by the prefix-template fix: keep the `$MODEL$` token and its `placeholders` block, and make each tooltip step-one sentence contain its brand).
+
+The two new rules are what made this wave clean. Every one of the six put the model id in its own natural position without a workaround, and the browser probe confirms it:
+
+| Locale | Resolved string |
+| --- | --- |
+| `tr` | `gemini-3.6-flash için API anahtarı yapılandırılmamış` |
+| `ta` | `gemini-3.6-flash க்கு API விசை அமைக்கப்படவில்லை` |
+| `te` | `gemini-3.6-flash కోసం API కీ కాన్ఫిగర్ చేయబడలేదు` |
+| `mr` | `gemini-3.6-flash साठी API की कॉन्फिगर केलेली नाही` |
+| `gu` | `gemini-3.6-flash માટે API કી ગોઠવેલી નથી` |
+| `th` | `ยังไม่ได้ตั้งค่าคีย์ API สำหรับ gemini-3.6-flash` |
+
+Every one carries the model id with no literal `$MODEL$` left behind, and the four verb-final languages put it before the verb. The directory probe also passed 4 of 4 for all six, so Chrome accepts every directory name.
+
+Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 458 tests), `env -u NODE_ENV npx playwright test` 44 passed, `node scripts/locale-status.mjs` reports `0 of 21 locales are missing keys`, and both browser probes pass.

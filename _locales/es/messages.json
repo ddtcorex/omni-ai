@@ -686,7 +686,7 @@
         "content": "$1"
       }
     },
-    "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
   },
   "sidebar_chat_clear": {
     "message": "Borrar chat",

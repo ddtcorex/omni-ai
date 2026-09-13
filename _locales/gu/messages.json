@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "Универсальный ИИ-помощник на базе ИИ-моделей: улучшение текста, быстрые действия и умные инструменты",
+    "message": "AI મોડેલ્સ દ્વારા સંચાલિત ઓલ-ઇન-વન AI સહાયક - લેખન સુધારો, ઝડપી ક્રિયાઓ અને સ્માર્ટ ઉપયોગિતાઓ",
     "description": "Extension description"
   },
   "popup_title": {
@@ -12,287 +12,287 @@
     "description": "Popup title"
   },
   "command_openPanel": {
-    "message": "Открыть панель Omni AI",
+    "message": "Omni AI પેનલ ખોલો",
     "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
   },
   "sidepanel_title": {
-    "message": "Инструменты страницы",
+    "message": "પેજ સાધનો",
     "description": "Side panel section heading"
   },
   "sidepanel_summarize": {
-    "message": "Сводка",
+    "message": "સારાંશ આપો",
     "description": "Side panel action button: summarize the current page"
   },
   "sidepanel_translate": {
-    "message": "Умный перевод",
+    "message": "સ્માર્ટ અનુવાદ",
     "description": "Side panel action button: translate the current page"
   },
   "sidepanel_explain": {
-    "message": "Объяснить",
+    "message": "સમજાવો",
     "description": "Side panel action button: explain the current page"
   },
   "sidepanel_loading": {
-    "message": "Работаем…",
+    "message": "કામ ચાલુ છે…",
     "description": "Side panel status while an action is running"
   },
   "sidepanel_resultLabel": {
-    "message": "Результат",
+    "message": "પરિણામ",
     "description": "Side panel label above the AI result text"
   },
   "sidepanel_cantReadPage": {
-    "message": "Не удалось прочитать эту страницу",
+    "message": "આ પેજ વાંચી શકાતું નથી",
     "description": "Side panel error when the content script isn't reachable on the active tab"
   },
   "sidepanel_noContent": {
-    "message": "На этой странице нет текста для работы",
+    "message": "આ પેજ પર કામ કરવા માટે કંઈ નથી",
     "description": "Side panel error when the page has no extractable text"
   },
   "sidepanel_resultFrom": {
-    "message": "Источник:",
+    "message": "સ્રોત:",
     "description": "Side panel prefix before the title of the page a result describes"
   },
   "popup_quickAsk": {
-    "message": "Спросите Omni AI о чём угодно...",
+    "message": "Omni AI ને કંઈ પણ પૂછો...",
     "description": "Quick ask placeholder"
   },
   "command_openQuickMenu": {
-    "message": "Показать меню быстрых действий",
+    "message": "ઝડપી ક્રિયા મેનૂ બતાવો",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
   "popup_context": {
-    "message": "Контекст",
+    "message": "સંદર્ભ",
     "description": "Context section title"
   },
   "popup_improveWriting": {
-    "message": "Улучшить текст",
+    "message": "લેખન સુધારો",
     "description": "Improve writing section title"
   },
   "popup_quickActions": {
-    "message": "Быстрые действия",
+    "message": "ઝડપી ક્રિયાઓ",
     "description": "Quick actions section title"
   },
   "preset_email": {
-    "message": "Письмо",
+    "message": "ઈમેલ",
     "description": "Email preset"
   },
   "preset_chat": {
-    "message": "Чат",
+    "message": "ચેટ",
     "description": "Chat preset"
   },
   "preset_social": {
-    "message": "Соцсети",
+    "message": "સોશિયલ",
     "description": "Social preset"
   },
   "preset_technical": {
-    "message": "Технический",
+    "message": "ટેકનિકલ",
     "description": "Technical preset"
   },
   "preset_academic": {
-    "message": "Академический",
+    "message": "શૈક્ષણિક",
     "description": "Academic preset"
   },
   "action_grammar": {
-    "message": "Исправить грамматику",
+    "message": "વ્યાકરણ સુધારો",
     "description": "Grammar action"
   },
   "desc_grammar": {
-    "message": "Исправляет орфографию и грамматику",
+    "message": "જોડણી અને વ્યાકરણ સુધારે છે",
     "description": "Description for grammar action"
   },
   "action_clarity": {
-    "message": "Повысить ясность",
+    "message": "સ્પષ્ટતા સુધારો",
     "description": "Clarity action"
   },
   "action_tone": {
-    "message": "Изменить тон",
+    "message": "ટોન બદલો",
     "description": "Tone action"
   },
   "action_concise": {
-    "message": "Сократить",
+    "message": "સંક્ષિપ્ત બનાવો",
     "description": "Concise action"
   },
   "action_expand": {
-    "message": "Расширить",
+    "message": "વિસ્તારો",
     "description": "Expand action"
   },
   "action_rephrase": {
-    "message": "Перефразировать",
+    "message": "ફરી લખો",
     "description": "Rephrase action"
   },
   "action_translate": {
-    "message": "Перевести",
+    "message": "અનુવાદ કરો",
     "description": "Translate action"
   },
   "action_summarize": {
-    "message": "Сводка",
+    "message": "સારાંશ આપો",
     "description": "Summarize action"
   },
   "action_reply": {
-    "message": "Ответить",
+    "message": "જવાબ આપો",
     "description": "Reply action"
   },
   "action_emojify": {
-    "message": "Добавить эмодзи",
+    "message": "ઇમોજી ઉમેરો",
     "description": "Emojify action"
   },
   "status_ready": {
-    "message": "Готово",
+    "message": "તૈયાર",
     "description": "Status ready"
   },
   "status_processing": {
-    "message": "Обработка...",
+    "message": "પ્રક્રિયા ચાલુ છે...",
     "description": "Status processing"
   },
   "status_error": {
-    "message": "Ошибка",
+    "message": "ભૂલ",
     "description": "Status error"
   },
   "settings_title": {
-    "message": "Настройки",
+    "message": "સેટિંગ્સ",
     "description": "Settings page title"
   },
   "settings_geminiApiKey": {
-    "message": "Ключ API Gemini",
+    "message": "Gemini API કી",
     "description": "Gemini API key label"
   },
   "settings_geminiApiKeyHint": {
-    "message": "Получите ключ API в Google AI Studio",
+    "message": "તમારી API કી Google AI Studio પરથી મેળવો",
     "description": "Gemini API key hint"
   },
   "settings_model": {
-    "message": "ИИ-модель",
+    "message": "AI મોડેલ",
     "description": "AI model label"
   },
   "settings_modelHint": {
-    "message": "Выберите используемую ИИ-модель",
+    "message": "વાપરવા માટે AI મોડેલ પસંદ કરો",
     "description": "AI model hint"
   },
   "settings_defaultPreset": {
-    "message": "Контекст по умолчанию",
+    "message": "ડિફોલ્ટ સંદર્ભ",
     "description": "Default preset label"
   },
   "settings_language": {
-    "message": "Язык перевода",
+    "message": "અનુવાદ ભાષા",
     "description": "Translation language label"
   },
   "settings_save": {
-    "message": "Сохранить настройки",
+    "message": "સેટિંગ્સ સાચવો",
     "description": "Save button"
   },
   "settings_showFloatingButton": {
-    "message": "Показывать плавающую кнопку Omni AI",
+    "message": "ફ્લોટિંગ Omni AI બટન બતાવો",
     "description": "Floating action button preference label"
   },
   "settings_showFloatingButtonHint": {
-    "message": "Отключите, чтобы использовать только сочетания клавиш и контекстные меню.",
+    "message": "ફક્ત કીબોર્ડ શોર્ટકટ અને સંદર્ભ મેનૂ વાપરવા માટે આ બંધ કરો.",
     "description": "Floating action button preference help text"
   },
   "settings_flashActions": {
-    "message": "Мгновенные действия",
+    "message": "ફ્લેશ ક્રિયાઓ",
     "description": "Flash actions setting label"
   },
   "settings_flashActionsHint": {
-    "message": "Показывать эти действия при наведении на плавающую кнопку, чтобы запускать их без открытия полного меню (до 4).",
+    "message": "ફ્લોટિંગ આઇકન પર હોવર કરો ત્યારે આ ક્રિયાઓ બતાવો, જેથી પૂરું મેનૂ ખોલ્યા વગર તેમને ચલાવી શકો (વધુમાં વધુ 4).",
     "description": "Flash actions setting help text"
   },
   "settings_flashAction_translatePrimary": {
-    "message": "Перевести на основной язык",
+    "message": "પ્રાથમિક ભાષામાં અનુવાદ કરો",
     "description": "Flash action checkbox label"
   },
   "settings_flashAction_translateDefault": {
-    "message": "Перевести на язык по умолчанию",
+    "message": "ડિફોલ્ટ ભાષામાં અનુવાદ કરો",
     "description": "Flash action checkbox label"
   },
   "settings_on": {
-    "message": "Вкл.",
+    "message": "ચાલુ",
     "description": "Enabled setting option"
   },
   "settings_off": {
-    "message": "Выкл.",
+    "message": "બંધ",
     "description": "Disabled setting option"
   },
   "settings_saved": {
-    "message": "Настройки сохранены!",
+    "message": "સેટિંગ્સ સાચવ્યા!",
     "description": "Save confirmation"
   },
   "overlay_copy": {
-    "message": "Копировать",
+    "message": "કૉપિ કરો",
     "description": "Copy button"
   },
   "overlay_replace": {
-    "message": "Заменить",
+    "message": "બદલો",
     "description": "Replace button"
   },
   "action_explain": {
-    "message": "Объяснить",
+    "message": "સમજાવો",
     "description": "Explain action"
   },
   "ui_to": {
-    "message": "На",
+    "message": "માં",
     "description": "To language preposition"
   },
   "contextMenu_improve": {
-    "message": "Улучшить с помощью Omni AI",
+    "message": "Omni AI સાથે સુધારો",
     "description": "Context menu improve"
   },
   "contextMenu_explain": {
-    "message": "Объяснить с помощью Omni AI",
+    "message": "Omni AI સાથે સમજાવો",
     "description": "Context menu explain"
   },
   "contextMenu_translate": {
-    "message": "Перевести с помощью Omni AI",
+    "message": "Omni AI સાથે અનુવાદ કરો",
     "description": "Context menu translate"
   },
   "contextMenu_rephrase": {
-    "message": "Перефразировать с помощью Omni AI",
+    "message": "Omni AI સાથે ફરી લખો",
     "description": "Context menu rephrase"
   },
   "contextMenu_emojify": {
-    "message": "Добавить эмодзи с помощью Omni AI",
+    "message": "Omni AI સાથે ઇમોજી ઉમેરો",
     "description": "Context menu add emoji"
   },
   "contextMenu_summarize": {
-    "message": "Кратко изложить с помощью Omni AI",
+    "message": "Omni AI સાથે સારાંશ આપો",
     "description": "Context menu summarize"
   },
   "contextMenu_ask": {
-    "message": "Спросить Omni AI",
+    "message": "Omni AI ને પૂછો",
     "description": "Context menu quick ask"
   },
   "error_noApiKey": {
-    "message": "Ключ API не настроен. Добавьте ключ API в настройках.",
+    "message": "API કી ગોઠવેલી નથી. કૃપા કરીને સેટિંગ્સમાં તમારી API કી ઉમેરો.",
     "description": "No API key error"
   },
   "settings_geminiApiKeyPlaceholder": {
-    "message": "Введите ключ API Gemini...",
+    "message": "તમારી Gemini API કી દાખલ કરો...",
     "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
-    "message": "Ошибка: ",
+    "message": "ભૂલ: ",
     "description": "Error prefix"
   },
   "error_apiKeyNotConfigured_gemini": {
-    "message": "Ключ API Gemini не настроен",
+    "message": "Gemini API કી ગોઠવેલી નથી",
     "description": "Shown when the Gemini API key is missing"
   },
   "error_apiKeyNotConfigured_openai": {
-    "message": "Ключ API OpenAI не настроен",
+    "message": "OpenAI API કી ગોઠવેલી નથી",
     "description": "Shown when the OpenAI API key is missing"
   },
   "error_apiKeyNotConfigured_groq": {
-    "message": "Ключ API Groq не настроен",
+    "message": "Groq API કી ગોઠવેલી નથી",
     "description": "Shown when the Groq API key is missing"
   },
   "error_apiKeyNotConfigured_anthropic": {
-    "message": "Ключ API Anthropic не настроен",
+    "message": "Anthropic API કી ગોઠવેલી નથી",
     "description": "Shown when the Anthropic API key is missing"
   },
   "error_customGatewayBaseUrlNotConfigured": {
-    "message": "Базовый URL Custom Gateway не настроен",
+    "message": "Custom Gateway બેઝ URL ગોઠવેલું નથી",
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Ключ API не настроен для $MODEL$",
+    "message": "$MODEL$ માટે API કી ગોઠવેલી નથી",
     "placeholders": {
       "model": {
         "content": "$1"
@@ -301,341 +301,341 @@
     "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
   },
   "settings_defaultTone": {
-    "message": "Тон по умолчанию",
+    "message": "ડિફોલ્ટ ટોન",
     "description": "Default tone label"
   },
   "settings_defaultToneHint": {
-    "message": "Тон по умолчанию для улучшения текста и ответов",
+    "message": "લેખન સુધારા અને જવાબો માટે ડિફોલ્ટ ટોન",
     "description": "Default tone hint"
   },
   "tone_professional": {
-    "message": "Деловой",
+    "message": "વ્યાવસાયિક",
     "description": "Professional tone"
   },
   "tone_casual": {
-    "message": "Непринуждённый",
+    "message": "અનૌપચારિક",
     "description": "Casual tone"
   },
   "tone_friendly": {
-    "message": "Дружелюбный",
+    "message": "મિત્રતાપૂર્ણ",
     "description": "Friendly tone"
   },
   "tone_direct": {
-    "message": "Прямой",
+    "message": "સીધો",
     "description": "Direct tone"
   },
   "tone_confident": {
-    "message": "Уверенный",
+    "message": "આત્મવિશ્વાસુ",
     "description": "Confident tone"
   },
   "quick_ask_title": {
-    "message": "Быстрый вопрос",
+    "message": "ઝડપી પ્રશ્ન",
     "description": "Quick ask overlay title"
   },
   "overlay_result": {
-    "message": "Результат",
+    "message": "પરિણામ",
     "description": "Result title"
   },
   "status_thinking": {
-    "message": "Думаю...",
+    "message": "વિચારી રહ્યું છે...",
     "description": "Thinking status"
   },
   "btn_back": {
-    "message": "Назад",
+    "message": "પાછળ",
     "description": "Back button title"
   },
   "msg_copied": {
-    "message": "Скопировано!",
+    "message": "કૉપિ થયું!",
     "description": "Copied message"
   },
   "error_noSelection": {
-    "message": "Текст не выделен. Сначала выделите текст.",
+    "message": "કોઈ ટેક્સ્ટ પસંદ કરેલો નથી. કૃપા કરીને પહેલા થોડો ટેક્સ્ટ પસંદ કરો.",
     "description": "No selection error"
   },
   "settings_tagline": {
-    "message": "Ваш ИИ-помощник",
+    "message": "તમારો AI સહાયક",
     "description": "App tagline"
   },
   "settings_theme": {
-    "message": "Тема",
+    "message": "થીમ",
     "description": "Theme label"
   },
   "settings_themeHint": {
-    "message": "Выберите предпочитаемое оформление",
+    "message": "તમારો પસંદગીનો દેખાવ પસંદ કરો",
     "description": "Theme hint"
   },
   "theme_system": {
-    "message": "Как в системе",
+    "message": "સિસ્ટમ ડિફોલ્ટ",
     "description": "System theme"
   },
   "theme_dark": {
-    "message": "Тёмная",
+    "message": "ડાર્ક",
     "description": "Dark theme"
   },
   "theme_light": {
-    "message": "Светлая",
+    "message": "લાઇટ",
     "description": "Light theme"
   },
   "settings_primaryLanguage": {
-    "message": "Основной язык",
+    "message": "પ્રાથમિક ભાષા",
     "description": "Primary language label"
   },
   "settings_primaryLanguageHint": {
-    "message": "Ваш основной язык для быстрых действий",
+    "message": "ઝડપી ક્રિયાઓ માટે તમારી મુખ્ય ભાષા",
     "description": "Primary language hint"
   },
   "settings_validate": {
-    "message": "Проверить конфигурацию",
+    "message": "રૂપરેખાંકન ચકાસો",
     "description": "Validate button"
   },
   "settings_shortcuts": {
-    "message": "Сочетания клавиш",
+    "message": "કીબોર્ડ શોર્ટકટ",
     "description": "Shortcuts section title"
   },
   "settings_history": {
-    "message": "История использования",
+    "message": "ઉપયોગ ઇતિહાસ",
     "description": "History section title"
   },
   "stats_totalActions": {
-    "message": "Всего действий",
+    "message": "કુલ ક્રિયાઓ",
     "description": "Total actions stat"
   },
   "stats_wordsProcessed": {
-    "message": "Обработано слов",
+    "message": "પ્રક્રિયા કરેલા શબ્દો",
     "description": "Words processed stat"
   },
   "stats_wordsGenerated": {
-    "message": "Создано слов",
+    "message": "બનાવેલા શબ્દો",
     "description": "Words generated stat"
   },
   "settings_about": {
-    "message": "О программе",
+    "message": "વિશે",
     "description": "About section title"
   },
   "btn_reportIssue": {
-    "message": "Сообщить о проблеме",
+    "message": "સમસ્યા જણાવો",
     "description": "Report issue link"
   },
   "btn_clearHistory": {
-    "message": "Очистить историю",
+    "message": "ઇતિહાસ સાફ કરો",
     "description": "Clear history button tooltip"
   },
   "settings_groqKey": {
-    "message": "Ключ API Groq",
+    "message": "Groq API કી",
     "description": "Groq API key label"
   },
   "settings_groqKeyHint": {
-    "message": "Получите бесплатный ключ на console.groq.com",
+    "message": "console.groq.com પર મફત કી મેળવો",
     "description": "Groq API key hint"
   },
   "settings_openaiKey": {
-    "message": "Ключ API OpenAI",
+    "message": "OpenAI API કી",
     "description": "OpenAI API key label"
   },
   "settings_openaiKeyHint": {
-    "message": "Получите ключ API на platform.openai.com",
+    "message": "platform.openai.com પર API કી મેળવો",
     "description": "OpenAI API key hint"
   },
   "settings_tooltip_gemini": {
-    "message": "Получить ключ API",
+    "message": "API કી મેળવો",
     "description": "Gemini tooltip title"
   },
   "settings_tooltip_groq": {
-    "message": "Получить ключ API Groq",
+    "message": "Groq API કી મેળવો",
     "description": "Groq tooltip title"
   },
   "settings_tooltip_openai": {
-    "message": "Получить ключ API OpenAI",
+    "message": "OpenAI API કી મેળવો",
     "description": "OpenAI tooltip title"
   },
   "settings_anthropicKey": {
-    "message": "Ключ API Anthropic",
+    "message": "Anthropic API કી",
     "description": "Anthropic API key label"
   },
   "settings_anthropicKeyHint": {
-    "message": "Получите ключ API на console.anthropic.com",
+    "message": "console.anthropic.com પર API કી મેળવો",
     "description": "Anthropic API key hint"
   },
   "settings_tooltip_anthropic": {
-    "message": "Получить ключ API Anthropic",
+    "message": "Anthropic API કી મેળવો",
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Перейти в Anthropic Console"
+    "message": "Anthropic Console પર જાઓ"
   },
   "settings_tooltip_anthropic_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "સાઇન અપ કરો અથવા લોગ ઇન કરો"
   },
   "settings_tooltip_anthropic_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "નવી API કી બનાવો"
   },
   "settings_shortcuts_customize": {
-    "message": "Настроить в Chrome",
+    "message": "Chrome માં કસ્ટમાઇઝ કરો",
     "description": "Customize shortcut label"
   },
   "settings_shortcuts_hint": {
-    "message": "Настройте сочетания клавиш в настройках Chrome",
+    "message": "Chrome સેટિંગ્સમાં શોર્ટકટ કસ્ટમાઇઝ કરો",
     "description": "Customize shortcuts hint"
   },
   "btn_refresh": {
-    "message": "Обновить",
+    "message": "રિફ્રેશ કરો",
     "description": "Refresh button tooltip"
   },
   "settings_languageHint": {
-    "message": "Язык перевода по умолчанию",
+    "message": "અનુવાદ માટે ડિફોલ્ટ ભાષા",
     "description": "Translation language hint"
   },
   "lang_en": {
-    "message": "Английский"
+    "message": "અંગ્રેજી"
   },
   "lang_vi": {
-    "message": "Вьетнамский"
+    "message": "વિયેતનામી"
   },
   "lang_es": {
-    "message": "Испанский"
+    "message": "સ્પેનિશ"
   },
   "lang_fr": {
-    "message": "Французский"
+    "message": "ફ્રેન્ચ"
   },
   "lang_de": {
-    "message": "Немецкий"
+    "message": "જર્મન"
   },
   "lang_it": {
-    "message": "Итальянский"
+    "message": "ઇટાલિયન"
   },
   "lang_pt": {
-    "message": "Португальский"
+    "message": "પોર્ટુગીઝ"
   },
   "lang_ja": {
-    "message": "Японский"
+    "message": "જાપાનીઝ"
   },
   "lang_ko": {
-    "message": "Корейский"
+    "message": "કોરિયન"
   },
   "lang_zh": {
-    "message": "Китайский"
+    "message": "ચાઇનીઝ"
   },
   "settings_languageSearchPlaceholder": {
-    "message": "Поиск языков",
+    "message": "ભાષાઓ શોધો",
     "description": "Placeholder for the search box that filters the language pickers"
   },
   "settings_languagesCommon": {
-    "message": "Популярные",
+    "message": "સામાન્ય",
     "description": "First optgroup label in the language pickers"
   },
   "settings_languagesAll": {
-    "message": "Все языки",
+    "message": "બધી ભાષાઓ",
     "description": "Second optgroup label listing every supported language"
   },
   "settings_confirmClearHistory": {
-    "message": "Вы уверены, что хотите очистить всю историю использования?",
+    "message": "શું તમે ખરેખર બધો ઉપયોગ ઇતિહાસ સાફ કરવા માંગો છો?",
     "description": "Clear history confirmation"
   },
   "settings_errorNoApiKey": {
-    "message": "Сначала введите ключ API или эндпоинт.",
+    "message": "કૃપા કરીને પહેલા API કી/એન્ડપોઇન્ટ દાખલ કરો.",
     "description": "No API key entered error"
   },
   "settings_validating": {
-    "message": "Проверка...",
+    "message": "ચકાસી રહ્યું છે...",
     "description": "Validating status"
   },
   "settings_configValid": {
-    "message": "Конфигурация верна! Можно генерировать.",
+    "message": "રૂપરેખાંકન માન્ય છે! બનાવવા માટે તૈયાર.",
     "description": "Config valid success"
   },
   "settings_connectionFailed": {
-    "message": "Не удалось проверить подключение",
+    "message": "કનેક્શન ચકાસણી નિષ્ફળ",
     "description": "Connection failed error"
   },
   "settings_checking": {
-    "message": "Проверка...",
+    "message": "ચકાસી રહ્યું છે...",
     "description": "Checking status"
   },
   "settings_failedToSave": {
-    "message": "Не удалось сохранить",
+    "message": "સાચવવામાં નિષ્ફળ",
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Перейти в Google AI Studio"
+    "message": "Google AI Studio પર જાઓ"
   },
   "settings_tooltip_gemini_s2": {
-    "message": "Нажмите «Create API Key»"
+    "message": "Create API Key પર ક્લિક કરો"
   },
   "settings_tooltip_gemini_s3": {
-    "message": "Скопируйте ключ в буфер обмена"
+    "message": "કી ક્લિપબોર્ડ પર કૉપિ કરો"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Перейти в Groq Console"
+    "message": "Groq Console પર જાઓ"
   },
   "settings_tooltip_groq_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "સાઇન અપ કરો અથવા લોગ ઇન કરો"
   },
   "settings_tooltip_groq_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "નવી API કી બનાવો"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Перейти в OpenAI Platform"
+    "message": "OpenAI Platform પર જાઓ"
   },
   "settings_tooltip_openai_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "સાઇન અપ કરો અથવા લોગ ઇન કરો"
   },
   "settings_tooltip_openai_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "નવી API કી બનાવો"
   },
   "overlay_suggested_fix": {
-    "message": "Предлагаемое исправление",
+    "message": "સૂચવેલો સુધારો",
     "description": "Suggested fix label"
   },
   "overlay_accept": {
-    "message": "Принять",
+    "message": "સ્વીકારો",
     "description": "Accept button"
   },
   "overlay_dismiss": {
-    "message": "Отклонить",
+    "message": "અવગણો",
     "description": "Dismiss button"
   },
   "overlay_no_issues": {
-    "message": "Проблем не найдено",
+    "message": "કોઈ સમસ્યા મળી નથી",
     "description": "No issues message"
   },
   "overlay_no_issues_content": {
-    "message": "Текст отличный!",
+    "message": "ટેક્સ્ટ સરસ છે!",
     "description": "No issues check details"
   },
   "overlay_smart_translation": {
-    "message": "Умный перевод",
+    "message": "સ્માર્ટ અનુવાદ",
     "description": "Smart translation label"
   },
   "overlay_error": {
-    "message": "Ошибка",
+    "message": "ભૂલ",
     "description": "Error label"
   },
   "overlay_translation_failed": {
-    "message": "Не удалось перевести",
+    "message": "અનુવાદ નિષ્ફળ",
     "description": "Translation failed message"
   },
   "settings_legacyModelPrefix": {
-    "message": "(Устаревшая)",
+    "message": "(લેગસી)",
     "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
   },
   "settings_advanced": {
-    "message": "Дополнительно",
+    "message": "એડવાન્સ",
     "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
   },
   "settings_customModel": {
-    "message": "Название пользовательской модели",
+    "message": "કસ્ટમ મોડેલ નામ",
     "description": "Custom model label"
   },
   "settings_customModelHint": {
-    "message": "Введите идентификатор пользовательской модели",
+    "message": "કસ્ટમ મોડેલ ID દાખલ કરો",
     "description": "Custom model hint"
   },
   "settings_errorNoCustomModel": {
-    "message": "Введите название пользовательской модели",
+    "message": "કૃપા કરીને કસ્ટમ મોડેલ નામ દાખલ કરો",
     "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
-    "message": "например, your-model-id",
+    "message": "દા.ત. your-model-id",
     "description": "Placeholder for settings_customModelPlaceholder"
   },
   "settings_customGatewayTitle": {
@@ -643,71 +643,71 @@
     "description": "Custom Gateway label"
   },
   "settings_customGatewayHint": {
-    "message": "Подключение к любому эндпоинту API, совместимому с OpenAI",
+    "message": "કોઈ પણ OpenAI-સુસંગત API એન્ડપોઇન્ટ સાથે કનેક્ટ કરો",
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
-    "message": "например, https://openrouter.ai/api/v1",
+    "message": "દા.ત. https://openrouter.ai/api/v1",
     "description": "Placeholder for Custom Gateway base URL"
   },
   "settings_customGatewayKeyPlaceholder": {
-    "message": "Введите ключ API...",
+    "message": "તમારી API કી દાખલ કરો...",
     "description": "Placeholder for Custom Gateway API key"
   },
   "settings_tooltip_customGateway": {
-    "message": "Настройка Custom Gateway",
+    "message": "Custom Gateway રૂપરેખાંકન",
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {
-    "message": "Поддерживаются API, совместимые с OpenAI (OpenRouter, LiteLLM, Together AI и др.)",
+    "message": "OpenAI-સુસંગત API ને સપોર્ટ કરે છે (OpenRouter, LiteLLM, Together AI, વગેરે)",
     "description": "Note about supported API formats"
   },
   "settings_customGatewayKeyNote": {
-    "message": "Необязателен для некоторых шлюзов (например, бесплатного тарифа OpenRouter)",
+    "message": "કેટલાક ગેટવે માટે વૈકલ્પિક (દા.ત., OpenRouter ફ્રી ટિયર)",
     "description": "Note about API key being optional"
   },
   "sidebar_tab_chat": {
-    "message": "Чат",
+    "message": "ચેટ",
     "description": "Sidebar tab label: chat"
   },
   "sidebar_tab_tools": {
-    "message": "Инструменты",
+    "message": "સાધનો",
     "description": "Sidebar tab label: tools"
   },
   "sidebar_chat_placeholder": {
-    "message": "Спросите об этой странице…",
+    "message": "આ પેજ વિશે પૂછો…",
     "description": "Chat input placeholder"
   },
   "sidebar_chat_send": {
-    "message": "Отправить",
+    "message": "મોકલો",
     "description": "Chat send button"
   },
   "sidebar_chat_stop": {
-    "message": "Остановить",
+    "message": "રોકો",
     "description": "Chat stop button"
   },
   "sidebar_chat_pageContext": {
-    "message": "Контекст страницы",
+    "message": "પેજ સંદર્ભ",
     "description": "Page context section label"
   },
   "sidebar_chat_includeContext": {
-    "message": "Учитывать контекст страницы",
+    "message": "પેજ સંદર્ભ સામેલ કરો",
     "description": "Toggle to include page context"
   },
   "sidebar_chat_empty": {
-    "message": "Начните беседу о текущей странице.",
+    "message": "વર્તમાન પેજ વિશે વાતચીત શરૂ કરો.",
     "description": "Empty chat hint"
   },
   "sidebar_chat_error": {
-    "message": "Что-то пошло не так. Попробуйте ещё раз.",
+    "message": "કંઈક ખોટું થયું. કૃપા કરીને ફરી પ્રયાસ કરો.",
     "description": "Chat error message"
   },
   "sidebar_chat_clear": {
-    "message": "Очистить чат",
+    "message": "ચેટ સાફ કરો",
     "description": "Clear chat session button title"
   },
   "sidebar_chat_confirmClear": {
-    "message": "Вы уверены, что хотите очистить эту беседу?",
+    "message": "શું તમે ખરેખર આ વાતચીત સાફ કરવા માંગો છો?",
     "description": "Clear chat session confirmation"
   }
 }

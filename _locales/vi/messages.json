@@ -262,7 +262,7 @@
         "content": "$1"
       }
     },
-    "description": "Prefix concatenated with a model id, e.g. 'Chưa cấu hình API key cho gemini-3.6-flash'"
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
   },
   "settings_defaultTone": {
     "message": "Giọng văn mặc định",
