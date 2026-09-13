@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Twenty-four new UI locales.** Waves 1 to 4 added Arabic, Bengali, Czech, Danish, Dutch, Finnish, Greek, Gujarati, Hebrew, Hindi, Hungarian, Indonesian, Marathi, Norwegian, Polish, Romanian, Russian, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian and Urdu. Wave 5 added Bulgarian, Catalan, Croatian, Malay, Slovak and Slovenian, and wave 6 added Kannada, Kazakh, Lithuanian, Malayalam, Odia and Punjabi. The final wave added the regional variants: Chinese Traditional (Taiwan and Hong Kong), European Portuguese, Latin American Spanish, Canadian French and British English. The extension's own interface is now available in 52 languages (was 10). Added together with a locale parity gate (`tests/locales.test.js`) and `scripts/locale-status.mjs`, a per-locale report of missing keys and strings still identical to English. The translations are AI-produced and structurally verified; native review is welcome.
+- **Forty-two new UI locales.** Waves 1 to 4 added Arabic, Bengali, Czech, Danish, Dutch, Finnish, Greek, Gujarati, Hebrew, Hindi, Hungarian, Indonesian, Marathi, Norwegian, Polish, Romanian, Russian, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian and Urdu. Wave 5 added Bulgarian, Catalan, Croatian, Malay, Slovak and Slovenian, and wave 6 added Kannada, Kazakh, Lithuanian, Malayalam, Odia and Punjabi. The final wave added the regional variants: Chinese Traditional (Taiwan and Hong Kong), European Portuguese, Latin American Spanish, Canadian French and British English. The extension's own interface is now available in 52 languages (was 10). Added together with a locale parity gate (`tests/locales.test.js`) and `scripts/locale-status.mjs`, a per-locale report of missing keys and strings still identical to English. The translations are AI-produced and structurally verified; native review is welcome.
 - Backfilled the 14 message keys that `de es fr it ja ko pt zh` were each missing, so all 52 locales now define the same 182 keys.
 - **43 translation languages, up from 10.** `lib/languages.js` is the new single source of truth for the language list (code, English name, native name); the Settings language pickers render it behind a search box with a "Common" group, the LLM prompts resolve names from it, and the overlay shows the right name for any of them. A saved code the registry does not know stays selectable, so no preference is lost.
 - The language picker's search placeholder and its two optgroup labels were added to all 10 locales.
@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed the two duplicated 13-entry `languageNames` maps from `lib/ai-service.js`; a guard test keeps them from coming back.
 - `lib/i18n.js` and the content script no longer request `_locales/<language>/messages.json` for a translation language with no locale directory, which removes a failed request and a console warning on every page load.
+
+### Documentation
+
+- **The Chrome Web Store documents were brought back in line with the shipped extension.** `docs/CHROME_WEBSTORE_LISTING.txt` still advertised 10 translation languages and said nothing about the localized interface; it now documents 43 translation languages and all 52 locales, and it gained the dashboard metadata that used to be reconstructed from memory on every upload (product name, summary, category, the Languages field, single purpose, permission justifications, privacy policy URL, screenshots, icons). `docs/PRIVACY_POLICY.md` corrected three factual errors: it claimed an `identity` permission the extension does not request, it described `host_permissions` as the Gemini API origin while `manifest.json` declares `https://*/*` and `http://*/*`, and it omitted Anthropic Claude and Custom Gateway from the third-party list.
+- `README.md` no longer claims 10 translation languages or a default `Alt+A` binding for Quick Ask (`manifest.json` declares no `suggested_key` for `quick_ask`; the bound shortcut is `Alt+O` for the quick menu), its project structure tree no longer lists `lib/` twice, and its Web Store section points at the two store documents instead of telling the reader to copy the README.
+- `AGENTS.md` current version corrected from 2.2.0 to 2.4.0, and release step 4 now names both store documents plus the two language counts to re-check.
+- `CONTRIBUTING.md` no longer describes a `develop` branch, nor `release/*` and `hotfix/*` branches, none of which exist in this repository.
+- `docs/FOLLOWUPS.md`: the UI locale coverage record is closed, the unverified wording of the 52 AI-produced catalogues is now tracked as its own item, and the fact that the published privacy policy is a copy hosted outside this repository is recorded.
+- The English extension summary in `_locales/en` and `_locales/en_GB` no longer separates its two halves with a spaced hyphen, so the Chrome Web Store summary reads cleanly.
+- Removed every em dash, en dash and punctuation spaced hyphen from documentation prose, code comments and review templates across the repository. Deliberately left alone: the 52 `_locales/` catalogues, where punctuation inside a translation belongs to that translation; the Keep a Changelog `## [x.y.z] - date` headings; JSDoc `@param name - description` separators; markdown list markers; arithmetic expressions; and two user-visible title strings (`settings.html` and `settings.js:242`) that join two localized messages with a hyphen. English and British English are the exception to the locale exception: their extension summary reads better with a colon, and Chrome shows that summary, so those two were changed.
 
 ## [2.4.0] - 2026-09-06
 
@@ -42,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings now opens automatically on first install, with the browser's UI language detected for the primary-language default and the Gemini key field focused when nothing is configured yet.
 - API keys auto-validate on blur instead of requiring a manual "Validate" click.
 - Advanced provider settings (custom model name, custom gateway) are now collapsed by default under Settings, expanding automatically when relevant.
-- A unified vanilla-CSS design system (`lib/design-tokens.css`, `lib/design-system.css`) shared across the content-script overlay, side panel, and settings page — consistent colors, spacing, and component styling everywhere instead of three independently-drifted stylesheets.
+- A unified vanilla-CSS design system (`lib/design-tokens.css`, `lib/design-system.css`) shared across the content-script overlay, side panel, and settings page, for consistent colors, spacing, and component styling everywhere instead of three independently-drifted stylesheets.
 
 ### Changed
 
@@ -53,11 +63,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Google sign-in. It only ever displayed a name/avatar and gated no feature (BYOK is the only model) — removed along with the popup that showed it.
+- Google sign-in. It only ever displayed a name/avatar and gated no feature (BYOK is the only model), so it was removed along with the popup that showed it.
 
 ### Fixed
 
-- The primary-language default no longer hardcodes Vietnamese for users who never set a preference — it now falls back to the browser's detected UI language.
+- The primary-language default no longer hardcodes Vietnamese for users who never set a preference; it now falls back to the browser's detected UI language.
 - Auto-validate on blur now also covers the Custom Gateway API key and base URL fields (previously silently did nothing there).
 - Custom Gateway moved to the end of the model dropdown's provider list instead of sitting in the middle.
 - The floating button and the result card no longer render partially off-screen when a selection or focus is near a viewport edge.
@@ -78,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frame-aware keyboard-command routing for active editors.
 - Settings control for the floating Omni AI button; it is enabled by default and shortcuts remain available when disabled.
 - Translations for the new floating-button settings strings across all 10 locales.
-- Default Alt+F shortcut for Fix Grammar. Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension, so the popup-open shortcut (`_execute_action`, previously Alt+O) was dropped to make room — the popup is still reachable via the toolbar icon or `chrome://extensions/shortcuts`. Shortcuts now auto-bound on install: Alt+A (quick ask), Alt+R (rephrase), Alt+T (translate), Alt+F (grammar). Summarize/Explain remain declared without a default and must be bound manually. See `docs/FOLLOWUPS.md` #8 for a Playwright-test-harness quirk found while verifying this (resolved by staying at exactly 4 shortcuts, but worth reading before adding a 5th).
+- Default Alt+F shortcut for Fix Grammar. Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension, so the popup-open shortcut (`_execute_action`, previously Alt+O) was dropped to make room. The popup is still reachable via the toolbar icon or `chrome://extensions/shortcuts`. Shortcuts now auto-bound on install: Alt+A (quick ask), Alt+R (rephrase), Alt+T (translate), Alt+F (grammar). Summarize/Explain remain declared without a default and must be bound manually. See `docs/FOLLOWUPS.md` #8 for a Playwright-test-harness quirk found while verifying this (resolved by staying at exactly 4 shortcuts, but worth reading before adding a 5th).
 - Reordered and expanded the right-click context menu to Translate / Rephrase / Add Emoji / Summarize / Ask Omni AI, replacing the previous Improve/Explain/Translate set. "Ask Omni AI" opens the Quick Ask overlay (same as Alt+A) instead of running a fixed AI action.
 
 ### Fixed
@@ -89,7 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Alt+T "Dịch"/Translate keyboard shortcut now uses the same direction-detecting `smartTranslate()` as the on-page "Smart Translation" card, instead of always force-translating into the primary language regardless of the source text's language. `processSelectedText()` (shared by keyboard shortcuts and the right-click context menu) never had a `smart_translate` case, so the shortcut fell back to the one-way `translate_primary` action.
 - The right-click "Dịch với Omni AI" context-menu item now also uses `smartTranslate()` instead of always translating to the default language, matching the shortcut and menu-card fix above.
 - `chrome.runtime.onInstalled`'s `"update"` branch was an empty no-op, so reloading the unpacked extension (routine during development, and any real auto-update) never recreated the right-click context menu items that Chrome clears on reload, and never re-ran the settings-default merge for keys added after a user's original install. Both now run on `"update"` too, not just `"install"`.
-- Language-preference reads (`primaryLanguage`, `defaultLanguage`) in the service worker now consistently use `chrome.storage.sync`, matching where Settings actually writes them — several quick-action code paths were previously reading from `chrome.storage.local` instead and always fell back to the hardcoded default language.
+- Language-preference reads (`primaryLanguage`, `defaultLanguage`) in the service worker now consistently use `chrome.storage.sync`, matching where Settings actually writes them; several quick-action code paths were previously reading from `chrome.storage.local` instead and always fell back to the hardcoded default language.
 - The async `GET_API_KEY` message handler now returns `true`, so its response is no longer dropped by Chrome closing the message channel early.
 - Synced the grammar/rephrase/tone prompt tests with the actual v2.1.0 simple-language prompt wording (the assertions had drifted out of date).
 

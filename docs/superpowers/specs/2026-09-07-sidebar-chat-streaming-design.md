@@ -1,11 +1,11 @@
-# Sidebar Chat with Page + Streaming Responses — Design
+# Sidebar Chat with Page + Streaming Responses: Design
 
 **Date:** 2026-09-07
 **Status:** Approved design (pending implementation plan)
 **Scope:** Two P0 Sidebar features for Omni AI v2.3.0:
-1. **Chat with Page** — a chat tab in the Side Panel that always carries the
+1. **Chat with Page**: a chat tab in the Side Panel that always carries the
    active tab's page content as context.
-2. **Streaming responses** — token-by-token rendering, delivered *only* inside
+2. **Streaming responses**: token-by-token rendering, delivered *only* inside
    the Sidebar Chat for v1 (existing overlay + Page Tools keep one-shot
    responses).
 
@@ -28,7 +28,7 @@ API; all user-visible strings go through i18n.
 
 ### Non-Goals (v1)
 - No free-form chat *without* page context (mode is always Chat-with-Page).
-- No intelligent chunking/RAG (embedding, similarity retrieval) — v1 sends the
+- No intelligent chunking/RAG (embedding, similarity retrieval): v1 sends the
   full (truncated) page text as context.
 - No streaming for overlay cards or Page Tools (summarize/translate/explain).
 - No persisted chat history across sessions (in-memory per panel session only).
@@ -62,7 +62,7 @@ lib/providers/*  generateContentStream  (SSE parse per provider)
 - `chrome.runtime.sendMessage` is one-shot; true streaming needs a persistent
   channel. A Port gives us: bidirectional messages, an `onDisconnect` event we
   can use to abort the in-flight request (Stop button), and no polling.
-- UI still never fetches the AI API directly — the Port talks only to the
+- UI still never fetches the AI API directly: the Port talks only to the
   Service Worker, which uses `lib/providers/*`. This satisfies the AGENTS.md
   Provider Pattern and the `eslint.config.js` `no-restricted-syntax` rule.
 
@@ -91,7 +91,7 @@ async function generateContentStream(prompt, config, onChunk, signal) { ... }
   `anthropic.js`, `custom-gateway.js`): POST with `stream:true`; read the
   response body as a stream, split on newlines, parse `data:` lines. Custom
   gateway MUST also read `reasoning_content` deltas (DeepSeek-style) if present
-  and surface them as `onChunk` (or a separate `onReasoning` if cheap — for v1
+  and surface them as `onChunk` (or a separate `onReasoning` if cheap: for v1
   append reasoning to the same stream text with a marker, TBD in plan).
 - Each parser must check `signal.aborted` between chunks and throw/return early.
 
@@ -137,7 +137,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
 Notes:
 - The `config` (apiKey, model) is assembled in the Sidebar from `lib/storage.js`
-  (local keys) — same as how Page Tools already work via `QUICK_ACTION`. The SW
+  (local keys): same as how Page Tools already work via `QUICK_ACTION`. The SW
   does NOT re-read storage per chunk.
 - `onDisconnect` (user clicks Stop, or panel closes) aborts the in-flight
   request cleanly.
@@ -151,7 +151,7 @@ Notes:
 - Maintain a module-level `Map<tabId, {text, title, fetchedAt}>` cache.
 - When the Chat tab is opened OR `chrome.tabs.onActivated` fires, fetch context:
   - `chrome.tabs.sendMessage(tab.id, {type:"GET_PAGE_CONTENT"}, {frameId:0})`
-    — reuses the existing content-script handler (top frame only, prevents the
+    reuses the existing content-script handler (top frame only, prevents the
     iframe-broadcast bug noted in current `sidepanel.js`).
   - On success: truncate text to **~8000 characters** (safe token budget; exact
     constant `PAGE_CONTEXT_MAX_CHARS` in `lib/ai-service.js`).
@@ -230,21 +230,21 @@ Message rendering:
   page). No hardcoded colors.
 - Add `.sidepanel-tabs`, `.tab-btn`, `.chat-panel`, `.chat-messages`,
   `.chat-bubble`, `.chat-context`, `.chat-input-row` rules.
-- Keep the Side Panel a normal page (no Shadow DOM — unlike content-script UI).
+- Keep the Side Panel a normal page (no Shadow DOM, unlike content-script UI).
 
 ---
 
 ## 8. Sidebar Chat Logic (`sidepanel/sidepanel.js`)
 
 State (module-level):
-- `chatPort` — current `chrome.runtime.connect` port or `null`.
-- `chatHistory` — `Array<{role:'user'|'assistant', text:string}>`.
-- `isStreaming` — boolean.
-- `pageCache` — `Map<tabId, {text,title}>` (see §5).
+- `chatPort`: current `chrome.runtime.connect` port or `null`.
+- `chatHistory`: `Array<{role:'user'|'assistant', text:string}>`.
+- `isStreaming`: boolean.
+- `pageCache`: `Map<tabId, {text,title}>` (see §5).
 
 Functions:
-- `switchTab(name)` — toggle sections + active button + persist to session.
-- `ensurePageContext()` — fetch/refresh `pageCache` for active tab.
+- `switchTab(name)`: toggle sections + active button + persist to session.
+- `ensurePageContext()`: fetch/refresh `pageCache` for active tab.
 - `sendChatMessage()`:
   1. Read `chatInput.value`; if empty or `isStreaming`, ignore.
   2. Append user bubble; push to `chatHistory`.
@@ -255,13 +255,13 @@ Functions:
      `error` → show error bubble + status.
   6. `chatPort.postMessage({type:"CHAT_STREAM", prompt, config})`.
   7. Set `isStreaming=true`, show Stop, disable Send/Input.
-- `stopChat()` — `chatPort.disconnect()` (triggers SW `onDisconnect` → abort);
+- `stopChat()`: `chatPort.disconnect()` (triggers SW `onDisconnect` → abort);
   finalize current assistant text; reset `isStreaming`.
-- `newChat()` — clear `chatHistory`, clear messages DOM, keep page context.
-- `copyChat(text)` — `navigator.clipboard.writeText`.
+- `newChat()`: clear `chatHistory`, clear messages DOM, keep page context.
+- `copyChat(text)`: `navigator.clipboard.writeText`.
 - `chrome.tabs.onActivated.addListener` → refresh page context if Chat tab open.
 
-Keyboard: `Enter` sends (Shift+Enter newline) — consistent with common chat UIs.
+Keyboard: `Enter` sends (Shift+Enter newline), consistent with common chat UIs.
 
 ---
 
@@ -308,19 +308,19 @@ No hardcoded user-visible strings in source (AGENTS.md i18n mandate).
 ## 11. Testing & Verification
 
 ### Unit (Jest, jsdom)
-- `tests/lib/providers/gemini.stream.test.js` — mock `fetch` Response stream,
+- `tests/lib/providers/gemini.stream.test.js`: mock `fetch` Response stream,
   assert `onChunk` called per delta, `signal.abort()` stops parsing, full text
   assembled.
 - Same for `openai`, `custom-gateway` (assert `reasoning_content` handled).
-- `tests/lib/ai-service.test.js` — `buildChatPrompt` substrings (page context
+- `tests/lib/ai-service.test.js`: `buildChatPrompt` substrings (page context
   marker, conversation history formatting). Update in same commit.
-- `tests/sidepanel/sidepanel.test.js` (new) — tab switch toggles panels;
+- `tests/sidepanel/sidepanel.test.js` (new): tab switch toggles panels;
   `sendChatMessage` opens port, appends chunks, finalizes on `done`; Stop
   disconnects port.
 
 ### E2E (Playwright)
 - `e2e/smoke.spec.js` extension: open Side Panel, switch to Chat tab, assert
-  chat panel visible + Tools hidden. (Do not assert real streaming — mock/network
+  chat panel visible + Tools hidden. (Do not assert real streaming: mock/network
   dependent; streaming correctness covered by unit tests.)
 
 ### Gates
@@ -341,7 +341,7 @@ No hardcoded user-visible strings in source (AGENTS.md i18n mandate).
 - **Custom-gateway reasoning_content** rendering needs a decision in the plan
   (append with marker vs. separate UI). Flagged, not blocking.
 - **Port lifetime:** if the Side Panel is closed mid-stream, `onDisconnect`
-  aborts — no leak. Reopening starts a fresh chat (in-memory only, by design).
+  aborts, no leak. Reopening starts a fresh chat (in-memory only, by design).
 
 ---
 

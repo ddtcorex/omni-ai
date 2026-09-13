@@ -42,7 +42,7 @@ describe("no var(--...) usage references an undefined or non-canonical token", (
   // --omni-* namespace AND actually be defined in lib/design-tokens.css.
   // This is the regression guard for two real bugs that slipped past every
   // earlier review pass: a 17-instance `var(--ai-*)` regression in
-  // content.js, and settings.js's `var(--success)`/`var(--error)` (C2) —
+  // content.js, and settings.js's `var(--success)`/`var(--error)` (C2);
   // both used dead, unprefixed token names that no rule here caught because
   // the "legacy token names" block above only checks CSS :root definitions,
   // never var() usages, and never looks at JS or HTML at all.

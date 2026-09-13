@@ -1,32 +1,34 @@
-# Chrome Extension Dev Tooling — Speed Stack for Omni AI
+# Chrome Extension Dev Tooling: Speed Stack for Omni AI
 
 > Researched & verified 2026-08-25 against npm registry metadata, GitHub releases/READMEs, and official docs (sources at bottom). Companion to `AGENTS.md` → "Dev Loop & Tooling".
+>
+> **Adopted state, checked 2026-09-14.** Every recommendation below was taken up, but the shipped configuration differs from the proposal snippets in section 3, so treat `package.json`, `tsconfig.json` and `eslint.config.js` as the source of truth. Concretely: `tsconfig.json` sets `strict: false` and its include list names `sidepanel/**`, since the side panel replaced the old popup, so `popup/**` no longer exists; `lint` is `eslint . --max-warnings 0`, with `web-ext lint` split into a separate non-blocking `lint:webext` script; and `verify` runs `typecheck`, `lint`, `format:check` and `test:coverage`, not just `npm test`. The Playwright E2E suite from section 4 is real now, it lives in `e2e/`, and it is a blocking CI check alongside `verify`.
 
 ## TL;DR
 
 Omni AI is **zero-build vanilla JS** by directive. The fastest loop that **preserves** that:
 
 1. **`web-ext run --target chromium`** → save-to-auto-reload dev server (no bundler).
-2. **TypeScript as a checker only**: JSDoc + `tsc --checkJs` + `@types/chrome` — types without rewriting a single file.
-3. **ESLint 10 flat config** + Prettier — correct browser/service-worker globals.
+2. **TypeScript as a checker only**: JSDoc + `tsc --checkJs` + `@types/chrome`, types without rewriting a single file.
+3. **ESLint 10 flat config** + Prettier: correct browser/service-worker globals.
 4. **Keep Jest 30 + jsdom** with the repo-owned chrome mock (`tests/helpers/chrome-mock.js`), add **Playwright E2E** (headless extension testing now works).
 5. Escape hatch if a build step is ever accepted: **CRXJS v2** (least invasive) or **WXT** (most batteries-included).
 
-## 1. Build/HMR landscape (2025–2026)
+## 1. Build/HMR landscape (2025-2026)
 
 | Tool                           | Vanilla-JS friendly                          | HMR / reload                                                       | Status (Aug 2026)                                                         | Verdict here                                                          |
 | ------------------------------ | -------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | **WXT** (wxt.dev)              | ✅ vanilla template; JS works                | Dev browser w/ ext installed; HMR for pages, reload for bg/content | 🟢 v0.21.4, ~2.2M dl/mo, very active                                      | Best option _if_ bundling is ever OK; restructures to `entrypoints/*` |
-| **CRXJS** `@crxjs/vite-plugin` | ✅ wraps existing manifest/layout            | Native Vite HMR                                                    | 🟢 **v2 stable since 2025-06-10** (2.7.x), peers vite ^3–^8, ~1.64M dl/mo | Least-invasive build option; keeps current file layout                |
+| **CRXJS** `@crxjs/vite-plugin` | ✅ wraps existing manifest/layout            | Native Vite HMR                                                    | 🟢 **v2 stable since 2025-06-10** (2.7.x), peers vite ^3-^8, ~1.64M dl/mo | Least-invasive build option; keeps current file layout                |
 | **Plasmo**                     | 🟡 React-centric DX                          | Partial                                                            | 🔴 Dormant (nothing since 2025-05)                                        | Avoid new investment                                                  |
 | **Extension.js**               | ✅ ESNext template, content-script HMR claim | ✅                                                                 | 🟡 Active but tiny adoption (~22k dl/mo)                                  | Solo-maintainer risk                                                  |
-| **chrome-extension-cli**       | —                                            | ❌                                                                 | 🔴 Dead (2023)                                                            | Skip                                                                  |
+| **chrome-extension-cli**       | n/a                                          | ❌                                                                 | 🔴 Dead (2023)                                                            | Skip                                                                  |
 
-Note: WXT's comparison page calling CRXJS unmaintained predates CRXJS v2 stable — outdated.
+Note: WXT's comparison page calling CRXJS unmaintained predates CRXJS v2 stable, so it is outdated.
 
 ## 2. No-build auto-reload (the path we use)
 
-- **`web-ext` (Mozilla)** — watches source files and reloads the extension in each target on change; Chromium support via `--target chromium`, `--chromium-binary`, `--chromium-profile`. Caveat: Chrome does **not** re-inject content scripts into already-open tabs after an extension reload → SW/popup/options edits are fully automatic; content-script edits usually need one tab refresh.
+- **`web-ext` (Mozilla)**: watches source files and reloads the extension in each target on change; Chromium support via `--target chromium`, `--chromium-binary`, `--chromium-profile`. Caveat: Chrome does **not** re-inject content scripts into already-open tabs after an extension reload → SW/popup/options edits are fully automatic; content-script edits usually need one tab refresh.
 - ❌ `crx-hotreload`: officially broken on MV3 per its own README (Chrome removed the background-page FS APIs it relied on).
 - Vite-as-static-server alone adds nothing (extension pages load from disk).
 
@@ -94,12 +96,12 @@ module.exports = [
 ];
 ```
 
-`web-ext lint` adds manifest/schema sanity (Firefox-flavored — treat warnings about Chromium-only keys as advisory).
+`web-ext lint` adds manifest/schema sanity (Firefox-flavored; treat warnings about Chromium-only keys as advisory).
 
 ## 4. Testing upgrades
 
 - **Keep Jest 30 + jsdom, with our own `chrome.*` mock** (`tests/helpers/chrome-mock.js`, installed as `global.chrome` by `jest.setup.js`). `jest-chrome` was dropped on 2026-09-13: its last publish (0.8.0) peers `jest@^26 || ^27`, so it makes `npm ci` fail with ERESOLVE next to jest 30. Since the suite configures every method itself with `mockResolvedValue` / `mockImplementation`, owning the mock costs about 100 lines and removes the only thing pinning jest to 27. `sinon-chrome` is legacy (last publish 2019).
-- **Add Playwright E2E** — since Chrome/Edge removed `--load-extension` side-load flags from stable builds, Playwright loads extensions through its **bundled Chromium**, which also enables headless extension testing and keeps the MV3 service-worker handle alive across idle suspension:
+- **Add Playwright E2E**: since Chrome/Edge removed `--load-extension` side-load flags from stable builds, Playwright loads extensions through its **bundled Chromium**, which also enables headless extension testing and keeps the MV3 service-worker handle alive across idle suspension:
 
 ```js
 // e2e/extension.fixtures.js
@@ -127,7 +129,7 @@ Alternatives: Puppeteer ≥25 has `puppeteer.launch({ enableExtensions: [path] }
 
 Keep `scripts/publish.sh` as source of truth (key strip + OAuth client swap). To automate store upload later:
 
-- Official Chrome Web Store Publish API — developer.chrome.com/docs/webstore/using-api
+- Official Chrome Web Store Publish API (developer.chrome.com/docs/webstore/using-api)
 - `chrome-webstore-upload-cli` (GoogleChromeLabs, v4.x)
 - GitHub Action `mnao305/chrome-extension-upload` (zip + upload + publish on tags)
 - If WXT is ever adopted, `wxt zip` + `wxt submit` replaces all of the above

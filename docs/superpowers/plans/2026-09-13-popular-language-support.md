@@ -940,7 +940,7 @@ Also gate the content script's own locale fetch in `initializeI18n()` (lines ~64
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `env -u NODE_ENV npx jest tests/manifest.test.js tests/lib/i18n.test.js tests/content`
-Expected: PASS. Then run the whole unit suite: `env -u NODE_ENV npx jest` — expected PASS.
+Expected: PASS. Then run the whole unit suite: `env -u NODE_ENV npx jest`, expected PASS.
 
 - [ ] **Step 5: Verify the extension still loads with the browser**
 

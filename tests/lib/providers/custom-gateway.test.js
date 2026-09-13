@@ -28,7 +28,7 @@ function sseResponse(chunks, contentType = "text/event-stream") {
 
 // Adapter so the provider's `response.headers.get(...)` works with our Map
 // without pulling in undici internals. Captures the Map BEFORE replacing
-// headers — spreading inside the getter would see the replacement itself.
+// headers. Spreading inside the getter would otherwise see the replacement.
 function wrapHeaders(res) {
   const map = res.headers;
   res.headers = {

@@ -1,7 +1,7 @@
 /* lib/design-tokens.css */
 
 /* ============================================
-   Omni AI - Design Tokens
+   Omni AI: Design Tokens
    Single source of truth for all three UI surfaces
    (content-script overlay, side panel, settings page).
    See docs/design-system/MASTER.md for usage guidance.
@@ -11,7 +11,7 @@
 :host {
   --omni-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Color - dark (default) */
+  /* Color: dark (default) */
   --omni-bg-primary: #0f0f14;
   --omni-bg-secondary: #1a1a24;
   --omni-bg-tertiary: #252532;
@@ -89,14 +89,14 @@
 
 /* Light-mode overrides: the Shadow-DOM overlay surface. :host() matches only
    the shadow host itself (content.js's #omni-ai-shadow-host div, out in the
-   host page's light DOM) when it carries .omni-ai-light-mode — never an
+   host page's light DOM) when it carries .omni-ai-light-mode, never an
    ancestor. content.js's applyTheme() only ever toggles this class on the
    shadow host (see ensureUiRoot()/theme wiring), so :host() is the correct,
    tightest-possible selector: it matches this codebase's only real usage and,
    unlike :host-context(), cannot be triggered by a hostile host page adding
    the class to its own <html>/<body>.
-   Values are identical to the :root.omni-ai-light-mode block above by design —
-   duplicated here only because :host() and :root are separate selector
+   Values are identical to the :root.omni-ai-light-mode block above by design.
+   Duplicated here only because :host() and :root are separate selector
    contexts that CSS cannot merge into one rule. */
 :host(.omni-ai-light-mode) {
   --omni-bg-primary: #ffffff;

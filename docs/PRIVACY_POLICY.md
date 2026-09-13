@@ -1,6 +1,6 @@
 # Privacy Policy for Omni AI
 
-**Last Updated:** January 21, 2026
+**Last Updated:** September 14, 2026
 
 Omni AI ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how our Chrome extension collects, uses, and discloses your information.
 
@@ -10,32 +10,41 @@ Omni AI ("we", "our", or "us") is committed to protecting your privacy. This Pri
 
 We operate with a "Local-First" and "Privacy-First" philosophy:
 
-- **API Keys:** Your API keys (for Google Gemini, Groq, or OpenAI) are stored locally on your device using Chrome's secure storage (`chrome.storage.local`). They are never sent to us or any third-party other than the respective AI provider for authentication.
-- **User Content:** The text you select to process (e.g., for summarizing, translating, or rephrasing) is sent directly from your browser to the chosen AI Provider's API. We do not act as a middleman and do not store logs of your content.
-- **Usage Statistics:** Metrics such as total words processed or actions taken are calculated and stored locally on your device for your personal dashboard. We do not have access to this data.
+- **API Keys:** Your API keys (for Google Gemini, OpenAI, Groq, Anthropic Claude, or a Custom Gateway) are stored locally on your device using Chrome's storage (`chrome.storage.local`). They are never sent to us, and are sent to the respective AI provider only to authenticate your own requests.
+- **User Content:** The text you select to process (for example to summarize, translate, or rephrase) is sent directly from your browser to the chosen AI provider's API using your own API key. We do not act as a middleman and we do not store logs of your content.
+- **Page Content:** When you use the side panel's Page Tools (Summarize, Smart Translate, Explain), the text of the page you are viewing is read and sent to your chosen provider for that request only. It is not stored and not sent anywhere else.
+- **Usage Statistics:** Metrics such as total words processed or actions taken are calculated and stored locally on your device for your personal dashboard. We do not have access to this data and it is never transmitted.
+- **No tracking:** We do not collect browsing history, we do not log your prompts, and we do not collect any identity information. There are no analytics, advertising, or telemetry SDKs in the extension.
 
 ## 2. Third-Party Services
 
 To provide AI functionality, Omni AI connects directly to third-party API providers based on your selection. Please review their privacy policies to understand how they handle your data:
 
 - **Google Gemini (Google AI):** [Google Privacy Policy](https://policies.google.com/privacy)
-- **Groq:** [Groq Privacy Policy](https://wow.groq.com/privacy-policy/)
 - **OpenAI:** [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
-- **Google OAuth:** Used solely for authentication to sync your settings across devices if you choose to sign in.
+- **Groq:** [Groq Privacy Policy](https://wow.groq.com/privacy-policy/)
+- **Anthropic Claude:** [Anthropic Privacy Policy](https://www.anthropic.com/legal/privacy)
+- **Custom Gateway:** If you configure a Custom Gateway, your text is sent to the OpenAI-compatible endpoint whose base URL you entered. That endpoint, and its data handling, is chosen and operated by you or by a third party you select, not by us. Review that provider's own privacy policy.
+
+Your language preferences are stored with `chrome.storage.sync`, so they can follow your Chrome profile across devices if you are signed in to Chrome. That synchronization is performed by Chrome using your Google account, and we never receive a copy. Everything else stays on this device in `chrome.storage.local`: your AI provider and model choice, your context preset, your Custom Gateway base URL and model name, and all API keys.
 
 ## 3. Permissions Explained
 
-- **activeTab:** Used to read the text you explicitly select on the current page to process it.
-- **storage:** Used to save your settings, API keys, and local usage history.
-- **identity:** Used to authenticate with Google for optional settings synchronization.
-- **contextMenus:** Used to add the "Omni AI" option to your right-click menu.
-- **host_permissions:** Used to allow the extension to send requests to `https://generativelanguage.googleapis.com/*` (Google Gemini API).
+- **activeTab:** Used to read the text you explicitly select on the current page so it can be processed.
+- **sidePanel:** Used to display the extension's side panel, which hosts the Page Tools and the streaming chat.
+- **storage:** Used to save your settings. Language preferences use Chrome's synced storage; API keys, the provider and model choice, and your usage history stay in local storage on this device.
+- **contextMenus:** Used to add the "Omni AI" options to your right-click menu.
+- **host_permissions (`https://*/*`, `http://*/*`):** Omni AI works on any page you choose to use it on. The content script needs to read the text you select or focus, and to replace it with the AI result, on whatever site you are reading or writing. The extension does not read pages you have not interacted with, and it sends page text only when you invoke an action.
 
-## 4. Changes to This Policy
+## 4. Data Retention and Sharing
 
-We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+We do not retain your content, because we never receive it. We do not sell, rent, or share your data with anyone. Data leaves your browser only as the direct request to the AI provider you configured, which you initiate yourself.
 
-## 5. Contact Us
+## 5. Changes to This Policy
+
+We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the date above.
+
+## 6. Contact Us
 
 If you have any questions about this Privacy Policy, please contact us via our GitHub repository:
 https://github.com/ddtcorex/omni-ai/issues

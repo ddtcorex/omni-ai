@@ -21,7 +21,7 @@ import { createOmniChatHandler } from "../lib/omni-chat-port.js";
 import { getProviderByModel } from "../lib/ai-providers.js";
 
 /**
- * Omni AI - Service Worker
+ * Omni AI: Service Worker
  * Background script handling API calls, context menus, and message passing
  */
 
@@ -68,7 +68,7 @@ async function sendToActiveEditor(tabId, message) {
   // No editor frame is known (or it just failed): target the top frame
   // explicitly. Omitting frameId here would broadcast to every frame on the
   // page (manifest.json sets all_frames:true), and chrome.tabs.sendMessage
-  // resolves with whichever frame replies first — a race that can silently
+  // resolves with whichever frame replies first, a race that can silently
   // return an unrelated iframe's empty selection instead of the real one.
   return chrome.tabs.sendMessage(tabId, message, { frameId: 0 });
 }
@@ -84,7 +84,7 @@ chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install" || details.reason === "update") {
     // Reloading an unpacked extension in chrome://extensions (routine
     // during development) fires "update", and Chrome clears the
-    // extension's context menu items on that reload — they must be
+    // extension's context menu items on that reload, so they must be
     // recreated here too, not just on first install. initializeSettings()
     // is a safe no-op merge for existing keys, so re-running it on update
     // also seeds any new setting default (e.g. showFloatingButton) added

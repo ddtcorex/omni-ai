@@ -8,10 +8,10 @@
 #   (or the same page scoped to a GitHub Environment, if the job is pinned to one)
 #   https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
 #
-#   CWS_APP_ID          – Chrome Web Store item/extension ID
-#   CWS_CLIENT_ID       – OAuth client ID of the CWS API project
-#   CWS_CLIENT_SECRET   – OAuth client secret for that client ID
-#   CWS_REFRESH_TOKEN   – OAuth refresh token minted for chrome-webstore-upload-cli
+#   CWS_APP_ID: Chrome Web Store item/extension ID
+#   CWS_CLIENT_ID: OAuth client ID of the CWS API project
+#   CWS_CLIENT_SECRET: OAuth client secret for that client ID
+#   CWS_REFRESH_TOKEN: OAuth refresh token minted for chrome-webstore-upload-cli
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: Release
@@ -41,7 +41,7 @@ jobs:
         with:
           files: dist/*.zip
           generate_release_notes: true
-      # Optional CWS upload — enable after storing repo secrets:
+      # Optional CWS upload: enable after storing repo secrets:
       #   CWS_APP_ID, CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN
       # - name: Upload to Chrome Web Store
       #   env:

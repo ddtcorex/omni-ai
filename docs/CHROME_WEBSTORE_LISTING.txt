@@ -1,49 +1,144 @@
-Omni AI — Your All-in-One AI Writing & Browsing Assistant
+Omni AI: Your All-in-One AI Writing & Browsing Assistant
 
-Omni AI puts the world's leading AI models directly inside your browser, so you never have to switch tabs again. Highlight any text on any page — an email you're drafting, a GitHub comment, a research paper, a foreign article — and get instant AI help right where you're working.
+Omni AI puts the world's leading AI models directly inside your browser, so you never have to switch tabs again. Highlight any text on any page, whether it is an email you are drafting, a GitHub comment, a research paper, or a foreign article, and get instant AI help right where you are working.
 
 WHY INSTALL IT
 The AI you already pay for, working on the pages you already use. No new subscription, no copying text back and forth between browser and ChatGPT/Gemini/Claude, and no lock-in to a single provider. Omni AI bolts AI onto your normal workflow instead of pulling you into another tab.
 
 WHAT IT DOES
-• Fix Grammar & Spelling — polish anything in one click
-• Rephrase — get fresh, natural wording every time
-• Summarize — turn a 10-minute read into a 30-second one
-• Change Tone — Professional, Casual, Friendly, Direct, or Confident presets
-• Explain — break down jargon, legal text, or technical concepts
-• Translate — 10 languages (English, Vietnamese, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Chinese), with a primary-language shortcut and Smart Translate that auto-detects the source
-• Add Emoji — liven up a message in one click
+• Fix Grammar & Spelling: polish anything in one click
+• Rephrase: get fresh, natural wording every time
+• Summarize: turn a 10-minute read into a 30-second one
+• Change Tone: Professional, Casual, Friendly, Direct, or Confident presets
+• Explain: break down jargon, legal text, or technical concepts
+• Translate: 43 languages, from Spanish, French and German to Hindi, Arabic, Thai, Vietnamese and both Simplified and Traditional Chinese. Set a primary language for one-click translation, or use Smart Translate, which auto-detects the source language for you.
+• Add Emoji: liven up a message in one click
 
-Works in plain inputs, textareas, and rich-text editors (TinyMCE and other contenteditable-based editors). Trigger it from the floating button, the right-click menu, or keyboard shortcuts. A side panel adds one-click Summarize, Smart Translate, and Explain for the whole page you're reading.
+Works in plain inputs, textareas, and rich-text editors such as TinyMCE. Trigger it from the floating button, the right-click menu, or keyboard shortcuts. A side panel adds one-click Summarize, Smart Translate, and Explain for the whole page you are reading.
+
+THE INTERFACE SPEAKS YOUR LANGUAGE
+The entire extension interface ships in 52 locales, covering 46 languages. Six of those locales are regional variants: British English, Canadian French, Latin American Spanish, European Portuguese, and Traditional Chinese for Hong Kong and Taiwan. All 52:
+
+Arabic, Bengali, Bulgarian, Catalan, Simplified Chinese, Traditional Chinese (Hong Kong), Traditional Chinese (Taiwan), Croatian, Czech, Danish, Dutch, English, British English, Finnish, French, Canadian French, German, Greek, Gujarati, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Kannada, Kazakh, Korean, Lithuanian, Malay, Malayalam, Marathi, Norwegian, Odia, Polish, Portuguese, European Portuguese, Punjabi, Romanian, Russian, Slovak, Slovenian, Spanish, Latin American Spanish, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian, Urdu, Vietnamese.
 
 WHAT MAKES OMNI AI DIFFERENT
-Most AI extensions lock you into a subscription and a single model. Omni AI doesn't.
-• Bring Your Own Key (BYOK) — use your own API key for Google Gemini, OpenAI, Groq, or Anthropic Claude. Pay the provider directly for what you actually use, nothing more.
-• Custom Gateway Support — connect any OpenAI-compatible endpoint: DeepSeek, OpenRouter, a self-hosted proxy, or your own gateway.
-• Universal Editor Support — plain inputs, textareas, and contenteditable rich-text editors across the web.
-• Clean, Focused UI — a glassmorphic floating button appears where you're working and gets out of the way when you don't need it (can be turned off entirely in Settings).
+Most AI extensions lock you into a subscription and a single model. Omni AI does not.
+• Bring Your Own Key (BYOK): use your own API key for Google Gemini, OpenAI, Groq, or Anthropic Claude. Pay the provider directly for what you actually use, nothing more.
+• Custom Gateway Support: connect any OpenAI-compatible endpoint, such as DeepSeek, OpenRouter, a self-hosted proxy, or your own gateway.
+• Universal Editor Support: plain inputs, textareas, and contenteditable rich-text editors across the web.
+• Clean, Focused UI: a glassmorphic floating button appears where you are working and gets out of the way when you do not need it (it can be turned off entirely in Settings).
 
 QUICK SETUP
 Omni AI needs one API key to work. Pick a provider:
-• Google Gemini — aistudio.google.com/app/apikey (free tier available)
-• OpenAI — platform.openai.com/api-keys
-• Groq — console.groq.com/keys (fast inference, free tier available)
-• Anthropic Claude — console.anthropic.com/settings/keys
-• Custom Gateway — enter your base URL, key, and model in Settings
+• Google Gemini: aistudio.google.com/app/apikey (free tier available)
+• OpenAI: platform.openai.com/api-keys
+• Groq: console.groq.com/keys (fast inference, free tier available)
+• Anthropic Claude: console.anthropic.com/settings/keys
+• Custom Gateway: enter your base URL, key, and model in Settings
 
 KEYBOARD SHORTCUTS
-• Alt+O — Show the Quick Actions menu at the current selection
-• Alt+R — Rephrase selected text
-• Alt+T — Smart Translate selected text
-• Alt+F — Fix Grammar on selected text
-Quick Ask, Summarize, and Explain are also available as commands — assign your own shortcut (and customize any of the above) at chrome://extensions/shortcuts.
+• Alt+O: Show the Quick Actions menu at the current selection
+• Alt+R: Rephrase selected text
+• Alt+T: Smart Translate selected text
+• Alt+F: Fix Grammar on selected text
+Quick Ask, Summarize, and Explain are also available as commands. Assign your own shortcut (and customize any of the above) at chrome://extensions/shortcuts.
 
 USAGE DASHBOARD
-Settings → Usage shows total actions run, words processed, and words generated — a quick look at how much time Omni AI is saving you.
+Settings → Usage shows total actions run, words processed, and words generated, a quick look at how much time Omni AI is saving you.
 
 PRIVACY
-• No middlemen — your browser talks directly to the AI provider's API. We don't operate a backend that sees your prompts.
-• No tracking — no browsing history, prompt logging, or identity collection.
-• Local storage only — your API keys stay in your local Chrome profile.
+• No middlemen: your browser talks directly to the AI provider's API. We do not operate a backend that sees your prompts.
+• No tracking: no browsing history, prompt logging, or identity collection.
+• Local storage only: your API keys stay in your local Chrome profile.
 
 Install Omni AI and bring AI to every tab you open.
+
+====================================================================
+END OF THE TEXT FOR THE STORE'S "DESCRIPTION" FIELD
+Everything below is metadata for the other dashboard fields. It is not
+pasted into the description.
+====================================================================
+
+MAINTENANCE RULE
+Re-check this file against the shipped extension before every upload, in
+the same commit as the version bump (AGENTS.md § Release Flow, step 4).
+The two fields that drift most are the feature list and the keyboard
+shortcuts, because nothing enforces them. The language counts are derived
+from source: 43 translation languages live in `lib/languages.js`
+(`LANGUAGES`) and the 52 interface locales are the `_locales/` directories
+listed in `UI_LOCALE_CODES` in that same file.
+
+PRODUCT NAME
+Omni AI
+
+SUMMARY (132 character limit)
+The manifest ships a localized name and summary rather than hardcoded
+strings: `manifest.json` declares `"name": "__MSG_extName__"` and
+`"description": "__MSG_extDescription__"`, and Chrome resolves both from
+the active `_locales/<locale>/messages.json`. That is what Chrome itself
+displays in all 52 shipped locales, on chrome://extensions, in the
+extension menu and in the install prompt.
+
+The Chrome Web Store listing page is a separate surface: its title and
+summary come from the dashboard fields, not from the manifest, so those
+are English today. Localizing the store page itself is optional and is
+done in the dashboard's language tab.
+
+English source strings (`_locales/en/messages.json`):
+  extName:        Omni AI
+  extDescription: All-in-One AI Assistant powered by AI Models: writing enhancement, quick actions, and smart utilities
+                  (101 characters; keep it on ONE line when pasting, the wrap here is only for this file)
+
+CATEGORY
+Productivity (Search Tools as the secondary choice if Productivity is taken)
+
+LANGUAGES
+The listing language is English. Chrome localizes the extension's own name
+and summary automatically from `_locales`, independently of the store
+listing text, so no dashboard work is required for the 52 locales to take
+effect in Chrome itself.
+
+The dashboard's language tab is only needed when the long description above
+should itself be shown in another language. If that is ever done, add the
+translated description text to this file first so the two stay in sync.
+
+SINGLE PURPOSE
+Unified writing assistant and productivity tool: it applies AI writing
+actions to the text the user selects, and summarizes, translates or
+explains the page the user is reading.
+
+PERMISSION JUSTIFICATIONS
+Paste from `docs/PERMISSION_JUSTIFICATIONS.txt`. That file holds the
+justification blocks for the four requested permissions
+(`storage`, `activeTab`, `contextMenus`, `sidePanel`) plus the answers for
+the Privacy practices data collection questions. It is the source of truth
+for those fields; do not retype them from memory here.
+
+PRIVACY POLICY URL
+The store requires a publicly reachable URL, not a repository file. The
+policy text lives in `docs/PRIVACY_POLICY.md`; whoever publishes it is
+responsible for re-publishing after any edit to that file, otherwise the
+store keeps serving the older text. A URL is already registered in the
+dashboard, but its value is not written down in this repository, so treat it
+as unknown here and record it the next time the dashboard is open.
+
+DATA USAGE DISCLOSURES
+Answer the dashboard's data collection questions exactly as written in the
+declaration block of `docs/PERMISSION_JUSTIFICATIONS.txt`: the extension
+sends the selected text and, for Page Tools, the active page's text
+directly to the AI provider the user configured, using the user's own API
+key. It does not send that data to any Omni AI backend, does not store it,
+does not use it for advertising, and does not sell or share it.
+
+SCREENSHOTS (1280x800)
+Suggest four, in this order, since they cover the workflow a reviewer and a
+new user both look for:
+1. The floating button and the quick action menu on a highlighted paragraph.
+2. A result card with the Replace action visible, showing an edit in place.
+3. The side panel with Summarize, Smart Translate and Explain.
+4. Settings, showing the provider cards and the language picker with its
+   search box.
+
+ICONS
+`assets/icons/` (a 128x128 PNG is required by the store; convert the SVG if
+only the vector is present).

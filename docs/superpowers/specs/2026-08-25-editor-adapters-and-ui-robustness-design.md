@@ -19,7 +19,7 @@ Issues 3 and 4 share a failure surface: when (4a) triggers, the overlay loses AL
 ## Goals
 
 1. Users can disable the floating quick-action button from Settings; keyboard shortcuts and context menus keep working.
-2. AI actions read text from, and **fully replace results back into**, TinyMCE (including recent iframe variants), Discord, Telegram Web, Slack, Microsoft Teams, and other major editor frameworks (ChatGPT, Claude, Gemini web, X/Twitter, Facebook, LinkedIn, Notion). Google Docs is explicitly degraded-mode (canvas rendering — DOM text does not exist).
+2. AI actions read text from, and **fully replace results back into**, TinyMCE (including recent iframe variants), Discord, Telegram Web, Slack, Microsoft Teams, and other major editor frameworks (ChatGPT, Claude, Gemini web, X/Twitter, Facebook, LinkedIn, Notion). Google Docs is explicitly degraded-mode (canvas rendering, DOM text does not exist).
 3. Overlay content never overflows regardless of token shape.
 4. Extension styling is immune to host-page CSP and host styles.
 
@@ -32,26 +32,26 @@ Issues 3 and 4 share a failure surface: when (4a) triggers, the overlay loses AL
 
 ---
 
-## Feature 1 — Floating Button Toggle
+## Feature 1: Floating Button Toggle
 
 - **Storage:** extend the existing `settings` object in `storage.local`: `settings.showFloatingButton` (boolean, default `true`). Seeded by `initializeSettings()` defaults merge; absent key ⇒ enabled (backward compatible).
 - **Gate:** first line check inside `presentQuickActionButton()`. A module-level cached flag (`floatingButtonEnabled`) is read at content-script init and updated live via a `chrome.storage.onChanged` listener watching `area === "local" && changes.settings`.
 - **Settings UI:** toggle row in `settings.html` General section ("Show floating button", helper text mentions shortcuts remain); wired through the existing `loadSettings()/saveSettings()` pair in `settings.js`; i18n keys added to `_locales/en/messages.json` first, other locales may follow.
-- **Behavior when off:** no floating button ever appears; `PROCESSING_START` spinner (which reuses the button) is skipped gracefully — background flows still send `SHOW_RESULT` cards, which remain available.
+- **Behavior when off:** no floating button ever appears; `PROCESSING_START` spinner (which reuses the button) is skipped gracefully (background flows still send `SHOW_RESULT` cards, which remain available).
 
 ---
 
-## Fix Set A — Stylesheet Delivery (issue 4a)
+## Fix Set A: Stylesheet Delivery (issue 4a)
 
 Replace the fetch-and-cache pipeline with declarative injection:
 
-- In `ensureUiStyles()`, instead of fetching CSS text, append `<link rel="stylesheet" href="chrome.runtime.getURL("content/overlay.css")">` inside the shadow root (idempotent — reuse existing node).
+- In `ensureUiStyles()`, instead of fetching CSS text, append `<link rel="stylesheet" href="chrome.runtime.getURL("content/overlay.css")">` inside the shadow root (idempotent: reuse existing node).
 - Rationale: `chrome-extension:` subresource loads inside a content-script shadow root are not subject to page CSP, load once, never leave an empty-cache failure mode, and auto-update on extension reload.
 - Delete: `omniUiCssText`, `omniUiStylePromise`, fetch chain, and the `isContextValid()` early-empty path (keep `isContextValid()` gating elsewhere).
 - Defense-in-depth (after root cause, per skill): add inheritable-property resets (`font-size`, `color`, `direction`) to the internal wrapper rule set alongside the existing `:where()` block.
-- **Verification fixture:** test page with `<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">` — old code renders unstyled, new code styled.
+- **Verification fixture:** test page with `<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">`: old code renders unstyled, new code styled.
 
-## Fix Set B — Overflow Hardening (issue 3)
+## Fix Set B: Overflow Hardening (issue 3)
 
 - On `.omni-ai-content-area` and result-text nodes: `overflow-wrap: anywhere; word-break: normal; min-width: 0;` (keep `white-space: pre-wrap`).
 - Ensure card containers keep `max-height` + `overflow-y: auto` (already present at `overlay.css:118-119, 401-402`).
@@ -63,7 +63,7 @@ Replace the fetch-and-cache pipeline with declarative injection:
 
 ### Architecture
 
-Generalize the existing ordered-strategy lookup (`getContext()`, `content.js:367`) into an **adapter registry**. The current resolver already shows strain: its first branch tests an undefined flag (`strategies.run_standard`, dead code — standard inputs only match via the later fallback), and strategy order is implicit. The registry makes precedence explicit and data-driven. Each adapter implements one interface:
+Generalize the existing ordered-strategy lookup (`getContext()`, `content.js:367`) into an **adapter registry**. The current resolver already shows strain: its first branch tests an undefined flag (`strategies.run_standard`, dead code: standard inputs only match via the later fallback), and strategy order is implicit. The registry makes precedence explicit and data-driven. Each adapter implements one interface:
 
 ```js
 {
@@ -87,7 +87,7 @@ Resolution order (first `match()` wins, falling through on `applyReplace` failur
 | 5 | `static` (exists) | page text, read-only | unchanged |
 
 - **Shadow piercing:** rewrite `getEditableHost()` to walk `composedTree` parents (`node.getRootNode().host` chains) so open-shadow editors resolve to their true editable root. Closed shadow roots are out of reach (browser limitation, documented).
-- **Iframes:** add `"all_frames": true` + `"match_about_blank"` to the manifest content-script entry; per-frame instances self-gate via the existing `isContextValid()` and only mount UI when an editable is focused/selected. Blast-radius note: scripts now inject into ad/restricted frames too — acceptable because UI mounts lazily; revisit if perf regressions appear.
+- **Iframes:** add `"all_frames": true` + `"match_about_blank"` to the manifest content-script entry; per-frame instances self-gate via the existing `isContextValid()` and only mount UI when an editable is focused/selected. Blast-radius note: scripts now inject into ad/restricted frames too, acceptable because UI mounts lazily; revisit if perf regressions appear.
 - **Site hints:** hostname→adapter-preference map consulted BEFORE generic matching (including `discord.com`, `web.telegram.org`, `app.slack.com`, and `teams.microsoft.com` → `framework-contenteditable`; `chatgpt.com→framework-contenteditable`, `notion.so→rich-execCommand`, `docs.google.com→copy-fallback(degraded)`). A hint changes only host resolution and adapter precedence; it must not scrape messages or depend on internal framework state. A failed verification falls through to the next safe adapter.
 - **Google Docs degraded mode:** the result card offers Copy; no attempt is made to simulate a trusted paste event. This is a browser security limitation, not a bug.
 
@@ -98,7 +98,7 @@ Resolution order (first `match()` wins, falling through on `applyReplace` failur
 ### Testing
 
 - Unit (jsdom): each adapter against structural fixtures (textarea; contenteditable; iframe document; nested open-shadow editable). Assert the expected document changes, selection is restored, and failure produces `ok: false` rather than a false success.
-- E2E/manual matrix (documented in CONTRIBUTING): TinyMCE 6/7 iframe demos, Discord, Telegram Web, Slack, and Microsoft Teams are required rows, each recording read, selected replacement, full-draft replacement, and safe Copy fallback. Other public sites listed above are additional coverage. Proprietary internals may shift — adapters fail soft by design.
+- E2E/manual matrix (documented in CONTRIBUTING): TinyMCE 6/7 iframe demos, Discord, Telegram Web, Slack, and Microsoft Teams are required rows, each recording read, selected replacement, full-draft replacement, and safe Copy fallback. Other public sites listed above are additional coverage. Proprietary internals may shift. Adapters fail soft by design.
 - Telemetry-free: failures log locally only.
 
 ---
@@ -107,4 +107,4 @@ Resolution order (first `match()` wins, falling through on `applyReplace` failur
 
 1. **Batch 1** (low risk): Feature 1 + Fix B + defense-in-depth resets.
 2. **Batch 2**: Fix A (link-based stylesheet) with CSP fixture proof.
-3. **Batch 3**: adapter layer — implement in table order (2→3→4→shadow→iframe→Docs-degraded), each behind its own unit tests; spec §Editor Adapter Layer is the contract.
+3. **Batch 3**: adapter layer: implement in table order (2→3→4→shadow→iframe→Docs-degraded), each behind its own unit tests; spec §Editor Adapter Layer is the contract.

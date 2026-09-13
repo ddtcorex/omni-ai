@@ -27,13 +27,13 @@ module.exports = [
   {
     // NOTE: both restricted-syntax selectors below (Provider Pattern + Storage Map) MUST live in
     // this single config object's "no-restricted-syntax" array. ESLint flat config does not merge
-    // same-named rule entries across multiple matching config objects — the last one applicable to
+    // same-named rule entries across multiple matching config objects: the last one applicable to
     // a given file wins outright, silently discarding any earlier one. Splitting these into two
     // separate objects (as originally written) made the Storage Map rule's object shadow the
     // Provider Pattern rule for every file both applied to, which went undetected until the
     // Provider Pattern's own regression test caught it. Combining the exemption globs is safe in
     // practice: lib/providers/** never touches chrome.storage.*, and none of the Storage Map's
-    // owner files (or tests/**, e2e/**) call fetch() directly — verified via grep before merging.
+    // owner files (or tests/**, e2e/**) call fetch() directly (verified via grep before merging).
     ignores: [
       "lib/providers/**",
       "lib/theme-manager.js",

@@ -9,7 +9,7 @@ module.exports = {
     "^.+\\.js$": "babel-jest",
   },
   // Honest coverage accounting: without this, Jest only reports coverage for
-  // files some test happens to `require` — content.js and sidepanel.js were
+  // files some test happens to `require`. The files content.js and sidepanel.js were
   // both silently invisible (reported nowhere, not even as 0%) before this,
   // which is how a large, frequently-buggy file's total lack of unit tests
   // went unnoticed. See docs/superpowers/specs/2026-09-02-code-quality-system-design.md.
@@ -29,7 +29,7 @@ module.exports = {
   ],
   coverageThreshold: {
     // Global floor: a regression tripwire, not a target. Note: Jest buckets
-    // coverage by threshold specificity — files already matched by a more
+    // coverage by threshold specificity: files already matched by a more
     // specific glob below (lib/providers/**, content/positioning.js,
     // lib/theme-manager.js) are excluded from this "global" bucket, so its
     // real denominator is the *remaining* files only, not the whole-repo
@@ -44,7 +44,7 @@ module.exports = {
     },
     // Already well-tested; small buffer below its current ~90% aggregate.
     // Directory form (no "**/*.js" glob) so Jest aggregates across the
-    // provider files instead of enforcing this threshold per-file — a
+    // provider files instead of enforcing this threshold per-file. A
     // per-file glob here fails individually on groq.js/openai.js, which sit
     // at 50% functions coverage even though the directory aggregate is ~70%.
     "./lib/providers/": {
@@ -77,7 +77,7 @@ module.exports = {
     // Jest coverage is expected and shows up honestly in reports instead of
     // being hidden. As pure-logic helpers get extracted out of either file
     // (as content/positioning.js already was), add a threshold entry for
-    // each extracted file here — a realistic ratchet for large, DOM-heavy
+    // each extracted file here: a realistic ratchet for large, DOM-heavy
     // files rather than a big-bang rewrite or an unenforceable global 100%.
   },
 };

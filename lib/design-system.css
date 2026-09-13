@@ -1,5 +1,5 @@
 /* ============================================
-   Omni AI - Shared Component Classes
+   Omni AI: Shared Component Classes
    Consumes tokens from lib/design-tokens.css. Loaded after that file
    everywhere (content.js's ensureUiStyles(), settings.html, sidepanel.html).
    See docs/design-system/MASTER.md for usage guidance.
@@ -62,8 +62,8 @@
 }
 
 /* Larger variant for roomier surfaces (settings, side panel) where the
-   default overlay-appropriate compact sizing reads as too small — see
-   docs/FOLLOWUPS.md #15. */
+   default overlay-appropriate compact sizing reads as too small (see
+   docs/FOLLOWUPS.md #15). */
 .ds-btn-primary--lg {
   gap: var(--omni-spacing-sm);
   padding: 14px 24px;
@@ -150,7 +150,7 @@
   border-left: 3px solid var(--omni-accent);
   /* Restores .omni-ai-context-preview's old margin-bottom: this modifier
      is only ever used as a "quoted context" block immediately followed by
-     another element (a reply/result, or an input field) — see
+     another element (a reply/result, or an input field). See
      docs/FOLLOWUPS.md #15. Scoped to the modifier, not the base .ds-card,
      since the settings/side-panel plain .ds-card usages are typically the
      last/only element in their container and don't need trailing space. */
