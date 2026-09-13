@@ -55,6 +55,10 @@
     "message": "Ask Omni AI anything...",
     "description": "Quick ask placeholder"
   },
+  "command_openQuickMenu": {
+    "message": "Show Quick Actions Menu",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
   "popup_context": {
     "message": "Context",
     "description": "Context section title"

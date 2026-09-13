@@ -335,3 +335,52 @@ test("Back button returns to the action menu after a keyboard-shortcut-triggered
     server.close();
   }
 });
+
+test("Alt+O opens the quick-action menu directly, without clicking the floating icon first", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="text">The quick brown fox jumps over the lazy dog for quick-menu shortcut testing.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "TRANSLATED");
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.locator("#text").evaluate((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+    });
+
+    // Simulate the background script's SHOW_QUICK_ACTION_MENU (what Alt+O
+    // ultimately sends) rather than a real OS-level keyboard shortcut, which
+    // Playwright cannot reliably trigger for a browser-action command.
+    await sw.evaluate(async (port) => {
+      const tabs = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      const message = { type: "SHOW_QUICK_ACTION_MENU" };
+      let lastError;
+      for (let i = 0; i < 20; i++) {
+        try {
+          await chrome.tabs.sendMessage(tabs[0].id, message, { frameId: 0 });
+          lastError = null;
+          break;
+        } catch (err) {
+          lastError = err;
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+      if (lastError) throw lastError;
+    }, port);
+
+    // The menu should open directly -- no floating icon ever appears.
+    await expect(page.locator('[data-action="rephrase"]')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

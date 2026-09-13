@@ -25,6 +25,27 @@ describe("manifest.json MV3 validity", () => {
     // there told the user which extension, not what pressing the shortcut does.
     expect(manifest.commands._execute_action.description).toBe("__MSG_command_openPanel__");
   });
+
+  test("quick_menu is declared first and defaults to Alt+O", () => {
+    // "First" so it's the extension's headline shortcut in Chrome's shortcuts
+    // UI (which follows manifest declaration order); Alt+O so it lands in the
+    // 4-suggested_key budget (see the exactly-4 test below) instead of being
+    // a 5th one, which previously hung Playwright's extension load (FOLLOWUPS #8).
+    const commandNames = Object.keys(manifest.commands);
+    expect(commandNames[0]).toBe("quick_menu");
+    expect(manifest.commands.quick_menu.suggested_key).toEqual({ default: "Alt+O", mac: "Alt+O" });
+  });
+
+  test("quick_ask no longer has a default suggested_key (gave up its slot to quick_menu)", () => {
+    expect(manifest.commands.quick_ask.suggested_key).toBeUndefined();
+  });
+
+  test("exactly 4 commands declare a suggested_key", () => {
+    // Chrome only auto-binds up to 4 suggested_key shortcuts per extension at
+    // install; a 5th previously hung Playwright's extension load (FOLLOWUPS #8).
+    const withSuggestedKey = Object.values(manifest.commands).filter((c) => c.suggested_key);
+    expect(withSuggestedKey).toHaveLength(4);
+  });
 });
 
 describe("command_openPanel i18n key", () => {
@@ -37,5 +58,18 @@ describe("command_openPanel i18n key", () => {
     expect(messages.command_openPanel).toBeDefined();
     expect(messages.command_openPanel.message).toEqual(expect.any(String));
     expect(messages.command_openPanel.message.length).toBeGreaterThan(0);
+  });
+});
+
+describe("command_openQuickMenu i18n key", () => {
+  const locales = ["en", "vi"];
+
+  test.each(locales)("_locales/%s/messages.json defines command_openQuickMenu", (locale) => {
+    const messages = JSON.parse(
+      fs.readFileSync(path.join(__dirname, `../_locales/${locale}/messages.json`), "utf8"),
+    );
+    expect(messages.command_openQuickMenu).toBeDefined();
+    expect(messages.command_openQuickMenu.message).toEqual(expect.any(String));
+    expect(messages.command_openQuickMenu.message.length).toBeGreaterThan(0);
   });
 });

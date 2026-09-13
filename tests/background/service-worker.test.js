@@ -220,6 +220,23 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it("routes the quick_menu shortcut to opening the quick action menu directly, not an AI action", async () => {
+    const AIService = await import("../../lib/ai-service");
+
+    await import("../../background/service-worker");
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_menu", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      { type: "SHOW_QUICK_ACTION_MENU" },
+      { frameId: 0 },
+    );
+    expect(AIService.improveText).not.toHaveBeenCalled();
+  });
+
   it("routes the quick_translate shortcut through smartTranslate, matching the on-page Smart Translation card", async () => {
     const AIService = await import("../../lib/ai-service");
     const History = await import("../../lib/history");

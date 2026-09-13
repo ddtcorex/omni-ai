@@ -19,6 +19,10 @@
     "message": "Hỏi Omni AI bất cứ điều gì...",
     "description": "Quick ask placeholder"
   },
+  "command_openQuickMenu": {
+    "message": "Hiện Menu Thao Tác Nhanh",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
   "popup_context": {
     "message": "Ngữ cảnh",
     "description": "Context section title"

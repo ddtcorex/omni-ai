@@ -558,6 +558,22 @@ function setupMessageListener() {
         break;
       }
 
+      case "SHOW_QUICK_ACTION_MENU": {
+        // Same menu the floating icon's click opens, triggered directly from
+        // the quick_menu shortcut. Requires a selection: showQuickActionMenu()
+        // unconditionally calls text.trim() to auto-trigger Smart Translate
+        // for non-input selections, which throws on an undefined/empty text.
+        const menuText = getSelectedText();
+        if (menuText) {
+          hideQuickActionButton();
+          const isInput = isTextInput(document.activeElement);
+          if (isInput) activeInputElement = document.activeElement;
+          showQuickActionMenu(menuText, getSelectionRect(), null, isInput);
+        }
+        sendResponse({ success: true });
+        break;
+      }
+
       case "THEME_CHANGED":
         // ensureUiTheme's internal chrome.storage.onChanged listener (set up once
         // the shadow host exists) already re-applies theme on change; this call is

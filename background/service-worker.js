@@ -134,6 +134,11 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
     return;
   }
 
+  if (command === "quick_menu") {
+    sendToActiveEditor(tab.id, { type: "SHOW_QUICK_ACTION_MENU" }).catch(() => {});
+    return;
+  }
+
   // Handle other commands via selected text
   try {
     // Notify content script to show processing state (spin icon)
