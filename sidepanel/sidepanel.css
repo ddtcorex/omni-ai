@@ -115,7 +115,10 @@ body {
 
 /* .result-area is now .ds-card from lib/design-system.css */
 #resultArea {
-  margin-top: var(--omni-spacing-xs);
+  /* .tab-view has no flex `gap`, so every sibling in #toolsView needs its
+     own explicit spacing -- match .action-buttons' own inter-button gap
+     (var(--omni-spacing-sm)) for a consistent rhythm down the column. */
+  margin-top: var(--omni-spacing-sm);
 }
 
 .result-label {
@@ -256,6 +259,10 @@ body {
   text-align: center;
 }
 
+.chat-empty.hidden {
+  display: none;
+}
+
 .chat-msg {
   max-width: 90%;
   padding: 8px 12px;
@@ -323,7 +330,8 @@ body {
 .chat-fab {
   position: absolute;
   right: 6px;
-  bottom: 6px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 32px;
   height: 32px;
   display: flex;

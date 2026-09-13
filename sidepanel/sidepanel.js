@@ -54,6 +54,11 @@ async function init() {
   setupEventListeners();
   setupTabs();
   setupChat();
+  setupPageContextTracking();
+  // Chat is the default active view (see sidepanel.html), so it needs its
+  // own initial capture -- otherwise nothing calls refreshPageContext()
+  // until the user manually switches tabs away and back.
+  if (isChatViewActive()) refreshPageContext();
 
   try {
     await i18n.init();
@@ -240,6 +245,28 @@ function setupTabs() {
 // ============================================
 // Chat
 // ============================================
+function isChatViewActive() {
+  return !!elements.chatView && !elements.chatView.classList.contains("hidden");
+}
+
+/**
+ * Keep the captured page context current as the user browses. The panel is
+ * a single global panel that stays open across tab switches (see the
+ * sidepanel/ note in AGENTS.md's File Map), so without this the context
+ * captured the last time refreshPageContext() ran (a tab-button click or
+ * the checkbox) goes stale the moment the user navigates elsewhere.
+ */
+function setupPageContextTracking() {
+  chrome.tabs.onActivated.addListener(() => {
+    if (isChatViewActive()) refreshPageContext();
+  });
+  chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.active && isChatViewActive()) {
+      refreshPageContext();
+    }
+  });
+}
+
 async function refreshPageContext() {
   if (!elements.includeContext?.checked) {
     currentPageContext = "";
