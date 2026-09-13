@@ -39,4 +39,26 @@ describe("i18n locale loading", () => {
       "chrome-extension://test/_locales/en/messages.json",
     ]);
   });
+
+  test("maps a regional variant onto the locale directory that ships", async () => {
+    // zh-TW is a translation language; its strings come from the zh directory.
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "zh-TW" });
+
+    await i18n.init();
+
+    expect(global.fetch.mock.calls.map((call) => call[0])).toEqual([
+      "chrome-extension://test/_locales/en/messages.json",
+      "chrome-extension://test/_locales/zh/messages.json",
+    ]);
+  });
+
+  test("does not fetch for en-US, which resolves to the already loaded en", async () => {
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "en-US" });
+
+    await i18n.init();
+
+    expect(global.fetch.mock.calls.map((call) => call[0])).toEqual([
+      "chrome-extension://test/_locales/en/messages.json",
+    ]);
+  });
 });

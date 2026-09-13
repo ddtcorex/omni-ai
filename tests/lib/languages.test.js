@@ -10,6 +10,7 @@ const {
   resolveLanguageLabel,
   filterLanguages,
   buildLanguageOptionGroups,
+  toLocaleDir,
 } = require("../../lib/languages.js");
 
 describe("language registry", () => {
@@ -185,5 +186,28 @@ describe("searching by the name the picker displays", () => {
     const groups = buildLanguageOptionGroups("   ", { getMessage });
     expect(groups).toHaveLength(2);
     expect(groups[0].label).toBe("Common");
+  });
+});
+
+describe("toLocaleDir", () => {
+  test("returns the directory for a language whose locale ships", () => {
+    expect(toLocaleDir("vi")).toBe("vi");
+    expect(toLocaleDir("zh")).toBe("zh");
+  });
+
+  test("maps a hyphenated code to Chrome's underscore directory name", () => {
+    // zh_TW does not ship yet; the iOS locale plan's wave 7 adds it.
+    expect(toLocaleDir("zh-TW")).toBe("zh");
+  });
+
+  test("resolves a regional variant to its base language when no directory ships", () => {
+    expect(toLocaleDir("en-AU")).toBe("en");
+    expect(toLocaleDir("pt-BR")).toBe("pt");
+  });
+
+  test("falls back to en for a translation language with no locale directory", () => {
+    expect(toLocaleDir("jv")).toBe("en");
+    expect(toLocaleDir("")).toBe("en");
+    expect(toLocaleDir(undefined)).toBe("en");
   });
 });

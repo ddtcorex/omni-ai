@@ -62,17 +62,19 @@ async function initializeI18n() {
     const enData = await enRes.json();
 
     let targetData = {};
-    // primaryLanguage is a translation language, and only UI_LOCALE_CODES ship
-    // under _locales/, so skip the request for the rest of them.
-    const { UI_LOCALE_CODES } = await import(chrome.runtime.getURL("lib/languages.js"));
-    if (userLang !== "en" && UI_LOCALE_CODES.includes(String(userLang))) {
+    // primaryLanguage is a translation language, and only some of those ship a
+    // _locales directory. toLocaleDir() maps the code to a directory (or en),
+    // so the rest do not trigger a failing request on every page load.
+    const { toLocaleDir } = await import(chrome.runtime.getURL("lib/languages.js"));
+    const localeDir = toLocaleDir(String(userLang));
+    if (localeDir !== "en") {
       try {
-        const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
+        const targetUrl = chrome.runtime.getURL(`_locales/${localeDir}/messages.json`);
         // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.
         const targetRes = await fetch(targetUrl);
         targetData = await targetRes.json();
       } catch {
-        console.warn("[Omni AI] Failed to load local messages:", userLang);
+        console.warn("[Omni AI] Failed to load local messages:", localeDir);
       }
     }
 

@@ -393,3 +393,18 @@ gh pr create --title "feat(i18n): UI locales wave <N>" --body-file /tmp/i18n-wav
 **Deliberate non-goals:** translating language *names* into each locale (they come from `lib/languages.js`), the Apple "Translate App" and "System-Wide Translation" lists (21 and 27 entries, narrower than the System Language list the maintainer chose), and Cantonese/Shanghainese/Flemish/Valencian as separate locales, since Apple files them under the Chinese, Dutch and Catalan entries and Chrome has no directory names for them.
 
 **Risk to state plainly:** 42 locales x 186 keys is roughly 7,800 AI-produced strings. Waves 1..7 are nine PRs of translator work. The structural tests prove the files are complete and well-formed; they cannot prove the Vietnamese or the Kannada reads naturally. That judgement stays with a human reviewer, wave by wave.
+
+## Execution Record
+
+**Wave 0** executed 2026-09-13 on `chore/i18n-wave-0`, off `master` at the merge of PR #158 (`176edb5`).
+
+Delivered as planned: `tests/locales.test.js` (parses, key parity both ways, non-empty bodies, placeholder parity both ways, directory parity with `UI_LOCALE_CODES`), `scripts/locale-status.mjs`, `lib/languages.js`'s `toLocaleDir()`, the content script and `lib/i18n.js` now resolving a locale directory through it, and the 14 missing keys backfilled into `de es fr it ja ko pt zh` (448 lines, 8 files).
+
+Findings and deviations:
+
+1. **The parity test found no pre-existing placeholder violations.** No English message carries a `$1` or tag placeholder today, so the placeholder test is a forward guard and is labelled as such in the file. No existing locale had an empty message, a stray extra key, or a mismatched placeholder.
+2. **No test asserts "differs from English", deliberately.** Every locale legitimately repeats 8 to 18 English values (brand names such as `Omni AI`, the `settings_customGateway*` strings, `Chat`). A hard assertion would need a large allowlist. `scripts/locale-status.mjs` reports the `identical-to-en` count for a human instead, and the test file says why.
+3. **22 keys in `_locales/en/messages.json` have no `description` field** (the `settings_tooltip_*_s*` step strings and the `lang_*` names), and 15 further keys have a description in `en` but not in the translations (`sidepanel_*`, some `settings_*`). A "documents every key" test was written and then removed rather than backfilling 22 descriptions or maintaining an allowlist, because the field is maintainer-facing tooling text with no user impact and it is not what this wave is for. The status script now reports `no-description` so the gap stays visible.
+4. **A generator bug cost two attempts and is worth remembering.** Appending JSON entries by string concatenation failed twice: the first attempt left a trailing comma on the last appended entry, and the second forgot that the file's *existing* last entry has no trailing comma at all. Both are the same class of mistake, and both were caught by parsing the file immediately after writing it rather than by the test suite. Always `JSON.parse` a file you just edited by text.
+
+Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 351 tests), `env -u NODE_ENV npx playwright test` 44 passed, `node scripts/locale-status.mjs` reports `0 of 9 locales are missing keys`.

@@ -649,5 +649,61 @@
   "sidebar_chat_error": {
     "message": "Qualcosa è andato storto. Riprova.",
     "description": "Chat error message"
+  },
+  "command_openPanel": {
+    "message": "Apri il pannello Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "command_openQuickMenu": {
+    "message": "Mostra il menu delle azioni rapide",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "settings_flashActions": {
+    "message": "Azioni rapide",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Mostra queste azioni passando il mouse sull'icona flottante, per eseguirle senza aprire il menu completo (massimo 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Traduci nella lingua principale",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Traduci nella lingua predefinita",
+    "description": "Flash action checkbox label"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Chiave API di Gemini non configurata",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Chiave API di OpenAI non configurata",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Chiave API di Groq non configurata",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Chiave API di Anthropic non configurata",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "URL di base di Custom Gateway non configurato",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Chiave API non configurata per",
+    "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
+  },
+  "sidebar_chat_clear": {
+    "message": "Cancella chat",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Vuoi davvero cancellare questa conversazione?",
+    "description": "Clear chat session confirmation"
   }
 }
