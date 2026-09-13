@@ -489,3 +489,18 @@ Turkish now attaches its dative to the name and Thai drops the space it should n
 New coverage: the parameterised-message list in `tests/locales.test.js` now includes `ui_to`, so its `placeholders` block and its `$LANGUAGE$` token are checked in all 22 files; a guard asserts the content script passes a substitution rather than interpolating beside the message; and `tests/lib/i18n.test.js` covers the local-bundle substitution path, including the case where no substitution is supplied.
 
 Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 463 tests), `env -u NODE_ENV npx playwright test` 44 passed, and the browser probe reports both placeholders resolving in every locale tested.
+
+**Wave 3** executed 2026-09-13 on `chore/i18n-wave-3`: `nl pl uk sv da no`, 6 x 182 keys, same six-parallel-agent process, with three rules now instead of two (keep the `$MODEL$` block, keep the `$LANGUAGE$` block, name the brand in each tooltip's first step). Every locale passed the parity gate, and both browser probes report 6 of 6.
+
+One design limitation surfaced by the Ukrainian agent and worth recording, because it is the honest limit of the `ui_to` fix: `$LANGUAGE$` is substituted with `resolveLanguageLabel()`, which returns a **nominative** label ("Англійська") or the language's own endonym. A locale whose marker needs a case ending attached to the name cannot express that, so `$LANGUAGE$ мовою` would render "Англійська мовою". Ukrainian used `Мова: $LANGUAGE$` instead, which is grammatical for every substituted value. The languages that put their marker in a separate word (Turkish `diline`, Tamil `மொழிக்கு`, Telugu `లోకి`, Hindi `में`) are unaffected. The `ui_to` description in all 28 catalogues now states the constraint rather than claiming the name "can be ordered by the translator".
+
+Resolved strings, read from a real extension per locale:
+
+| Locale | `error_apiKeyNotConfiguredFor` | `ui_to` |
+| --- | --- | --- |
+| `nl` | `API-sleutel niet geconfigureerd voor gemini-3.6-flash` | `Naar Engels` |
+| `pl` | `Klucz API nie jest skonfigurowany dla gemini-3.6-flash` | `Na angielski` |
+| `uk` | `Ключ API не налаштовано для gemini-3.6-flash` | `Мова: Англійська` |
+| `sv` | `API-nyckeln är inte konfigurerad för gemini-3.6-flash` | `Till Engelska` |
+| `da` | `API-nøglen er ikke konfigureret til gemini-3.6-flash` | `Til Engelsk` |
+| `no` | `API-nøkkelen er ikke konfigurert for gemini-3.6-flash` | `Til Engelsk` |

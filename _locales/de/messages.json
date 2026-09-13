@@ -174,7 +174,7 @@
         "content": "$1"
       }
     },
-    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with the target language name, so the name and any marker around it can be ordered by the translator"
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
   },
   "contextMenu_improve": {
     "message": "Mit Omni AI optimieren",
