@@ -5,6 +5,7 @@
 
 import { i18n } from "../lib/i18n.js";
 import { initTheme } from "../lib/theme-manager.js";
+import { buildPageContextString } from "../lib/sidebar-chat.js";
 
 const elements = {
   extVersion: /** @type {HTMLElement | null} */ (document.getElementById("extVersion")),
@@ -17,16 +18,59 @@ const elements = {
   resultSource: /** @type {HTMLElement | null} */ (document.getElementById("resultSource")),
   resultText: /** @type {HTMLElement | null} */ (document.getElementById("resultText")),
   loadingSpinner: /** @type {HTMLElement | null} */ (document.getElementById("loadingSpinner")),
+  tabChat: /** @type {HTMLElement | null} */ (document.getElementById("tabChat")),
+  tabTools: /** @type {HTMLElement | null} */ (document.getElementById("tabTools")),
+  chatView: /** @type {HTMLElement | null} */ (document.getElementById("chatView")),
+  toolsView: /** @type {HTMLElement | null} */ (document.getElementById("toolsView")),
+  chatMessages: /** @type {HTMLElement | null} */ (document.getElementById("chatMessages")),
+  chatEmpty: /** @type {HTMLElement | null} */ (document.getElementById("chatEmpty")),
+  chatInput: /** @type {HTMLTextAreaElement | null} */ (document.getElementById("chatInput")),
+  chatSend: /** @type {HTMLElement | null} */ (document.getElementById("chatSend")),
+  chatStop: /** @type {HTMLElement | null} */ (document.getElementById("chatStop")),
+  chatError: /** @type {HTMLElement | null} */ (document.getElementById("chatError")),
+  includeContext: /** @type {HTMLInputElement | null} */ (
+    document.getElementById("includeContext")
+  ),
+  clearChatBtn: /** @type {HTMLElement | null} */ (document.getElementById("clearChatBtn")),
+  pageContextPreview: /** @type {HTMLElement | null} */ (
+    document.getElementById("pageContextPreview")
+  ),
 };
+
+/** @type {{role:string, content:string}[]} */
+const chatHistory = [];
+let chatPort = null;
+let currentPageContext = "";
+let isStreaming = false;
+/** @type {HTMLElement | null} the in-flight assistant bubble, while it may
+ * still be showing the "thinking" indicator (no chunk has arrived yet) */
+let currentAssistantBubble = null;
 
 async function init() {
   if (elements.extVersion) {
     elements.extVersion.textContent = `v${chrome.runtime.getManifest().version}`;
   }
-  await i18n.init();
-  await initTheme();
-  localizeDOM();
+  // Wire up UI listeners SYNCHRONOUSLY — never gate interactivity (tab switching,
+  // chat send) behind the async i18n/theme init below. On slow CI runners the
+  // awaits can outlast Playwright's click, leaving tab listeners unattached and
+  // the panel unresponsive (flaky e2e). Listeners attach immediately; i18n/theme
+  // apply afterward and are isolated so a failure there can't break the UI.
   setupEventListeners();
+  setupTabs();
+  setupChat();
+  setupPageContextTracking();
+  // Chat is the default active view (see sidepanel.html), so it needs its
+  // own initial capture -- otherwise nothing calls refreshPageContext()
+  // until the user manually switches tabs away and back.
+  if (isChatViewActive()) refreshPageContext();
+
+  try {
+    await i18n.init();
+    await initTheme();
+    localizeDOM();
+  } catch (err) {
+    console.error("[Omni AI] sidepanel i18n/theme init failed:", err);
+  }
 }
 
 /**
@@ -37,9 +81,11 @@ async function init() {
 function localizeDOM() {
   document.title = i18n.getMessage("extName");
 
-  const elementsWithAttrs = document.querySelectorAll('[title*="__MSG_"], [alt*="__MSG_"]');
+  const elementsWithAttrs = document.querySelectorAll(
+    '[title*="__MSG_"], [alt*="__MSG_"], [placeholder*="__MSG_"]',
+  );
   elementsWithAttrs.forEach((el) => {
-    ["title", "alt"].forEach((attr) => {
+    ["title", "alt", "placeholder"].forEach((attr) => {
       const val = el.getAttribute(attr);
       if (val && val.includes("__MSG_")) {
         el.setAttribute(
@@ -178,6 +224,202 @@ async function runPageAction(action) {
   } finally {
     setButtonsDisabled(false);
   }
+}
+
+// ============================================
+// Tabs
+// ============================================
+function setupTabs() {
+  const tabs = [elements.tabChat, elements.tabTools];
+  tabs.forEach((tab) => {
+    tab?.addEventListener("click", () => {
+      const target = tab.dataset.view;
+      [elements.tabChat, elements.tabTools].forEach((t) => {
+        const active = t === tab;
+        t?.classList.toggle("active", active);
+        t?.setAttribute("aria-selected", String(active));
+      });
+      elements.chatView?.classList.toggle("hidden", target !== "chatView");
+      elements.toolsView?.classList.toggle("hidden", target !== "toolsView");
+      if (target === "chatView") refreshPageContext();
+    });
+  });
+}
+
+// ============================================
+// Chat
+// ============================================
+function isChatViewActive() {
+  return !!elements.chatView && !elements.chatView.classList.contains("hidden");
+}
+
+/**
+ * Keep the captured page context current as the user browses. The panel is
+ * a single global panel that stays open across tab switches (see the
+ * sidepanel/ note in AGENTS.md's File Map), so without this the context
+ * captured the last time refreshPageContext() ran (a tab-button click or
+ * the checkbox) goes stale the moment the user navigates elsewhere.
+ */
+function setupPageContextTracking() {
+  chrome.tabs.onActivated.addListener(() => {
+    if (isChatViewActive()) refreshPageContext();
+  });
+  chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.active && isChatViewActive()) {
+      refreshPageContext();
+    }
+  });
+}
+
+async function refreshPageContext() {
+  if (!elements.includeContext?.checked) {
+    currentPageContext = "";
+    if (elements.pageContextPreview) elements.pageContextPreview.textContent = "";
+    return;
+  }
+  const page = await getActivePageContent();
+  if ("error" in page) {
+    currentPageContext = "";
+    if (elements.pageContextPreview) {
+      elements.pageContextPreview.textContent = i18n.getMessage("sidepanel_cantReadPage");
+    }
+    return;
+  }
+  currentPageContext = buildPageContextString(page);
+  if (elements.pageContextPreview) {
+    elements.pageContextPreview.textContent =
+      currentPageContext || i18n.getMessage("sidepanel_cantReadPage");
+  }
+}
+
+function addChatMessage(role, text) {
+  if (elements.chatEmpty) elements.chatEmpty.classList.add("hidden");
+  const bubble = document.createElement("div");
+  bubble.className = `chat-msg ${role}`;
+  bubble.textContent = text;
+  elements.chatMessages?.appendChild(bubble);
+  elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
+  return bubble;
+}
+
+function setStreamingUI(on) {
+  isStreaming = on;
+  elements.chatSend?.classList.toggle("hidden", on);
+  elements.chatStop?.classList.toggle("hidden", !on);
+  elements.chatInput?.toggleAttribute("disabled", on);
+}
+
+function connectChatPort() {
+  if (chatPort) return chatPort;
+  chatPort = chrome.runtime.connect({ name: "omni-chat" });
+  return chatPort;
+}
+
+function sendChatMessage() {
+  if (isStreaming) return;
+  const message = elements.chatInput?.value.trim();
+  if (!message) return;
+
+  addChatMessage("user", message);
+  elements.chatInput.value = "";
+  elements.chatError?.classList.add("hidden");
+
+  const port = connectChatPort();
+  const assistantBubble = addChatMessage("assistant", "");
+  assistantBubble.classList.add("thinking");
+  assistantBubble.innerHTML =
+    '<span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span>';
+  currentAssistantBubble = assistantBubble;
+  let acc = "";
+
+  setStreamingUI(true);
+
+  port.onMessage.addListener(function handler(msg) {
+    if (!msg) return;
+    if (msg.type === "chunk") {
+      acc += msg.text;
+      assistantBubble.classList.remove("thinking");
+      assistantBubble.textContent = acc;
+      elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
+    } else if (msg.type === "done") {
+      // Defensive: a reply that completes with no separate "chunk" message
+      // would otherwise leave the thinking dots stuck forever.
+      assistantBubble.classList.remove("thinking");
+      if (!assistantBubble.textContent) assistantBubble.textContent = msg.text || "";
+      chatHistory.push({ role: "user", content: message });
+      chatHistory.push({ role: "assistant", content: msg.text });
+      port.onMessage.removeListener(handler);
+      currentAssistantBubble = null;
+      setStreamingUI(false);
+    } else if (msg.type === "error") {
+      // The error surfaces separately via #chatError -- remove the
+      // now-pointless empty/thinking bubble instead of leaving it dangling.
+      assistantBubble.remove();
+      currentAssistantBubble = null;
+      if (elements.chatError) {
+        elements.chatError.textContent = msg.error || i18n.getMessage("sidebar_chat_error");
+        elements.chatError.classList.remove("hidden");
+      }
+      port.onMessage.removeListener(handler);
+      setStreamingUI(false);
+    }
+  });
+
+  port.postMessage({
+    type: "chat",
+    message,
+    pageContext: currentPageContext,
+    history: chatHistory.slice(),
+  });
+}
+
+function stopChat() {
+  if (chatPort) {
+    chatPort.disconnect();
+    chatPort = null;
+  }
+  // Disconnecting the port aborts the stream silently (no "done"/"error"
+  // message comes back), so a bubble that never got its first chunk would
+  // otherwise be left animating the thinking dots forever. A bubble that
+  // already has real text (a chunk arrived before Stop was clicked) is left
+  // alone -- that partial reply is still worth keeping.
+  if (currentAssistantBubble?.classList.contains("thinking")) {
+    currentAssistantBubble.remove();
+  }
+  currentAssistantBubble = null;
+  setStreamingUI(false);
+}
+
+function clearChat() {
+  if (!confirm(i18n.getMessage("sidebar_chat_confirmClear"))) return;
+
+  if (chatPort) {
+    chatPort.disconnect();
+    chatPort = null;
+  }
+  currentAssistantBubble = null;
+  setStreamingUI(false);
+
+  chatHistory.length = 0;
+  elements.chatMessages?.querySelectorAll(".chat-msg").forEach((el) => el.remove());
+  elements.chatEmpty?.classList.remove("hidden");
+  if (elements.chatError) {
+    elements.chatError.textContent = "";
+    elements.chatError.classList.add("hidden");
+  }
+}
+
+function setupChat() {
+  elements.chatSend?.addEventListener("click", sendChatMessage);
+  elements.chatStop?.addEventListener("click", stopChat);
+  elements.clearChatBtn?.addEventListener("click", clearChat);
+  elements.chatInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendChatMessage();
+    }
+  });
+  elements.includeContext?.addEventListener("change", refreshPageContext);
 }
 
 document.addEventListener("DOMContentLoaded", init);

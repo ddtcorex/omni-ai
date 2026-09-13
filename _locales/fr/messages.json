@@ -601,5 +601,41 @@
   },
   "sidepanel_resultFrom": {
     "message": "De :"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Outils",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Posez une question sur cette page…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Envoyer",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Arrêter",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Contexte de la page",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Inclure le contexte de la page",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Démarrez une conversation sur la page actuelle.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Une erreur s'est produite. Veuillez réessayer.",
+    "description": "Chat error message"
   }
 }

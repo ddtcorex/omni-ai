@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Pre-push gate: mirrors the GitHub branch-protection CI.
+# A push is blocked unless BOTH the unit/typecheck/lint pipeline and the
+# Playwright E2E suite are green locally. Keep in sync with AGENTS.md
+# "Pre-Push Gate" and .github/workflows/ci.yml.
+set -e
+
+echo "🔍 Running pre-push gate: npm run verify ..."
+npm run verify
+
+echo "🎭 Running pre-push gate: npx playwright test ..."
+npx playwright test

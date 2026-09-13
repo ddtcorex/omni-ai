@@ -28,8 +28,8 @@
    via content.js ensureUiStyles()). No local --ai-* / --omni-* definitions here. */
 
 /* Defensive reset against host-page styles */
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn),
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn) * {
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn, .omni-ai-flash-btn),
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn, .omni-ai-flash-btn) * {
   box-sizing: border-box;
 }
 
@@ -392,6 +392,52 @@
   width: 12px;
   height: 12px;
   color: white;
+}
+
+/* Flash Actions: hover-reveal shortcuts beside the floating quick-action icon
+   (see triggerFlashAction() / showFlashActions() in content.js) */
+.omni-ai-flash-actions {
+  position: absolute;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: omniAiScaleIn 0.15s;
+}
+
+.omni-ai-flash-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--omni-border);
+  border-radius: 50%;
+  background: var(--omni-glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--omni-shadow-sm);
+  color: var(--omni-text-primary);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.omni-ai-flash-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.omni-ai-flash-btn:hover {
+  /* Matches .omni-ai-quick-btn's own hover scale exactly, so the hovered
+     flash button enlarges consistently with the floating icon instead of
+     looking like a mismatched size next to it. */
+  transform: scale(1.15);
+  background: var(--omni-accent-gradient);
+  color: #fff;
 }
 
 /* Loading - Processing Content */

@@ -47,11 +47,14 @@ describe("Custom Gateway Provider", () => {
     global.ReadableStream = global.ReadableStream || NodeReadableStream;
     global.TextEncoder = global.TextEncoder || NodeTextEncoder;
     global.TextDecoder = global.TextDecoder || NodeTextDecoder;
+    chrome.i18n.getMessage.mockImplementation((key) => key);
     generateContent = require("../../../lib/providers/custom-gateway").generateContent;
   });
 
-  it("throws when baseUrl is missing", async () => {
-    await expect(generateContent("hi", { apiKey: "k", model: "m" })).rejects.toThrow(/base url/i);
+  it("throws a localized error when baseUrl is missing", async () => {
+    await expect(generateContent("hi", { apiKey: "k", model: "m" })).rejects.toThrow(
+      "error_customGatewayBaseUrlNotConfigured",
+    );
   });
 
   it("parses standard SSE deltas and skips the [DONE] sentinel", async () => {
