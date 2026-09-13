@@ -168,8 +168,13 @@
     "description": "解释操作"
   },
   "ui_to": {
-    "message": "到",
-    "description": "语言前置词"
+    "message": "到 $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with the target language name, so the name and any marker around it can be ordered by the translator"
   },
   "contextMenu_improve": {
     "message": "使用 Omni AI 优化",

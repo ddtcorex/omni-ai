@@ -62,3 +62,23 @@ describe("i18n locale loading", () => {
     ]);
   });
 });
+
+describe("substitutions through the locally loaded locale bundle", () => {
+  test("fills a $NAME$ placeholder from the bundle instead of returning it raw", () => {
+    // lib/i18n.js reads _locales/<lang>/messages.json itself, so it bypasses
+    // Chrome's own substitution and has to apply the placeholders map.
+    i18n.data = {
+      ui_to: { message: "To $LANGUAGE$", placeholders: { language: { content: "$1" } } },
+    };
+
+    expect(i18n.getMessage("ui_to", ["English"])).toBe("To English");
+  });
+
+  test("leaves the message untouched when no substitution is supplied", () => {
+    i18n.data = {
+      ui_to: { message: "To $LANGUAGE$", placeholders: { language: { content: "$1" } } },
+    };
+
+    expect(i18n.getMessage("ui_to")).toBe("To $LANGUAGE$");
+  });
+});

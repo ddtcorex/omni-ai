@@ -464,3 +464,28 @@ The two new rules are what made this wave clean. Every one of the six put the mo
 Every one carries the model id with no literal `$MODEL$` left behind, and the four verb-final languages put it before the verb. The directory probe also passed 4 of 4 for all six, so Chrome accepts every directory name.
 
 Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 458 tests), `env -u NODE_ENV npx playwright test` 44 passed, `node scripts/locale-status.mjs` reports `0 of 21 locales are missing keys`, and both browser probes pass.
+
+**Overlay language chip fix** executed 2026-09-13 on `fix/i18n-ui-to-placeholder`, after wave 2 and before wave 3.
+
+Wave 2's six translators each rendered `ui_to` differently (`→` in Tamil, `Hedef:` in Turkish, `లోకి` in Telugu, `เป็นภาษา` in Thai, `में` in Hindi, `માં` in Gujarati for the same string), which is the signature of a string that cannot be translated correctly rather than six stylistic choices. The cause was the same concatenation pattern the earlier fix round removed: `content/content.js` rendered `${flag} ${getMessage("ui_to")} ${languageName}`, so the marker had to sit in front of the name no matter what the language needed.
+
+`ui_to` is now a `$LANGUAGE$` placeholder message and the call site passes the resolved language name as a substitution. This one needed one extra step the earlier fix did not: both i18n wrappers read `_locales/<lang>/messages.json` themselves and return `entry.message`, bypassing Chrome's own substitution, so a shared `applySubstitutions(message, placeholders, substitutions)` helper now fills the map in `lib/i18n.js`, and the content script's own wrapper imports and uses it. Without that the user would have seen a literal `$LANGUAGE$`.
+
+The runtime result, read from a real extension with `--lang=<code>` (the chip receives the locale's own name for English):
+
+| Locale | Chip |
+| --- | --- |
+| `en` | `To English` |
+| `tr` | `İngilizce diline` |
+| `ta` | `ஆங்கிலம் மொழிக்கு` |
+| `te` | `ఆంగ్లం లోకి` |
+| `hi` | `अंग्रेज़ी में` |
+| `ur` | `انگریزی میں` |
+| `ja` | `英語 へ` |
+| `th` | `เป็นภาษาอังกฤษ` |
+
+Turkish now attaches its dative to the name and Thai drops the space it should not have, both of which were impossible before.
+
+New coverage: the parameterised-message list in `tests/locales.test.js` now includes `ui_to`, so its `placeholders` block and its `$LANGUAGE$` token are checked in all 22 files; a guard asserts the content script passes a substitution rather than interpolating beside the message; and `tests/lib/i18n.test.js` covers the local-bundle substitution path, including the case where no substitution is supplied.
+
+Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 463 tests), `env -u NODE_ENV npx playwright test` 44 passed, and the browser probe reports both placeholders resolving in every locale tested.
