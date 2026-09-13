@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Pembantu AI Semua-dalam-Satu dikuasakan oleh Model AI - Penambahbaikan penulisan, tindakan pantas dan utiliti pintar",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Buka Panel Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Alat Halaman",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Ringkaskan",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Terjemah Pintar",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Jelaskan",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Sedang diproses…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Hasil",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Tidak dapat membaca halaman ini",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Tiada kandungan untuk diproses pada halaman ini",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Daripada:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Tanya Omni AI apa-apa sahaja...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Tunjukkan Menu Tindakan Pantas",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Konteks",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Tingkatkan Penulisan",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Tindakan Pantas",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "E-mel",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Sembang",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Sosial",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Teknikal",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Akademik",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Betulkan Tatabahasa",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Membetulkan ejaan dan tatabahasa",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Tingkatkan Kejelasan",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Ubah Nada",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Jadikan Ringkas",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Kembangkan",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Parafrasa",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Terjemah",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Ringkaskan",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Balas",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Tambah Emoji",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Sedia",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Memproses...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Ralat",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Tetapan",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Kunci API Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Dapatkan kunci API anda daripada Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "Model AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Pilih model AI yang hendak digunakan",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Konteks Lalai",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Bahasa Terjemahan",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Simpan Tetapan",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Tunjukkan butang terapung Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Matikan ini untuk menggunakan pintasan papan kekunci dan menu konteks sahaja.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Tindakan Kilat",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Tunjukkan tindakan ini apabila kursor diletakkan di atas ikon terapung, supaya anda boleh menjalankannya tanpa membuka menu penuh (sehingga 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Terjemah ke Bahasa Utama",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Terjemah ke Bahasa Lalai",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Hidup",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Mati",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Tetapan disimpan!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Salin",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Ganti",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Jelaskan",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Ke $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Tingkatkan dengan Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Jelaskan dengan Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Terjemah dengan Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Parafrasa dengan Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Tambah Emoji dengan Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Ringkaskan dengan Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Tanya Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Kunci API belum dikonfigurasikan. Sila tambah Kunci API anda dalam Tetapan.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Masukkan kunci API Gemini anda...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Ralat: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Kunci API Gemini belum dikonfigurasikan",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Kunci API OpenAI belum dikonfigurasikan",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Kunci API Groq belum dikonfigurasikan",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Kunci API Anthropic belum dikonfigurasikan",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "URL asas Custom Gateway belum dikonfigurasikan",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Kunci API belum dikonfigurasikan untuk $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Nada Lalai",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Nada lalai untuk penambahbaikan penulisan dan balasan",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Profesional",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Santai",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Mesra",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Langsung",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Yakin",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Tanya Pantas",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Hasil",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Sedang berfikir...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Kembali",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Disalin!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Tiada teks dipilih. Sila pilih teks terlebih dahulu.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Pembantu AI anda",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Tema",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Pilih penampilan pilihan anda",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Lalai Sistem",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Gelap",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Cerah",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Bahasa Utama",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Bahasa utama anda untuk tindakan pantas",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Sahkan Konfigurasi",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Pintasan Papan Kekunci",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Sejarah Penggunaan",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Jumlah Tindakan",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Perkataan Diproses",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Perkataan Dijana",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Perihal",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Laporkan Masalah",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Kosongkan Sejarah",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Kunci API Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Dapatkan kunci percuma di console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Kunci API OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Dapatkan kunci API di platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Dapatkan Kunci API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Dapatkan Kunci API Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Dapatkan Kunci API OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Kunci API Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Dapatkan kunci API di console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Dapatkan Kunci API Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Pergi ke Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Daftar atau Log Masuk"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Cipta Kunci API baharu"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Sesuaikan dalam Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Sesuaikan pintasan dalam tetapan Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Muat Semula",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Bahasa lalai untuk terjemahan",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Inggeris"
+  },
+  "lang_vi": {
+    "message": "Vietnam"
+  },
+  "lang_es": {
+    "message": "Sepanyol"
+  },
+  "lang_fr": {
+    "message": "Perancis"
+  },
+  "lang_de": {
+    "message": "Jerman"
+  },
+  "lang_it": {
+    "message": "Itali"
+  },
+  "lang_pt": {
+    "message": "Portugis"
+  },
+  "lang_ja": {
+    "message": "Jepun"
+  },
+  "lang_ko": {
+    "message": "Korea"
+  },
+  "lang_zh": {
+    "message": "Cina"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Cari bahasa",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Biasa",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Semua bahasa",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Adakah anda pasti mahu mengosongkan semua sejarah penggunaan?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Sila masukkan Kunci API/Endpoint terlebih dahulu.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Mengesahkan...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Konfigurasi sah! sedia untuk menjana.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Semakan sambungan gagal",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Menyemak...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Gagal menyimpan",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Pergi ke Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Klik Cipta Kunci API"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Salin kunci ke papan keratan"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Pergi ke Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Daftar atau Log Masuk"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Cipta Kunci API baharu"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Pergi ke OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Daftar atau Log Masuk"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Cipta Kunci API baharu"
+  },
+  "overlay_suggested_fix": {
+    "message": "Cadangan Pembetulan",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Terima",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Abaikan",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Tiada masalah ditemui",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Teks ini sudah bagus!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Terjemahan Pintar",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Ralat",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Terjemahan gagal",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Lama)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Lanjutan",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Nama Model Tersuai",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Masukkan ID model tersuai",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Sila masukkan Nama Model Tersuai",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "cth. id-model-anda",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Sambung ke mana-mana endpoint API yang serasi dengan OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "cth. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Masukkan kunci API anda...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Konfigurasi Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Menyokong API yang serasi dengan OpenAI (OpenRouter, LiteLLM, Together AI, dll.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Pilihan untuk sesetengah gateway (cth. peringkat percuma OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Sembang",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Alat",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Tanya tentang halaman ini…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Hantar",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Hentikan",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Konteks halaman",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Sertakan konteks halaman",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Mulakan perbualan tentang halaman semasa.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Sesuatu tidak kena. Sila cuba lagi.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Kosongkan sembang",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Adakah anda pasti mahu mengosongkan perbualan ini?",
+    "description": "Clear chat session confirmation"
+  }
+}

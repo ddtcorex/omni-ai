@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Всичко в едно: AI асистент, задвижван от AI модели, с подобряване на текста, бързи действия и умни инструменти",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Отвори панела на Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Инструменти за страницата",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Обобщи",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Умен превод",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Обясни",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Обработвам…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Резултат",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Страницата не може да бъде прочетена",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Няма съдържание за обработка на тази страница",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "От:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Питай Omni AI за всичко...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Покажи менюто с бързи действия",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Контекст",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Подобри текста",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Бързи действия",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "Имейл",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Чат",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Социални мрежи",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Технически",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Академичен",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Поправи граматиката",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Коригира правописа и граматиката",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Подобри яснотата",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Промени тона",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Направи по-сбито",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Разшири",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Преформулирай",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Преведи",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Обобщи",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Отговори",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Добави емоджи",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Готово",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Обработва се...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Грешка",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Настройки",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "API ключ за Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Вземи своя API ключ от Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI модел",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Избери AI модела, който да използваш",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Контекст по подразбиране",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Език за превод",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Запази настройките",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Показвай плаващия бутон на Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Изключи тази опция, за да използваш само клавишни комбинации и контекстни менюта.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Моментални действия",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Показвай тези действия при посочване на плаващата икона, за да ги изпълняваш, без да отваряш пълното меню (до 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Преведи на основния език",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Преведи на езика по подразбиране",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Вкл.",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Изкл.",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Настройките са запазени!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Копирай",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Замени",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Обясни",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "На $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Подобри с Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Обясни с Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Преведи с Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Преформулирай с Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Добави емоджи с Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Обобщи с Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Питай Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API ключът не е конфигуриран. Моля, добави своя API ключ в Настройки.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Въведи своя API ключ за Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Грешка: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "API ключът за Gemini не е конфигуриран",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "API ключът за OpenAI не е конфигуриран",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "API ключът за Groq не е конфигуриран",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "API ключът за Anthropic не е конфигуриран",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Базовият URL на Custom Gateway не е конфигуриран",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "API ключът не е конфигуриран за $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Тон по подразбиране",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Тон по подразбиране за подобряване на текст и отговори",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Професионален",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Непринуден",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Приятелски",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Директен",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Уверен",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Бърз въпрос",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Резултат",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Мисля...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Назад",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Копирано!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Няма избран текст. Моля, първо избери текст.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Твоят AI асистент",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Тема",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Избери предпочитан изглед",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Системна тема",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Тъмна",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Светла",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Основен език",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Основният ти език за бързи действия",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Провери конфигурацията",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Клавишни комбинации",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "История на използване",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Общо действия",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Обработени думи",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Генерирани думи",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Относно",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Докладвай проблем",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Изчисти историята",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "API ключ за Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Вземи безплатен ключ на console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "API ключ за OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Вземи API ключ на platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Вземи API ключ",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Вземи API ключ за Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Вземи API ключ за OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "API ключ за Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Вземи API ключ на console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Вземи API ключ за Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Отвори Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Регистрирай се или влез"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Създай нов API ключ"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Персонализирай в Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Персонализирай комбинациите в настройките на Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Опресни",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Език по подразбиране за преводи",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Английски"
+  },
+  "lang_vi": {
+    "message": "Виетнамски"
+  },
+  "lang_es": {
+    "message": "Испански"
+  },
+  "lang_fr": {
+    "message": "Френски"
+  },
+  "lang_de": {
+    "message": "Немски"
+  },
+  "lang_it": {
+    "message": "Италиански"
+  },
+  "lang_pt": {
+    "message": "Португалски"
+  },
+  "lang_ja": {
+    "message": "Японски"
+  },
+  "lang_ko": {
+    "message": "Корейски"
+  },
+  "lang_zh": {
+    "message": "Китайски"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Търси език",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Често използвани",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Всички езици",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Наистина ли искаш да изчистиш цялата история на използване?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Моля, първо въведи API ключ/Endpoint.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Валидиране...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Конфигурацията е валидна! Готова е за генериране.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Проверката на връзката се провали",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Проверява се...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Запазването не бе успешно",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Отвори Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Натисни бутона Create API Key"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Копирай ключа в клипборда"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Отвори Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Регистрирай се или влез"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Създай нов API ключ"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Отвори OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Регистрирай се или влез"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Създай нов API ключ"
+  },
+  "overlay_suggested_fix": {
+    "message": "Предложена поправка",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Приеми",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Отхвърли",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Няма открити проблеми",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Текстът изглежда чудесно!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Умен превод",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Грешка",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Преводът не бе успешен",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Остарял)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Разширени",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Име на потребителски модел",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Въведи ID на потребителския модел",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Моля, въведи име на потребителски модел",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "напр. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Свържи се с всеки OpenAI-съвместим API адрес",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "напр. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Въведи своя API ключ...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Конфигурация на Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Поддържа OpenAI-съвместими API (OpenRouter, LiteLLM, Together AI и др.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Незадължителен за някои шлюзове (напр. безплатния план на OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Чат",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Инструменти",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Питай за тази страница…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Изпрати",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Спри",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Контекст на страницата",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Включи контекста на страницата",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Започни разговор за текущата страница.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Нещо се обърка. Моля, опитай отново.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Изчисти чата",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Наистина ли искаш да изчистиш този разговор?",
+    "description": "Clear chat session confirmation"
+  }
+}
