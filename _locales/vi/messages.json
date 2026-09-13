@@ -256,7 +256,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Chưa cấu hình API key cho",
+    "message": "Chưa cấu hình API key cho $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'Chưa cấu hình API key cho gemini-3.6-flash'"
   },
   "settings_defaultTone": {
@@ -417,10 +422,7 @@
     "message": "Lấy Khóa API Anthropic"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Truy cập"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console"
+    "message": "Truy cập Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "Đăng ký hoặc Đăng nhập"
@@ -515,11 +517,7 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Truy cập"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Truy cập Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Nhấp vào Create API Key"
@@ -528,11 +526,7 @@
     "message": "Sao chép khóa vào bộ nhớ tạm"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Truy cập"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "Truy cập Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Đăng ký hoặc Đăng nhập"
@@ -541,11 +535,7 @@
     "message": "Tạo Khóa API mới"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Truy cập"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "Truy cập OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Đăng ký hoặc Đăng nhập"

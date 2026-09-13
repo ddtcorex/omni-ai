@@ -292,7 +292,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Ключ API не настроен для",
+    "message": "Ключ API не настроен для $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "settings_defaultTone": {
@@ -456,11 +461,7 @@
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Перейдите на"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console",
-    "description": "Link text for Anthropic Console"
+    "message": "Перейти в Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "Зарегистрируйтесь или войдите"
@@ -555,11 +556,7 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Перейдите на"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Перейти в Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Нажмите «Create API Key»"
@@ -568,11 +565,7 @@
     "message": "Скопируйте ключ в буфер обмена"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Перейдите на"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "Перейти в Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Зарегистрируйтесь или войдите"
@@ -581,11 +574,7 @@
     "message": "Создайте новый ключ API"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Перейдите на"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "Перейти в OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Зарегистрируйтесь или войдите"

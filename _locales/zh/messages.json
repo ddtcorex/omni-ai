@@ -369,10 +369,7 @@
     "message": "获取 Anthropic 密钥"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "前往"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console"
+    "message": "前往 Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "注册或登录账户"
@@ -467,11 +464,7 @@
     "description": "保存失败错误"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "前往"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "前往 Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "点击 'Create API Key'"
@@ -480,11 +473,7 @@
     "message": "将密钥复制到剪贴板"
   },
   "settings_tooltip_groq_s1": {
-    "message": "前往"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "前往 Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "注册或登录账户"
@@ -493,11 +482,7 @@
     "message": "创建新的 API 密钥"
   },
   "settings_tooltip_openai_s1": {
-    "message": "前往"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "前往 OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "注册或登录账户"
@@ -695,7 +680,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "未配置 API 密钥：",
+    "message": "未配置 $MODEL$ 的 API 密钥",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "sidebar_chat_clear": {

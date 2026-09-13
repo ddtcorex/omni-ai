@@ -292,7 +292,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "API key not configured for",
+    "message": "API key not configured for $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "settings_defaultTone": {
@@ -456,11 +461,7 @@
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Go to"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console",
-    "description": "Link text for Anthropic Console"
+    "message": "Go to Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "Sign up or Log in"
@@ -555,11 +556,7 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Go to"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Go to Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Click Create API Key"
@@ -568,11 +565,7 @@
     "message": "Copy key to clipboard"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Go to"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "Go to Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Sign up or Log in"
@@ -581,11 +574,7 @@
     "message": "Create new API Key"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Go to"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "Go to OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Sign up or Log in"

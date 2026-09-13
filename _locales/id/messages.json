@@ -292,7 +292,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Kunci API belum dikonfigurasi untuk",
+    "message": "Kunci API belum dikonfigurasi untuk $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "settings_defaultTone": {
@@ -456,11 +461,7 @@
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Buka"
-  },
-  "settings_anthropicConsole": {
-    "message": "Konsol Anthropic",
-    "description": "Link text for Anthropic Console"
+    "message": "Buka Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "Daftar atau Masuk"
@@ -555,11 +556,7 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Buka"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Buka Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Klik Buat Kunci API"
@@ -568,11 +565,7 @@
     "message": "Salin kunci ke papan klip"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Buka"
-  },
-  "settings_groqConsole": {
-    "message": "Konsol Groq",
-    "description": "Link text for Groq Console"
+    "message": "Buka Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Daftar atau Masuk"
@@ -581,11 +574,7 @@
     "message": "Buat Kunci API baru"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Buka"
-  },
-  "settings_openaiPlatform": {
-    "message": "Platform OpenAI",
-    "description": "Link text for OpenAI Platform"
+    "message": "Buka OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Daftar atau Masuk"

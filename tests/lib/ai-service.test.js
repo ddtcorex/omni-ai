@@ -25,7 +25,11 @@ describe("AI Service", () => {
 
     Providers.getProvider.mockReturnValue(mockProvider);
     Providers.getProviderModule.mockReturnValue(mockProvider);
-    chrome.i18n.getMessage.mockImplementation((key) => key);
+    // Stand-in for Chrome's substitution: the real API replaces $NAME$ inside
+    // the message, the mock appends the values so an assertion can see them.
+    chrome.i18n.getMessage.mockImplementation((key, substitutions) =>
+      substitutions && substitutions.length ? `${key} ${substitutions.join(" ")}` : key,
+    );
 
     // Mock chrome storage implementation to support Promises
     chrome.storage.local.get.mockImplementation((keys) => {
@@ -143,6 +147,17 @@ describe("AI Service", () => {
     await expect(generateContent("Test")).rejects.toThrow(
       "error_apiKeyNotConfiguredFor gemini-3.6-flash",
     );
+  });
+
+  it("passes the model id as an i18n substitution instead of concatenating it", async () => {
+    // The message carries a $MODEL$ placeholder so a translator can put the
+    // model where that language needs it; gluing it on with a template string
+    // would hard-code English word order.
+    await expect(generateContent("Test")).rejects.toThrow();
+
+    expect(chrome.i18n.getMessage).toHaveBeenCalledWith("error_apiKeyNotConfiguredFor", [
+      "gemini-3.6-flash",
+    ]);
   });
 
   it("smartTranslate generates correct prompt", async () => {
