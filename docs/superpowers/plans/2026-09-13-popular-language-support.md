@@ -8,7 +8,7 @@
 
 **Tech Stack:** Zero-build vanilla ES modules, Manifest V3, Jest 30 + jsdom with `tests/helpers/chrome-mock.js`, Playwright E2E.
 
-**Spec:** This plan carries its own design record. The companion plan for UI locales is `docs/superpowers/plans/2026-09-13-ios-locale-localization.md`.
+**Spec:** This plan carries its own design record. The companion plan for UI locales (seven waves, 52 locales) was executed and its plan file pruned under the repo's "plans are transient" convention; `docs/FOLLOWUPS.md` rows 17, 19 and 20 are its record.
 
 ## Global Constraints
 
@@ -1029,7 +1029,7 @@ Add under the newest released version heading, matching the file's existing styl
 Add a row to the table (match the existing column count):
 
 ```markdown
-| 10  | UI locale coverage: the extension's own UI ships 10 locales while the iOS System Language list has 55 entries. Waves 1..8 (37 new locales) are planned in `docs/superpowers/plans/2026-09-13-ios-locale-localization.md`; none are started. | `_locales/`, `lib/languages.js` (`UI_LOCALE_CODES`) | After this plan merges |
+| 10  | UI locale coverage: the extension's own UI ships 10 locales while the iOS System Language list has 55 entries. Waves 1..7 (42 new locales) were planned in the iOS locale plan and have all shipped; that plan file has since been pruned, so `docs/FOLLOWUPS.md` rows 17, 19 and 20 are the record. | `_locales/`, `lib/languages.js` (`UI_LOCALE_CODES`) | After this plan merges |
 ```
 
 Use the next free row number in the file rather than the literal `10`.

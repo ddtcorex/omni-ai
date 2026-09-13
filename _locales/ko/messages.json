@@ -558,15 +558,15 @@
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
-    "message": "e.g. https://openrouter.ai/api/v1",
+    "message": "예: https://openrouter.ai/api/v1",
     "description": "Placeholder for Custom Gateway base URL"
   },
   "settings_customGatewayKeyPlaceholder": {
-    "message": "Enter your API key...",
+    "message": "API 키 입력...",
     "description": "Placeholder for Custom Gateway API key"
   },
   "settings_tooltip_customGateway": {
-    "message": "Custom Gateway Configuration",
+    "message": "Custom Gateway 설정",
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {

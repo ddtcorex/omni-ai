@@ -652,7 +652,7 @@
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
-    "message": "e.g. https://openrouter.ai/api/v1",
+    "message": "例如：https://openrouter.ai/api/v1",
     "description": "Placeholder for Custom Gateway base URL"
   },
   "settings_customGatewayKeyPlaceholder": {
