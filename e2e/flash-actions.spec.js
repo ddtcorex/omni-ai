@@ -491,3 +491,59 @@ test("a hovered flash button scales up by the same factor as the floating icon",
     server.close();
   }
 });
+
+test("a translate_primary flash action re-calls the AI after a language-setting change, instead of reusing a stale cached translation", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["translate_primary"]);
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "vi", defaultLanguage: "en" });
+    });
+
+    let callCount = 0;
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      callCount += 1;
+      const replyText = callCount === 1 ? "FIRST-TRANSLATION" : "SECOND-TRANSLATION-AFTER-CHANGE";
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: replyText }] } }] }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    let quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+    let flashBtn = page.locator('[data-flash-action="translate_primary"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.click();
+
+    const resultText = page.locator(".omni-ai-result-text");
+    await expect(resultText).toContainText("FIRST-TRANSLATION", { timeout: 5000 });
+
+    // Close the result, change the language settings, then re-select the
+    // exact same text and run the same flash action again.
+    await page.locator("#omniAiClose").click();
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "en", defaultLanguage: "vi" });
+    });
+
+    await dragSelectTarget(page);
+    quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+    flashBtn = page.locator('[data-flash-action="translate_primary"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.click();
+
+    await expect(resultText).toContainText("SECOND-TRANSLATION-AFTER-CHANGE", { timeout: 5000 });
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

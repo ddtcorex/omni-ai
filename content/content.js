@@ -1234,7 +1234,11 @@ async function showQuickActionMenu(
   } else {
     // Non-Input: Trigger Translation (Smart)
     const smartAction = "smart_translate";
-    const cacheKey = `${smartAction}|${text.trim()}|chat`;
+    // Includes primaryLanguage/defaultLanguage: smartTranslate()'s result
+    // depends on both (it toggles direction between them), so a stale cache
+    // entry from before a language-setting change would otherwise keep
+    // returning the old (now-wrong) translation for the same text.
+    const cacheKey = `${smartAction}|${text.trim()}|chat|${primaryLanguage}|${defaultLanguage}`;
 
     if (resultCache.has(cacheKey)) {
       setTimeout(() => {
@@ -1326,8 +1330,19 @@ async function handleAction(action, text, isInput) {
     }
   }
 
+  // translate_primary/translate_default/smart_translate results depend on
+  // the user's Primary/Translation Language settings too, not just the text
+  // -- fold those into the cache key so a language change doesn't keep
+  // returning a stale translation cached under the old settings.
+  let langCacheSuffix = "";
+  if (["translate_primary", "translate_default", "smart_translate"].includes(action)) {
+    const { getSyncPreferences } = await import(chrome.runtime.getURL("lib/storage.js"));
+    const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
+    langCacheSuffix = `|${primaryLanguage}|${defaultLanguage}`;
+  }
+
   // Skip cache for rephrase to always get fresh results
-  const cacheKey = `${action}|${text.trim()}|${preset}`;
+  const cacheKey = `${action}|${text.trim()}|${preset}${langCacheSuffix}`;
   if (action !== "rephrase" && resultCache.has(cacheKey)) {
     showResultOverlay(
       {
