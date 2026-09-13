@@ -649,5 +649,61 @@
   "sidebar_chat_error": {
     "message": "問題が発生しました。もう一度お試しください。",
     "description": "Chat error message"
+  },
+  "command_openPanel": {
+    "message": "Omni AI パネルを開く",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "command_openQuickMenu": {
+    "message": "クイック操作メニューを表示",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "settings_flashActions": {
+    "message": "クイック操作",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "フローティングアイコンにカーソルを合わせるとこれらの操作を表示し、完全なメニューを開かずに実行できます（最大 4 件）。",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "メイン言語に翻訳",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "既定の言語に翻訳",
+    "description": "Flash action checkbox label"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini の API キーが設定されていません",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI の API キーが設定されていません",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq の API キーが設定されていません",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic の API キーが設定されていません",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway のベース URL が設定されていません",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "API キーが設定されていません:",
+    "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
+  },
+  "sidebar_chat_clear": {
+    "message": "チャットを消去",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "この会話を消去してもよろしいですか？",
+    "description": "Clear chat session confirmation"
   }
 }
