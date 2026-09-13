@@ -474,6 +474,18 @@
   "lang_zh": {
     "message": "Tiếng Trung"
   },
+  "settings_languageSearchPlaceholder": {
+    "message": "Tìm ngôn ngữ",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Phổ biến",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Tất cả ngôn ngữ",
+    "description": "Second optgroup label listing every supported language"
+  },
   "settings_confirmClearHistory": {
     "message": "Bạn có chắc chắn muốn xóa tất cả lịch sử sử dụng không?",
     "description": "Clear history confirmation"

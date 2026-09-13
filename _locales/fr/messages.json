@@ -426,6 +426,18 @@
   "lang_zh": {
     "message": "Chinois"
   },
+  "settings_languageSearchPlaceholder": {
+    "message": "Rechercher une langue",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Courantes",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Toutes les langues",
+    "description": "Second optgroup label listing every supported language"
+  },
   "settings_confirmClearHistory": {
     "message": "Voulez-vous vraiment effacer tout votre historique ?",
     "description": "Confirmation effacement historique"

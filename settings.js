@@ -19,6 +19,7 @@ import {
   setLocalAiConfig,
   getSettingsBag,
 } from "./lib/storage.js";
+import { buildLanguageOptionGroups, UI_LOCALE_CODES } from "./lib/languages.js";
 
 /**
  * Omni AI - Options Page Script
@@ -61,6 +62,12 @@ const elements = {
   ),
   primaryLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("primaryLanguage")),
   defaultLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("defaultLanguage")),
+  primaryLanguageSearch: /** @type {HTMLInputElement} */ (
+    document.getElementById("primaryLanguageSearch")
+  ),
+  defaultLanguageSearch: /** @type {HTMLInputElement} */ (
+    document.getElementById("defaultLanguageSearch")
+  ),
   shortcutsLink: document.getElementById("shortcutsLink"),
   saveBtn: document.getElementById("saveBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -78,7 +85,7 @@ const elements = {
 // State
 let isGeminiKeyVisible = false;
 
-const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko", "zh"];
+const SUPPORTED_LOCALES = UI_LOCALE_CODES;
 
 // Flash Actions: shown on hovering the floating quick-action icon, so common
 // actions can run without opening the full quick-action menu.
@@ -121,6 +128,8 @@ export async function init() {
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
+  wireLanguagePicker(elements.primaryLanguageSearch, elements.primaryLanguage);
+  wireLanguagePicker(elements.defaultLanguageSearch, elements.defaultLanguage);
   await loadSettings();
   await loadStats();
   setupEventListeners();
@@ -160,6 +169,63 @@ export function populateModelSelect(currentApiModel) {
       group.insertBefore(option, group.firstChild);
     }
   }
+}
+
+/**
+ * Render a language <select> from the shared registry.
+ *
+ * `pinnedCode` is the value that must stay selected: the registry appends it as
+ * an option whenever it is unknown or filtered out, so a saved preference never
+ * blanks the select.
+ * @param {HTMLSelectElement|null} select
+ * @param {string} [query]
+ * @param {string} [pinnedCode]
+ */
+export function populateLanguageSelect(select, query = "", pinnedCode = select?.value || "") {
+  if (!select) return;
+
+  select.textContent = "";
+  const groups = buildLanguageOptionGroups(query, {
+    pinnedCode,
+    getMessage: (key) => i18n.getMessage(key),
+  });
+
+  groups.forEach((group) => {
+    let container = select;
+    if (group.label) {
+      container = document.createElement("optgroup");
+      container.label = group.label;
+      select.appendChild(container);
+    }
+    group.options.forEach((option) => {
+      const el = document.createElement("option");
+      el.value = option.code;
+      el.textContent = option.label;
+      container.appendChild(el);
+    });
+  });
+
+  if (pinnedCode) select.value = pinnedCode;
+}
+
+/**
+ * Keep a language <select> in sync with its search box, preserving whatever is
+ * currently selected even while the query filters that option out.
+ * @param {HTMLInputElement|null} input
+ * @param {HTMLSelectElement|null} select
+ * @returns {(() => void)|undefined}
+ */
+export function wireLanguagePicker(input, select) {
+  if (!select) return undefined;
+
+  const render = () => {
+    populateLanguageSelect(select, input ? input.value : "", select.value);
+  };
+
+  if (input) input.addEventListener("input", render);
+  render();
+
+  return render;
 }
 
 /**
@@ -538,9 +604,19 @@ export async function loadSettings() {
       SUPPORTED_LOCALES,
       "en",
     );
-    if (elements.primaryLanguage)
-      elements.primaryLanguage.value = prefs.primaryLanguage || detectedLocale;
-    if (elements.defaultLanguage) elements.defaultLanguage.value = prefs.defaultLanguage || "en";
+    // Render the language pickers from the shared registry right before the
+    // saved value is applied, the same order populateModelSelect() uses, so a
+    // saved code the registry does not know still gets an option to land on.
+    const desiredPrimaryLanguage = prefs.primaryLanguage || detectedLocale;
+    const desiredDefaultLanguage = prefs.defaultLanguage || "en";
+    if (elements.primaryLanguage) {
+      populateLanguageSelect(elements.primaryLanguage, "", desiredPrimaryLanguage);
+      elements.primaryLanguage.value = desiredPrimaryLanguage;
+    }
+    if (elements.defaultLanguage) {
+      populateLanguageSelect(elements.defaultLanguage, "", desiredDefaultLanguage);
+      elements.defaultLanguage.value = desiredDefaultLanguage;
+    }
 
     // 2. Load Local AI Config
     /** @type {Record<string, any>} */

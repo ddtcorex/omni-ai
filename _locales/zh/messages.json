@@ -426,6 +426,18 @@
   "lang_zh": {
     "message": "中文"
   },
+  "settings_languageSearchPlaceholder": {
+    "message": "搜索语言",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "常用",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "所有语言",
+    "description": "Second optgroup label listing every supported language"
+  },
   "settings_confirmClearHistory": {
     "message": "您确定要清除所有使用历史吗？",
     "description": "清除历史确认"
