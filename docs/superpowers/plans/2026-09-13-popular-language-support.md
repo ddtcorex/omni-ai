@@ -1103,10 +1103,25 @@ Executed 2026-09-13 on `feature/language-support`. Deviations from the plan as w
 
 1. **i18n key for a regional code is lowercased.** The plan's test expected `lang_zh_TW`; the repo's keys are all lowercase (`lang_zh`), and `resolveLanguageLabel` lowercases the whole code before replacing `-` with `_`, so the key is `lang_zh_tw`. The test was corrected to match the repo convention rather than the reverse.
 2. **`populateLanguageSelect` had a real bug in the plan's snippet.** It created an `optgroup` but never appended it to the `select`, so the picker rendered empty. The TDD cycle caught it: the "renders every registry language, grouped into common and all" test failed with 0 groups. The implementation now appends the group before filling it.
-3. **The pickers are populated inside `loadSettings`, not only in `init()`.** Two pre-existing tests call `loadSettings()` directly, which exposed that the repo's own `populateModelSelect` runs inside `loadSettings` right before the saved value is applied. The pickers follow that same order, so a saved code always has an option to land on.
+3. **The pickers are populated inside `loadSettings`, in addition to the render `wireLanguagePicker` performs at wire time in `init()`.** Two pre-existing tests call `loadSettings()` directly, which exposed that the repo's own `populateModelSelect` runs inside `loadSettings` right before the saved value is applied. The pickers follow that same order, so a saved code always has an option to land on.
 4. **Filtering keeps the current value selectable.** The plan asserted the filtered option list was exactly the matches; it is the matches plus the currently selected code, because dropping it would blank `select.value` and Save would then persist an empty language. The test now states that contract explicitly.
 5. **`CHANGELOG.md` gained an `## [Unreleased]` section** instead of an entry under the released `[2.4.0]` heading, which would have claimed the feature shipped in 2.4.0.
 6. **`docs/FOLLOWUPS.md` grew a row 17, and row 12 was marked resolved.** Row 12 recorded the `SUPPORTED_LOCALES` duplication between `settings.js` and `tests/settings.test.js`; this branch removes that duplication, so leaving the row open would have been stale information.
 7. **Test counts differ from the plan's estimate:** `tests/lib/languages.test.js` has 23 tests (the plan estimated 20), and the whole unit suite went from 235 tests / 29 suites to 272 tests / 32 suites.
 
 Gate results: `env -u NODE_ENV npx jest` 272 passed, `env -u NODE_ENV npx playwright test` 44 passed, `env -u NODE_ENV npm run verify` green.
+
+### Review Round
+
+A reviewer subagent audited `d5965d2..14c2b4f` against this plan and reproduced the whole gate independently. It found no Critical issue and two Important ones, both fixed on the branch:
+
+1. **The search box could not find a language by the name it displayed.** `filterLanguages` matched code, English name and native name only, while the picker renders the locale's translated label. For the Vietnamese locale, typing `Tiếng Trung` (what the picker shows for `zh`) returned an empty list; the same held for eight other locales. It also returned both Chinese entries for a bare `chinese` query. Fixed by matching the resolved label as a fourth source and by documenting why. Four tests cover it.
+2. **The guards were narrower than their names.** The ai-service guard could be bypassed by renaming the table's variable, and nothing guarded `settings.html`'s two selects. Fixed: the guard now rejects any object literal carrying five or more of the shipped codes, asserts both selects are empty in the HTML source, and asserts `settings.html` carries no `__MSG_lang_` options. The manifest guard now scans every bundled path literal (not one import form), honours a `*` anywhere in a manifest pattern, and unions every `web_accessible_resources` block.
+
+Also fixed from the Minor list: a whitespace-only query collapsed the grouped picker, the two locale gates coerced their input differently, the English fallback strings are now documented as fallbacks, and four documentation claims were corrected (the `detectSupportedLocale` unit test does keep its own local fixture; `toLocaleDir` does not exist until the companion plan's Wave 0; the AGENTS.md command now carries the `env -u NODE_ENV` prefix).
+
+One test-fixture defect surfaced while fixing the review: `tests/settings.test.js` built the API-key fields as `<div>`s, so `saveSettings()` threw on `.value.trim()` after writing the language. Every Save-clicking test had been passing on a partially-executed save. The fixture now creates real `<input>` elements, and a new test asserts that Save while the search box is filtering persists the still-selected language rather than a blanked one.
+
+Three Minor items were deliberately deferred and recorded as `docs/FOLLOWUPS.md` row 18: no visual cue on the pinned current option, a double render of the pickers, and the language label interpolated into `overlay.innerHTML`.
+
+Post-review gate: `env -u NODE_ENV npm run verify` exit 0 (32 suites, 284 tests, clean console output), `env -u NODE_ENV npx playwright test` 44 passed.

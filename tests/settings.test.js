@@ -63,6 +63,21 @@ function buildFixture() {
     if (["themeSelector", "defaultPreset", "showFloatingButton"].includes(id)) {
       return `<select id="${id}"><option value="">-</option></select>`;
     }
+    if (
+      [
+        "geminiApiKey",
+        "groqApiKey",
+        "openaiApiKey",
+        "anthropicApiKey",
+        "customGatewayApiKey",
+        "customGatewayBaseUrl",
+        "customModelName",
+      ].includes(id)
+    ) {
+      // Real inputs, not divs: saveSettings() calls .trim() on these, so a div
+      // fixture made every Save click throw after the language had been written.
+      return `<input id="${id}" />`;
+    }
     if (id === "flashActionsList") {
       const boxes = FLASH_ACTION_IDS.map(
         (action) => `<label><input type="checkbox" data-flash-action="${action}" /></label>`,
@@ -417,5 +432,56 @@ describe("language pickers", () => {
     input.dispatchEvent(new Event("input"));
 
     expect(select.value).toBe("ja");
+  });
+});
+
+describe("language picker save path", () => {
+  let Settings;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    buildFixture();
+    global.fetch = jest.fn().mockResolvedValue({ json: async () => ({}) });
+    chrome.i18n.getMessage.mockImplementation((key) => key);
+    chrome.i18n.getUILanguage = jest.fn().mockReturnValue("en-US");
+    chrome.storage.sync.get.mockResolvedValue({});
+    chrome.storage.local.get.mockResolvedValue({});
+    Settings = await import("../settings.js");
+  });
+
+  it("keeps an unknown saved code selectable while a query is active", async () => {
+    const select = document.getElementById("primaryLanguage");
+    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "xx-legacy" });
+    await Settings.loadSettings();
+    expect(select.value).toBe("xx-legacy");
+
+    const input = document.getElementById("primaryLanguageSearch");
+    input.value = "viet";
+    input.dispatchEvent(new Event("input"));
+
+    expect(select.value).toBe("xx-legacy");
+    expect(Array.from(select.options).map((option) => option.value)).toEqual(["vi", "xx-legacy"]);
+  });
+
+  it("does not persist a blanked language when Save runs while the search box is filtering", async () => {
+    const select = document.getElementById("primaryLanguage");
+    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "ja", defaultLanguage: "en" });
+    await Settings.loadSettings();
+    // A real theme value, so the save path exercises theme persistence instead
+    // of throwing on the fixture's empty select.
+    document.getElementById("themeSelector").value = "dark";
+    Settings.setupEventListeners();
+
+    const input = document.getElementById("primaryLanguageSearch");
+    input.value = "viet";
+    input.dispatchEvent(new Event("input"));
+
+    document.getElementById("saveBtn").click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const [saved] = chrome.storage.sync.set.mock.calls.at(-1);
+    expect(saved.primaryLanguage).toBe("ja");
   });
 });

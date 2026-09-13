@@ -161,3 +161,29 @@ describe("buildLanguageOptionGroups", () => {
     expect(all.filter((o) => o.code === "vi")).toHaveLength(1);
   });
 });
+
+describe("searching by the name the picker displays", () => {
+  // The Vietnamese locale translates the 10 shipped languages, so the label a
+  // user reads is neither the English name nor the native one.
+  const getMessage = (key) => ({ lang_zh: "Tiếng Trung", lang_ja: "Tiếng Nhật" })[key] || "";
+
+  test("matches a translated label instead of returning nothing", () => {
+    expect(filterLanguages("tiếng trung", getMessage).map((l) => l.code)).toEqual(["zh"]);
+  });
+
+  test("still matches the English and native names", () => {
+    expect(filterLanguages("chinese (trad", getMessage).map((l) => l.code)).toEqual(["zh-TW"]);
+    expect(filterLanguages("简体", getMessage).map((l) => l.code)).toEqual(["zh"]);
+  });
+
+  test("the option groups use the same matching, so the picker agrees with its search box", () => {
+    const groups = buildLanguageOptionGroups("tiếng trung", { getMessage });
+    expect(groups[0].options.map((o) => o.code)).toEqual(["zh"]);
+  });
+
+  test("treats a whitespace-only query as an empty one", () => {
+    const groups = buildLanguageOptionGroups("   ", { getMessage });
+    expect(groups).toHaveLength(2);
+    expect(groups[0].label).toBe("Common");
+  });
+});

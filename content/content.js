@@ -65,7 +65,7 @@ async function initializeI18n() {
     // primaryLanguage is a translation language, and only UI_LOCALE_CODES ship
     // under _locales/, so skip the request for the rest of them.
     const { UI_LOCALE_CODES } = await import(chrome.runtime.getURL("lib/languages.js"));
-    if (userLang !== "en" && UI_LOCALE_CODES.includes(userLang)) {
+    if (userLang !== "en" && UI_LOCALE_CODES.includes(String(userLang))) {
       try {
         const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
         // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.

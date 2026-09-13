@@ -158,7 +158,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 ### Adding a Translation Language
 
 1. Add one `{ code, name, native }` entry to `lib/languages.js`, keeping the array sorted by `name`.
-2. Run `npx jest tests/lib/languages.test.js`; the count assertion and the sort assertion both fail until the entry is right.
+2. Run `env -u NODE_ENV npx jest tests/lib/languages.test.js`; the count assertion and the sort assertion both fail until the entry is right.
 3. Nothing else needs touching: the Settings pickers, the prompt names and the overlay labels all read that one list. The language's display name is reference data and deliberately does not get an `_locales` key — see core directive 7.
 
 ### Editing Content-Script UI
