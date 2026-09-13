@@ -45,6 +45,43 @@ async function dragSelectTarget(page) {
   await page.mouse.up();
 }
 
+test("the default flash actions render Translate first, then Rephrase and Grammar", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    // Seed only the API bits and leave settings.flashActions untouched, so
+    // this exercises onInstalled's initializeSettings() default order.
+    await sw.evaluate(async () => {
+      for (let i = 0; i < 50; i++) {
+        const { currentPreset } = await chrome.storage.local.get("currentPreset");
+        if (currentPreset) break;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      await chrome.storage.local.set({
+        apiModel: "gemini-3.6-flash",
+        geminiApiKey: "fake-key-for-e2e",
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+    await page.waitForTimeout(650);
+
+    const order = await page
+      .locator(".omni-ai-flash-btn")
+      .evaluateAll((els) => els.map((el) => el.dataset.flashAction));
+    expect(order).toEqual(["translate_primary", "rephrase", "grammar"]);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("hovering the floating icon for the configured delay reveals the configured flash actions", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
@@ -64,6 +101,57 @@ test("hovering the floating icon for the configured delay reveals the configured
     await expect(page.locator(".omni-ai-flash-btn")).toHaveCount(2);
     await expect(page.locator('[data-flash-action="rephrase"]')).toBeVisible();
     await expect(page.locator('[data-flash-action="grammar"]')).toBeVisible();
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("clicking a flash action does not reposition or recreate the floating icon", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase"]);
+    // Delay the AI response so there's a deterministic window, after the
+    // click but before the result arrives, to check the icon hasn't moved.
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      await new Promise((r) => setTimeout(r, 300));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: "SLOW-REPLY" }] } }] }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    // Read the inline top/left content.js actually assigns, not the rendered
+    // bounding box -- :hover's CSS transform:scale() legitimately changes the
+    // box's rendered size/position and would make this assertion flaky for
+    // reasons unrelated to the bug (a stale hover transition mid-flight).
+    const originalPosition = await quickBtn.evaluate((el) => ({
+      top: el.style.top,
+      left: el.style.left,
+    }));
+
+    await quickBtn.hover();
+    const flashBtn = page.locator('[data-flash-action="rephrase"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.click();
+
+    // handleSelectionChange() re-checks the selection 10ms after any mouseup
+    // that reaches document; give that a wide berth, still well before the
+    // deliberately-delayed (300ms) AI response arrives and removes the icon.
+    await page.waitForTimeout(150);
+
+    await expect(quickBtn).toHaveCount(1);
+    expect(await quickBtn.evaluate((el) => ({ top: el.style.top, left: el.style.left }))).toEqual(
+      originalPosition,
+    );
   } finally {
     await context.close();
     server.close();

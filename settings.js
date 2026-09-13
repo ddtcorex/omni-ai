@@ -82,7 +82,7 @@ const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko",
 
 // Flash Actions: shown on hovering the floating quick-action icon, so common
 // actions can run without opening the full quick-action menu.
-const DEFAULT_FLASH_ACTIONS = ["rephrase", "grammar", "translate_primary"];
+const DEFAULT_FLASH_ACTIONS = ["translate_primary", "rephrase", "grammar"];
 const MAX_FLASH_ACTIONS = 4;
 
 /**

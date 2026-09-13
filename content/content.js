@@ -104,7 +104,7 @@ const resultCache = new Map();
 // a result, without opening the full quick-action menu.
 const FLASH_ACTIONS_HOVER_DELAY = 500;
 const FLASH_ACTIONS_HIDE_GRACE = 150;
-const DEFAULT_FLASH_ACTIONS = ["rephrase", "grammar", "translate_primary"];
+const DEFAULT_FLASH_ACTIONS = ["translate_primary", "rephrase", "grammar"];
 const FLASH_ACTION_LABEL_KEYS = {
   translate_primary: "settings_flashAction_translatePrimary",
   translate_default: "settings_flashAction_translateDefault",
@@ -937,7 +937,15 @@ async function showFlashActions(text, isInput) {
     )
     .join("");
 
-  row.addEventListener("mousedown", (e) => e.stopPropagation());
+  // Match quickActionBtn's own mousedown/mouseup guards exactly: without
+  // both, a flash button's mouseup bubbles to document's selection-change
+  // listener (handleSelectionChange()), which recreates the floating icon
+  // at the click's mouse position -- looking like the icon "jumped".
+  row.addEventListener("mousedown", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  });
+  row.addEventListener("mouseup", (e) => e.stopPropagation());
   row.addEventListener("mouseenter", () => clearTimeout(flashHideTimer));
   row.addEventListener("mouseleave", scheduleHideFlashActions);
   row.querySelectorAll("[data-flash-action]").forEach((btn) => {
