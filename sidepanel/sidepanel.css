@@ -312,6 +312,7 @@ body {
 }
 
 .chat-input {
+  display: block;
   width: 100%;
   resize: none;
   padding: 8px 44px 8px 10px;

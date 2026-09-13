@@ -43,6 +43,37 @@ test("sidebar chat tab renders and sends a message", async () => {
   }
 });
 
+test("chatSend is vertically centered on the input's true height, not the textarea's inline-block box (with its phantom descender gap)", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    const { wrapHeight, inputHeight, sendCenterY, inputCenterY } = await page.evaluate(() => {
+      const wrap = document.querySelector(".chat-input-wrap").getBoundingClientRect();
+      const input = document.getElementById("chatInput").getBoundingClientRect();
+      const send = document.getElementById("chatSend").getBoundingClientRect();
+      return {
+        wrapHeight: wrap.height,
+        inputHeight: input.height,
+        sendCenterY: send.top + send.height / 2,
+        inputCenterY: input.top + input.height / 2,
+      };
+    });
+
+    // A <textarea> defaults to display:inline-block, which reserves a few
+    // extra pixels below it for the inline-formatting-context baseline (the
+    // same "phantom gap" as an inline <img>). .chat-input-wrap wasn't
+    // collapsing to the textarea's own height, so #chatSend -- centered on
+    // the wrap -- sat a few px below the textarea's true center.
+    expect(wrapHeight).toBeCloseTo(inputHeight, 0);
+    expect(sendCenterY).toBeCloseTo(inputCenterY, 0);
+  } finally {
+    await context.close();
+  }
+});
+
 test("page context stays current across tab switches without any manual interaction", async () => {
   const FIXTURE_A = `<!doctype html><html><head><title>Fixture Page A</title></head><body>
     <p>Content describing apples for the first fixture page.</p>
