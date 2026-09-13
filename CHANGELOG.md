@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-09-14
+
 ### Added
 
 - **Forty-two new UI locales.** Waves 1 to 4 added Arabic, Bengali, Czech, Danish, Dutch, Finnish, Greek, Gujarati, Hebrew, Hindi, Hungarian, Indonesian, Marathi, Norwegian, Polish, Romanian, Russian, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian and Urdu. Wave 5 added Bulgarian, Catalan, Croatian, Malay, Slovak and Slovenian, and wave 6 added Kannada, Kazakh, Lithuanian, Malayalam, Odia and Punjabi. The final wave added the regional variants: Chinese Traditional (Taiwan and Hong Kong), European Portuguese, Latin American Spanish, Canadian French and British English. The extension's own interface is now available in 52 languages (was 10). Added together with a locale parity gate (`tests/locales.test.js`) and `scripts/locale-status.mjs`, a per-locale report of missing keys and strings still identical to English. The translations are AI-produced and structurally verified; native review is welcome.
