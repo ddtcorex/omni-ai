@@ -454,3 +454,43 @@ test("the auto Smart Translation card re-calls the AI after a language-setting c
     server.close();
   }
 });
+
+test("the quick-action menu still opens even if the language registry fails to load", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="target">The quick brown fox jumps over the lazy dog.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "TRANSLATED");
+
+    // showQuickActionMenu()'s dynamic import of lib/languages.js (for the
+    // pCode/dCode flag labels) has no fallback path to exercise unless that
+    // import actually rejects -- force it to. content.js runs in the
+    // extension's isolated world, so page.addInitScript() (main-world only)
+    // can't reach its chrome.runtime; routing the actual resource request at
+    // the context level works regardless of which world asked for it.
+    await context.route("**/lib/languages.js", (route) => route.abort("failed"));
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    const box = await page.locator("#target").boundingBox();
+    await page.mouse.move(box.x + 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+    await page.mouse.up();
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    // The menu must still render (with a raw-code fallback label) instead of
+    // silently failing to open at all.
+    await expect(page.locator(".omni-ai-menu-grid")).toBeVisible({ timeout: 5000 });
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
