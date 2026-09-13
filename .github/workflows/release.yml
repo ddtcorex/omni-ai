@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build store zip (publish.sh strips dev key + swaps OAuth client_id)
+      - name: Build store zip (publish.sh strips the dev key)
         run: |
           sudo apt-get update -y && sudo apt-get install -y zip
           bash scripts/publish.sh

@@ -2,7 +2,7 @@
 
 > `CLAUDE.md` at the repo root is a symlink to `AGENTS.md` (same convention as the maestro-harness workspace). Claude Code follows the same rule set as every other agent. **Only edit `AGENTS.md`**, never edit `CLAUDE.md` directly or replace the symlink with a copy.
 
-Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.4.0**. Follow these directives for consistency, performance, and UI quality.
+Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.5.0**. Follow these directives for consistency, performance, and UI quality.
 
 ---
 
@@ -171,7 +171,7 @@ All markup/styles live inside the Shadow DOM root. To style: use the shared `--o
 
 ```bash
 npm test                  # Jest 30 (jsdom + the shared chrome mock in tests/helpers/)
-bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_id)
+bash scripts/publish.sh   # Build zip into dist/ (strips the dev key)
 ```
 
 - Tests import ES modules through babel-jest; `jest.setup.js` installs `tests/helpers/chrome-mock.js` as the global `chrome`.
@@ -224,7 +224,7 @@ for the exact invocations; keep them in sync with this gate.
 
 1. Bump `version` in `manifest.json` (+ `package.json`), update `CHANGELOG.md`, and update the version badge in `README.md` (`img.shields.io/badge/version-X.Y.Z-blue`), the only remaining hardcoded copy; nothing enforces it matches. (`settings.html`'s displayed version is read live from `chrome.runtime.getManifest().version` in `settings.js` `init()`. Don't hardcode it there again.)
 2. `npm run verify` + `npx playwright test` + `bash scripts/publish.sh` (confirms `dist/omni-ai-vX.Y.Z.zip` builds cleanly and the dev `manifest.json` (including its pinned `"key"`) is restored afterward).
-3. Commit the version bump directly to `master` (there is no `develop` branch currently, so PRs merge feature branches straight into `master`), then `git tag -a vX.Y.Z -m "Release vX.Y.Z"` and `git push origin vX.Y.Z`. The tag push triggers `.github/workflows/release.yml`, which builds the store zip and publishes the GitHub Release automatically; do not run `gh release create` manually.
+3. Land the version bump on `master` through a pull request (branch `chore/release-vX.Y.Z`). A direct push is rejected, verified on the v2.5.0 release: `GH006: Protected branch update failed` with `Changes must be made through a pull request` and `2 of 2 required status checks are expected`, because branch protection requires a PR and both checks even for admins. Then, with `master` checked out and up to date, `git tag -a vX.Y.Z -m "Release vX.Y.Z"` and `git push origin vX.Y.Z`. The tag push triggers `.github/workflows/release.yml`, which builds the store zip and publishes the GitHub Release automatically; do not run `gh release create` manually.
 4. Before uploading, check `docs/CHROME_WEBSTORE_LISTING.txt` and `docs/PERMISSION_JUSTIFICATIONS.txt` against what actually changed: the feature list, the keyboard shortcuts, the context-menu items, the language counts (43 translation languages in `lib/languages.js`, 52 interface locales in `UI_LOCALE_CODES`), and the permission set. Update both in the same commit if they drifted. The listing is the source of truth for the CWS dashboard fields and nothing enforces it stays in sync, the same class of drift as the hardcoded version strings in step 1.
 5. Upload the built zip to the Chrome Web Store dashboard when ready to ship publicly (not automated; see the commented CWS upload block in `release.yml` for wiring it up), pasting `docs/CHROME_WEBSTORE_LISTING.txt`'s content into the description field if it changed.
 
