@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI ਮਾਡਲਾਂ ਨਾਲ ਚੱਲਣ ਵਾਲਾ ਆਲ-ਇਨ-ਵਨ AI ਸਹਾਇਕ, ਲਿਖਤ ਸੁਧਾਰ, ਤੇਜ਼ ਕਾਰਵਾਈਆਂ ਅਤੇ ਸਮਾਰਟ ਸਹੂਲਤਾਂ",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI ਪੈਨਲ ਖੋਲ੍ਹੋ",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "ਸਫ਼ਾ ਟੂਲ",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "ਸੰਖੇਪ ਕਰੋ",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "ਸਮਾਰਟ ਅਨੁਵਾਦ",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "ਸਮਝਾਓ",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "ਕੰਮ ਚੱਲ ਰਿਹਾ ਹੈ…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "ਨਤੀਜਾ",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "ਇਹ ਸਫ਼ਾ ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "ਇਸ ਸਫ਼ੇ 'ਤੇ ਕੰਮ ਕਰਨ ਲਈ ਕੁਝ ਨਹੀਂ ਹੈ",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "ਇਸ ਤੋਂ:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI ਨੂੰ ਕੁਝ ਵੀ ਪੁੱਛੋ...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "ਤੇਜ਼ ਕਾਰਵਾਈਆਂ ਦਾ ਮੀਨੂ ਦਿਖਾਓ",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "ਸੰਦਰਭ",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "ਲਿਖਤ ਸੁਧਾਰੋ",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "ਤੇਜ਼ ਕਾਰਵਾਈਆਂ",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "ਈਮੇਲ",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "ਚੈਟ",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "ਸੋਸ਼ਲ",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "ਤਕਨੀਕੀ",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "ਅਕਾਦਮਿਕ",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "ਵਿਆਕਰਨ ਠੀਕ ਕਰੋ",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "ਸਪੈਲਿੰਗ ਅਤੇ ਵਿਆਕਰਨ ਠੀਕ ਕਰਦਾ ਹੈ",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "ਸਪਸ਼ਟਤਾ ਸੁਧਾਰੋ",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "ਲਹਿਜਾ ਬਦਲੋ",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "ਸੰਖੇਪ ਬਣਾਓ",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "ਵਿਸਤਾਰ ਕਰੋ",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "ਦੁਬਾਰਾ ਲਿਖੋ",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "ਅਨੁਵਾਦ ਕਰੋ",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "ਸੰਖੇਪ ਕਰੋ",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "ਜਵਾਬ ਦਿਓ",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "ਇਮੋਜੀ ਜੋੜੋ",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "ਤਿਆਰ",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "ਪ੍ਰੋਸੈਸਿੰਗ...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "ਗਲਤੀ",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "ਸੈਟਿੰਗਾਂ",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API ਕੁੰਜੀ",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "ਆਪਣੀ API ਕੁੰਜੀ Google AI Studio ਤੋਂ ਲਵੋ",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI ਮਾਡਲ",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "ਵਰਤਣ ਲਈ AI ਮਾਡਲ ਚੁਣੋ",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "ਡਿਫ਼ਾਲਟ ਸੰਦਰਭ",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "ਅਨੁਵਾਦ ਭਾਸ਼ਾ",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "ਸੈਟਿੰਗਾਂ ਸੰਭਾਲੋ",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "ਫ਼ਲੋਟਿੰਗ Omni AI ਬਟਨ ਦਿਖਾਓ",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "ਸਿਰਫ਼ ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ ਅਤੇ ਸੰਦਰਭ ਮੀਨੂ ਵਰਤਣ ਲਈ ਇਸਨੂੰ ਬੰਦ ਕਰੋ।",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "ਫ਼ਲੈਸ਼ ਕਾਰਵਾਈਆਂ",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "ਫ਼ਲੋਟਿੰਗ ਆਈਕਨ 'ਤੇ ਹੋਵਰ ਕਰਨ ਵੇਲੇ ਇਹ ਕਾਰਵਾਈਆਂ ਦਿਖਾਓ, ਤਾਂ ਜੋ ਤੁਸੀਂ ਪੂਰਾ ਮੀਨੂ ਖੋਲ੍ਹੇ ਬਿਨਾਂ ਇਨ੍ਹਾਂ ਨੂੰ ਚਲਾ ਸਕੋ (ਵੱਧ ਤੋਂ ਵੱਧ 4)।",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "ਮੁੱਖ ਭਾਸ਼ਾ ਵਿੱਚ ਅਨੁਵਾਦ ਕਰੋ",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "ਡਿਫ਼ਾਲਟ ਭਾਸ਼ਾ ਵਿੱਚ ਅਨੁਵਾਦ ਕਰੋ",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "ਚਾਲੂ",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "ਬੰਦ",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "ਸੈਟਿੰਗਾਂ ਸੰਭਾਲੀਆਂ ਗਈਆਂ!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "ਕਾਪੀ ਕਰੋ",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "ਬਦਲੋ",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "ਸਮਝਾਓ",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "$LANGUAGE$ ਵਿੱਚ",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI ਨਾਲ ਸੁਧਾਰੋ",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI ਨਾਲ ਸਮਝਾਓ",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI ਨਾਲ ਅਨੁਵਾਦ ਕਰੋ",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AI ਨਾਲ ਦੁਬਾਰਾ ਲਿਖੋ",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI ਨਾਲ ਇਮੋਜੀ ਜੋੜੋ",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI ਨਾਲ ਸੰਖੇਪ ਕਰੋ",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI ਨੂੰ ਪੁੱਛੋ",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਆਪਣੀ API ਕੁੰਜੀ ਸ਼ਾਮਲ ਕਰੋ।",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "ਆਪਣੀ Gemini API ਕੁੰਜੀ ਦਰਜ ਕਰੋ...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "ਗਲਤੀ: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway ਬੇਸ URL ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "$MODEL$ ਲਈ API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "ਡਿਫ਼ਾਲਟ ਲਹਿਜਾ",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "ਲਿਖਤ ਸੁਧਾਰ ਅਤੇ ਜਵਾਬਾਂ ਲਈ ਡਿਫ਼ਾਲਟ ਲਹਿਜਾ",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "ਪੇਸ਼ੇਵਰ",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "ਆਮ ਬੋਲਚਾਲ",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "ਦੋਸਤਾਨਾ",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "ਸਿੱਧਾ",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "ਆਤਮਵਿਸ਼ਵਾਸੀ",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "ਤੇਜ਼ ਪੁੱਛ",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "ਨਤੀਜਾ",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "ਸੋਚ ਰਿਹਾ ਹੈ...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "ਪਿੱਛੇ",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "ਕਾਪੀ ਹੋ ਗਿਆ!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "ਕੋਈ ਟੈਕਸਟ ਚੁਣਿਆ ਨਹੀਂ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ ਕੁਝ ਟੈਕਸਟ ਚੁਣੋ।",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "ਤੁਹਾਡਾ AI ਸਹਾਇਕ",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "ਥੀਮ",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "ਆਪਣੀ ਪਸੰਦੀਦਾ ਦਿੱਖ ਚੁਣੋ",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "ਸਿਸਟਮ ਡਿਫ਼ਾਲਟ",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "ਗੂੜ੍ਹਾ",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "ਹਲਕਾ",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "ਮੁੱਖ ਭਾਸ਼ਾ",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "ਤੇਜ਼ ਕਾਰਵਾਈਆਂ ਲਈ ਤੁਹਾਡੀ ਮੁੱਖ ਭਾਸ਼ਾ",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "ਕੌਂਫਿਗਰੇਸ਼ਨ ਜਾਂਚੋ",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "ਵਰਤੋਂ ਇਤਿਹਾਸ",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "ਕੁੱਲ ਕਾਰਵਾਈਆਂ",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "ਪ੍ਰੋਸੈਸ ਕੀਤੇ ਸ਼ਬਦ",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "ਬਣਾਏ ਗਏ ਸ਼ਬਦ",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "ਬਾਰੇ",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "ਸਮੱਸਿਆ ਦੱਸੋ",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "ਇਤਿਹਾਸ ਸਾਫ਼ ਕਰੋ",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API ਕੁੰਜੀ",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com 'ਤੇ ਮੁਫ਼ਤ ਕੁੰਜੀ ਲਵੋ",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API ਕੁੰਜੀ",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com 'ਤੇ API ਕੁੰਜੀ ਲਵੋ",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API ਕੁੰਜੀ ਲਵੋ",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API ਕੁੰਜੀ ਲਵੋ",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API ਕੁੰਜੀ ਲਵੋ",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API ਕੁੰਜੀ",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com 'ਤੇ API ਕੁੰਜੀ ਲਵੋ",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API ਕੁੰਜੀ ਲਵੋ",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Anthropic Console 'ਤੇ ਜਾਓ"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "ਸਾਈਨ ਅੱਪ ਕਰੋ ਜਾਂ ਲੌਗ ਇਨ ਕਰੋ"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "ਨਵੀਂ API ਕੁੰਜੀ ਬਣਾਓ"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome ਵਿੱਚ ਅਨੁਕੂਲਿਤ ਕਰੋ",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chrome ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸ਼ਾਰਟਕੱਟ ਅਨੁਕੂਲਿਤ ਕਰੋ",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "ਤਾਜ਼ਾ ਕਰੋ",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "ਅਨੁਵਾਦਾਂ ਲਈ ਡਿਫ਼ਾਲਟ ਭਾਸ਼ਾ",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "ਅੰਗਰੇਜ਼ੀ"
+  },
+  "lang_vi": {
+    "message": "ਵੀਅਤਨਾਮੀ"
+  },
+  "lang_es": {
+    "message": "ਸਪੇਨੀ"
+  },
+  "lang_fr": {
+    "message": "ਫ਼ਰਾਂਸੀਸੀ"
+  },
+  "lang_de": {
+    "message": "ਜਰਮਨ"
+  },
+  "lang_it": {
+    "message": "ਇਤਾਲਵੀ"
+  },
+  "lang_pt": {
+    "message": "ਪੁਰਤਗਾਲੀ"
+  },
+  "lang_ja": {
+    "message": "ਜਾਪਾਨੀ"
+  },
+  "lang_ko": {
+    "message": "ਕੋਰੀਆਈ"
+  },
+  "lang_zh": {
+    "message": "ਚੀਨੀ"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "ਭਾਸ਼ਾਵਾਂ ਖੋਜੋ",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "ਆਮ",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "ਸਾਰੀਆਂ ਭਾਸ਼ਾਵਾਂ",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "ਕੀ ਤੁਸੀਂ ਸੱਚਮੁੱਚ ਸਾਰਾ ਵਰਤੋਂ ਇਤਿਹਾਸ ਸਾਫ਼ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ API ਕੁੰਜੀ/ਐਂਡਪੌਇੰਟ ਦਰਜ ਕਰੋ।",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "ਕੌਂਫਿਗਰੇਸ਼ਨ ਠੀਕ ਹੈ! ਬਣਾਉਣ ਲਈ ਤਿਆਰ।",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "ਕਨੈਕਸ਼ਨ ਜਾਂਚ ਫੇਲ੍ਹ ਹੋਈ",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio 'ਤੇ ਜਾਓ"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Create API Key 'ਤੇ ਕਲਿੱਕ ਕਰੋ"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "ਕੁੰਜੀ ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕਰੋ"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console 'ਤੇ ਜਾਓ"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "ਸਾਈਨ ਅੱਪ ਕਰੋ ਜਾਂ ਲੌਗ ਇਨ ਕਰੋ"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "ਨਵੀਂ API ਕੁੰਜੀ ਬਣਾਓ"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform 'ਤੇ ਜਾਓ"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "ਸਾਈਨ ਅੱਪ ਕਰੋ ਜਾਂ ਲੌਗ ਇਨ ਕਰੋ"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "ਨਵੀਂ API ਕੁੰਜੀ ਬਣਾਓ"
+  },
+  "overlay_suggested_fix": {
+    "message": "ਸੁਝਾਇਆ ਸੁਧਾਰ",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "ਸਵੀਕਾਰ ਕਰੋ",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "ਖਾਰਜ ਕਰੋ",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "ਕੋਈ ਸਮੱਸਿਆ ਨਹੀਂ ਮਿਲੀ",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "ਟੈਕਸਟ ਬਹੁਤ ਵਧੀਆ ਹੈ!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "ਸਮਾਰਟ ਅਨੁਵਾਦ",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "ਗਲਤੀ",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "ਅਨੁਵਾਦ ਫੇਲ੍ਹ ਹੋਇਆ",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(ਪੁਰਾਣਾ)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "ਉੱਨਤ",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "ਕਸਟਮ ਮਾਡਲ ਨਾਮ",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "ਕਸਟਮ ਮਾਡਲ ID ਦਰਜ ਕਰੋ",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "ਕਿਰਪਾ ਕਰਕੇ ਕਸਟਮ ਮਾਡਲ ਨਾਮ ਦਰਜ ਕਰੋ",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "ਜਿਵੇਂ: your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "ਕਿਸੇ ਵੀ OpenAI-ਅਨੁਕੂਲ API ਐਂਡਪੌਇੰਟ ਨਾਲ ਜੁੜੋ",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "ਜਿਵੇਂ: https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "ਆਪਣੀ API ਕੁੰਜੀ ਦਰਜ ਕਰੋ...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway ਕੌਂਫਿਗਰੇਸ਼ਨ",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI-ਅਨੁਕੂਲ API ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ (OpenRouter, LiteLLM, Together AI, ਆਦਿ)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "ਕੁਝ ਗੇਟਵੇਅ ਲਈ ਵਿਕਲਪਿਕ (ਜਿਵੇਂ, OpenRouter ਮੁਫ਼ਤ ਟੀਅਰ)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "ਚੈਟ",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "ਟੂਲ",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "ਇਸ ਸਫ਼ੇ ਬਾਰੇ ਪੁੱਛੋ…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "ਭੇਜੋ",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "ਰੋਕੋ",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "ਸਫ਼ਾ ਸੰਦਰਭ",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "ਸਫ਼ਾ ਸੰਦਰਭ ਸ਼ਾਮਲ ਕਰੋ",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "ਮੌਜੂਦਾ ਸਫ਼ੇ ਬਾਰੇ ਗੱਲਬਾਤ ਸ਼ੁਰੂ ਕਰੋ।",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "ਕੁਝ ਗੜਬੜ ਹੋ ਗਈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "ਚੈਟ ਸਾਫ਼ ਕਰੋ",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "ਕੀ ਤੁਸੀਂ ਸੱਚਮੁੱਚ ਇਹ ਗੱਲਬਾਤ ਸਾਫ਼ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
+    "description": "Clear chat session confirmation"
+  }
+}

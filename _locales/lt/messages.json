@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Visapusiškas AI asistentas, veikiantis su AI modeliais: teksto tobulinimas, spartieji veiksmai ir išmaniosios priemonės",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Atidaryti Omni AI skydelį",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Puslapio priemonės",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Apibendrinti",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Išmanusis vertimas",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Paaiškinti",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Dirbama…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Rezultatas",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Nepavyksta perskaityti šio puslapio",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Šiame puslapyje nėra su kuo dirbti",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Iš:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Paklauskite Omni AI bet ko...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Rodyti spartaus veiksmų meniu",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Kontekstas",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Pagerinti tekstą",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Spartieji veiksmai",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "El. laiškas",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Pokalbis",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Socialiniai tinklai",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Techninis",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Akademinis",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Ištaisyti gramatiką",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Ištaiso rašybą ir gramatiką",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Pagerinti aiškumą",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Pakeisti toną",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Sutrumpinti",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Išplėsti",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Perfrazuoti",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Išversti",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Apibendrinti",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Atsakyti",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Pridėti jaustukų",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Paruošta",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Apdorojama...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Klaida",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Nustatymai",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API raktas",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Gaukite API raktą iš Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI modelis",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Pasirinkite naudojamą AI modelį",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Numatytasis kontekstas",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Vertimo kalba",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Išsaugoti nustatymus",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Rodyti plaukiojantį Omni AI mygtuką",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Išjunkite tai, jei norite naudoti tik sparčiuosius klavišus ir kontekstinius meniu.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Žaibiškieji veiksmai",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Rodykite šiuos veiksmus užvedę pelę ant plaukiojančios piktogramos, kad galėtumėte juos paleisti neatidarę viso meniu (iki 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Išversti į pagrindinę kalbą",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Išversti į numatytąją kalbą",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Įjungta",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Išjungta",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Nustatymai išsaugoti!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Kopijuoti",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Pakeisti",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Paaiškinti",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Kalba: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Patobulinti su Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Paaiškinti su Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Išversti su Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Perfrazuoti su Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Pridėti jaustukų su Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Apibendrinti su Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Paklausti Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API raktas nesukonfigūruotas. Pridėkite API raktą nustatymuose.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Įveskite savo Gemini API raktą...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Klaida: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API raktas nesukonfigūruotas",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API raktas nesukonfigūruotas",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API raktas nesukonfigūruotas",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API raktas nesukonfigūruotas",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway bazinis URL nesukonfigūruotas",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "API raktas nesukonfigūruotas $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Numatytasis tonas",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Numatytasis tonas teksto tobulinimui ir atsakymams",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Profesionalus",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Laisvas",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Draugiškas",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Tiesus",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Užtikrintas",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Greitas klausimas",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Rezultatas",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Mąstoma...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Atgal",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Nukopijuota!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Nepažymėtas joks tekstas. Pirmiausia pažymėkite tekstą.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Jūsų AI asistentas",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Tema",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Pasirinkite norimą išvaizdą",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Sistemos numatytoji",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Tamsi",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Šviesi",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Pagrindinė kalba",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Jūsų pagrindinė kalba spartiesiems veiksmams",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Patikrinti konfigūraciją",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Spartieji klavišai",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Naudojimo istorija",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Iš viso veiksmų",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Apdorota žodžių",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Sugeneruota žodžių",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Apie",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Pranešti apie problemą",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Išvalyti istoriją",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API raktas",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Gaukite nemokamą raktą console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API raktas",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Gaukite API raktą platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Gauti API raktą",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Gauti Groq API raktą",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Gauti OpenAI API raktą",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API raktas",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Gaukite API raktą console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Gauti Anthropic API raktą",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Eikite į Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Užsiregistruokite arba prisijunkite"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Sukurkite naują API raktą"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Tinkinti „Chrome“",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Tinkinkite sparčiuosius klavišus „Chrome“ nustatymuose",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Atnaujinti",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Numatytoji vertimų kalba",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "anglų"
+  },
+  "lang_vi": {
+    "message": "vietnamiečių"
+  },
+  "lang_es": {
+    "message": "ispanų"
+  },
+  "lang_fr": {
+    "message": "prancūzų"
+  },
+  "lang_de": {
+    "message": "vokiečių"
+  },
+  "lang_it": {
+    "message": "italų"
+  },
+  "lang_pt": {
+    "message": "portugalų"
+  },
+  "lang_ja": {
+    "message": "japonų"
+  },
+  "lang_ko": {
+    "message": "korėjiečių"
+  },
+  "lang_zh": {
+    "message": "kinų"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Ieškoti kalbų",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Dažnos",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Visos kalbos",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Ar tikrai norite išvalyti visą naudojimo istoriją?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Pirmiausia įveskite API raktą arba prieigos tašką.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Tikrinama...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Konfigūracija tinkama! Galima generuoti.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Ryšio patikra nepavyko",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Tikrinama...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Nepavyko išsaugoti",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Eikite į Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Spustelėkite Kurti API raktą"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Nukopijuokite raktą į iškarpinę"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Eikite į Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Užsiregistruokite arba prisijunkite"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Sukurkite naują API raktą"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Eikite į OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Užsiregistruokite arba prisijunkite"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Sukurkite naują API raktą"
+  },
+  "overlay_suggested_fix": {
+    "message": "Siūlomas pataisymas",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Priimti",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Atmesti",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Problemų nerasta",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Tekstas atrodo puikiai!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Išmanusis vertimas",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Klaida",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Vertimas nepavyko",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Senasis)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Išplėstiniai",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Pasirinktinio modelio pavadinimas",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Įveskite pasirinktinio modelio ID",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Įveskite pasirinktinio modelio pavadinimą",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "pvz., jusu-modelio-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Prisijunkite prie bet kurio su OpenAI suderinamo API prieigos taško",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "pvz., https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Įveskite savo API raktą...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway konfigūracija",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Palaikomi su OpenAI suderinami API (OpenRouter, LiteLLM, Together AI ir kt.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Neprivalomas kai kurioms tarpinėms programoms (pvz., nemokamam OpenRouter planui)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Pokalbis",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Priemonės",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Paklauskite apie šį puslapį…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Siųsti",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Stabdyti",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Puslapio kontekstas",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Įtraukti puslapio kontekstą",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Pradėkite pokalbį apie dabartinį puslapį.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Kažkas nepavyko. Bandykite dar kartą.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Išvalyti pokalbį",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Ar tikrai norite išvalyti šį pokalbį?",
+    "description": "Clear chat session confirmation"
+  }
+}

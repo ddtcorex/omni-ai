@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI ಮಾದರಿಗಳಿಂದ ಚಾಲಿತ ಸರ್ವಸಮಗ್ರ AI ಸಹಾಯಕ: ಬರವಣಿಗೆ ಸುಧಾರಣೆ, ತ್ವರಿತ ಕ್ರಿಯೆಗಳು ಮತ್ತು ಸ್ಮಾರ್ಟ್ ಸೌಲಭ್ಯಗಳು",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI ಪ್ಯಾನೆಲ್ ತೆರೆಯಿರಿ",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "ಪುಟ ಪರಿಕರಗಳು",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "ಸಾರಾಂಶ",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "ಸ್ಮಾರ್ಟ್ ಅನುವಾದ",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "ವಿವರಿಸಿ",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "ಕೆಲಸ ನಡೆಯುತ್ತಿದೆ…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "ಫಲಿತಾಂಶ",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "ಈ ಪುಟವನ್ನು ಓದಲು ಸಾಧ್ಯವಿಲ್ಲ",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "ಈ ಪುಟದಲ್ಲಿ ಕೆಲಸ ಮಾಡಲು ಏನೂ ಇಲ್ಲ",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "ಮೂಲ:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI ಗೆ ಏನನ್ನಾದರೂ ಕೇಳಿ...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳ ಮೆನು ತೋರಿಸಿ",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "ಸಂದರ್ಭ",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "ಬರವಣಿಗೆ ಸುಧಾರಿಸಿ",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳು",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "ಇಮೇಲ್",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "ಚಾಟ್",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "ಸಾಮಾಜಿಕ",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "ತಾಂತ್ರಿಕ",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "ಶೈಕ್ಷಣಿಕ",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "ವ್ಯಾಕರಣ ಸರಿಪಡಿಸಿ",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "ಕಾಗುಣಿತ ಮತ್ತು ವ್ಯಾಕರಣವನ್ನು ಸರಿಪಡಿಸುತ್ತದೆ",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "ಸ್ಪಷ್ಟತೆ ಸುಧಾರಿಸಿ",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "ಟೋನ್ ಬದಲಿಸಿ",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "ಸಂಕ್ಷಿಪ್ತಗೊಳಿಸಿ",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "ವಿಸ್ತರಿಸಿ",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "ಮರುರೂಪಿಸಿ",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "ಅನುವಾದಿಸಿ",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "ಸಾರಾಂಶ",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "ಉತ್ತರಿಸಿ",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "ಎಮೋಜಿ ಸೇರಿಸಿ",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "ಸಿದ್ಧ",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "ದೋಷ",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "ಸೆಟ್ಟಿಂಗ್ಗಳು",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API ಕೀ",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Google AI Studio ನಿಂದ ನಿಮ್ಮ API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI ಮಾದರಿ",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "ಬಳಸಬೇಕಾದ AI ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "ಡಿಫಾಲ್ಟ್ ಸಂದರ್ಭ",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "ಅನುವಾದ ಭಾಷೆ",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "ಸೆಟ್ಟಿಂಗ್ಗಳನ್ನು ಉಳಿಸಿ",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "ತೇಲುವ Omni AI ಬಟನ್ ತೋರಿಸಿ",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್ಕಟ್ಗಳು ಮತ್ತು ಕಾಂಟೆಕ್ಸ್ಟ್ ಮೆನುಗಳನ್ನು ಮಾತ್ರ ಬಳಸಲು ಇದನ್ನು ಆಫ್ ಮಾಡಿ.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "ಫ್ಲಾಶ್ ಕ್ರಿಯೆಗಳು",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "ತೇಲುವ ಐಕಾನ್ ಮೇಲೆ ಹೋವರ್ ಮಾಡಿದಾಗ ಈ ಕ್ರಿಯೆಗಳನ್ನು ತೋರಿಸಿ, ಇದರಿಂದ ಪೂರ್ಣ ಮೆನು ತೆರೆಯದೆ ಅವನ್ನು ಚಲಾಯಿಸಬಹುದು (ಗರಿಷ್ಠ 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "ಪ್ರಾಥಮಿಕ ಭಾಷೆಗೆ ಅನುವಾದಿಸಿ",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "ಡಿಫಾಲ್ಟ್ ಭಾಷೆಗೆ ಅನುವಾದಿಸಿ",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "ಆನ್",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "ಆಫ್",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "ಸೆಟ್ಟಿಂಗ್ಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "ನಕಲಿಸಿ",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "ಬದಲಾಯಿಸಿ",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "ವಿವರಿಸಿ",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "ಭಾಷೆ: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI ನಿಂದ ಸುಧಾರಿಸಿ",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI ನಿಂದ ವಿವರಿಸಿ",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI ನಿಂದ ಅನುವಾದಿಸಿ",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AI ನಿಂದ ಮರುರೂಪಿಸಿ",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI ನಿಂದ ಎಮೋಜಿ ಸೇರಿಸಿ",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI ನಿಂದ ಸಾರಾಂಶ ಮಾಡಿ",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI ಗೆ ಕೇಳಿ",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಸೆಟ್ಟಿಂಗ್ಗಳಲ್ಲಿ ನಿಮ್ಮ API ಕೀ ಸೇರಿಸಿ.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "ನಿಮ್ಮ Gemini API ಕೀ ನಮೂದಿಸಿ...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "ದೋಷ: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway ಬೇಸ್ URL ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "$MODEL$ ಗಾಗಿ API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "ಡಿಫಾಲ್ಟ್ ಟೋನ್",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "ಬರವಣಿಗೆ ಸುಧಾರಣೆಗಳು ಮತ್ತು ಉತ್ತರಗಳಿಗೆ ಡಿಫಾಲ್ಟ್ ಟೋನ್",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "ವೃತ್ತಿಪರ",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "ಆಡುಮಾತಿನ",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "ಸ್ನೇಹಪರ",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "ನೇರ",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "ಆತ್ಮವಿಶ್ವಾಸದ",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "ತ್ವರಿತ ಪ್ರಶ್ನೆ",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "ಫಲಿತಾಂಶ",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "ಯೋಚಿಸುತ್ತಿದೆ...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "ಹಿಂದೆ",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "ನಕಲಿಸಲಾಗಿದೆ!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "ಯಾವುದೇ ಪಠ್ಯ ಆಯ್ಕೆಯಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಮೊದಲು ಸ್ವಲ್ಪ ಪಠ್ಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "ನಿಮ್ಮ AI ಸಹಾಯಕ",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "ಥೀಮ್",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "ನಿಮ್ಮ ಇಷ್ಟದ ರೂಪವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "ಸಿಸ್ಟಂ ಡಿಫಾಲ್ಟ್",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "ಡಾರ್ಕ್",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "ಲೈಟ್",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "ಪ್ರಾಥಮಿಕ ಭಾಷೆ",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳಿಗಾಗಿ ನಿಮ್ಮ ಮುಖ್ಯ ಭಾಷೆ",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "ಕಾನ್ಫಿಗರೇಶನ್ ಪರಿಶೀಲಿಸಿ",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್ಕಟ್ಗಳು",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "ಬಳಕೆಯ ಇತಿಹಾಸ",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "ಒಟ್ಟು ಕ್ರಿಯೆಗಳು",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಿದ ಪದಗಳು",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "ರಚಿಸಿದ ಪದಗಳು",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "ಬಗ್ಗೆ",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "ಸಮಸ್ಯೆ ವರದಿ ಮಾಡಿ",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "ಇತಿಹಾಸ ಅಳಿಸಿ",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API ಕೀ",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com ನಲ್ಲಿ ಉಚಿತ ಕೀ ಪಡೆಯಿರಿ",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API ಕೀ",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com ನಲ್ಲಿ API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API ಕೀ",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com ನಲ್ಲಿ API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API ಕೀ ಪಡೆಯಿರಿ",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Anthropic Console ಗೆ ಹೋಗಿ"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "ಸೈನ್ ಅಪ್ ಮಾಡಿ ಅಥವಾ ಲಾಗಿನ್ ಆಗಿ"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "ಹೊಸ API ಕೀ ರಚಿಸಿ"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome ನಲ್ಲಿ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chrome ಸೆಟ್ಟಿಂಗ್ಗಳಲ್ಲಿ ಶಾರ್ಟ್ಕಟ್ಗಳನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "ರಿಫ್ರೆಶ್",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "ಅನುವಾದಗಳಿಗೆ ಡಿಫಾಲ್ಟ್ ಭಾಷೆ",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "ಇಂಗ್ಲಿಷ್"
+  },
+  "lang_vi": {
+    "message": "ವಿಯೆಟ್ನಾಮೀಸ್"
+  },
+  "lang_es": {
+    "message": "ಸ್ಪ್ಯಾನಿಷ್"
+  },
+  "lang_fr": {
+    "message": "ಫ್ರೆಂಚ್"
+  },
+  "lang_de": {
+    "message": "ಜರ್ಮನ್"
+  },
+  "lang_it": {
+    "message": "ಇಟಾಲಿಯನ್"
+  },
+  "lang_pt": {
+    "message": "ಪೋರ್ಚುಗೀಸ್"
+  },
+  "lang_ja": {
+    "message": "ಜಪಾನೀಸ್"
+  },
+  "lang_ko": {
+    "message": "ಕೊರಿಯನ್"
+  },
+  "lang_zh": {
+    "message": "ಚೈನೀಸ್"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "ಭಾಷೆಗಳನ್ನು ಹುಡುಕಿ",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "ಸಾಮಾನ್ಯ",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "ಎಲ್ಲಾ ಭಾಷೆಗಳು",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "ಎಲ್ಲಾ ಬಳಕೆಯ ಇತಿಹಾಸವನ್ನು ಅಳಿಸಲು ನಿಶ್ಚಿತವೇ?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "ದಯವಿಟ್ಟು ಮೊದಲು API ಕೀ/ಎಂಡ್ಪಾಯಿಂಟ್ ನಮೂದಿಸಿ.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "ಕಾನ್ಫಿಗರೇಶನ್ ಸರಿಯಾಗಿದೆ! ರಚಿಸಲು ಸಿದ್ಧ.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "ಸಂಪರ್ಕ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio ಗೆ ಹೋಗಿ"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Create API Key ಬಟನ್ ಒತ್ತಿ"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "ಕೀಯನ್ನು ಕ್ಲಿಪ್ಬೋರ್ಡ್ಗೆ ನಕಲಿಸಿ"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console ಗೆ ಹೋಗಿ"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "ಸೈನ್ ಅಪ್ ಮಾಡಿ ಅಥವಾ ಲಾಗಿನ್ ಆಗಿ"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "ಹೊಸ API ಕೀ ರಚಿಸಿ"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform ಗೆ ಹೋಗಿ"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "ಸೈನ್ ಅಪ್ ಮಾಡಿ ಅಥವಾ ಲಾಗಿನ್ ಆಗಿ"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "ಹೊಸ API ಕೀ ರಚಿಸಿ"
+  },
+  "overlay_suggested_fix": {
+    "message": "ಸೂಚಿಸಿದ ತಿದ್ದುಪಡಿ",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "ಸ್ವೀಕರಿಸಿ",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "ವಜಾಗೊಳಿಸಿ",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "ಯಾವುದೇ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿಲ್ಲ",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "ಪಠ್ಯ ಚೆನ್ನಾಗಿದೆ!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "ಸ್ಮಾರ್ಟ್ ಅನುವಾದ",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "ದೋಷ",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "ಅನುವಾದ ವಿಫಲವಾಗಿದೆ",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(ಹಳೆಯದು)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "ಸುಧಾರಿತ",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "ಕಸ್ಟಮ್ ಮಾದರಿ ಹೆಸರು",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "ಕಸ್ಟಮ್ ಮಾದರಿ ID ನಮೂದಿಸಿ",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "ದಯವಿಟ್ಟು ಕಸ್ಟಮ್ ಮಾದರಿ ಹೆಸರು ನಮೂದಿಸಿ",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "ಉದಾ. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "ಯಾವುದೇ OpenAI-ಹೊಂದಿಕೆಯ API ಎಂಡ್ಪಾಯಿಂಟ್ಗೆ ಸಂಪರ್ಕಿಸಿ",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "ಉದಾ. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "ನಿಮ್ಮ API ಕೀ ನಮೂದಿಸಿ...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway ಕಾನ್ಫಿಗರೇಶನ್",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI-ಹೊಂದಿಕೆಯ APIಗಳನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ (OpenRouter, LiteLLM, Together AI, ಇತ್ಯಾದಿ)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "ಕೆಲವು ಗೇಟ್ವೇಗಳಿಗೆ ಐಚ್ಛಿಕ (ಉದಾ., OpenRouter ಉಚಿತ ಶ್ರೇಣಿ)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "ಚಾಟ್",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "ಪರಿಕರಗಳು",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "ಈ ಪುಟದ ಬಗ್ಗೆ ಕೇಳಿ…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "ಕಳುಹಿಸಿ",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "ನಿಲ್ಲಿಸಿ",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "ಪುಟದ ಸಂದರ್ಭ",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "ಪುಟದ ಸಂದರ್ಭ ಸೇರಿಸಿ",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "ಪ್ರಸ್ತುತ ಪುಟದ ಬಗ್ಗೆ ಸಂಭಾಷಣೆ ಪ್ರಾರಂಭಿಸಿ.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "ಚಾಟ್ ಅಳಿಸಿ",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "ಈ ಸಂಭಾಷಣೆಯನ್ನು ಅಳಿಸಲು ನಿಶ್ಚಿತವೇ?",
+    "description": "Clear chat session confirmation"
+  }
+}
