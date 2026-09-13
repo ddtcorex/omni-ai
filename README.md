@@ -16,22 +16,22 @@ Omni AI is a modern, lightweight Chrome extension that integrates advanced AI mo
 
 Highlight any text on any website to see the **✨ Omni AI Floating Button**. One click gives you access to:
 
-- **Fix Grammar & Spelling** - Professional polish in a click.
-- **Rephrase** - Rewrite with different words for better flow.
-- **Summarize** - Get the gist of long paragraphs instantly.
-- **Change Tone** - Swiftly switch between Professional, Casual, Formal, and more.
-- **Ask AI** - Direct chat contextually based on your selection (Alt+A opens an in-page overlay).
-- **Page Tools** - Click the toolbar icon to open a side panel with one-click Summarize / Smart Translate / Explain for the whole page you're on.
-- **Sidebar Chat** - A streaming AI chat tab in the side panel: ask about the page you're viewing (auto page context, capped at ~8000 chars), with history and live token-by-token responses streamed over a `chrome.runtime` Port.
+- **Fix Grammar & Spelling**: Professional polish in a click.
+- **Rephrase**: Rewrite with different words for better flow.
+- **Summarize**: Get the gist of long paragraphs instantly.
+- **Change Tone**: Swiftly switch between Professional, Casual, Formal, and more.
+- **Ask AI**: Direct chat contextually based on your selection (the Quick Ask overlay has no default shortcut; bind it at `chrome://extensions/shortcuts` if you want it on the keyboard).
+- **Page Tools**: Click the toolbar icon to open a side panel with one-click Summarize / Smart Translate / Explain for the whole page you're on.
+- **Sidebar Chat**: A streaming AI chat tab in the side panel: ask about the page you're viewing (auto page context, capped at ~8000 chars), with history and live token-by-token responses streamed over a `chrome.runtime` Port.
 
 ### 📋 Writing Enhancements
 
 Dedicated tools for specific needs:
 
-- **Improve Clarity** - Make your thoughts clearer.
-- **Make Concise** - Cut the fluff.
-- **Expand** - Elaborate with AI-generated depth.
-- **Emojify** - Add the perfect emojis for social or chat.
+- **Improve Clarity**: Make your thoughts clearer.
+- **Make Concise**: Cut the fluff.
+- **Expand**: Elaborate with AI-generated depth.
+- **Emojify**: Add the perfect emojis for social or chat.
 
 ### 📝 Rich Text & Input Support
 
@@ -40,9 +40,9 @@ Dedicated tools for specific needs:
 
 ### 🌍 Instant Translation & Explanation
 
-- **Translate** - Supports 10+ languages including Spanish, French, German, Japanese, and Chinese.
-- **Primary Language** - Set your native language (e.g., Vietnamese) for one-click instant translations.
-- **Explain** - Simplifies difficult concepts, technical jargon, or complex paragraphs.
+- **Translate**: 43 languages, including Spanish, French, German, Hindi, Arabic, Japanese and both Simplified and Traditional Chinese. `lib/languages.js` holds the full list.
+- **Primary Language**: Set your native language (e.g., Vietnamese) for one-click instant translations.
+- **Explain**: Simplifies difficult concepts, technical jargon, or complex paragraphs.
 
 ### 📊 Dashboard & Usage Statistics
 
@@ -134,7 +134,7 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 1. In **Settings**, find the **AI Model** dropdown.
 2. Select the **"Custom Model..."** option for your preferred provider (e.g., _OpenAI Custom Model..._).
 3. A new field **Custom Model Name** will appear.
-4. Enter the Model ID **exactly** as the AI platform documents it — it is sent to the provider verbatim, with no short-name expansion or fuzzy matching.
+4. Enter the Model ID **exactly** as the AI platform documents it. It is sent to the provider verbatim, with no short-name expansion or fuzzy matching.
 5. Click **Save Settings**.
 
 #### Common Custom Model IDs
@@ -151,31 +151,30 @@ Omni AI allows you to use any model provided by your chosen AI provider, even if
 
 | Shortcut | Action                                                                         |
 | :------- | :----------------------------------------------------------------------------- |
-| `Alt+A`  | **Quick Ask** Overlay (Ask AI from any page)                                   |
+| `Alt+O`  | Show the Quick Actions menu at the current selection                           |
 | `Alt+R`  | Rephrase (on selected text)                                                    |
 | `Alt+T`  | Smart Translate (auto-detects direction between your two configured languages) |
 | `Alt+F`  | Fix Grammar (on selected text)                                                 |
 
-Chrome only auto-binds up to 4 shortcuts per extension, so these are the 4 with a default binding. Opening the side panel, Summarize, and Explain are also available as commands but need to be bound manually — like all shortcuts here, customizable at `chrome://extensions/shortcuts`.
+Chrome only auto-binds up to 4 shortcuts per extension, so these are the 4 with a default binding. Opening the side panel, Quick Ask, Summarize, and Explain are also available as commands but need to be bound manually, like all shortcuts here, at `chrome://extensions/shortcuts`.
 
 ---
 
 ## 🌍 Multilingual Support
 
-Omni AI currently supports 10 languages:
+Omni AI has two independent language settings: the languages you can **translate into**, and the language the **interface** is displayed in. They are not the same list, and you can mix them freely, for example running a Vietnamese interface while translating into Japanese.
 
-- 🇺🇸 English
-- 🇻🇳 Vietnamese (Default)
-- 🇪🇸 Spanish
-- 🇫🇷 French
-- 🇩🇪 German
-- 🇮🇹 Italian
-- 🇵🇹 Portuguese
-- 🇯🇵 Japanese
-- 🇰🇷 Korean
-- 🇨🇳 Chinese
+### Translation languages (43)
 
-The language is automatically detected, but you can pin a **Primary Language** in Settings for quick translations.
+`lib/languages.js` (`LANGUAGES`) is the single source of truth for this list. The Settings pickers render it behind a search box, grouped into Common and All, and the AI prompts read the language names from the same file.
+
+Amharic, Arabic, Bengali, Chinese (Simplified), Chinese (Traditional), Czech, Danish, Dutch, English, Filipino, Finnish, French, German, Greek, Gujarati, Hausa, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Javanese, Korean, Malay, Marathi, Norwegian, Persian, Polish, Portuguese, Punjabi, Romanian, Russian, Spanish, Swahili, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian, Urdu, Vietnamese.
+
+The source language is never configured: the model infers it. Pin a **Primary Language** in Settings for one-click translations, and Smart Translate picks the direction for you (text in your primary language goes to your default language, anything else goes to your primary language).
+
+### Interface languages (52)
+
+The whole extension UI is localized, and Chrome selects the locale that matches your browser language automatically. The exact list is `UI_LOCALE_CODES` in `lib/languages.js`, and a test asserts it matches the `_locales/` directories on disk. Language **names** inside the pickers are the one deliberate exception: they come from the registry as reference data (each with an English and a native name) rather than being duplicated into every catalogue.
 
 ---
 
@@ -185,33 +184,43 @@ The language is automatically detected, but you can pin a **Primary Language** i
 omni-ai/
 ├── manifest.json           # Extension Manifest V3
 ├── background/             # Background service worker
-│   └── service-worker.js
-├── content/               # Injected scripts & UI
-│   ├── content.js          # Core injection logic
-│   └── overlay.css         # Floating buttons & popups
+│   └── service-worker.js   # Message router, context menus, commands, side panel
+├── content/                # Injected scripts & UI
+│   ├── content.js          # Selection tracking, floating button, result cards
+│   ├── editor-adapters.js  # input / textarea / contenteditable adapters
+│   ├── positioning.js      # Viewport clamping helpers
+│   └── overlay.css         # Styles injected into the Shadow DOM root
+├── sidepanel/              # Side panel: Page Tools + streaming Chat tab
+│   ├── sidepanel.html
+│   ├── sidepanel.js
+│   └── sidepanel.css
 ├── lib/                    # Shared logic & AI Providers
-│   ├── ai-service.js       # AI Dispatcher
-│   ├── ai-providers.js     # Provider & model definitions
+│   ├── ai-service.js       # AI Dispatcher and prompt builders
+│   ├── ai-providers.js     # Provider & model registry
+│   ├── languages.js        # Translation language registry (43 codes)
+│   ├── i18n.js             # Shared i18n wrapper
+│   ├── storage.js          # Typed owner of the Storage Map keys
 │   ├── history.js          # Statistics & History management
+│   ├── theme-manager.js    # Theme apply/broadcast
+│   ├── sidebar-chat.js     # Chat prompt builder (page context + history)
+│   ├── omni-chat-port.js   # Streaming chat Port handler ("omni-chat")
+│   ├── design-tokens.css   # Canonical --omni-* custom properties
+│   ├── design-system.css   # Shared .ds-* component classes
 │   └── providers/          # AI Model Implementations
 │       ├── gemini.js
 │       ├── groq.js
 │       ├── openai.js
 │       ├── anthropic.js
 │       └── custom-gateway.js
-├── assets/                 # Branding & High-res icons
+├── _locales/               # chrome.i18n catalogues (52 locales)
+├── assets/                 # Branding & high-res icons
 ├── settings.html           # Main configuration page
 ├── settings.js
 ├── settings.css
-├── lib/
-│   ├── sidebar-chat.js     # Sidebar Chat prompt builder (page context + history)
-│   └── omni-chat-port.js   # Streaming chat Port handler (chrome.runtime "omni-chat")
-├── sidepanel/              # Side panel: Page Tools + streaming Chat tab
-│   ├── sidepanel.html
-│   ├── sidepanel.js
-│   └── sidepanel.css
-└── scripts/                # Build & Utility scripts
-    └── publish.sh          # Automates ID key removal & zipping
+├── tests/                  # Jest 30 + jsdom + shared chrome mock
+├── e2e/                    # Playwright specs
+└── scripts/                # Build & utility scripts
+    └── publish.sh          # Strips the dev key and zips dist/
 ```
 
 ---
@@ -221,15 +230,15 @@ omni-ai/
 - **Manifest V3**: Using the latest Chrome extension standards.
 - **Vanilla JavaScript**: Lightweight, no heavy frameworks, maximum performance.
 - **Modern CSS**: Variables, Flex/Grid, Glassmorphism, and smooth animations.
-- **Provider Architecture**: Easily extendable to add new AI providers — see `lib/providers/` and the `AI_PROVIDERS` registry.
+- **Provider Architecture**: Easily extendable to add new AI providers. See `lib/providers/` and the `AI_PROVIDERS` registry.
 
 ---
 
 ## 🤝 Contributing & CI Gate
 
 `master` is **branch-protected**: you cannot push to it directly, and a PR can
-only merge when **both** GitHub checks are green — `verify` and `e2e (playwright)`
-— and the branch is up to date with `master`. Contributors (human or AI agent)
+only merge when **both** GitHub checks are green (`verify` and `e2e (playwright)`)
+and the branch is up to date with `master`. Contributors (human or AI agent)
 must therefore run the local equivalent of the pipeline **before** pushing:
 
 ```bash
@@ -241,7 +250,7 @@ npx playwright test     # E2E: extension loads in MV3, side panel, smoke
   re-run until both commands are green.
 - Keep your feature branch rebased/up to date with `master` so the
   "up-to-date before merge" check passes.
-- Exact CI invocations live in `.github/workflows/ci.yml` — treat that file as
+- Exact CI invocations live in `.github/workflows/ci.yml`. Treat that file as
   the source of truth for what the gate runs.
 
 See `AGENTS.md` ("Pre-Push Gate") for the full agent checklist that mirrors this
@@ -283,15 +292,15 @@ To publish on the Chrome Web Store, you need a Google Developer account.
 ### 3. Upload and Configure
 
 1. **Upload**: Click **+ New Item** and upload your `.zip`.
-2. **Store Listing**:
-   - **Description**: Use text from this README.
+2. **Store Listing**: paste the text from `docs/CHROME_WEBSTORE_LISTING.txt`, which
+   holds the description field as well as the remaining dashboard fields
+   (product name, summary, category, languages, single purpose, screenshots).
    - **Icons**: Use `assets/icons/` (ensure 128x128 PNG is available or convert SVG).
    - **Screenshots**: Upload 1280x800 screenshots of the extension in action.
    - **Category**: Productivity or Search Tools.
-3. **Privacy & Permissions**:
-   - **Single Purpose**: "Unified writing assistant and productivity tool".
-   - **Justification**: Explain `activeTab`, `storage`, `sidePanel`, `contextMenus` usage clearly.
-   - **Privacy Policy**: Link to your privacy policy (GitHub Pages or similar).
+3. **Privacy & Permissions**: paste the permission justifications and the data
+   collection answers from `docs/PERMISSION_JUSTIFICATIONS.txt`, and link the
+   published copy of `docs/PRIVACY_POLICY.md`.
 
 ### Pro Tips for Approval
 
@@ -321,7 +330,7 @@ Contributions are welcome! Whether it's fixing a bug, adding a new feature, or i
 
 ## 📄 License
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) file for details.
 
 ---
 

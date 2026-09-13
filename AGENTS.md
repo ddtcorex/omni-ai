@@ -1,20 +1,20 @@
-# AGENTS.md — Omni AI Chrome Extension
+# AGENTS.md: Omni AI Chrome Extension
 
-> `CLAUDE.md` at the repo root is a symlink to `AGENTS.md` (same convention as the maestro-harness workspace). Claude Code follows the same rule set as every other agent. **Only edit `AGENTS.md`** — never edit `CLAUDE.md` directly or replace the symlink with a copy.
+> `CLAUDE.md` at the repo root is a symlink to `AGENTS.md` (same convention as the maestro-harness workspace). Claude Code follows the same rule set as every other agent. **Only edit `AGENTS.md`**, never edit `CLAUDE.md` directly or replace the symlink with a copy.
 
-Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.2.0**. Follow these directives for consistency, performance, and UI quality.
+Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 Chrome extension ("Your All-in-One AI Browser Companion") built with **zero frameworks and zero build step**. Current version: **2.4.0**. Follow these directives for consistency, performance, and UI quality.
 
 ---
 
 ## 🎯 Core Directives
 
-1.  **Stick to Vanilla**: No React, Vue, Tailwind, or bundler. Plain **ES modules (ES6+)** + modern CSS. The browser loads source files directly — there is no compile step in the dev loop.
+1.  **Stick to Vanilla**: No React, Vue, Tailwind, or bundler. Plain **ES modules (ES6+)** + modern CSS. The browser loads source files directly, so there is no compile step in the dev loop.
 2.  **Manifest V3 Compliance**: Service worker background (`"type": "module"`), no remote code, no MV2 APIs.
-3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly — styles are fetched from `lib/design-tokens.css`, `lib/design-system.css`, and `content/overlay.css` (in that order) and injected as a single `<style>` inside the shadow root.
-4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code. Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose — a handful of legitimate local-resource fetches (CSS/i18n) carry documented inline `eslint-disable` exceptions.
-5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before). Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose — only `lib/storage.js`, `lib/theme-manager.js`, and `lib/history.js` may call `chrome.storage.*` directly; every other read/write goes through `lib/storage.js`.
+3.  **Shadow DOM Isolation (since v2.0)**: All content-script UI mounts inside a shadow root (`ensureUiRoot()` in `content/content.js`). Never inject overlay elements into the page DOM directly. Styles are fetched from `lib/design-tokens.css`, `lib/design-system.css`, and `content/overlay.css` (in that order) and injected as a single `<style>` inside the shadow root.
+4.  **Provider Pattern**: All AI traffic goes through `lib/ai-service.js` → `lib/providers/*`. Never call `fetch()` against an AI API from UI code. Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose: a handful of legitimate local-resource fetches (CSS/i18n) carry documented inline `eslint-disable` exceptions.
+5.  **Storage Areas are a Contract**: Preferences that follow the user → `chrome.storage.sync`. Secrets & machine-local config → `chrome.storage.local`. See the Storage Map below and never mix areas (a mismatch shipped to prod before). Enforced via `eslint.config.js`'s `no-restricted-syntax` rule, not just this prose: only `lib/storage.js`, `lib/theme-manager.js`, and `lib/history.js` may call `chrome.storage.*` directly; every other read/write goes through `lib/storage.js`.
 6.  **Safety First**: Text read/replace must handle `input`, `textarea`, and `contenteditable` through `content/editor-adapters.js`. Always fall back gracefully.
-7.  **i18n (MANDATORY — every user-visible string)**: Omni AI ships 52 locales and any of them may be active. EVERY string a user can see — overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy — MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
+7.  **i18n (MANDATORY: every user-visible string)**: Omni AI ships 52 locales and any of them may be active. EVERY string a user can see (overlay cards, toasts, buttons, menu labels, hints, placeholders, error/notification copy) MUST come from `chrome.i18n.getMessage()` / `lib/i18n.js` with its key added to `_locales/en/messages.json` in the same commit (other locales may follow later). A hardcoded user-facing string in source is a **review blocker**, not a nitpick. Developer-only `console.*` output is exempt.
 
     **Exception, reference data:** `lib/languages.js` holds the translation language registry (code, English name, native name) and is deliberately NOT duplicated into `_locales`. A language's own name is data, and 43 languages x 52 locales of translated names would be machine-translated noise. Every other string this extension shows a user, including the language picker's search placeholder and its optgroup labels, still goes through `_locales`. The maintainer approved this carve-out on 2026-09-13.
 
@@ -22,10 +22,10 @@ Welcome, agent. This is the handbook for working on **Omni AI**, a Manifest V3 C
 
 ## 🧠 Skills Protocol (MANDATORY)
 
-This repo **mandates** the superpowers process skills for every agent session (Claude Code, Codex, DSH, …). Skills resolve through your environment's superpowers install — this file only defines **when** each one applies here.
+This repo **mandates** the superpowers process skills for every agent session (Claude Code, Codex, DSH, …). Skills resolve through your environment's superpowers install; this file only defines **when** each one applies here.
 
 1.  **Invoke `using-superpowers` before ANY response or action** in this repo, and let it route the task.
-2.  Match the trigger, load the required skill FIRST — no exceptions, no rationalizing "it's a small change":
+2.  Match the trigger, load the required skill FIRST, no exceptions, no rationalizing "it's a small change":
 
 | Trigger                                   | Required skill                                                                   |
 | ----------------------------------------- | -------------------------------------------------------------------------------- |
@@ -109,22 +109,22 @@ Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
-| Type              | Purpose                                                                                                                                                                       |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `QUICK_ASK`       | In-page Quick Ask overlay query (Alt+A / right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()` — not from a popup                                          |
-| `WRITING_ACTION`  | Action request with explicit text                                                                                                                                             |
-| `QUICK_ACTION`    | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …), also used by the side panel's Page Tools buttons (summarize / smart_translate / explain) |
-| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                                                                  |
-| `GET_API_KEY`     | Read Gemini key                                                                                                                                                               |
+| Type              | Purpose                                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `QUICK_ASK`       | In-page Quick Ask overlay query (no default shortcut, so bind it at `chrome://extensions/shortcuts`, or use right-click "Ask Omni AI"), sent from `content.js`'s `handleAskAction()`, not from a popup |
+| `WRITING_ACTION`  | Action request with explicit text                                                                                                                                                                      |
+| `QUICK_ACTION`    | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …), also used by the side panel's Page Tools buttons (summarize / smart_translate / explain)                          |
+| `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                                                                                           |
+| `GET_API_KEY`     | Read Gemini key                                                                                                                                                                                        |
 
 **Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
 
 ### Provider System
 
-- Registry: `AI_PROVIDERS` in `lib/ai-providers.js` — each entry declares `id`, `name`, `keySetting` (storage key of its API key), and `models[]`.
-- Routing: `getProvider(modelId)` in `lib/providers/index.js` looks the model up in `AI_PROVIDERS` (via `getProviderByModel()`) and returns that provider's module — model IDs are not required to follow any naming convention. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
+- Registry: `AI_PROVIDERS` in `lib/ai-providers.js`: each entry declares `id`, `name`, `keySetting` (storage key of its API key), and `models[]`.
+- Routing: `getProvider(modelId)` in `lib/providers/index.js` looks the model up in `AI_PROVIDERS` (via `getProviderByModel()`) and returns that provider's module. Model IDs are not required to follow any naming convention. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
 - Every provider module exports `async generateContent(prompt, config)` where `config = { apiKey, model, maxTokens, temperature, topP, baseUrl? }`.
-- Every provider module ALSO exports `async generateContentStream(prompt, config, onChunk, signal)` — the streaming entry point used by Sidebar Chat. It calls `onChunk(textChunk)` for each token/line and honors an `AbortSignal` (`signal`) for cancellation. `lib/providers/index.js`'s `generateContentStream()` is the dispatcher (same routing as `generateContent`) and throws if the resolved provider does not implement streaming.
+- Every provider module ALSO exports `async generateContentStream(prompt, config, onChunk, signal)`, the streaming entry point used by Sidebar Chat. It calls `onChunk(textChunk)` for each token/line and honors an `AbortSignal` (`signal`) for cancellation. `lib/providers/index.js`'s `generateContentStream()` is the dispatcher (same routing as `generateContent`) and throws if the resolved provider does not implement streaming.
 - Sidebar Chat wiring: `sidepanel/sidepanel.js` opens a `chrome.runtime.connect({ name: "omni-chat" })` Port; the service worker's `onConnect` listener hands the Port to `createOmniChatHandler()` from `lib/omni-chat-port.js`, which resolves chat config via `getChatConfig()` and streams the reply from `generateContentStream()`. `lib/sidebar-chat.js` `buildChatPrompt()` assembles page context (capped at `PAGE_CONTEXT_MAX_CHARS = 8000`) + history + the latest message.
 - Custom models use the `-custom` suffix convention; the actual model name comes from storage (`customModelName` / `customGatewayModelName`).
 
@@ -143,7 +143,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 ### Adding a New AI Provider
 
 1. Create `lib/providers/[name].js` exporting `generateContent(prompt, config)`.
-2. Register it in `lib/providers/index.js` — import the module and add one line to the `MODULES` map (`providerId: Module`).
+2. Register it in `lib/providers/index.js`: import the module and add one line to the `MODULES` map (`providerId: Module`).
 3. Add the registry entry (models + `keySetting`) to `AI_PROVIDERS` in `lib/ai-providers.js`.
 4. Add key/model inputs to `settings.html` plus load/save wiring in `settings.js`.
 5. Add tests under `tests/lib/providers/`.
@@ -159,11 +159,11 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 
 1. Add one `{ code, name, native }` entry to `lib/languages.js`, keeping the array sorted by `name`.
 2. Run `env -u NODE_ENV npx jest tests/lib/languages.test.js`; the count assertion and the sort assertion both fail until the entry is right.
-3. Nothing else needs touching: the Settings pickers, the prompt names and the overlay labels all read that one list. The language's display name is reference data and deliberately does not get an `_locales` key — see core directive 7.
+3. Nothing else needs touching: the Settings pickers, the prompt names and the overlay labels all read that one list. The language's display name is reference data and deliberately does not get an `_locales` key; see core directive 7.
 
 ### Editing Content-Script UI
 
-All markup/styles live inside the Shadow DOM root. To style: use the shared `--omni-*` tokens (`lib/design-tokens.css`) and `.ds-*` component classes (`lib/design-system.css`) where possible, and edit `content/overlay.css` for overlay-specific rules (fetched into the shadow root along with the two shared files — keep it self-contained, no reliance on page styles). Keep the `.omni-ai-*` class prefix inside the shadow tree.
+All markup/styles live inside the Shadow DOM root. To style: use the shared `--omni-*` tokens (`lib/design-tokens.css`) and `.ds-*` component classes (`lib/design-system.css`) where possible, and edit `content/overlay.css` for overlay-specific rules (fetched into the shadow root along with the two shared files, so keep it self-contained and free of any reliance on page styles). Keep the `.omni-ai-*` class prefix inside the shadow tree.
 
 ---
 
@@ -175,14 +175,14 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 ```
 
 - Tests import ES modules through babel-jest; `jest.setup.js` installs `tests/helpers/chrome-mock.js` as the global `chrome`.
-- When you change prompt wording in `lib/ai-service.js`, update `tests/lib/ai-service.test.js` **in the same commit** — its assertions are exact substrings.
+- When you change prompt wording in `lib/ai-service.js`, update `tests/lib/ai-service.test.js` **in the same commit**, because its assertions are exact substrings.
 
 ### Manual smoke checklist (load unpacked)
 
 - [ ] Selection floating button appears; menu opens on plain pages AND inside inputs/textareas/contenteditable editors
 - [ ] Replace works for both plain inputs and rich editors
 - [ ] Context-menu items (Translate / Rephrase / Add Emoji / Summarize / Ask Omni AI) show result cards; Ask opens the Quick Ask overlay instead
-- [ ] Keyboard shortcuts fire (Alt+O quick-action menu, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit). `quick_ask` (Alt+A) gave up its default binding to make room for `quick_menu`'s Alt+O — it's still a fully working command, just not auto-bound; users assign it manually at `chrome://extensions/shortcuts` if they want it.
+- [ ] Keyboard shortcuts fire (Alt+O quick-action menu, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension, so `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit). `quick_ask` (Alt+A) gave up its default binding to make room for `quick_menu`'s Alt+O. It's still a fully working command, just not auto-bound; users assign it manually at `chrome://extensions/shortcuts` if they want it.
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
 - [ ] Clicking the toolbar icon opens the side panel (not a popup or a new window); Summarize/Smart Translate/Explain work against a real page and the panel stays open across tab switches
@@ -190,25 +190,25 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] "Back" button returns to the action menu after both a click-triggered AND a keyboard-shortcut-triggered (Alt+R/T/F) result
 - [ ] Service worker console clean after idle (no unhandled promise rejections)
 
-### Pre-Push Gate (mandatory — mirrors the GitHub pipeline)
+### Pre-Push Gate (mandatory, mirrors the GitHub pipeline)
 
 `master` is branch-protected: a PR cannot merge unless **both** CI checks are
-green — `verify` (typecheck → lint → format:check → test:coverage) and
-`e2e (playwright)` — and the branch is up to date with `master`. This is not a
+green (`verify`: typecheck → lint → format:check → test:coverage, and
+`e2e (playwright)`) and the branch is up to date with `master`. This is not a
 formality: an agent MUST run the **local equivalent of the full pipeline** and
 confirm it is green _before_ pushing any code to GitHub. Do not push and hope CI
 catches it.
 
 Local gate (must all pass before `git push`):
 
-1. `npm run verify` — `tsc --noEmit` (typecheck) + ESLint (`--max-warnings 0`) +
+1. `npm run verify`: `tsc --noEmit` (typecheck) + ESLint (`--max-warnings 0`) +
    Prettier (`--check`) + Jest coverage (`./lib/providers/` functions ≥ 65%).
-2. `npx playwright test` — the Playwright E2E suite (extension loads in MV3,
+2. `npx playwright test`: the Playwright E2E suite (extension loads in MV3,
    side panel, smoke). Needs `npx playwright install chromium` once.
 3. Only after BOTH are green may the agent push the feature branch and
    open/update the PR.
 
-If either is red locally, fix the root cause and re-run — never push a known-red
+If either is red locally, fix the root cause and re-run; never push a known-red
 state. The CI job commands in `.github/workflows/ci.yml` are the source of truth
 for the exact invocations; keep them in sync with this gate.
 
@@ -216,37 +216,37 @@ for the exact invocations; keep them in sync with this gate.
 
 ## 🚀 Dev Loop & Tooling (speed)
 
-- **Load unpacked** from `chrome://extensions` (dev mode). After edits: refresh the extension card (service worker / manifest changes) and reload target tabs (content-script changes). There is no HMR by default — see `docs/DEV-TOOLING.md` for the recommended speed stack (auto-reload, lint, typecheck, E2E).
+- **Load unpacked** from `chrome://extensions` (dev mode). After edits: refresh the extension card (service worker / manifest changes) and reload target tabs (content-script changes). There is no HMR by default; see `docs/DEV-TOOLING.md` for the recommended speed stack (auto-reload, lint, typecheck, E2E).
 - The `manifest.json` `"key"` field pins a stable extension ID in dev; `scripts/publish.sh` strips it for store builds. Never change `key` casually.
 - Debugging surfaces: SW inspector via `chrome://extensions` → "Inspect views: service worker"; content-script logs in page DevTools console (filter `[Omni AI]`).
 
 ## 📦 Release Flow
 
-1. Bump `version` in `manifest.json` (+ `package.json`), update `CHANGELOG.md`, and update the version badge in `README.md` (`img.shields.io/badge/version-X.Y.Z-blue`) — the only remaining hardcoded copy; nothing enforces it matches. (`settings.html`'s displayed version is read live from `chrome.runtime.getManifest().version` in `settings.js` `init()` — don't hardcode it there again.)
-2. `npm run verify` + `npx playwright test` + `bash scripts/publish.sh` (confirms `dist/omni-ai-vX.Y.Z.zip` builds cleanly and the dev `manifest.json` — including its pinned `"key"` — is restored afterward).
-3. Commit the version bump directly to `master` (there is no `develop` branch currently — PRs merge feature branches straight into `master`), then `git tag -a vX.Y.Z -m "Release vX.Y.Z"` and `git push origin vX.Y.Z`. The tag push triggers `.github/workflows/release.yml`, which builds the store zip and publishes the GitHub Release automatically — do not run `gh release create` manually.
-4. Before uploading, check `docs/CHROME_WEBSTORE_LISTING.txt` against what actually changed (keyboard shortcuts, context-menu items, feature list) and update it in the same commit if it drifted — it's the source of truth for the CWS dashboard's description field, and nothing enforces it stays in sync (same class of drift as the hardcoded version strings in step 1).
-5. Upload the built zip to the Chrome Web Store dashboard when ready to ship publicly (not automated — see the commented CWS upload block in `release.yml` for wiring it up), pasting `docs/CHROME_WEBSTORE_LISTING.txt`'s content into the description field if it changed.
+1. Bump `version` in `manifest.json` (+ `package.json`), update `CHANGELOG.md`, and update the version badge in `README.md` (`img.shields.io/badge/version-X.Y.Z-blue`), the only remaining hardcoded copy; nothing enforces it matches. (`settings.html`'s displayed version is read live from `chrome.runtime.getManifest().version` in `settings.js` `init()`. Don't hardcode it there again.)
+2. `npm run verify` + `npx playwright test` + `bash scripts/publish.sh` (confirms `dist/omni-ai-vX.Y.Z.zip` builds cleanly and the dev `manifest.json` (including its pinned `"key"`) is restored afterward).
+3. Commit the version bump directly to `master` (there is no `develop` branch currently, so PRs merge feature branches straight into `master`), then `git tag -a vX.Y.Z -m "Release vX.Y.Z"` and `git push origin vX.Y.Z`. The tag push triggers `.github/workflows/release.yml`, which builds the store zip and publishes the GitHub Release automatically; do not run `gh release create` manually.
+4. Before uploading, check `docs/CHROME_WEBSTORE_LISTING.txt` and `docs/PERMISSION_JUSTIFICATIONS.txt` against what actually changed: the feature list, the keyboard shortcuts, the context-menu items, the language counts (43 translation languages in `lib/languages.js`, 52 interface locales in `UI_LOCALE_CODES`), and the permission set. Update both in the same commit if they drifted. The listing is the source of truth for the CWS dashboard fields and nothing enforces it stays in sync, the same class of drift as the hardcoded version strings in step 1.
+5. Upload the built zip to the Chrome Web Store dashboard when ready to ship publicly (not automated; see the commented CWS upload block in `release.yml` for wiring it up), pasting `docs/CHROME_WEBSTORE_LISTING.txt`'s content into the description field if it changed.
 
 ---
 
-## ⚠️ Known Issues (fix on sight — do not copy these patterns)
+## ⚠️ Known Issues (fix on sight; do not copy these patterns)
 
 - **Never add `background.scripts` to `manifest.json`.** It is an MV2-only key; Chrome refuses to load an MV3 manifest that declares it alongside `background.service_worker`, with exactly the error `'background.scripts' requires manifest version of 2 or lower`. It was added once to silence `web-ext lint`'s `BACKGROUND_SERVICE_WORKER_NOFALLBACK` warning, which is Firefox-only, non-blocking (`continue-on-error: true` in `.github/workflows/ci.yml`), and already ruled inapplicable to this Chrome-only MV3 extension (see `tests/eslint-config.test.js`'s "verify script runs format:check but not lint:webext" test). `tests/manifest.test.js` guards against this regressing again.
 
-- **`chrome://extensions/shortcuts` ignores `commands._execute_action.description`.** Confirmed by loading the unpacked extension in Playwright and inspecting the real page: no matter what string is set there (`manifest.json`), Chrome always renders the reserved `_execute_action` row with its own built-in label ("Activate the extension" in en-US), grouped under the extension's name/icon heading above it. Only the other, non-reserved `commands` entries (`quick_ask`, `quick_rephrase`, …) show a custom description. `manifest.json`'s `_execute_action.description` and the matching row in `settings.html`'s own shortcuts list are still worth keeping accurate (the latter IS rendered as written, since it's our own markup, not Chrome's native page) — just don't expect editing that manifest string to change anything on Chrome's own shortcuts page, and don't go looking for it there under the description text.
+- **`chrome://extensions/shortcuts` ignores `commands._execute_action.description`.** Confirmed by loading the unpacked extension in Playwright and inspecting the real page: no matter what string is set there (`manifest.json`), Chrome always renders the reserved `_execute_action` row with its own built-in label ("Activate the extension" in en-US), grouped under the extension's name/icon heading above it. Only the other, non-reserved `commands` entries (`quick_ask`, `quick_rephrase`, …) show a custom description. `manifest.json`'s `_execute_action.description` and the matching row in `settings.html`'s own shortcuts list are still worth keeping accurate (the latter IS rendered as written, since it's our own markup, not Chrome's native page). Just don't expect editing that manifest string to change anything on Chrome's own shortcuts page, and don't go looking for it there under the description text.
 
 ---
 
 ## ✅ Agent Checklist (before you finish)
 
-- [ ] No framework imports, no bundler assumptions — files still load raw in the browser
-- [ ] New UI renders inside the Shadow DOM root using tokens (`--omni-accent`, `--omni-glass-bg`, …) from `lib/design-tokens.css` / components from `lib/design-system.css` — never hardcode colors
+- [ ] No framework imports, no bundler assumptions; files still load raw in the browser
+- [ ] New UI renders inside the Shadow DOM root using tokens (`--omni-accent`, `--omni-glass-bg`, …) from `lib/design-tokens.css` / components from `lib/design-system.css`. Never hardcode colors
 - [ ] Every new `onMessage` case that replies asynchronously returns `true`
 - [ ] Text replacement verified for `input` + `textarea` + `contenteditable`
-- [ ] Every user-facing string goes through i18n (`_locales/en/messages.json`) — zero hardcoded visible text
+- [ ] Every user-facing string goes through i18n (`_locales/en/messages.json`), zero hardcoded visible text
 - [ ] `npm test` green; no leftover `console.log`s (warnings/errors OK)
 
 ---
 
-_Maintained by ddtcorex with AI coding agents. Keep this file accurate — it is the single source of truth for agents working on Omni AI._
+_Maintained by ddtcorex with AI coding agents. Keep this file accurate. It is the single source of truth for agents working on Omni AI._
