@@ -91,15 +91,16 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type                     | Direction           | Purpose                                                                                        |
-| ------------------------ | ------------------- | ---------------------------------------------------------------------------------------------- |
-| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                      |
-| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                      |
-| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                       |
-| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                              |
-| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                      |
-| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                |
-| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
+| Type                     | Direction           | Purpose                                                                                                                                |
+| ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                                                              |
+| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                                                              |
+| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                                                               |
+| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                                                                      |
+| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                                                              |
+| `SHOW_QUICK_ACTION_MENU` | bg → content        | Open the quick-action menu at the current selection (Alt+O), same menu the floating icon's click opens; no-ops if there's no selection |
+| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                                                        |
+| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`)                                         |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
@@ -170,7 +171,7 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] Selection floating button appears; menu opens on plain pages AND inside inputs/textareas/contenteditable editors
 - [ ] Replace works for both plain inputs and rich editors
 - [ ] Context-menu items (Translate / Rephrase / Add Emoji / Summarize / Ask Omni AI) show result cards; Ask opens the Quick Ask overlay instead
-- [ ] Keyboard shortcuts fire (Alt+A ask, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit).
+- [ ] Keyboard shortcuts fire (Alt+O quick-action menu, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit). `quick_ask` (Alt+A) gave up its default binding to make room for `quick_menu`'s Alt+O — it's still a fully working command, just not auto-bound; users assign it manually at `chrome://extensions/shortcuts` if they want it.
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
 - [ ] Clicking the toolbar icon opens the side panel (not a popup or a new window); Summarize/Smart Translate/Explain work against a real page and the panel stays open across tab switches
@@ -220,7 +221,9 @@ for the exact invocations; keep them in sync with this gate.
 
 ## ⚠️ Known Issues (fix on sight — do not copy these patterns)
 
-None currently. 🎉
+- **Never add `background.scripts` to `manifest.json`.** It is an MV2-only key; Chrome refuses to load an MV3 manifest that declares it alongside `background.service_worker`, with exactly the error `'background.scripts' requires manifest version of 2 or lower`. It was added once to silence `web-ext lint`'s `BACKGROUND_SERVICE_WORKER_NOFALLBACK` warning, which is Firefox-only, non-blocking (`continue-on-error: true` in `.github/workflows/ci.yml`), and already ruled inapplicable to this Chrome-only MV3 extension (see `tests/eslint-config.test.js`'s "verify script runs format:check but not lint:webext" test). `tests/manifest.test.js` guards against this regressing again.
+
+- **`chrome://extensions/shortcuts` ignores `commands._execute_action.description`.** Confirmed by loading the unpacked extension in Playwright and inspecting the real page: no matter what string is set there (`manifest.json`), Chrome always renders the reserved `_execute_action` row with its own built-in label ("Activate the extension" in en-US), grouped under the extension's name/icon heading above it. Only the other, non-reserved `commands` entries (`quick_ask`, `quick_rephrase`, …) show a custom description. `manifest.json`'s `_execute_action.description` and the matching row in `settings.html`'s own shortcuts list are still worth keeping accurate (the latter IS rendered as written, since it's our own markup, not Chrome's native page) — just don't expect editing that manifest string to change anything on Chrome's own shortcuts page, and don't go looking for it there under the description text.
 
 ---
 

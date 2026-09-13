@@ -21,8 +21,7 @@
   },
   "background": {
     "service_worker": "background/service-worker.js",
-    "type": "module",
-    "scripts": ["background/service-worker.js"]
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -44,14 +43,17 @@
     "default_path": "sidepanel/sidepanel.html"
   },
   "commands": {
+    "quick_menu": {
+      "suggested_key": {
+        "default": "Alt+O",
+        "mac": "Alt+O"
+      },
+      "description": "__MSG_command_openQuickMenu__"
+    },
     "_execute_action": {
-      "description": "__MSG_popup_title__"
+      "description": "__MSG_command_openPanel__"
     },
     "quick_ask": {
-      "suggested_key": {
-        "default": "Alt+A",
-        "mac": "Alt+A"
-      },
       "description": "__MSG_popup_quickAsk__"
     },
     "quick_rephrase": {

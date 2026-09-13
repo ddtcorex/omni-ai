@@ -95,10 +95,27 @@
 
         <section id="chatView" class="tab-view">
           <div class="chat-page-context">
-            <label class="chat-context-toggle">
-              <input type="checkbox" id="includeContext" checked />
-              <span>__MSG_sidebar_chat_includeContext__</span>
-            </label>
+            <div class="chat-context-row">
+              <label class="chat-context-toggle">
+                <input type="checkbox" id="includeContext" checked />
+                <span>__MSG_sidebar_chat_includeContext__</span>
+              </label>
+              <button id="clearChatBtn" class="ds-icon-btn" title="__MSG_sidebar_chat_clear__">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                  ></path>
+                </svg>
+              </button>
+            </div>
             <details class="chat-context-details">
               <summary>__MSG_sidebar_chat_pageContext__</summary>
               <pre id="pageContextPreview" class="chat-context-preview"></pre>
@@ -112,18 +129,38 @@
           <div class="chat-error hidden" id="chatError">__MSG_sidebar_chat_error__</div>
 
           <div class="chat-input-row">
-            <textarea
-              id="chatInput"
-              class="chat-input"
-              rows="2"
-              placeholder="__MSG_sidebar_chat_placeholder__"
-            ></textarea>
-            <button id="chatSend" class="ds-btn-primary chat-send">
-              __MSG_sidebar_chat_send__
-            </button>
-            <button id="chatStop" class="ds-btn-secondary chat-stop hidden">
-              __MSG_sidebar_chat_stop__
-            </button>
+            <div class="chat-input-wrap">
+              <textarea
+                id="chatInput"
+                class="chat-input"
+                rows="2"
+                placeholder="__MSG_sidebar_chat_placeholder__"
+              ></textarea>
+              <button id="chatSend" class="chat-fab chat-send" title="__MSG_sidebar_chat_send__">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+              <button
+                id="chatStop"
+                class="chat-fab chat-stop hidden"
+                title="__MSG_sidebar_chat_stop__"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                </svg>
+              </button>
+            </div>
           </div>
         </section>
       </main>

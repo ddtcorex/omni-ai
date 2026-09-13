@@ -3,6 +3,7 @@ import {
   getSyncPreferences,
   getApiKey as getStoredApiKey,
   getCustomGatewayConfig,
+  getApiModel,
 } from "../lib/storage.js";
 import {
   quickAsk,
@@ -133,6 +134,11 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
     return;
   }
 
+  if (command === "quick_menu") {
+    sendToActiveEditor(tab.id, { type: "SHOW_QUICK_ACTION_MENU" }).catch(() => {});
+    return;
+  }
+
   // Handle other commands via selected text
   try {
     // Notify content script to show processing state (spin icon)
@@ -188,6 +194,7 @@ async function initializeSettings() {
       autoClose: false,
       showNotifications: true,
       showFloatingButton: true,
+      flashActions: ["translate_primary", "rephrase", "grammar"],
     },
   };
 
@@ -676,13 +683,12 @@ const PROVIDER_KEY_MAP = {
 };
 
 async function getChatConfig(modelId, temperature) {
-  const { activeModel, temperature: prefTemp } = await getSyncPreferences();
-  const model = modelId || activeModel;
+  const model = modelId || (await getApiModel());
   const providerInfo = getProviderByModel(model);
   const providerId = providerInfo?.id || "google";
   const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
 
-  const config = { apiKey, model, temperature: temperature ?? prefTemp ?? 0.7 };
+  const config = { apiKey, model, provider: providerId, temperature: temperature ?? 0.7 };
 
   if (providerId === "customGateway") {
     const gw = await getCustomGatewayConfig();

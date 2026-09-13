@@ -3,10 +3,13 @@ import { generateContent } from "../../../lib/providers/anthropic";
 describe("Anthropic Provider", () => {
   beforeEach(() => {
     global.fetch = jest.fn();
+    chrome.i18n.getMessage.mockImplementation((key) => key);
   });
 
-  it("throws error if apiKey is missing", async () => {
-    await expect(generateContent("test", {})).rejects.toThrow("Anthropic API key not configured");
+  it("throws a localized error if apiKey is missing", async () => {
+    await expect(generateContent("test", {})).rejects.toThrow(
+      "error_apiKeyNotConfigured_anthropic",
+    );
   });
 
   it("calls the Messages API with x-api-key auth and the anthropic-version header", async () => {

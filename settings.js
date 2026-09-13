@@ -72,12 +72,33 @@ const elements = {
   refreshHistoryBtn: document.getElementById("refreshHistory"),
   clearHistoryBtn: document.getElementById("clearHistory"),
   historyList: document.getElementById("historyList"),
+  flashActionsList: document.getElementById("flashActionsList"),
 };
 
 // State
 let isGeminiKeyVisible = false;
 
 const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko", "zh"];
+
+// Flash Actions: shown on hovering the floating quick-action icon, so common
+// actions can run without opening the full quick-action menu.
+const DEFAULT_FLASH_ACTIONS = ["translate_primary", "rephrase", "grammar"];
+const MAX_FLASH_ACTIONS = 4;
+
+/**
+ * Disable unchecked flash-action checkboxes once MAX_FLASH_ACTIONS are
+ * checked, so the floating icon's hover row can't grow unbounded; re-enable
+ * them once the count drops back under the cap.
+ */
+function updateFlashActionCap() {
+  if (!elements.flashActionsList) return;
+  /** @type {HTMLInputElement[]} */
+  const boxes = Array.from(elements.flashActionsList.querySelectorAll("[data-flash-action]"));
+  const checkedCount = boxes.filter((box) => box.checked).length;
+  boxes.forEach((box) => {
+    box.disabled = !box.checked && checkedCount >= MAX_FLASH_ACTIONS;
+  });
+}
 
 /**
  * Map a browser UI-language tag to one of this extension's supported locales.
@@ -217,6 +238,11 @@ export function setupEventListeners() {
   // Validate button
   if (elements.validateBtn) {
     elements.validateBtn.addEventListener("click", validateConfiguration);
+  }
+
+  // Flash Actions cap: re-evaluate on every checkbox change
+  if (elements.flashActionsList) {
+    elements.flashActionsList.addEventListener("change", updateFlashActionCap);
   }
 
   // Auto-validate on key blur (debounced; only when the value actually
@@ -552,6 +578,14 @@ export async function loadSettings() {
       elements.showFloatingButton.value =
         config.settings?.showFloatingButton === false ? "off" : "on";
     }
+    if (elements.flashActionsList) {
+      const flashActions = config.settings?.flashActions || DEFAULT_FLASH_ACTIONS;
+      elements.flashActionsList.querySelectorAll("[data-flash-action]").forEach((el) => {
+        const box = /** @type {HTMLInputElement} */ (el);
+        box.checked = flashActions.includes(box.dataset.flashAction);
+      });
+      updateFlashActionCap();
+    }
 
     updateModelVisibility();
   } catch (error) {
@@ -588,6 +622,13 @@ async function saveSettings() {
       settings: {
         ...(existingLocalSettings || {}),
         showFloatingButton: elements.showFloatingButton?.value !== "off",
+        flashActions: elements.flashActionsList
+          ? /** @type {HTMLInputElement[]} */ (
+              Array.from(elements.flashActionsList.querySelectorAll("[data-flash-action]"))
+            )
+              .filter((box) => box.checked)
+              .map((box) => box.dataset.flashAction)
+          : (existingLocalSettings?.flashActions ?? DEFAULT_FLASH_ACTIONS),
       },
     };
 

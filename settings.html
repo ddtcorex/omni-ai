@@ -373,6 +373,51 @@
 
             <div class="setting-item">
               <label class="setting-label">
+                <span class="label-text">__MSG_settings_flashActions__</span>
+                <span class="label-hint">__MSG_settings_flashActionsHint__</span>
+              </label>
+              <div class="flash-actions-list" id="flashActionsList">
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="translate_primary" />
+                  <span>__MSG_settings_flashAction_translatePrimary__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="translate_default" />
+                  <span>__MSG_settings_flashAction_translateDefault__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="grammar" />
+                  <span>__MSG_action_grammar__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="rephrase" />
+                  <span>__MSG_action_rephrase__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="reply" />
+                  <span>__MSG_action_reply__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="emoji" />
+                  <span>__MSG_action_emojify__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="tone" />
+                  <span>__MSG_action_tone__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="summarize" />
+                  <span>__MSG_action_summarize__</span>
+                </label>
+                <label class="flash-action-option">
+                  <input type="checkbox" data-flash-action="explain" />
+                  <span>__MSG_action_explain__</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">
                 <span class="label-text">__MSG_settings_defaultTone__</span>
                 <span class="label-hint">__MSG_settings_defaultToneHint__</span>
               </label>
@@ -434,8 +479,8 @@
           <div class="setting-card">
             <div class="shortcuts-list">
               <div class="shortcut-item">
-                <span class="shortcut-action">__MSG_popup_quickAsk__</span>
-                <kbd class="shortcut-keys">Alt + A</kbd>
+                <span class="shortcut-action">__MSG_command_openQuickMenu__</span>
+                <kbd class="shortcut-keys">Alt + O</kbd>
               </div>
               <div class="shortcut-item">
                 <span class="shortcut-action">__MSG_action_rephrase__</span>
@@ -450,7 +495,11 @@
                 <kbd class="shortcut-keys">Alt + F</kbd>
               </div>
               <div class="shortcut-item">
-                <span class="shortcut-action">__MSG_popup_title__</span>
+                <span class="shortcut-action">__MSG_command_openPanel__</span>
+                <span class="shortcut-unset">__MSG_settings_shortcuts_customize__</span>
+              </div>
+              <div class="shortcut-item">
+                <span class="shortcut-action">__MSG_popup_quickAsk__</span>
                 <span class="shortcut-unset">__MSG_settings_shortcuts_customize__</span>
               </div>
               <div class="shortcut-item">

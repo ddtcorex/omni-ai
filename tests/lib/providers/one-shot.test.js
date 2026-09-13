@@ -13,6 +13,10 @@ function mockFetchJson(payload, { ok = true, status = 200 } = {}) {
   });
 }
 
+beforeEach(() => {
+  chrome.i18n.getMessage.mockImplementation((key) => key);
+});
+
 afterEach(() => {
   jest.restoreAllMocks();
 });
@@ -24,7 +28,9 @@ test("openai generateContent returns text", async () => {
 });
 
 test("openai generateContent throws without apiKey", async () => {
-  await expect(openaiGenerate("hi", { model: "x" })).rejects.toThrow(/API key/);
+  await expect(openaiGenerate("hi", { model: "x" })).rejects.toThrow(
+    "error_apiKeyNotConfigured_openai",
+  );
 });
 
 test("openai generateContent surfaces API error", async () => {
@@ -35,7 +41,9 @@ test("openai generateContent surfaces API error", async () => {
 test("groq generateContent returns text and throws on missing key", async () => {
   mockFetchJson({ choices: [{ message: { content: "groq say" } }] });
   expect(await groqGenerate("hi", { apiKey: "k", model: "groq-llama-3.3-70b" })).toBe("groq say");
-  await expect(groqGenerate("hi", { model: "x" })).rejects.toThrow(/API key/);
+  await expect(groqGenerate("hi", { model: "x" })).rejects.toThrow(
+    "error_apiKeyNotConfigured_groq",
+  );
 });
 
 test("groq generateContent falls back to default model name when model missing", async () => {
@@ -60,7 +68,9 @@ test("anthropic generateContent returns text", async () => {
 });
 
 test("anthropic generateContent throws without apiKey", async () => {
-  await expect(anthropicGenerate("hi", { model: "x" })).rejects.toThrow(/API key/);
+  await expect(anthropicGenerate("hi", { model: "x" })).rejects.toThrow(
+    "error_apiKeyNotConfigured_anthropic",
+  );
 });
 
 test("gemini generateContent returns text", async () => {
@@ -70,7 +80,9 @@ test("gemini generateContent returns text", async () => {
 });
 
 test("gemini generateContent throws without apiKey", async () => {
-  await expect(geminiGenerate("hi", { model: "x" })).rejects.toThrow(/API key/);
+  await expect(geminiGenerate("hi", { model: "x" })).rejects.toThrow(
+    "error_apiKeyNotConfigured_gemini",
+  );
 });
 
 test("gemini generateContent retries on 429 then succeeds", async () => {
@@ -102,5 +114,7 @@ test("custom-gateway generateContent returns text and requires baseUrl", async (
       baseUrl: "https://gw.example.com",
     }),
   ).toBe("cg out");
-  await expect(cgGenerate("hi", { model: "x" })).rejects.toThrow(/base URL/);
+  await expect(cgGenerate("hi", { model: "x" })).rejects.toThrow(
+    "error_customGatewayBaseUrlNotConfigured",
+  );
 });
