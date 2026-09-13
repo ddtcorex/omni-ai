@@ -311,3 +311,121 @@ test("Replace works after running a flash action on an <input> field", async () 
     server.close();
   }
 });
+
+test("Replace recovers by id when the page re-renders the field mid-flight, instead of silently no-oping", async () => {
+  const INPUT_FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(INPUT_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase"]);
+    // Delay the AI response so there's room to swap the DOM node before
+    // Replace becomes clickable -- simulating a live page (e.g. a comment
+    // counter poll) re-rendering the field while a flash action is in flight.
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      await new Promise((r) => setTimeout(r, 300));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          candidates: [{ content: { parts: [{ text: "RECOVERED-REPLY" }] } }],
+        }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.evaluate(() => {
+      const el = document.getElementById("target");
+      el.focus();
+      el.setSelectionRange(6, 11); // selects "world"
+    });
+    await page.locator("#target").dispatchEvent("mouseup");
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+
+    const flashBtn = page.locator('[data-flash-action="rephrase"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.click();
+
+    // Replace the original node with a fresh one sharing the same id --
+    // exactly what a framework re-render (e.g. React) does under the hood.
+    await page.evaluate(() => {
+      const old = document.getElementById("target");
+      const fresh = document.createElement("input");
+      fresh.type = "text";
+      fresh.id = "target";
+      fresh.value = "Freshly re-rendered value";
+      old.replaceWith(fresh);
+    });
+
+    const replaceBtn = page.locator("#omniAiReplace");
+    await expect(replaceBtn).toBeVisible({ timeout: 5000 });
+    await replaceBtn.click();
+
+    // Recovered node has no original selection, so this falls back to a
+    // whole-field replace rather than the originally-selected substring.
+    await expect(page.locator("#target")).toHaveValue("RECOVERED-REPLY");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Replace fails gracefully (overlay stays open) when the field is removed entirely and can't be recovered", async () => {
+  const INPUT_FIXTURE = `<!doctype html><html><body>
+    <input type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(INPUT_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase"]);
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      await new Promise((r) => setTimeout(r, 300));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          candidates: [{ content: { parts: [{ text: "ORPHANED-REPLY" }] } }],
+        }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.evaluate(() => {
+      const el = document.querySelector("input");
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await page.locator("input").dispatchEvent("mouseup");
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+
+    const flashBtn = page.locator('[data-flash-action="rephrase"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.click();
+
+    // No id to recover by -- the field is just gone by the time Replace is
+    // clickable (e.g. the user's comment form got removed/collapsed).
+    await page.evaluate(() => document.querySelector("input").remove());
+
+    const replaceBtn = page.locator("#omniAiReplace");
+    await expect(replaceBtn).toBeVisible({ timeout: 5000 });
+    await replaceBtn.click();
+
+    // Replace couldn't do anything real, so it must not claim success by
+    // closing the overlay -- that would look like a silent, misleading no-op.
+    await expect(replaceBtn).toBeVisible();
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

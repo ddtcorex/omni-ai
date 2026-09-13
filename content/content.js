@@ -1912,6 +1912,33 @@ async function replaceSelectedText(newText, specificElement = null) {
     activeElement = activeInputElement;
   }
 
+  // A stale/detached reference -- e.g. the page re-rendered this field (a
+  // live comment counter, a framework re-render, ...) while a flash action's
+  // mandatory hover delay + AI round-trip was in flight -- would otherwise
+  // "successfully" write into a node no longer on screen: the overlay closes
+  // reporting success, but the visible field never changes. Try to recover a
+  // live element sharing the same id (stable across most re-renders) before
+  // giving up; the recovered node won't have the original selection, so this
+  // falls back to whole-field replacement rather than a partial one.
+  if (activeElement && !activeElement.isConnected) {
+    const recovered = activeElement.id ? document.getElementById(activeElement.id) : null;
+    if (recovered?.isConnected) {
+      console.warn(
+        "[Omni AI] Replace: original target was detached (page re-rendered this field);",
+        "recovered a live element with the same id, replacing its full value instead.",
+      );
+      activeElement = recovered;
+    } else {
+      console.warn(
+        "[Omni AI] Replace: target element is no longer attached to the page",
+        "(the page likely re-rendered this field while waiting for a result),",
+        "and no element with the same id was found to recover.",
+        activeElement,
+      );
+      return false;
+    }
+  }
+
   const context = getContext(activeElement);
 
   // Prepare state for replacement
