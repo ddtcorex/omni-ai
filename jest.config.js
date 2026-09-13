@@ -9,7 +9,7 @@ module.exports = {
     "^.+\\.js$": "babel-jest",
   },
   // Honest coverage accounting: without this, Jest only reports coverage for
-  // files some test happens to `require`. Both content.js and sidepanel.js were
+  // files some test happens to `require`. The files content.js and sidepanel.js were
   // both silently invisible (reported nowhere, not even as 0%) before this,
   // which is how a large, frequently-buggy file's total lack of unit tests
   // went unnoticed. See docs/superpowers/specs/2026-09-02-code-quality-system-design.md.

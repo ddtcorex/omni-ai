@@ -1,7 +1,7 @@
 /* lib/design-tokens.css */
 
 /* ============================================
-   Omni AI - Design Tokens
+   Omni AI: Design Tokens
    Single source of truth for all three UI surfaces
    (content-script overlay, side panel, settings page).
    See docs/design-system/MASTER.md for usage guidance.
@@ -11,7 +11,7 @@
 :host {
   --omni-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Color - dark (default) */
+  /* Color: dark (default) */
   --omni-bg-primary: #0f0f14;
   --omni-bg-secondary: #1a1a24;
   --omni-bg-tertiary: #252532;

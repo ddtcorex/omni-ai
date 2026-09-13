@@ -17,7 +17,7 @@ WHAT IT DOES
 Works in plain inputs, textareas, and rich-text editors such as TinyMCE. Trigger it from the floating button, the right-click menu, or keyboard shortcuts. A side panel adds one-click Summarize, Smart Translate, and Explain for the whole page you are reading.
 
 THE INTERFACE SPEAKS YOUR LANGUAGE
-The entire extension interface is translated into 46 languages, with separate regional variants for British English, Canadian French, Latin American Spanish, European Portuguese, and Traditional Chinese for Hong Kong and Taiwan. That is 52 locales in total:
+The entire extension interface ships in 52 locales, covering 46 languages. Six of those locales are regional variants: British English, Canadian French, Latin American Spanish, European Portuguese, and Traditional Chinese for Hong Kong and Taiwan. All 52:
 
 Arabic, Bengali, Bulgarian, Catalan, Simplified Chinese, Traditional Chinese (Hong Kong), Traditional Chinese (Taiwan), Croatian, Czech, Danish, Dutch, English, British English, Finnish, French, Canadian French, German, Greek, Gujarati, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Kannada, Kazakh, Korean, Lithuanian, Malay, Malayalam, Marathi, Norwegian, Odia, Polish, Portuguese, European Portuguese, Punjabi, Romanian, Russian, Slovak, Slovenian, Spanish, Latin American Spanish, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian, Urdu, Vietnamese.
 
@@ -86,8 +86,8 @@ done in the dashboard's language tab.
 
 English source strings (`_locales/en/messages.json`):
   extName:        Omni AI
-  extDescription: All-in-One AI Assistant powered by AI Models: writing
-                  enhancement, quick actions, and smart utilities
+  extDescription: All-in-One AI Assistant powered by AI Models: writing enhancement, quick actions, and smart utilities
+                  (101 characters; keep it on ONE line when pasting, the wrap here is only for this file)
 
 CATEGORY
 Productivity (Search Tools as the secondary choice if Productivity is taken)
@@ -118,8 +118,9 @@ PRIVACY POLICY URL
 The store requires a publicly reachable URL, not a repository file. The
 policy text lives in `docs/PRIVACY_POLICY.md`; whoever publishes it is
 responsible for re-publishing after any edit to that file, otherwise the
-store keeps serving the older text. Record the live URL here once it is
-confirmed, so the next release does not have to rediscover it.
+store keeps serving the older text. A URL is already registered in the
+dashboard, but its value is not written down in this repository, so treat it
+as unknown here and record it the next time the dashboard is open.
 
 DATA USAGE DISCLOSURES
 Answer the dashboard's data collection questions exactly as written in the

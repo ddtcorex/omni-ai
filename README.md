@@ -19,7 +19,7 @@ Highlight any text on any website to see the **✨ Omni AI Floating Button**. On
 - **Fix Grammar & Spelling**: Professional polish in a click.
 - **Rephrase**: Rewrite with different words for better flow.
 - **Summarize**: Get the gist of long paragraphs instantly.
-- **Change Tone**: Swiftly switch between Professional, Casual, Formal, and more.
+- **Change Tone**: Swiftly switch between the Professional, Casual, Friendly, Direct, and Confident presets.
 - **Ask AI**: Direct chat contextually based on your selection (the Quick Ask overlay has no default shortcut; bind it at `chrome://extensions/shortcuts` if you want it on the keyboard).
 - **Page Tools**: Click the toolbar icon to open a side panel with one-click Summarize / Smart Translate / Explain for the whole page you're on.
 - **Sidebar Chat**: A streaming AI chat tab in the side panel: ask about the page you're viewing (auto page context, capped at ~8000 chars), with history and live token-by-token responses streamed over a `chrome.runtime` Port.

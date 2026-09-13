@@ -1,5 +1,5 @@
 /* ============================================
-   Omni AI - Shared Component Classes
+   Omni AI: Shared Component Classes
    Consumes tokens from lib/design-tokens.css. Loaded after that file
    everywhere (content.js's ensureUiStyles(), settings.html, sidepanel.html).
    See docs/design-system/MASTER.md for usage guidance.

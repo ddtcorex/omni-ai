@@ -1,5 +1,5 @@
 /**
- * Omni AI - Content Script
+ * Omni AI: Content Script
  * Injected into web pages to handle text selection and result overlay
  */
 
@@ -689,7 +689,7 @@ function setupSelectionListener() {
       // Determine if we should show button
       // Show if:
       // 1. Text is selected (Standard, Rich, Static)
-      // 2. OR Input has content (Full text mode) - For Standard/Rich only
+      // 2. OR Input has content (Full text mode), Standard/Rich only
 
       const hasSelection = result.isSelection;
       const hasContent = result.text.length > 0;
@@ -835,7 +835,7 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
 
   const uiReady = ensureUiRootReady();
 
-  // Position - Use mouse position if provided (for text selection)
+  // Position: use mouse position if provided (for text selection)
   let top, left;
   if (mousePosition) {
     // Position near mouse cursor with small offset
@@ -1842,7 +1842,7 @@ async function showResultOverlay(payload, isInput = false) {
     </div>
   `;
 
-  // Position Logic - Run AFTER content update
+  // Position Logic: run AFTER content update
   setTimeout(() => {
     // If we have a preserved position, use it to Lock the overlay in place
     if (preservedPosition) {

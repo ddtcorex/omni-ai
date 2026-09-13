@@ -1,5 +1,5 @@
 /**
- * Omni AI - Side Panel Script (Page Tools)
+ * Omni AI: Side Panel Script (Page Tools)
  * One-click Summarize / Smart Translate / Explain against the active tab.
  */
 

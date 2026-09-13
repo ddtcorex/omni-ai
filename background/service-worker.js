@@ -21,7 +21,7 @@ import { createOmniChatHandler } from "../lib/omni-chat-port.js";
 import { getProviderByModel } from "../lib/ai-providers.js";
 
 /**
- * Omni AI - Service Worker
+ * Omni AI: Service Worker
  * Background script handling API calls, context menus, and message passing
  */
 

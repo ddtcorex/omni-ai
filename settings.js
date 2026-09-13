@@ -22,7 +22,7 @@ import {
 import { buildLanguageOptionGroups, UI_LOCALE_CODES } from "./lib/languages.js";
 
 /**
- * Omni AI - Options Page Script
+ * Omni AI: Options Page Script
  * Handles settings UI and storage
  */
 
