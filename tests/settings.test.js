@@ -430,6 +430,30 @@ describe("language pickers", () => {
     expect(saved.primaryLanguage).toBe("vi");
     expect(saved.defaultLanguage).toBe("en");
   });
+
+  it("re-localizes the page's own UI immediately after Save changes Primary Language, without a reload", async () => {
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "en", defaultLanguage: "en" });
+    await Settings.loadSettings();
+    Settings.setupEventListeners();
+    document.getElementById("themeSelector").value = "dark";
+
+    // Stand-in for the __MSG_-templated static text settings.html ships;
+    // buildFixture()'s minimal DOM has none of its own.
+    const probe = document.createElement("span");
+    probe.textContent = "__MSG_settings_saved__";
+    document.body.appendChild(probe);
+
+    chrome.i18n.getMessage.mockImplementation((key) => `en:${key}`);
+    Settings.localizeDOM();
+    expect(probe.textContent).toBe("en:settings_saved");
+
+    chrome.i18n.getMessage.mockImplementation((key) => `vi:${key}`);
+    document.getElementById("primaryLanguage").value = "vi";
+    document.getElementById("saveBtn").click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(probe.textContent).toBe("vi:settings_saved");
+  });
 });
 
 describe("localizeDOM", () => {
