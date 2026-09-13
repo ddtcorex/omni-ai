@@ -369,10 +369,7 @@
     "message": "Anthropic APIキーの取得"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "アクセス:"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console"
+    "message": "Anthropic Console にアクセス"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "サインアップまたはログインします"
@@ -467,11 +464,7 @@
     "description": "保存失敗エラー"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "アクセス:"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Google AI Studio にアクセス"
   },
   "settings_tooltip_gemini_s2": {
     "message": "「Create API Key」をクリックします"
@@ -480,11 +473,7 @@
     "message": "キーをコピーしてクリップボードに保存します"
   },
   "settings_tooltip_groq_s1": {
-    "message": "アクセス:"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "Groq Console にアクセス"
   },
   "settings_tooltip_groq_s2": {
     "message": "サインアップまたはログインします"
@@ -493,11 +482,7 @@
     "message": "新しいAPIキーを作成します"
   },
   "settings_tooltip_openai_s1": {
-    "message": "アクセス:"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "OpenAI Platform にアクセス"
   },
   "settings_tooltip_openai_s2": {
     "message": "サインアップまたはログインします"
@@ -695,7 +680,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "API キーが設定されていません:",
+    "message": "$MODEL$ の API キーが設定されていません",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "sidebar_chat_clear": {

@@ -292,7 +292,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "لم يتم تكوين مفتاح API لـ",
+    "message": "لم يتم تكوين مفتاح API لـ $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "settings_defaultTone": {
@@ -456,11 +461,7 @@
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "انتقل إلى"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console",
-    "description": "Link text for Anthropic Console"
+    "message": "انتقل إلى Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "أنشئ حساباً أو سجّل الدخول"
@@ -555,11 +556,7 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "انتقل إلى"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "انتقل إلى Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "انقر على إنشاء مفتاح API"
@@ -568,11 +565,7 @@
     "message": "انسخ المفتاح إلى الحافظة"
   },
   "settings_tooltip_groq_s1": {
-    "message": "انتقل إلى"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "انتقل إلى Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "أنشئ حساباً أو سجّل الدخول"
@@ -581,11 +574,7 @@
     "message": "أنشئ مفتاح API جديداً"
   },
   "settings_tooltip_openai_s1": {
-    "message": "انتقل إلى"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "انتقل إلى OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "أنشئ حساباً أو سجّل الدخول"

@@ -106,7 +106,7 @@ Note the two deliberate interpretation calls, both re-derivable from the table a
 | 6 | `lt kk kn ml or pa` | 1,116 | Remaining Apple entries |
 | 7 | `zh_TW zh_HK pt_PT es_419 fr_CA en_GB` | 1,116 | Regional script and market variants |
 
-Strings per wave assume 186 keys (183 shipped plus the 3 Plan A adds). Confirm the real number with `node -e 'console.log(Object.keys(require("./_locales/en/messages.json")).length)'` before quoting it.
+Strings per wave assume 186 keys (183 shipped plus the 3 Plan A adds); the real count is now 182 after the prefix-template fix recorded at the end of this file removed 4 keys. Confirm the real number with `node -e 'console.log(Object.keys(require("./_locales/en/messages.json")).length)'` before quoting it.
 
 ---
 
@@ -392,7 +392,7 @@ gh pr create --title "feat(i18n): UI locales wave <N>" --body-file /tmp/i18n-wav
 
 **Deliberate non-goals:** translating language *names* into each locale (they come from `lib/languages.js`), the Apple "Translate App" and "System-Wide Translation" lists (21 and 27 entries, narrower than the System Language list the maintainer chose), and Cantonese/Shanghainese/Flemish/Valencian as separate locales, since Apple files them under the Chinese, Dutch and Catalan entries and Chrome has no directory names for them.
 
-**Risk to state plainly:** 42 locales x 186 keys is roughly 7,800 AI-produced strings. Waves 1..7 are nine PRs of translator work. The structural tests prove the files are complete and well-formed; they cannot prove the Vietnamese or the Kannada reads naturally. That judgement stays with a human reviewer, wave by wave.
+**Risk to state plainly:** 42 locales x 182 keys is roughly 7,800 AI-produced strings. Waves 1..7 are nine PRs of translator work. The structural tests prove the files are complete and well-formed; they cannot prove the Vietnamese or the Kannada reads naturally. That judgement stays with a human reviewer, wave by wave.
 
 ## Execution Record
 
@@ -409,7 +409,7 @@ Findings and deviations:
 
 Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 351 tests), `env -u NODE_ENV npx playwright test` 44 passed, `node scripts/locale-status.mjs` reports `0 of 9 locales are missing keys`.
 
-**Wave 1** executed 2026-09-13 on `chore/i18n-wave-1`: `ar bn hi id ru ur`, 6 x 186 keys.
+**Wave 1** executed 2026-09-13 on `chore/i18n-wave-1`: `ar bn hi id ru ur`, 6 x 186 keys (the long-lived count is 182; see the prefix-template fix below).
 
 How it was produced, which matters for how much to trust it: the six catalogues were translated in parallel by six independent translator agents, each given the English file, the same nine rules (key order, translate `message` only, keep `description` English, preserve placeholders, keep product names in Latin script, match the register of each string, standard terminology for that language, valid 2-space JSON, no trailing comma), and the same self-check command. Each reported `186 keys ok`. The parent then verified independently: the parity gate, `scripts/locale-status.mjs`, and a real-browser probe.
 
@@ -423,3 +423,27 @@ Findings:
 4. **The translators flagged the same structural tension, and it is worth knowing about.** `error_apiKeyNotConfiguredFor` and `settings_tooltip_*_s1` ("Go to") are English-shaped prefix templates concatenated with a following token. In verb-final languages (Hindi, Bengali, Urdu) and in Arabic the prefix does not read naturally. Each solved it differently (colon suffix, "for this model" phrasing). It works, and a native reviewer may well prefer a different split; the real fix would be to turn these into a single message with a placeholder, which is a source change to `lib/ai-service.js` and out of this wave's scope.
 
 Gate results: `env -u NODE_ENV npm run verify` exit 0 (33 suites, 387 tests), `env -u NODE_ENV npx playwright test` 44 passed, `node scripts/locale-status.mjs` reports `0 of 15 locales are missing keys`, and the browser probe reports all six directories accepted.
+
+**Prefix-template fix** executed 2026-09-13 on `fix/i18n-prefix-templates`, before wave 2, because Tamil, Telugu, Marathi, Gujarati and Thai are all verb-final and would have inherited the same problem.
+
+Two strings were built by concatenating a translated fragment with a value, which no translator can reorder:
+
+1. `error_apiKeyNotConfiguredFor` was `${i18n.getMessage(key)} ${activeModel}` in `lib/ai-service.js`. It is now a placeholder message (`API key not configured for $MODEL$`, with `placeholders: { model: { content: "$1" } }`) and the call site passes `[activeModel]`. Every locale places `$MODEL$` where its own word order wants it, so Hindi reads `$MODEL$ के लिए ...` with the model first instead of a colon bolted on the end.
+2. Each provider tooltip's first step was a bare `Go to` message followed by the anchor holding the brand name. It is now one message inside the link (`Go to Google AI Studio`), following the precedent already in the same file: `settings_geminiApiKeyHint` reads naturally in every language precisely because the brand lives inside its message. The four standalone brand keys (`settings_googleAiStudio`, `settings_groqConsole`, `settings_openaiPlatform`, `settings_anthropicConsole`) had no other use and were removed, so the catalogs dropped from 186 to 182 keys.
+
+New coverage, because none existed for either string: `tests/locales.test.js` now asserts which messages take a substitution, that each declared placeholder is both defined and named in the message, that every locale declares the same placeholders as `en`, that every locale's four tooltip step-one sentences contain their brand, and that the tooltip markup wraps the message in the link rather than preceding it. `tests/lib/ai-service.test.js` asserts the model id arrives as a substitution argument rather than by string concatenation.
+
+The browser probe was extended for this, and it is the check that matters: Chrome's `$NAME$` substitution is invisible to Jest because the test mock replaces `getMessage` entirely. Running the real extension with `--lang=<code>` and calling `getMessage("error_apiKeyNotConfiguredFor", ["gemini-3.6-flash"])` returns:
+
+| Locale | Result |
+| --- | --- |
+| `en` | `API key not configured for gemini-3.6-flash` |
+| `vi` | `Chưa cấu hình API key cho gemini-3.6-flash` |
+| `hi` | `gemini-3.6-flash के लिए API कुंजी कॉन्फ़िगर नहीं है` |
+| `ur` | `gemini-3.6-flash کے لیے API کلید کنفیگر نہیں ہے` |
+| `ja` | `gemini-3.6-flash の API キーが設定されていません` |
+| `ar` | `لم يتم تكوين مفتاح API لـ gemini-3.6-flash` |
+
+No literal `$MODEL$` survives in any of them, and the model id lands in the language-natural position.
+
+One test bug was mine, not the implementation's: the markup assertion first required `</a>` with no whitespace, but Prettier puts the anchor's closing bracket on its own line. The regex now allows whitespace before both `>`.

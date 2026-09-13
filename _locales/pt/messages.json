@@ -369,10 +369,7 @@
     "message": "Obter Chave Anthropic"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Vá ao"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console"
+    "message": "Acesse Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "Registe-se ou faça login"
@@ -467,11 +464,7 @@
     "description": "Erro salvar"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Vá ao"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Acesse Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Clique em 'Create API Key'"
@@ -480,11 +473,7 @@
     "message": "Copie a chave para o clipboard"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Vá ao"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "Acesse Groq Console"
   },
   "settings_tooltip_groq_s2": {
     "message": "Registe-se ou faça login"
@@ -493,11 +482,7 @@
     "message": "Crie uma nova chave API"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Vá à"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "Acesse OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
     "message": "Registe-se ou faça login"
@@ -695,7 +680,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Chave de API não configurada para",
+    "message": "Chave de API não configurada para $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "sidebar_chat_clear": {

@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Six new UI locales: Arabic, Bengali, Hindi, Indonesian, Russian and Urdu.** The extension's own interface is now available in 16 languages (was 10). Added together with a locale parity gate (`tests/locales.test.js`) and `scripts/locale-status.mjs`, a per-locale report of missing keys and strings still identical to English. The translations are AI-produced and structurally verified; native review is welcome.
-- Backfilled the 14 message keys that `de es fr it ja ko pt zh` were each missing, so all 16 locales now define the same 186 keys.
+- Backfilled the 14 message keys that `de es fr it ja ko pt zh` were each missing, so all 16 locales now define the same 182 keys.
 - **43 translation languages, up from 10.** `lib/languages.js` is the new single source of truth for the language list (code, English name, native name); the Settings language pickers render it behind a search box with a "Common" group, the LLM prompts resolve names from it, and the overlay shows the right name for any of them. A saved code the registry does not know stays selectable, so no preference is lost.
 - The language picker's search placeholder and its two optgroup labels were added to all 10 locales.
 
 ### Changed
+
+- **Two UI strings no longer glue a value onto a translated fragment.** `error_apiKeyNotConfiguredFor` is now a `$MODEL$` placeholder message and the model id is passed as an i18n substitution, and the provider tooltip's first step is one message inside the link (`Go to Google AI Studio`) instead of a bare "Go to" followed by the anchor. Concatenating a translated fragment with a value hard-codes English word order, which reads wrong in verb-final languages (Hindi, Urdu, Bengali, and the Indic languages still to come). The four now-unused standalone brand keys were removed, which is why the catalogs carry 182 keys instead of 186.
 
 - Removed the two duplicated 13-entry `languageNames` maps from `lib/ai-service.js`; a guard test keeps them from coming back.
 - `lib/i18n.js` and the content script no longer request `_locales/<language>/messages.json` for a translation language with no locale directory, which removes a failed request and a console warning on every page load.

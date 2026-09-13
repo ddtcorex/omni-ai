@@ -292,7 +292,12 @@
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "इस मॉडल के लिए API कुंजी कॉन्फ़िगर नहीं है:",
+    "message": "$MODEL$ के लिए API कुंजी कॉन्फ़िगर नहीं है",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
     "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "settings_defaultTone": {
@@ -456,11 +461,7 @@
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "यहाँ जाएँ:"
-  },
-  "settings_anthropicConsole": {
-    "message": "Anthropic Console",
-    "description": "Link text for Anthropic Console"
+    "message": "Anthropic Console पर जाएँ"
   },
   "settings_tooltip_anthropic_s2": {
     "message": "साइन अप करें या लॉग इन करें"
@@ -555,11 +556,7 @@
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "यहाँ जाएँ:"
-  },
-  "settings_googleAiStudio": {
-    "message": "Google AI Studio",
-    "description": "Link text for Google AI Studio"
+    "message": "Google AI Studio पर जाएँ"
   },
   "settings_tooltip_gemini_s2": {
     "message": "Create API Key पर क्लिक करें"
@@ -568,11 +565,7 @@
     "message": "कुंजी क्लिपबोर्ड पर कॉपी करें"
   },
   "settings_tooltip_groq_s1": {
-    "message": "यहाँ जाएँ:"
-  },
-  "settings_groqConsole": {
-    "message": "Groq Console",
-    "description": "Link text for Groq Console"
+    "message": "Groq Console पर जाएँ"
   },
   "settings_tooltip_groq_s2": {
     "message": "साइन अप करें या लॉग इन करें"
@@ -581,11 +574,7 @@
     "message": "नई API कुंजी बनाएँ"
   },
   "settings_tooltip_openai_s1": {
-    "message": "यहाँ जाएँ:"
-  },
-  "settings_openaiPlatform": {
-    "message": "OpenAI Platform",
-    "description": "Link text for OpenAI Platform"
+    "message": "OpenAI Platform पर जाएँ"
   },
   "settings_tooltip_openai_s2": {
     "message": "साइन अप करें या लॉग इन करें"
