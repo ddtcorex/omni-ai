@@ -45,7 +45,7 @@ async function dragSelectTarget(page) {
   await page.mouse.up();
 }
 
-test("the default flash actions render Translate first, then Rephrase and Grammar", async () => {
+test("the default flash actions render Smart Translate first, then Rephrase and Grammar", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
   try {
@@ -75,7 +75,7 @@ test("the default flash actions render Translate first, then Rephrase and Gramma
     const order = await page
       .locator(".omni-ai-flash-btn")
       .evaluateAll((els) => els.map((el) => el.dataset.flashAction));
-    expect(order).toEqual(["translate_primary", "rephrase", "grammar"]);
+    expect(order).toEqual(["smart_translate", "rephrase", "grammar"]);
   } finally {
     await context.close();
     server.close();
@@ -542,6 +542,49 @@ test("a translate_primary flash action re-calls the AI after a language-setting 
     await flashBtn.click();
 
     await expect(resultText).toContainText("SECOND-TRANSLATION-AFTER-CHANGE", { timeout: 5000 });
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Smart Translate is selectable as a flash action and routes through the bidirectional smartTranslate(), not a one-directional translate", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    // Smart Translate must be reachable as its own flash action (not just
+    // translate_primary/translate_default, which always target one fixed
+    // language regardless of the selected text's own language) -- reported
+    // as "select Vietnamese text, still get Vietnamese" when the user's
+    // Primary Language was itself Vietnamese and they had only
+    // translate_primary available as a flash action.
+    await seedConfig(sw, ["smart_translate"]);
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "vi", defaultLanguage: "en" });
+    });
+    await stubGemini(context, "SMART-TRANSLATED-VIA-FLASH");
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+
+    const flashBtn = page.locator('[data-flash-action="smart_translate"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    // A registered label, not a raw fallback to the literal action string
+    // (chrome.i18n.getMessage() returns "" for an unregistered key, and this
+    // file's own i18n wrapper then falls back to the key itself).
+    const title = await flashBtn.getAttribute("title");
+    expect(title).not.toBe("smart_translate");
+    expect(title.length).toBeGreaterThan(0);
+    await flashBtn.click();
+
+    await expect(page.locator(".omni-ai-result-text")).toContainText("SMART-TRANSLATED-VIA-FLASH", {
+      timeout: 5000,
+    });
   } finally {
     await context.close();
     server.close();

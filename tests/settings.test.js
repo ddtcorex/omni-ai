@@ -36,6 +36,7 @@ const FIXTURE_IDS = [
 ];
 
 const FLASH_ACTION_IDS = [
+  "smart_translate",
   "translate_primary",
   "translate_default",
   "grammar",
@@ -292,7 +293,7 @@ describe("settings.js", () => {
     it("loadSettings checks the default flash actions when none are saved", async () => {
       chrome.storage.local.get.mockResolvedValue({});
       await Settings.loadSettings();
-      expect(checkedFlashActions()).toEqual(["grammar", "rephrase", "translate_primary"].sort());
+      expect(checkedFlashActions()).toEqual(["grammar", "rephrase", "smart_translate"].sort());
     });
 
     it("loadSettings checks exactly the flash actions saved in settings.flashActions", async () => {
@@ -342,7 +343,7 @@ describe("settings.js", () => {
       await Settings.loadSettings();
       Settings.setupEventListeners();
 
-      // Default state has 3 checked (rephrase, grammar, translate_primary);
+      // Default state has 3 checked (rephrase, grammar, smart_translate);
       // checking a 4th should trip the cap.
       const explainBox = /** @type {HTMLInputElement} */ (
         document.querySelector('[data-flash-action="explain"]')
