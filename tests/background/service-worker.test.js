@@ -11,7 +11,8 @@ describe("Service Worker Integration", () => {
     jest.resetModules();
     jest.clearAllMocks();
 
-    // Manual Chrome Mock (bypassing jest-chrome to ensure full control over event listeners and module loading)
+    // Manual Chrome Mock (bypassing the shared tests/helpers/chrome-mock.js to
+    // keep full control over event listeners and module loading)
     chromeMock = {
       runtime: {
         onInstalled: { addListener: jest.fn() },

@@ -27,7 +27,7 @@ Prompt-wording changes in `lib/ai-service.js` MUST update `tests/lib/ai-service.
 
 ## Testing Policy
 
-- Unit: Jest + jest-chrome (`npm test`) — required for `lib/` and `background/` changes
+- Unit: Jest 30 + jsdom with the repo-owned chrome mock (`tests/helpers/chrome-mock.js`, `npm test`) — required for `lib/` and `background/` changes
 - E2E: Playwright (`npm run e2e`) — required for content-script UI behavior changes
 - Before opening a PR: `npm run verify` green locally
 

@@ -84,7 +84,7 @@ omni-ai/
 |                            #   to the streaming provider; pure logic + injected deps (testable)
 |-- _locales/                # chrome.i18n messages
 |-- scripts/publish.sh       # Strips manifest "key", zips dist/
-`-- tests/                   # Jest + jest-chrome + jsdom (`npm test`)
+`-- tests/                   # Jest 30 + jsdom + tests/helpers/chrome-mock.js (`npm test`)
 ```
 
 ### Message Protocol
@@ -159,11 +159,11 @@ All markup/styles live inside the Shadow DOM root. To style: use the shared `--o
 ## 🧪 Testing & Verification
 
 ```bash
-npm test                  # Jest (jsdom + jest-chrome mocks)
+npm test                  # Jest 30 (jsdom + the shared chrome mock in tests/helpers/)
 bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_id)
 ```
 
-- Tests import ES modules through babel-jest; `jest.setup.js` provides `jest-chrome` globals.
+- Tests import ES modules through babel-jest; `jest.setup.js` installs `tests/helpers/chrome-mock.js` as the global `chrome`.
 - When you change prompt wording in `lib/ai-service.js`, update `tests/lib/ai-service.test.js` **in the same commit** — its assertions are exact substrings.
 
 ### Manual smoke checklist (load unpacked)

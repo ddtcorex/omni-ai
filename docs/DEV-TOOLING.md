@@ -9,7 +9,7 @@ Omni AI is **zero-build vanilla JS** by directive. The fastest loop that **prese
 1. **`web-ext run --target chromium`** → save-to-auto-reload dev server (no bundler).
 2. **TypeScript as a checker only**: JSDoc + `tsc --checkJs` + `@types/chrome` — types without rewriting a single file.
 3. **ESLint 10 flat config** + Prettier — correct browser/service-worker globals.
-4. **Keep Jest + jest-chrome**, add **Playwright E2E** (headless extension testing now works).
+4. **Keep Jest 30 + jsdom** with the repo-owned chrome mock (`tests/helpers/chrome-mock.js`), add **Playwright E2E** (headless extension testing now works).
 5. Escape hatch if a build step is ever accepted: **CRXJS v2** (least invasive) or **WXT** (most batteries-included).
 
 ## 1. Build/HMR landscape (2025–2026)
@@ -98,7 +98,7 @@ module.exports = [
 
 ## 4. Testing upgrades
 
-- **Keep Jest + jest-chrome + jsdom** — jest-chrome is still the standard `chrome.*` mock (sinon-chrome is legacy, last publish 2019).
+- **Keep Jest 30 + jsdom, with our own `chrome.*` mock** (`tests/helpers/chrome-mock.js`, installed as `global.chrome` by `jest.setup.js`). `jest-chrome` was dropped on 2026-09-13: its last publish (0.8.0) peers `jest@^26 || ^27`, so it makes `npm ci` fail with ERESOLVE next to jest 30. Since the suite configures every method itself with `mockResolvedValue` / `mockImplementation`, owning the mock costs about 100 lines and removes the only thing pinning jest to 27. `sinon-chrome` is legacy (last publish 2019).
 - **Add Playwright E2E** — since Chrome/Edge removed `--load-extension` side-load flags from stable builds, Playwright loads extensions through its **bundled Chromium**, which also enables headless extension testing and keeps the MV3 service-worker handle alive across idle suspension:
 
 ```js
