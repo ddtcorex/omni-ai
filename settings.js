@@ -19,7 +19,7 @@ import {
   setLocalAiConfig,
   getSettingsBag,
 } from "./lib/storage.js";
-import { buildLanguageOptionGroups, UI_LOCALE_CODES } from "./lib/languages.js";
+import { buildLanguageOptionGroups, LANGUAGES } from "./lib/languages.js";
 
 /**
  * Omni AI: Options Page Script
@@ -62,12 +62,6 @@ const elements = {
   ),
   primaryLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("primaryLanguage")),
   defaultLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("defaultLanguage")),
-  primaryLanguageSearch: /** @type {HTMLInputElement} */ (
-    document.getElementById("primaryLanguageSearch")
-  ),
-  defaultLanguageSearch: /** @type {HTMLInputElement} */ (
-    document.getElementById("defaultLanguageSearch")
-  ),
   shortcutsLink: document.getElementById("shortcutsLink"),
   saveBtn: document.getElementById("saveBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -85,7 +79,12 @@ const elements = {
 // State
 let isGeminiKeyVisible = false;
 
-const SUPPORTED_LOCALES = UI_LOCALE_CODES;
+// For detecting a first-time user's default Primary Language, not for the
+// Settings UI's own display locale (that's UI_LOCALE_CODES, a different,
+// narrower list): primaryLanguage is a translation target, so a browser UI
+// language with no shipped _locales/ directory (e.g. Amharic) should still be
+// recognized if it's one of the 43 translation languages.
+const SUPPORTED_LOCALES = LANGUAGES.map((language) => language.code);
 
 // Flash Actions: shown on hovering the floating quick-action icon, so common
 // actions can run without opening the full quick-action menu.
@@ -128,8 +127,6 @@ export async function init() {
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
-  wireLanguagePicker(elements.primaryLanguageSearch, elements.primaryLanguage);
-  wireLanguagePicker(elements.defaultLanguageSearch, elements.defaultLanguage);
   await loadSettings();
   await loadStats();
   setupEventListeners();
@@ -216,36 +213,16 @@ export function populateLanguageSelect(select, query = "", pinnedCode = select?.
 }
 
 /**
- * Keep a language <select> in sync with its search box, preserving whatever is
- * currently selected even while the query filters that option out.
- * @param {HTMLInputElement|null} input
- * @param {HTMLSelectElement|null} select
- * @returns {(() => void)|undefined}
- */
-export function wireLanguagePicker(input, select) {
-  if (!select) return undefined;
-
-  const render = () => {
-    populateLanguageSelect(select, input ? input.value : "", select.value);
-  };
-
-  if (input) input.addEventListener("input", render);
-  render();
-
-  return render;
-}
-
-/**
  * Localize the DOM
  */
-function localizeDOM() {
+export function localizeDOM() {
   document.title = i18n.getMessage("extName") + " - " + i18n.getMessage("settings_title");
-  // Localize attributes (title and placeholder)
+  // Localize attributes (title, placeholder and aria-label)
   const elementsWithAttributes = document.querySelectorAll(
-    '[title*="__MSG_"], [placeholder*="__MSG_"]',
+    '[title*="__MSG_"], [placeholder*="__MSG_"], [aria-label*="__MSG_"]',
   );
   elementsWithAttributes.forEach((el) => {
-    ["title", "placeholder"].forEach((attr) => {
+    ["title", "placeholder", "aria-label"].forEach((attr) => {
       const val = el.getAttribute(attr);
       if (val && val.includes("__MSG_")) {
         el.setAttribute(
