@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Eighteen new UI locales: Arabic, Bengali, Danish, Dutch, Gujarati, Hindi, Indonesian, Marathi, Norwegian, Polish, Russian, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian and Urdu.** The extension's own interface is now available in 28 languages (was 10). Added together with a locale parity gate (`tests/locales.test.js`) and `scripts/locale-status.mjs`, a per-locale report of missing keys and strings still identical to English. The translations are AI-produced and structurally verified; native review is welcome.
-- Backfilled the 14 message keys that `de es fr it ja ko pt zh` were each missing, so all 28 locales now define the same 182 keys.
+- **Twenty-four new UI locales.** Waves 1 to 4 added Arabic, Bengali, Czech, Danish, Dutch, Finnish, Greek, Gujarati, Hebrew, Hindi, Hungarian, Indonesian, Marathi, Norwegian, Polish, Romanian, Russian, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian and Urdu. The remaining six (the Chinese, Portuguese, Spanish, French and English regional variants) are planned, one wave per PR. The extension's own interface is now available in 34 languages (was 10). Added together with a locale parity gate (`tests/locales.test.js`) and `scripts/locale-status.mjs`, a per-locale report of missing keys and strings still identical to English. The translations are AI-produced and structurally verified; native review is welcome.
+- Backfilled the 14 message keys that `de es fr it ja ko pt zh` were each missing, so all 34 locales now define the same 182 keys.
 - **43 translation languages, up from 10.** `lib/languages.js` is the new single source of truth for the language list (code, English name, native name); the Settings language pickers render it behind a search box with a "Common" group, the LLM prompts resolve names from it, and the overlay shows the right name for any of them. A saved code the registry does not know stays selectable, so no preference is lost.
 - The language picker's search placeholder and its two optgroup labels were added to all 10 locales.
 

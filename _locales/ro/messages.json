@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Asistent AI all-in-one alimentat de modele AI - îmbunătățirea textului, acțiuni rapide și utilitare inteligente",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Deschide panoul Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Instrumente pentru pagină",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Rezumă",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Traducere inteligentă",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Explică",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Se lucrează…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Rezultat",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Nu se poate citi această pagină",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Nimic de procesat pe această pagină",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "De la:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Întreabă Omni AI orice...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Afișează meniul de acțiuni rapide",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Context",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Îmbunătățește textul",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Acțiuni rapide",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "E-mail",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Social",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Tehnic",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Academic",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Corectează gramatica",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Corectează ortografia și gramatica",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Îmbunătățește claritatea",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Schimbă tonul",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Fă mai concis",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Extinde",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Reformulează",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Tradu",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Rezumă",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Răspunde",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Adaugă emoji",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Pregătit",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Se procesează...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Eroare",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Setări",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Cheie API Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Obține cheia API de la Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "Model AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Selectează modelul AI de utilizat",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Context implicit",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Limba de traducere",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Salvează setările",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Afișează butonul flotant Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Dezactivează această opțiune pentru a folosi doar scurtăturile de tastatură și meniurile contextuale.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Acțiuni instant",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Afișează aceste acțiuni la trecerea cu mouse-ul peste pictograma flotantă, ca să le poți rula fără a deschide meniul complet (maximum 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Tradu în limba principală",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Tradu în limba implicită",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Activat",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Dezactivat",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Setările au fost salvate!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Copiază",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Înlocuiește",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Explică",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "În $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Îmbunătățește cu Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Explică cu Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Tradu cu Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Reformulează cu Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Adaugă emoji cu Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Rezumă cu Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Întreabă Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Cheia API nu este configurată. Te rugăm să adaugi cheia API în Setări.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Introdu cheia API Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Eroare: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Cheia API Gemini nu este configurată",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Cheia API OpenAI nu este configurată",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Cheia API Groq nu este configurată",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Cheia API Anthropic nu este configurată",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "URL-ul de bază Custom Gateway nu este configurat",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Cheia API nu este configurată pentru $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Ton implicit",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Tonul implicit pentru îmbunătățirea textului și răspunsuri",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Profesional",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Lejer",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Prietenos",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Direct",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Încrezător",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Întrebare rapidă",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Rezultat",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Se gândește...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Înapoi",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Copiat!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Nu ai selectat niciun text. Te rugăm să selectezi mai întâi un text.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Asistentul tău AI",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Temă",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Alege aspectul preferat",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Implicit sistem",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Întunecată",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Deschisă",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Limba principală",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Limba ta principală pentru acțiunile rapide",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Validează configurația",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Scurtături de tastatură",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Istoric de utilizare",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Total acțiuni",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Cuvinte procesate",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Cuvinte generate",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Despre",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Raportează o problemă",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Șterge istoricul",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Cheie API Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Obține o cheie gratuită la console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Cheie API OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Obține cheia API la platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Obține cheia API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Obține cheia API Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Obține cheia API OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Cheie API Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Obține cheia API la console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Obține cheia API Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Accesează Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Înregistrează-te sau autentifică-te"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Creează o cheie API nouă"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Personalizează în Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Personalizează scurtăturile în setările Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Reîmprospătează",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Limba implicită pentru traduceri",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Engleză"
+  },
+  "lang_vi": {
+    "message": "Vietnameză"
+  },
+  "lang_es": {
+    "message": "Spaniolă"
+  },
+  "lang_fr": {
+    "message": "Franceză"
+  },
+  "lang_de": {
+    "message": "Germană"
+  },
+  "lang_it": {
+    "message": "Italiană"
+  },
+  "lang_pt": {
+    "message": "Portugheză"
+  },
+  "lang_ja": {
+    "message": "Japoneză"
+  },
+  "lang_ko": {
+    "message": "Coreeană"
+  },
+  "lang_zh": {
+    "message": "Chineză"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Caută limbi",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Comune",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Toate limbile",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Sigur vrei să ștergi tot istoricul de utilizare?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Te rugăm să introduci mai întâi o cheie API/un endpoint.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Se validează...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Configurație validă! Gata de generare.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Verificarea conexiunii a eșuat",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Se verifică...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Salvarea a eșuat",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Accesează Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Apasă pe Create API Key"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Copiază cheia în clipboard"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Accesează Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Înregistrează-te sau autentifică-te"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Creează o cheie API nouă"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Accesează OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Înregistrează-te sau autentifică-te"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Creează o cheie API nouă"
+  },
+  "overlay_suggested_fix": {
+    "message": "Corectare sugerată",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Acceptă",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Respinge",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Nu s-au găsit probleme",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Textul arată grozav!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Traducere inteligentă",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Eroare",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Traducerea a eșuat",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Vechi)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Avansat",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Nume model personalizat",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Introdu ID-ul modelului personalizat",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Te rugăm să introduci un nume de model personalizat",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "de ex. id-ul-modelului-tău",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Conectează-te la orice endpoint API compatibil cu OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "de ex. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Introdu cheia API...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Configurare Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Acceptă API-uri compatibile cu OpenAI (OpenRouter, LiteLLM, Together AI etc.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Opțional pentru unele gateway-uri (de ex. planul gratuit OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Instrumente",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Întreabă despre această pagină…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Trimite",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Oprește",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Contextul paginii",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Include contextul paginii",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Începe o conversație despre pagina curentă.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Ceva a mers greșit. Te rugăm să încerci din nou.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Șterge conversația",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Sigur vrei să ștergi această conversație?",
+    "description": "Clear chat session confirmation"
+  }
+}

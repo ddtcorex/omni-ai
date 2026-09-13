@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "עוזר AI מקיף מבוסס מודלי AI: שיפור כתיבה, פעולות מהירות וכלים חכמים",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "פתח את החלונית של Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "כלי דף",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "סיכום",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "תרגום חכם",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "הסבר",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "עובד על זה…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "תוצאה",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "לא ניתן לקרוא את הדף הזה",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "אין על מה לעבוד בדף הזה",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "מתוך:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "שאל את Omni AI כל דבר...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "הצג את תפריט הפעולות המהירות",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "הקשר",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "שיפור כתיבה",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "פעולות מהירות",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "אימייל",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "צ׳אט",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "חברתי",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "טכני",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "אקדמי",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "תיקון דקדוק",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "מתקן איות ודקדוק",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "שיפור בהירות",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "שינוי טון",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "קיצור",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "הרחבה",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "ניסוח מחדש",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "תרגום",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "סיכום",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "השב",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "הוספת אימוג׳ים",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "מוכן",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "מעבד...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "שגיאה",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "הגדרות",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "מפתח API של Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "קבל את מפתח ה-API שלך מ-Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "מודל AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "בחר את מודל ה-AI שבו תשתמש",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "הקשר ברירת מחדל",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "שפת תרגום",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "שמור הגדרות",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "הצג את כפתור Omni AI הצף",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "כבה אפשרות זו כדי להשתמש בקיצורי מקלדת ובתפריטים קישוריים בלבד.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "פעולות בזק",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "הצג פעולות אלה בריחוף מעל הסמל הצף, כדי להפעיל אותן בלי לפתוח את התפריט המלא (עד 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "תרגם לשפה הראשית",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "תרגם לשפת ברירת המחדל",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "פועל",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "כבוי",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "ההגדרות נשמרו!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "העתק",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "החלף",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "הסבר",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "שפה: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "שפר עם Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "הסבר עם Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "תרגם עם Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "נסח מחדש עם Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "הוסף אימוג׳י עם Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "סכם עם Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "שאל את Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "מפתח ה-API אינו מוגדר. אנא הוסף את מפתח ה-API שלך בהגדרות.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "הזן את מפתח ה-API של Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "שגיאה: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "מפתח ה-API של Gemini אינו מוגדר",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "מפתח ה-API של OpenAI אינו מוגדר",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "מפתח ה-API של Groq אינו מוגדר",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "מפתח ה-API של Anthropic אינו מוגדר",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "כתובת ה-URL הבסיסית של Custom Gateway אינה מוגדרת",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "מפתח ה-API אינו מוגדר עבור $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "טון ברירת מחדל",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "טון ברירת מחדל לשיפור כתיבה ולמענה",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "מקצועי",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "יומיומי",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "ידידותי",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "ישיר",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "בטוח",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "שאלה מהירה",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "תוצאה",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "חושב...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "חזרה",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "הועתק!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "לא נבחר טקסט. אנא בחר טקסט תחילה.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "עוזר ה-AI שלך",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "ערכת נושא",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "בחר את המראה המועדף עליך",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "ברירת מחדל של המערכת",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "כהה",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "בהיר",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "שפה ראשית",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "השפה הראשית שלך לפעולות מהירות",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "אימות התצורה",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "קיצורי מקלדת",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "היסטוריית שימוש",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "סך הפעולות",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "מילים שעובדו",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "מילים שנוצרו",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "אודות",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "דווח על בעיה",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "נקה היסטוריה",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "מפתח API של Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "קבל מפתח חינם ב-console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "מפתח API של OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "קבל מפתח API ב-platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "קבל מפתח API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "קבל מפתח API של Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "קבל מפתח API של OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "מפתח API של Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "קבל מפתח API ב-console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "קבל מפתח API של Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "עבור אל Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "הירשם או התחבר"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "צור מפתח API חדש"
+  },
+  "settings_shortcuts_customize": {
+    "message": "התאם אישית ב-Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "התאם קיצורי דרך בהגדרות של Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "רענן",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "שפת ברירת מחדל לתרגומים",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "אנגלית"
+  },
+  "lang_vi": {
+    "message": "וייטנאמית"
+  },
+  "lang_es": {
+    "message": "ספרדית"
+  },
+  "lang_fr": {
+    "message": "צרפתית"
+  },
+  "lang_de": {
+    "message": "גרמנית"
+  },
+  "lang_it": {
+    "message": "איטלקית"
+  },
+  "lang_pt": {
+    "message": "פורטוגזית"
+  },
+  "lang_ja": {
+    "message": "יפנית"
+  },
+  "lang_ko": {
+    "message": "קוריאנית"
+  },
+  "lang_zh": {
+    "message": "סינית"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "חיפוש שפות",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "נפוצות",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "כל השפות",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "האם למחוק את כל היסטוריית השימוש?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "אנא הזן תחילה מפתח API או כתובת Endpoint.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "מאמת...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "התצורה תקינה! מוכן ליצירה.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "בדיקת החיבור נכשלה",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "בודק...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "השמירה נכשלה",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "עבור אל Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "לחץ על Create API Key"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "העתק את המפתח ללוח"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "עבור אל Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "הירשם או התחבר"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "צור מפתח API חדש"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "עבור אל OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "הירשם או התחבר"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "צור מפתח API חדש"
+  },
+  "overlay_suggested_fix": {
+    "message": "תיקון מוצע",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "אשר",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "התעלם",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "לא נמצאו בעיות",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "הטקסט נראה מצוין!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "תרגום חכם",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "שגיאה",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "התרגום נכשל",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(מיושן)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "מתקדם",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "שם מודל מותאם אישית",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "הזן את מזהה המודל המותאם אישית",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "אנא הזן שם מודל מותאם אישית",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "למשל your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "התחבר לכל נקודת קצה של API תואם OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "למשל https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "הזן את מפתח ה-API שלך...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "תצורת Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "תומך ב-API תואם OpenAI (OpenRouter, LiteLLM, Together AI ועוד)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "אופציונלי בחלק מהשערים (למשל החבילה החינמית של OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "צ׳אט",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "כלים",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "שאל על הדף הזה…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "שלח",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "עצור",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "הקשר הדף",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "כלול הקשר הדף",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "התחל שיחה על הדף הנוכחי.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "משהו השתבש. אנא נסה שוב.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "נקה צ׳אט",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "האם למחוק את השיחה הזו?",
+    "description": "Clear chat session confirmation"
+  }
+}
