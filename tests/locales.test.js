@@ -196,6 +196,9 @@ describe("catalogues translate UI copy, not just brand names", () => {
     "settings_customGatewayHint",
     "settings_customGatewayUrlNote",
     "settings_customGatewayKeyNote",
+    "settings_customGatewayUrlPlaceholder",
+    "settings_customGatewayKeyPlaceholder",
+    "settings_tooltip_customGateway",
   ];
 
   test.each(SENTENCES)("%s is translated in every catalogue", (key) => {
