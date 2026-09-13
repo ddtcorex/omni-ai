@@ -1,0 +1,724 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI ماڈلز سے چلنے والا آل اِن ون AI اسسٹنٹ، تحریر کی بہتری، فوری اقدامات اور ہوشیار سہولیات",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI پینل کھولیں",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "صفحے کے اوزار",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "خلاصہ کریں",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "ہوشیار ترجمہ",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "وضاحت کریں",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "کام جاری ہے…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "نتیجہ",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "یہ صفحہ پڑھا نہیں جا سکتا",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "اس صفحے پر کام کرنے کے لیے کچھ نہیں",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "از:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI سے کچھ بھی پوچھیں...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "فوری اقدامات کا مینیو دکھائیں",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "سیاق و سباق",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "تحریر بہتر بنائیں",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "فوری اقدامات",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "ای میل",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "چیٹ",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "سوشل",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "تکنیکی",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "تعلیمی",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "گرامر درست کریں",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "ہجے اور گرامر درست کرتا ہے",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "وضاحت بہتر بنائیں",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "لہجہ تبدیل کریں",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "مختصر کریں",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "توسیع کریں",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "دوبارہ لکھیں",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "ترجمہ کریں",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "خلاصہ کریں",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "جواب دیں",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "ایموجی شامل کریں",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "تیار",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "کارروائی جاری ہے...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "خرابی",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "ترتیبات",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API کلید",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "اپنی API کلید Google AI Studio سے حاصل کریں",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI ماڈل",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "استعمال کے لیے AI ماڈل منتخب کریں",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "طے شدہ سیاق و سباق",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "ترجمے کی زبان",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "ترتیبات محفوظ کریں",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "فلوٹنگ Omni AI بٹن دکھائیں",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "صرف کی بورڈ شارٹ کٹس اور سیاق و سباق کے مینیو استعمال کرنے کے لیے اسے بند کر دیں۔",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "فلیش اقدامات",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "فلوٹنگ آئیکن پر ہوور کرنے پر یہ اقدامات دکھائیں تاکہ آپ مکمل مینیو کھولے بغیر انہیں چلا سکیں (زیادہ سے زیادہ 4)۔",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "بنیادی زبان میں ترجمہ کریں",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "طے شدہ زبان میں ترجمہ کریں",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "آن",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "آف",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "ترتیبات محفوظ ہو گئیں!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "کاپی",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "تبدیل کریں",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "وضاحت کریں",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "میں",
+    "description": "To language preposition"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI کے ساتھ بہتر بنائیں",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI سے وضاحت کریں",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI سے ترجمہ کریں",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AI سے دوبارہ لکھیں",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI سے ایموجی شامل کریں",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI سے خلاصہ کریں",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI سے پوچھیں",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API کلید کنفیگر نہیں ہے۔ براہ کرم ترتیبات میں اپنی API کلید شامل کریں۔",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "اپنی Gemini API کلید درج کریں...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "خرابی: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API کلید کنفیگر نہیں ہے",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API کلید کنفیگر نہیں ہے",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API کلید کنفیگر نہیں ہے",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API کلید کنفیگر نہیں ہے",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway کا بنیادی URL کنفیگر نہیں ہے",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "API کلید کنفیگر نہیں ہے:",
+    "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
+  },
+  "settings_defaultTone": {
+    "message": "طے شدہ لہجہ",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "تحریر کی بہتری اور جوابات کے لیے طے شدہ لہجہ",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "پیشہ ورانہ",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "غیر رسمی",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "دوستانہ",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "براہ راست",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "پراعتماد",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "فوری سوال",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "نتیجہ",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "سوچ رہا ہے...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "واپس",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "کاپی ہو گیا!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "کوئی متن منتخب نہیں ہے۔ براہ کرم پہلے کچھ متن منتخب کریں۔",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "آپ کا AI اسسٹنٹ",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "تھیم",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "اپنی پسندیدہ شکل منتخب کریں",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "سسٹم ڈیفالٹ",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "تاریک",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "روشن",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "بنیادی زبان",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "فوری اقدامات کے لیے آپ کی بنیادی زبان",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "کنفیگریشن کی جانچ کریں",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "کی بورڈ شارٹ کٹس",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "استعمال کی ہسٹری",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "کل اقدامات",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "پروسیس کیے گئے الفاظ",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "تولید شدہ الفاظ",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "تعارف",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "مسئلہ رپورٹ کریں",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "ہسٹری صاف کریں",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API کلید",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com پر مفت کلید حاصل کریں",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API کلید",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com پر API کلید حاصل کریں",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API کلید حاصل کریں",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API کلید حاصل کریں",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API کلید حاصل کریں",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API کلید",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com پر API کلید حاصل کریں",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API کلید حاصل کریں",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "جائیں"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console",
+    "description": "Link text for Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "سائن اپ کریں یا لاگ ان کریں"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "نئی API کلید بنائیں"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome میں اپنی مرضی سے ترتیب دیں",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chrome کی ترتیبات میں شارٹ کٹس اپنی مرضی سے ترتیب دیں",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "تازہ کریں",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "ترجموں کے لیے طے شدہ زبان",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "انگریزی"
+  },
+  "lang_vi": {
+    "message": "ویتنامی"
+  },
+  "lang_es": {
+    "message": "ہسپانوی"
+  },
+  "lang_fr": {
+    "message": "فرانسیسی"
+  },
+  "lang_de": {
+    "message": "جرمن"
+  },
+  "lang_it": {
+    "message": "اطالوی"
+  },
+  "lang_pt": {
+    "message": "پرتگالی"
+  },
+  "lang_ja": {
+    "message": "جاپانی"
+  },
+  "lang_ko": {
+    "message": "کورین"
+  },
+  "lang_zh": {
+    "message": "چینی"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "زبانیں تلاش کریں",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "عام",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "تمام زبانیں",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "کیا آپ واقعی تمام استعمال کی ہسٹری صاف کرنا چاہتے ہیں؟",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "براہ کرم پہلے API کلید/اینڈ پوائنٹ درج کریں۔",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "جانچ جاری ہے...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "کنفیگریشن درست ہے! اب تیار ہے۔",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "کنکشن کی جانچ ناکام رہی",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "جانچ جاری ہے...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "محفوظ کرنے میں ناکامی",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "جائیں"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Create API Key پر کلک کریں"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "کلید کلپ بورڈ پر کاپی کریں"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "جائیں"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "سائن اپ کریں یا لاگ ان کریں"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "نئی API کلید بنائیں"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "جائیں"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "سائن اپ کریں یا لاگ ان کریں"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "نئی API کلید بنائیں"
+  },
+  "overlay_suggested_fix": {
+    "message": "تجویز کردہ اصلاح",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "قبول کریں",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "نظر انداز کریں",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "کوئی مسئلہ نہیں ملا",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "متن بہت اچھا لگ رہا ہے!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "ہوشیار ترجمہ",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "خرابی",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "ترجمہ ناکام رہا",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(پرانا)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "ایڈوانسڈ",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "کسٹم ماڈل کا نام",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "کسٹم ماڈل کی ID درج کریں",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "براہ کرم کسٹم ماڈل کا نام درج کریں",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "مثلاً your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "کسی بھی OpenAI کے ساتھ مطابقت رکھنے والے API اینڈ پوائنٹ سے جڑیں",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "مثلاً https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "اپنی API کلید درج کریں...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway کنفیگریشن",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI کے ساتھ مطابقت رکھنے والے API کی حمایت کرتا ہے (OpenRouter، LiteLLM، Together AI وغیرہ)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "کچھ گیٹ ویز کے لیے اختیاری (مثلاً OpenRouter کا مفت پلان)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "چیٹ",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "اوزار",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "اس صفحے کے بارے میں پوچھیں…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "بھیجیں",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "روکیں",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "صفحے کا سیاق و سباق",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "صفحے کا سیاق و سباق شامل کریں",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "موجودہ صفحے کے بارے میں بات چیت شروع کریں۔",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "چیٹ صاف کریں",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "کیا آپ واقعی یہ بات چیت صاف کرنا چاہتے ہیں؟",
+    "description": "Clear chat session confirmation"
+  }
+}

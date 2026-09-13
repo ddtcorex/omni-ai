@@ -1,0 +1,724 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "مساعد ذكاء اصطناعي شامل مدعوم بنماذج الذكاء الاصطناعي: تحسين الكتابة، وإجراءات سريعة، وأدوات ذكية",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "فتح لوحة Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "أدوات الصفحة",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "تلخيص",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "ترجمة ذكية",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "شرح",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "جارٍ العمل...",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "النتيجة",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "تعذّر قراءة هذه الصفحة",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "لا يوجد محتوى لمعالجته في هذه الصفحة",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "من:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "اسأل Omni AI عن أي شيء...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "إظهار قائمة الإجراءات السريعة",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "السياق",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "تحسين الكتابة",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "إجراءات سريعة",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "بريد إلكتروني",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "محادثة",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "تواصل اجتماعي",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "تقني",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "أكاديمي",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "تصحيح القواعد",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "يصحّح الإملاء والقواعد",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "تحسين الوضوح",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "تغيير النبرة",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "اختصار",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "توسيع",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "إعادة صياغة",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "ترجمة",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "تلخيص",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "رد",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "إضافة رموز تعبيرية",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "جاهز",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "جارٍ المعالجة...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "خطأ",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "الإعدادات",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "مفتاح Gemini API",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "احصل على مفتاح API من Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "نموذج الذكاء الاصطناعي",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "اختر نموذج الذكاء الاصطناعي المراد استخدامه",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "السياق الافتراضي",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "لغة الترجمة",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "حفظ الإعدادات",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "إظهار زر Omni AI العائم",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "أوقفه لاستخدام اختصارات لوحة المفاتيح وقوائم السياق فقط.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "الإجراءات الفورية",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "أظهر هذه الإجراءات عند تمرير المؤشر فوق الأيقونة العائمة، لتنفيذها دون فتح القائمة الكاملة (حتى 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "الترجمة إلى اللغة الأساسية",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "الترجمة إلى اللغة الافتراضية",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "مفعّل",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "معطّل",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "تم حفظ الإعدادات!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "نسخ",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "استبدال",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "شرح",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "إلى",
+    "description": "To language preposition"
+  },
+  "contextMenu_improve": {
+    "message": "تحسين باستخدام Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "شرح باستخدام Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "ترجمة باستخدام Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "إعادة صياغة باستخدام Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "إضافة رموز تعبيرية باستخدام Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "تلخيص باستخدام Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "اسأل Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "لم يتم تكوين مفتاح API. يرجى إضافة مفتاح API في الإعدادات.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "أدخل مفتاح Gemini API...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "خطأ: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "لم يتم تكوين مفتاح Gemini API",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "لم يتم تكوين مفتاح OpenAI API",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "لم يتم تكوين مفتاح Groq API",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "لم يتم تكوين مفتاح Anthropic API",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "لم يتم تكوين عنوان URL الأساسي لـ Custom Gateway",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "لم يتم تكوين مفتاح API لـ",
+    "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
+  },
+  "settings_defaultTone": {
+    "message": "النبرة الافتراضية",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "النبرة الافتراضية لتحسين الكتابة والردود",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "احترافية",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "غير رسمية",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "ودّية",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "مباشرة",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "واثقة",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "سؤال سريع",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "النتيجة",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "جارٍ التفكير...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "رجوع",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "تم النسخ!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "لم يتم تحديد أي نص. يرجى تحديد نص أولاً.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "مساعدك بالذكاء الاصطناعي",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "المظهر",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "اختر المظهر المفضّل لديك",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "افتراضي النظام",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "داكن",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "فاتح",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "اللغة الأساسية",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "لغتك الأساسية للإجراءات السريعة",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "التحقق من التكوين",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "اختصارات لوحة المفاتيح",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "سجل الاستخدام",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "إجمالي الإجراءات",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "الكلمات المعالجة",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "الكلمات المُنشأة",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "حول",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "الإبلاغ عن مشكلة",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "مسح السجل",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "مفتاح Groq API",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "احصل على مفتاح مجاني من console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "مفتاح OpenAI API",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "احصل على مفتاح API من platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "احصل على مفتاح API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "احصل على مفتاح Groq API",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "احصل على مفتاح OpenAI API",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "مفتاح Anthropic API",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "احصل على مفتاح API من console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "احصل على مفتاح Anthropic API",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "انتقل إلى"
+  },
+  "settings_anthropicConsole": {
+    "message": "Anthropic Console",
+    "description": "Link text for Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "أنشئ حساباً أو سجّل الدخول"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "أنشئ مفتاح API جديداً"
+  },
+  "settings_shortcuts_customize": {
+    "message": "تخصيص في Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "خصّص الاختصارات في إعدادات Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "تحديث",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "اللغة الافتراضية للترجمات",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "الإنجليزية"
+  },
+  "lang_vi": {
+    "message": "الفيتنامية"
+  },
+  "lang_es": {
+    "message": "الإسبانية"
+  },
+  "lang_fr": {
+    "message": "الفرنسية"
+  },
+  "lang_de": {
+    "message": "الألمانية"
+  },
+  "lang_it": {
+    "message": "الإيطالية"
+  },
+  "lang_pt": {
+    "message": "البرتغالية"
+  },
+  "lang_ja": {
+    "message": "اليابانية"
+  },
+  "lang_ko": {
+    "message": "الكورية"
+  },
+  "lang_zh": {
+    "message": "الصينية"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "ابحث عن اللغات",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "الشائعة",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "كل اللغات",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "هل أنت متأكد من مسح كل سجل الاستخدام؟",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "يرجى إدخال مفتاح API أو نقطة نهاية أولاً.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "جارٍ التحقق...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "التكوين صالح! جاهز للتوليد.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "فشل فحص الاتصال",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "جارٍ الفحص...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "فشل الحفظ",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "انتقل إلى"
+  },
+  "settings_googleAiStudio": {
+    "message": "Google AI Studio",
+    "description": "Link text for Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "انقر على إنشاء مفتاح API"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "انسخ المفتاح إلى الحافظة"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "انتقل إلى"
+  },
+  "settings_groqConsole": {
+    "message": "Groq Console",
+    "description": "Link text for Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "أنشئ حساباً أو سجّل الدخول"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "أنشئ مفتاح API جديداً"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "انتقل إلى"
+  },
+  "settings_openaiPlatform": {
+    "message": "OpenAI Platform",
+    "description": "Link text for OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "أنشئ حساباً أو سجّل الدخول"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "أنشئ مفتاح API جديداً"
+  },
+  "overlay_suggested_fix": {
+    "message": "الإصلاح المقترح",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "قبول",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "تجاهل",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "لم يتم العثور على مشكلات",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "النص يبدو رائعاً!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "ترجمة ذكية",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "خطأ",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "فشلت الترجمة",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(قديم)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "متقدّم",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "اسم النموذج المخصّص",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "أدخل معرّف النموذج المخصّص",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "يرجى إدخال اسم نموذج مخصّص",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "مثال: your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "اتصل بأي نقطة نهاية API متوافقة مع OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "مثال: https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "أدخل مفتاح API الخاص بك...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "تكوين Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "يدعم واجهات API المتوافقة مع OpenAI (OpenRouter، LiteLLM، Together AI، إلخ)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "اختياري لبعض البوابات (مثل الخطة المجانية من OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "محادثة",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "أدوات",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "اسأل عن هذه الصفحة...",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "إرسال",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "إيقاف",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "سياق الصفحة",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "تضمين سياق الصفحة",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "ابدأ محادثة حول الصفحة الحالية.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "مسح المحادثة",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "هل أنت متأكد من مسح هذه المحادثة؟",
+    "description": "Clear chat session confirmation"
+  }
+}
