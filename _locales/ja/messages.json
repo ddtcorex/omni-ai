@@ -168,8 +168,13 @@
     "description": "解説アクション"
   },
   "ui_to": {
-    "message": "→",
-    "description": "言語の前の前置詞"
+    "message": "$LANGUAGE$ へ",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with the target language name, so the name and any marker around it can be ordered by the translator"
   },
   "contextMenu_improve": {
     "message": "Omni AIで改善",

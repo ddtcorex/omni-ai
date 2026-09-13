@@ -168,8 +168,13 @@
     "description": "설명 작업"
   },
   "ui_to": {
-    "message": "→",
-    "description": "언어 사이의 화살표/전치사"
+    "message": "$LANGUAGE$로",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with the target language name, so the name and any marker around it can be ordered by the translator"
   },
   "contextMenu_improve": {
     "message": "Omni AI로 문장 개선",

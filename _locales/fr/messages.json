@@ -168,8 +168,13 @@
     "description": "Action expliquer"
   },
   "ui_to": {
-    "message": "Vers",
-    "description": "Préposition langue"
+    "message": "Vers $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with the target language name, so the name and any marker around it can be ordered by the translator"
   },
   "contextMenu_improve": {
     "message": "Améliorer avec Omni AI",

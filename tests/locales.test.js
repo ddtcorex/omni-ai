@@ -98,7 +98,8 @@ describe("messages that take a substitution", () => {
     // A prefix template glued together with string concatenation cannot be
     // reordered by a translator, which breaks verb-final languages. Any message
     // that is concatenated with a dynamic value belongs in this list.
-    expect(parameterised).toEqual(["error_apiKeyNotConfiguredFor"]);
+    // Sorted, so this does not depend on where the keys sit in the file.
+    expect([...parameterised].sort()).toEqual(["error_apiKeyNotConfiguredFor", "ui_to"]);
   });
 
   test.each(parameterised)("en declares a placeholder definition for %s", (key) => {
@@ -171,5 +172,16 @@ describe("UI copy that must not be glued together from fragments", () => {
     );
     expect(survivors).toEqual([]);
     expect(deleted.some((key) => settingsHtml.includes(key))).toBe(false);
+  });
+});
+
+describe("the overlay language chip", () => {
+  const contentSource = fs.readFileSync(path.join(__dirname, "../content/content.js"), "utf8");
+
+  test("passes the language name as a substitution rather than interpolating beside it", () => {
+    // The chip rendered `${flag} ${getMessage("ui_to")} ${languageName}`, so a
+    // postpositional language had to strand its marker in front of the name.
+    expect(contentSource).toMatch(/getMessage\(\s*"ui_to"\s*,\s*\[/);
+    expect(contentSource).not.toMatch(/getMessage\(\s*"ui_to"\s*\)/);
   });
 });

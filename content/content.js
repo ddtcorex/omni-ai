@@ -33,10 +33,11 @@ const ICONS = {
 const isContextValid = () =>
   !!(typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id);
 
+/** @type {{ getMessage: (key: string, substitutions?: string[]) => string }} */
 let i18n = {
-  getMessage: (key) => {
+  getMessage: (key, substitutions) => {
     if (!isContextValid()) return key;
-    return chrome.i18n.getMessage(key) || key;
+    return chrome.i18n.getMessage(key, substitutions) || key;
   },
 };
 
@@ -80,11 +81,18 @@ async function initializeI18n() {
 
     const combinedData = { ...enData, ...targetData };
 
+    const { applySubstitutions } = await import(chrome.runtime.getURL("lib/i18n.js"));
     i18n = {
-      getMessage: (key) => {
-        if (combinedData[key]) return combinedData[key].message;
+      getMessage: (key, substitutions) => {
+        if (combinedData[key]) {
+          return applySubstitutions(
+            combinedData[key].message,
+            combinedData[key].placeholders,
+            substitutions,
+          );
+        }
         if (!isContextValid()) return key;
-        return chrome.i18n.getMessage(key) || key;
+        return chrome.i18n.getMessage(key, substitutions) || key;
       },
     };
   } catch (e) {
@@ -1167,10 +1175,10 @@ async function showQuickActionMenu(
   const menu = `
     <div class="omni-ai-menu-grid">
        <button class="omni-ai-menu-item" data-action="translate_primary">
-         <span class="omni-ai-menu-icon">${pFlag}</span> ${i18n.getMessage("ui_to")} ${pCode}
+         <span class="omni-ai-menu-icon">${pFlag}</span> ${i18n.getMessage("ui_to", [pCode])}
        </button>
        <button class="omni-ai-menu-item" data-action="translate_default">
-         <span class="omni-ai-menu-icon">${dFlag}</span> ${i18n.getMessage("ui_to")} ${dCode}
+         <span class="omni-ai-menu-icon">${dFlag}</span> ${i18n.getMessage("ui_to", [dCode])}
        </button>
 
        <button class="omni-ai-menu-item" data-action="grammar">
