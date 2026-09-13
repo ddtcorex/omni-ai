@@ -19,6 +19,7 @@ describe("AI Service", () => {
 
     Providers.getProvider.mockReturnValue(mockProvider);
     Providers.getProviderModule.mockReturnValue(mockProvider);
+    chrome.i18n.getMessage.mockImplementation((key) => key);
 
     // Mock chrome storage implementation to support Promises
     chrome.storage.local.get.mockImplementation((keys) => {
@@ -131,10 +132,10 @@ describe("AI Service", () => {
     );
   });
 
-  it("throws error if API key is missing", async () => {
+  it("throws a localized error if API key is missing", async () => {
     // No keys in store
     await expect(generateContent("Test")).rejects.toThrow(
-      "API key not configured for gemini-3.6-flash",
+      "error_apiKeyNotConfiguredFor gemini-3.6-flash",
     );
   });
 

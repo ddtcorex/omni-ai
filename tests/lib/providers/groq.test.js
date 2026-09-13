@@ -4,10 +4,11 @@ describe("Groq Provider", () => {
   beforeEach(() => {
     global.fetch = jest.fn();
     jest.clearAllMocks();
+    chrome.i18n.getMessage.mockImplementation((key) => key);
   });
 
-  it("throws error if apiKey is missing", async () => {
-    await expect(generateContent("test", {})).rejects.toThrow("Groq API key not configured");
+  it("throws a localized error if apiKey is missing", async () => {
+    await expect(generateContent("test", {})).rejects.toThrow("error_apiKeyNotConfigured_groq");
   });
 
   it("calls the correct API endpoint with correct body", async () => {

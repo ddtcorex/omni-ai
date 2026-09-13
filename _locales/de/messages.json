@@ -601,5 +601,41 @@
   },
   "sidepanel_resultFrom": {
     "message": "Von:"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Werkzeuge",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Fragen Sie zu dieser Seite…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Senden",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Stopp",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Seitenkontext",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Seitenkontext einbeziehen",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Beginnen Sie ein Gespräch über die aktuelle Seite.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "description": "Chat error message"
   }
 }

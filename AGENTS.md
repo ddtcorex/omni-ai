@@ -78,6 +78,10 @@ omni-ai/
 |   |-- i18n.js              # Shared i18n wrapper (web_accessible_resource)
 |   |-- storage.js           # Typed owner for the remaining Storage Map keys (languages, API keys/model/preset, custom-gateway config, settings bag)
 |   `-- theme-manager.js     # Theme apply/broadcast (storage.sync: omni_ai_theme)
+|   |-- sidebar-chat.js      # Sidebar Chat helpers: buildChatPrompt() (page context + history
+|   |                        #   + user message; PAGE_CONTEXT_MAX_CHARS = 8000) shared by SW + UI
+|   `-- omni-chat-port.js    # Streaming chat Port handler: wires chrome.runtime Port "omni-chat"
+|                            #   to the streaming provider; pure logic + injected deps (testable)
 |-- _locales/                # chrome.i18n messages
 |-- scripts/publish.sh       # Strips manifest "key", zips dist/
 `-- tests/                   # Jest + jest-chrome + jsdom (`npm test`)
@@ -87,15 +91,16 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type                     | Direction           | Purpose                                                                                        |
-| ------------------------ | ------------------- | ---------------------------------------------------------------------------------------------- |
-| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                      |
-| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                      |
-| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                       |
-| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                              |
-| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                      |
-| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                |
-| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`) |
+| Type                     | Direction           | Purpose                                                                                                                                |
+| ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                                                              |
+| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                                                              |
+| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                                                               |
+| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                                                                      |
+| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                                                              |
+| `SHOW_QUICK_ACTION_MENU` | bg → content        | Open the quick-action menu at the current selection (Alt+O), same menu the floating icon's click opens; no-ops if there's no selection |
+| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                                                        |
+| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`)                                         |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
@@ -114,6 +119,8 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 - Registry: `AI_PROVIDERS` in `lib/ai-providers.js` — each entry declares `id`, `name`, `keySetting` (storage key of its API key), and `models[]`.
 - Routing: `getProvider(modelId)` in `lib/providers/index.js` looks the model up in `AI_PROVIDERS` (via `getProviderByModel()`) and returns that provider's module — model IDs are not required to follow any naming convention. `custom-gateway` routes to the OpenAI-compatible gateway provider (SSE streaming + DeepSeek-style `reasoning_content` support).
 - Every provider module exports `async generateContent(prompt, config)` where `config = { apiKey, model, maxTokens, temperature, topP, baseUrl? }`.
+- Every provider module ALSO exports `async generateContentStream(prompt, config, onChunk, signal)` — the streaming entry point used by Sidebar Chat. It calls `onChunk(textChunk)` for each token/line and honors an `AbortSignal` (`signal`) for cancellation. `lib/providers/index.js`'s `generateContentStream()` is the dispatcher (same routing as `generateContent`) and throws if the resolved provider does not implement streaming.
+- Sidebar Chat wiring: `sidepanel/sidepanel.js` opens a `chrome.runtime.connect({ name: "omni-chat" })` Port; the service worker's `onConnect` listener hands the Port to `createOmniChatHandler()` from `lib/omni-chat-port.js`, which resolves chat config via `getChatConfig()` and streams the reply from `generateContentStream()`. `lib/sidebar-chat.js` `buildChatPrompt()` assembles page context (capped at `PAGE_CONTEXT_MAX_CHARS = 8000`) + history + the latest message.
 - Custom models use the `-custom` suffix convention; the actual model name comes from storage (`customModelName` / `customGatewayModelName`).
 
 ### Storage Map (the contract)
@@ -164,13 +171,35 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 - [ ] Selection floating button appears; menu opens on plain pages AND inside inputs/textareas/contenteditable editors
 - [ ] Replace works for both plain inputs and rich editors
 - [ ] Context-menu items (Translate / Rephrase / Add Emoji / Summarize / Ask Omni AI) show result cards; Ask opens the Quick Ask overlay instead
-- [ ] Keyboard shortcuts fire (Alt+A ask, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit).
+- [ ] Keyboard shortcuts fire (Alt+O quick-action menu, Alt+R rephrase, Alt+T translate, Alt+F grammar). Chrome only auto-binds up to 4 declared `suggested_key` shortcuts per extension — `manifest.json`'s `commands` is deliberately kept at exactly 4 so all of them actually work on install; don't add a 5th `suggested_key` without reading `docs/FOLLOWUPS.md` #8 first (Playwright's test Chromium channel hangs loading the extension past that limit). `quick_ask` (Alt+A) gave up its default binding to make room for `quick_menu`'s Alt+O — it's still a fully working command, just not auto-bound; users assign it manually at `chrome://extensions/shortcuts` if they want it.
 - [ ] Settings save/reload round-trips (keys stay local, languages/theme stay sync)
 - [ ] Provider "Validate" passes for at least Gemini + Custom Gateway
 - [ ] Clicking the toolbar icon opens the side panel (not a popup or a new window); Summarize/Smart Translate/Explain work against a real page and the panel stays open across tab switches
 - [ ] Floating button and result card stay fully on-screen when a selection/focus is near each of the four viewport edges (regression check for the design-system plan's clampToViewport fix)
 - [ ] "Back" button returns to the action menu after both a click-triggered AND a keyboard-shortcut-triggered (Alt+R/T/F) result
 - [ ] Service worker console clean after idle (no unhandled promise rejections)
+
+### Pre-Push Gate (mandatory — mirrors the GitHub pipeline)
+
+`master` is branch-protected: a PR cannot merge unless **both** CI checks are
+green — `verify` (typecheck → lint → format:check → test:coverage) and
+`e2e (playwright)` — and the branch is up to date with `master`. This is not a
+formality: an agent MUST run the **local equivalent of the full pipeline** and
+confirm it is green _before_ pushing any code to GitHub. Do not push and hope CI
+catches it.
+
+Local gate (must all pass before `git push`):
+
+1. `npm run verify` — `tsc --noEmit` (typecheck) + ESLint (`--max-warnings 0`) +
+   Prettier (`--check`) + Jest coverage (`./lib/providers/` functions ≥ 65%).
+2. `npx playwright test` — the Playwright E2E suite (extension loads in MV3,
+   side panel, smoke). Needs `npx playwright install chromium` once.
+3. Only after BOTH are green may the agent push the feature branch and
+   open/update the PR.
+
+If either is red locally, fix the root cause and re-run — never push a known-red
+state. The CI job commands in `.github/workflows/ci.yml` are the source of truth
+for the exact invocations; keep them in sync with this gate.
 
 ---
 
@@ -192,7 +221,9 @@ bash scripts/publish.sh   # Build zip into dist/ (strips dev key, swaps client_i
 
 ## ⚠️ Known Issues (fix on sight — do not copy these patterns)
 
-None currently. 🎉
+- **Never add `background.scripts` to `manifest.json`.** It is an MV2-only key; Chrome refuses to load an MV3 manifest that declares it alongside `background.service_worker`, with exactly the error `'background.scripts' requires manifest version of 2 or lower`. It was added once to silence `web-ext lint`'s `BACKGROUND_SERVICE_WORKER_NOFALLBACK` warning, which is Firefox-only, non-blocking (`continue-on-error: true` in `.github/workflows/ci.yml`), and already ruled inapplicable to this Chrome-only MV3 extension (see `tests/eslint-config.test.js`'s "verify script runs format:check but not lint:webext" test). `tests/manifest.test.js` guards against this regressing again.
+
+- **`chrome://extensions/shortcuts` ignores `commands._execute_action.description`.** Confirmed by loading the unpacked extension in Playwright and inspecting the real page: no matter what string is set there (`manifest.json`), Chrome always renders the reserved `_execute_action` row with its own built-in label ("Activate the extension" in en-US), grouped under the extension's name/icon heading above it. Only the other, non-reserved `commands` entries (`quick_ask`, `quick_rephrase`, …) show a custom description. `manifest.json`'s `_execute_action.description` and the matching row in `settings.html`'s own shortcuts list are still worth keeping accurate (the latter IS rendered as written, since it's our own markup, not Chrome's native page) — just don't expect editing that manifest string to change anything on Chrome's own shortcuts page, and don't go looking for it there under the description text.
 
 ---
 

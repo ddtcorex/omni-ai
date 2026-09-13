@@ -15,6 +15,10 @@ const ICONS = {
   explain: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
   tone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>`,
   translate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10 15.3 15.3 0 0 1 4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+  // Bidirectional swap arrows -- distinguishes Smart Translate (auto-detects
+  // direction) from the one-directional translate_primary/translate_default,
+  // which would otherwise share the same globe icon and look identical.
+  translateSmart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`,
   ask: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
   reply: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>`,
   emoji: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>`,
@@ -98,6 +102,60 @@ let isOverlayVisible = false;
 let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
 const resultCache = new Map();
+
+// Flash Actions: hovering the floating quick-action icon reveals a row of
+// user-configured shortcuts (Settings > Flash Actions) that skip straight to
+// a result, without opening the full quick-action menu.
+const FLASH_ACTIONS_HOVER_DELAY = 500;
+const FLASH_ACTIONS_HIDE_GRACE = 150;
+const DEFAULT_FLASH_ACTIONS = ["smart_translate", "rephrase", "grammar"];
+const FLASH_ACTION_LABEL_KEYS = {
+  smart_translate: "overlay_smart_translation",
+  translate_primary: "settings_flashAction_translatePrimary",
+  translate_default: "settings_flashAction_translateDefault",
+  grammar: "action_grammar",
+  rephrase: "action_rephrase",
+  reply: "action_reply",
+  emoji: "action_emojify",
+  tone: "action_tone",
+  summarize: "action_summarize",
+  explain: "action_explain",
+};
+// The row always renders in this fixed order, regardless of the order the
+// selected actions happen to be stored in (settings.flashActions) -- an
+// already-saved install can carry a stale order from before this list was
+// last reordered, and chrome.storage.local isn't reset by a dev reload.
+// Deliberately its own list, not Object.keys(FLASH_ACTION_LABEL_KEYS): that
+// object's key order matches the Settings checkbox layout (an unrelated,
+// earlier decision) and has grammar before rephrase -- DEFAULT_FLASH_ACTIONS
+// above wants rephrase before grammar.
+const FLASH_ACTION_CANONICAL_ORDER = [
+  "smart_translate",
+  "translate_primary",
+  "translate_default",
+  "rephrase",
+  "grammar",
+  "reply",
+  "emoji",
+  "tone",
+  "summarize",
+  "explain",
+];
+const FLASH_ACTION_ICONS = {
+  smart_translate: ICONS.translateSmart,
+  translate_primary: ICONS.translate,
+  translate_default: ICONS.translate,
+  grammar: ICONS.grammar,
+  rephrase: ICONS.rephrase,
+  reply: ICONS.reply,
+  emoji: ICONS.emoji,
+  tone: ICONS.tone,
+  summarize: ICONS.summarize,
+  explain: ICONS.explain,
+};
+let flashActionsRow = null;
+let flashHoverTimer = null;
+let flashHideTimer = null;
 
 // Store state for navigation
 let lastMenuContext = null;
@@ -558,6 +616,22 @@ function setupMessageListener() {
         break;
       }
 
+      case "SHOW_QUICK_ACTION_MENU": {
+        // Same menu the floating icon's click opens, triggered directly from
+        // the quick_menu shortcut. Requires a selection: showQuickActionMenu()
+        // unconditionally calls text.trim() to auto-trigger Smart Translate
+        // for non-input selections, which throws on an undefined/empty text.
+        const menuText = getSelectedText();
+        if (menuText) {
+          hideQuickActionButton();
+          const isInput = isTextInput(document.activeElement);
+          if (isInput) activeInputElement = document.activeElement;
+          showQuickActionMenu(menuText, getSelectionRect(), null, isInput);
+        }
+        sendResponse({ success: true });
+        break;
+      }
+
       case "THEME_CHANGED":
         // ensureUiTheme's internal chrome.storage.onChanged listener (set up once
         // the shadow host exists) already re-applies theme on change; this call is
@@ -791,6 +865,16 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
   ensureUiRoot().appendChild(button);
 }
 
+function resolveQuickBtnText(text, inputElement) {
+  return (
+    text ||
+    (inputElement
+      ? getSelectedText() ||
+        (inputElement.value ? inputElement.value.trim() : inputElement.innerText.trim())
+      : "")
+  );
+}
+
 function setupQuickBtnEvents(text = null, inputElement = null) {
   quickActionBtn.addEventListener("mousedown", (e) => {
     e.stopPropagation();
@@ -805,23 +889,160 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
 
     const isInput = !!inputElement;
     if (isInput) activeInputElement = inputElement;
-    const currentText =
-      text ||
-      (inputElement
-        ? getSelectedText() ||
-          (inputElement.value ? inputElement.value.trim() : inputElement.innerText.trim())
-        : "");
+    const currentText = resolveQuickBtnText(text, inputElement);
     const btnRect = quickActionBtn.getBoundingClientRect();
 
     showQuickActionMenu(currentText, btnRect, null, isInput);
   });
+
+  quickActionBtn.addEventListener("mouseenter", () => {
+    clearTimeout(flashHideTimer);
+    clearTimeout(flashHoverTimer);
+    flashHoverTimer = setTimeout(() => {
+      showFlashActions(resolveQuickBtnText(text, inputElement), inputElement);
+    }, FLASH_ACTIONS_HOVER_DELAY);
+  });
+
+  quickActionBtn.addEventListener("mouseleave", scheduleHideFlashActions);
 }
 
 function hideQuickActionButton() {
+  clearTimeout(flashHoverTimer);
+  hideFlashActions();
   if (quickActionBtn) {
     quickActionBtn.remove();
     quickActionBtn = null;
   }
+}
+
+function scheduleHideFlashActions() {
+  clearTimeout(flashHoverTimer);
+  clearTimeout(flashHideTimer);
+  flashHideTimer = setTimeout(hideFlashActions, FLASH_ACTIONS_HIDE_GRACE);
+}
+
+function hideFlashActions() {
+  clearTimeout(flashHideTimer);
+  if (flashActionsRow) {
+    flashActionsRow.remove();
+    flashActionsRow = null;
+  }
+}
+
+/**
+ * Build and position the flash-actions row beside the floating icon, reading
+ * the user's selection from Settings > Flash Actions. No-ops if there's no
+ * text (mirrors PROCESSING_START's guard) or the icon disappeared while the
+ * hover delay/settings read was in flight.
+ */
+async function showFlashActions(text, inputElement) {
+  if (!text || !quickActionBtn) return;
+
+  let selectedActions = DEFAULT_FLASH_ACTIONS;
+  if (isContextValid()) {
+    try {
+      const { getSettingsBag } = await import(chrome.runtime.getURL("lib/storage.js"));
+      const settings = await getSettingsBag();
+      selectedActions = settings?.flashActions || DEFAULT_FLASH_ACTIONS;
+    } catch {
+      selectedActions = DEFAULT_FLASH_ACTIONS;
+    }
+  }
+  if (!quickActionBtn || !selectedActions.length) return;
+
+  selectedActions = selectedActions
+    .slice()
+    .sort(
+      (a, b) => FLASH_ACTION_CANONICAL_ORDER.indexOf(a) - FLASH_ACTION_CANONICAL_ORDER.indexOf(b),
+    );
+
+  hideFlashActions();
+
+  const row = document.createElement("div");
+  row.className = "omni-ai-flash-actions";
+  row.innerHTML = selectedActions
+    .map(
+      (action) => `
+      <button class="omni-ai-flash-btn" data-flash-action="${action}" title="${i18n.getMessage(FLASH_ACTION_LABEL_KEYS[action] || action)}">
+        ${FLASH_ACTION_ICONS[action] || ICONS.magic}
+      </button>`,
+    )
+    .join("");
+
+  // Match quickActionBtn's own mousedown/mouseup guards exactly: without
+  // both, a flash button's mouseup bubbles to document's selection-change
+  // listener (handleSelectionChange()), which recreates the floating icon
+  // at the click's mouse position -- looking like the icon "jumped".
+  row.addEventListener("mousedown", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  });
+  row.addEventListener("mouseup", (e) => e.stopPropagation());
+  row.addEventListener("mouseenter", () => clearTimeout(flashHideTimer));
+  row.addEventListener("mouseleave", scheduleHideFlashActions);
+  row.querySelectorAll("[data-flash-action]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerFlashAction(/** @type {HTMLElement} */ (btn).dataset.flashAction, text, inputElement);
+    });
+  });
+
+  const ICON_SIZE = 22;
+  const GAP = 6;
+  const rowWidth = selectedActions.length * ICON_SIZE + (selectedActions.length - 1) * GAP;
+  const btnRect = quickActionBtn.getBoundingClientRect();
+  // Align centers, not tops: the icon's own rendered height doesn't always
+  // exactly equal its authored size (e.g. residual scale from its entrance
+  // animation), so matching tops alone can leave the row's true center a
+  // couple px off from the icon's -- aligning centers is robust to that.
+  let top = btnRect.top + btnRect.height / 2 - ICON_SIZE / 2 + window.scrollY;
+  let left = btnRect.right + window.scrollX + GAP;
+
+  if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
+    const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
+      top,
+      left,
+      rowWidth,
+      ICON_SIZE,
+      window.scrollX,
+      window.scrollY,
+      window.innerWidth,
+      window.innerHeight,
+    );
+    top = clamped.top;
+    // Only take the clamped left if it didn't just squeeze the row under the
+    // button (clamping alone can't know to flip sides); flip to the button's
+    // left edge instead when the row would otherwise overlap it.
+    left =
+      clamped.left < btnRect.left + window.scrollX
+        ? btnRect.left + window.scrollX - rowWidth - GAP
+        : clamped.left;
+  }
+
+  row.style.top = `${top}px`;
+  row.style.left = `${left}px`;
+
+  await ensureUiRootReady();
+  if (!quickActionBtn) return;
+  ensureUiRoot().appendChild(row);
+  flashActionsRow = row;
+}
+
+function triggerFlashAction(action, text, inputElement) {
+  const isInput = !!inputElement;
+  // Mirrors the menu-click handler in setupQuickBtnEvents(): clicking inside
+  // the shadow root (the flash row) can leave document.activeElement no
+  // longer pointing at the original field, so replaceSelectedText()'s
+  // fallback needs this tracked explicitly -- otherwise Replace silently
+  // targets the wrong element (or nothing) for input/textarea fields.
+  if (isInput) activeInputElement = inputElement;
+  hideFlashActions();
+  if (quickActionBtn) {
+    quickActionBtn.innerHTML = `<div class="ds-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
+    quickActionBtn.style.cursor = "wait";
+  }
+  handleAction(action, text, isInput);
 }
 
 // ============================================
@@ -1020,7 +1241,11 @@ async function showQuickActionMenu(
   } else {
     // Non-Input: Trigger Translation (Smart)
     const smartAction = "smart_translate";
-    const cacheKey = `${smartAction}|${text.trim()}|chat`;
+    // Includes primaryLanguage/defaultLanguage: smartTranslate()'s result
+    // depends on both (it toggles direction between them), so a stale cache
+    // entry from before a language-setting change would otherwise keep
+    // returning the old (now-wrong) translation for the same text.
+    const cacheKey = `${smartAction}|${text.trim()}|chat|${primaryLanguage}|${defaultLanguage}`;
 
     if (resultCache.has(cacheKey)) {
       setTimeout(() => {
@@ -1112,8 +1337,19 @@ async function handleAction(action, text, isInput) {
     }
   }
 
+  // translate_primary/translate_default/smart_translate results depend on
+  // the user's Primary/Translation Language settings too, not just the text
+  // -- fold those into the cache key so a language change doesn't keep
+  // returning a stale translation cached under the old settings.
+  let langCacheSuffix = "";
+  if (["translate_primary", "translate_default", "smart_translate"].includes(action)) {
+    const { getSyncPreferences } = await import(chrome.runtime.getURL("lib/storage.js"));
+    const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
+    langCacheSuffix = `|${primaryLanguage}|${defaultLanguage}`;
+  }
+
   // Skip cache for rephrase to always get fresh results
-  const cacheKey = `${action}|${text.trim()}|${preset}`;
+  const cacheKey = `${action}|${text.trim()}|${preset}${langCacheSuffix}`;
   if (action !== "rephrase" && resultCache.has(cacheKey)) {
     showResultOverlay(
       {
@@ -1467,6 +1703,12 @@ function extractPageContent() {
 }
 
 function showLoadingInOverlay() {
+  // A flash action (triggerFlashAction()) calls handleAction() directly,
+  // without ever opening the menu overlay -- nothing to show in-place
+  // loading in yet. showResultOverlay() creates the overlay itself once the
+  // result arrives, so this is a safe no-op rather than a missed state.
+  if (!overlay) return;
+
   // Try to find the content area to replace, or the grid if first time
   let content = overlay.querySelector(".omni-ai-content-area");
   const menuGrid = overlay.querySelector(".omni-ai-menu-grid");
@@ -1696,6 +1938,33 @@ async function replaceSelectedText(newText, specificElement = null) {
     activeElement = activeInputElement;
   }
 
+  // A stale/detached reference -- e.g. the page re-rendered this field (a
+  // live comment counter, a framework re-render, ...) while a flash action's
+  // mandatory hover delay + AI round-trip was in flight -- would otherwise
+  // "successfully" write into a node no longer on screen: the overlay closes
+  // reporting success, but the visible field never changes. Try to recover a
+  // live element sharing the same id (stable across most re-renders) before
+  // giving up; the recovered node won't have the original selection, so this
+  // falls back to whole-field replacement rather than a partial one.
+  if (activeElement && !activeElement.isConnected) {
+    const recovered = activeElement.id ? document.getElementById(activeElement.id) : null;
+    if (recovered?.isConnected) {
+      console.warn(
+        "[Omni AI] Replace: original target was detached (page re-rendered this field);",
+        "recovered a live element with the same id, replacing its full value instead.",
+      );
+      activeElement = recovered;
+    } else {
+      console.warn(
+        "[Omni AI] Replace: target element is no longer attached to the page",
+        "(the page likely re-rendered this field while waiting for a result),",
+        "and no element with the same id was found to recover.",
+        activeElement,
+      );
+      return false;
+    }
+  }
+
   const context = getContext(activeElement);
 
   // Prepare state for replacement
@@ -1709,7 +1978,20 @@ async function replaceSelectedText(newText, specificElement = null) {
     fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
   };
 
-  if (context.id === "static") return false;
+  if (context.id === "static") {
+    // Diagnostic: this branch silently no-ops (Replace click just does
+    // nothing, overlay stays open) whenever the resolved target isn't an
+    // editable field -- e.g. activeInputElement is stale/wrong, or the page
+    // itself moved focus elsewhere before Replace was clicked.
+    console.warn(
+      "[Omni AI] Replace: resolved target isn't editable, doing nothing.",
+      "activeElement:",
+      activeElement,
+      "activeInputElement:",
+      activeInputElement,
+    );
+    return false;
+  }
 
   const replacement = await /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.replaceViaAdapters(
     activeElement,
@@ -1858,18 +2140,34 @@ async function showQuickAskOverlay(
   setTimeout(() => positionOverlay(currentAnchorRect), 10);
 }
 
-function showErrorInOverlay(msg) {
-  if (overlay) {
-    overlay.innerHTML = `
-        <div class="omni-ai-overlay-header">
-            <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
-            <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
-        </div>
-        <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
-            ${msg}
-        </div>`;
-    overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+async function showErrorInOverlay(msg) {
+  // A flash action (triggerFlashAction()) reaches this via handleAction()'s
+  // catch/error branch without ever opening the menu overlay first -- create
+  // one here too (mirroring showResultOverlay()'s own self-creation), or the
+  // error would render nowhere and leave the floating icon's spinner frozen.
+  hideQuickActionButton();
+  const isNewOverlay = !overlay;
+  if (isNewOverlay) {
+    await ensureUiRootReady();
+    const el = document.createElement("div");
+    el.className = "omni-ai-overlay";
+    overlay = el;
+    ensureUiRoot().appendChild(overlay);
+    currentAnchorRect = getSelectionRect() || currentAnchorRect;
   }
+
+  overlay.innerHTML = `
+      <div class="omni-ai-overlay-header">
+          <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
+          <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+      </div>
+      <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
+          ${msg}
+      </div>`;
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  // positionOverlay() measures the overlay's rendered height to clamp it to
+  // the viewport, so it must run after innerHTML is set, not before.
+  if (isNewOverlay) positionOverlay(currentAnchorRect);
 }
 
 // Run

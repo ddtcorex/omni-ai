@@ -11,9 +11,17 @@
     "message": "Omni AI",
     "description": "Popup title"
   },
+  "command_openPanel": {
+    "message": "Mở bảng Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
   "popup_quickAsk": {
     "message": "Hỏi Omni AI bất cứ điều gì...",
     "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Hiện Menu Thao Tác Nhanh",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
   "popup_context": {
     "message": "Ngữ cảnh",
@@ -143,6 +151,22 @@
     "message": "Tắt để chỉ dùng phím tắt và menu chuột phải.",
     "description": "Văn bản trợ giúp cho tùy chọn nút nổi"
   },
+  "settings_flashActions": {
+    "message": "Thao Tác Nhanh",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Hiện các thao tác này khi hover vào icon nổi, để chạy ngay không cần mở menu đầy đủ (tối đa 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Dịch sang ngôn ngữ chính",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Dịch sang ngôn ngữ phụ",
+    "description": "Flash action checkbox label"
+  },
   "settings_on": {
     "message": "Bật",
     "description": "Tùy chọn cài đặt bật"
@@ -210,6 +234,30 @@
   "error_prefix": {
     "message": "Lỗi: ",
     "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Chưa cấu hình API key của Gemini",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Chưa cấu hình API key của OpenAI",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Chưa cấu hình API key của Groq",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Chưa cấu hình API key của Anthropic",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Chưa cấu hình Base URL của Custom Gateway",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Chưa cấu hình API key cho",
+    "description": "Prefix concatenated with a model id, e.g. 'Chưa cấu hình API key cho gemini-3.6-flash'"
   },
   "settings_defaultTone": {
     "message": "Giọng văn mặc định",
@@ -601,5 +649,49 @@
   },
   "sidepanel_resultFrom": {
     "message": "Từ:"
+  },
+  "sidebar_tab_chat": {
+    "message": "Trò chuyện",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Công cụ",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Hỏi về trang này…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Gửi",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Dừng",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Ngữ cảnh trang",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Bao gồm ngữ cảnh trang",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Bắt đầu cuộc trò chuyện về trang hiện tại.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Xóa cuộc trò chuyện",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này không?",
+    "description": "Clear chat session confirmation"
   }
 }

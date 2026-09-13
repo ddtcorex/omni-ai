@@ -32,11 +32,11 @@ Omni AI needs one API key to work. Pick a provider:
 • Custom Gateway — enter your base URL, key, and model in Settings
 
 KEYBOARD SHORTCUTS
-• Alt+A — Quick Ask about the current selection
+• Alt+O — Show the Quick Actions menu at the current selection
 • Alt+R — Rephrase selected text
 • Alt+T — Smart Translate selected text
 • Alt+F — Fix Grammar on selected text
-Summarize and Explain are also available as commands — assign your own shortcut (and customize any of the above) at chrome://extensions/shortcuts.
+Quick Ask, Summarize, and Explain are also available as commands — assign your own shortcut (and customize any of the above) at chrome://extensions/shortcuts.
 
 USAGE DASHBOARD
 Settings → Usage shows total actions run, words processed, and words generated — a quick look at how much time Omni AI is saving you.

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Omni AI — Sidebar Chat Demo</title>
+    <style>
+      body {
+        margin: 0;
+        background: #e9e9ee;
+        display: flex;
+        justify-content: center;
+        padding: 24px;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+      .demo-frame {
+        width: 400px;
+        height: 660px;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      }
+      .demo-frame .sidepanel-container {
+        height: 100%;
+      }
+      .demo-hint {
+        position: fixed;
+        bottom: 12px;
+        left: 12px;
+        font-size: 12px;
+        color: #555;
+        background: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-frame">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Omni AI</title>
+        <link rel="stylesheet" href="lib/design-tokens.css" />
+        <link rel="stylesheet" href="lib/design-system.css" />
+        <link rel="stylesheet" href="sidepanel/sidepanel.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <link rel="icon" type="image/svg+xml" href="assets/icons/logo.svg" />
+      </head>
+      <body>
+        <div class="sidepanel-container">
+          <header class="header">
+            <div class="logo">
+              <img src="assets/icons/logo.svg" alt="Omni AI" class="logo-icon" />
+              <span class="logo-text">Omni AI</span>
+            </div>
+            <button id="settingsBtn" class="ds-icon-btn" title="Settings">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                ></path>
+              </svg>
+            </button>
+          </header>
+
+          <nav class="tab-nav" role="tablist">
+            <button
+              id="tabChat"
+              class="tab-btn active"
+              role="tab"
+              aria-selected="true"
+              data-view="chatView"
+            >
+              <span class="tab-icon">💬</span>
+              <span class="tab-label">Chat</span>
+            </button>
+            <button
+              id="tabTools"
+              class="tab-btn"
+              role="tab"
+              aria-selected="false"
+              data-view="toolsView"
+            >
+              <span class="tab-icon">🛠️</span>
+              <span class="tab-label">Tools</span>
+            </button>
+          </nav>
+
+          <main class="page-tools">
+            <section id="toolsView" class="tab-view hidden">
+              <h2 class="page-tools-title">Page Tools</h2>
+
+              <div class="action-buttons">
+                <button id="summarizeBtn" class="ds-btn-primary" data-action="summarize">
+                  <span class="action-icon">📄</span>
+                  <span class="action-label">Summarize</span>
+                </button>
+                <button id="translateBtn" class="ds-btn-primary" data-action="smart_translate">
+                  <span class="action-icon">🌐</span>
+                  <span class="action-label">Smart Translate</span>
+                </button>
+                <button id="explainBtn" class="ds-btn-primary" data-action="explain">
+                  <span class="action-icon">💡</span>
+                  <span class="action-label">Explain</span>
+                </button>
+              </div>
+
+              <div id="statusLine" class="status-line hidden"></div>
+              <div id="loadingSpinner" class="ds-spinner hidden" style="margin: 12px auto"></div>
+
+              <div id="resultArea" class="ds-card hidden">
+                <div class="result-label">Result</div>
+                <div id="resultSource" class="result-source"></div>
+                <div id="resultText" class="result-text"></div>
+              </div>
+            </section>
+
+            <section id="chatView" class="tab-view">
+              <div class="chat-page-context">
+                <label class="chat-context-toggle">
+                  <input type="checkbox" id="includeContext" checked />
+                  <span>Include page context</span>
+                </label>
+                <details class="chat-context-details">
+                  <summary>Page context</summary>
+                  <pre id="pageContextPreview" class="chat-context-preview"></pre>
+                </details>
+              </div>
+
+              <div id="chatMessages" class="chat-messages">
+                <div class="chat-empty" id="chatEmpty">
+                  Start a conversation about the current page.
+                </div>
+              </div>
+
+              <div class="chat-error hidden" id="chatError">
+                Something went wrong. Please try again.
+              </div>
+
+              <div class="chat-input-row">
+                <textarea
+                  id="chatInput"
+                  class="chat-input"
+                  rows="2"
+                  placeholder="Ask about this page…"
+                ></textarea>
+                <button id="chatSend" class="ds-btn-primary chat-send">Send</button>
+                <button id="chatStop" class="ds-btn-secondary chat-stop hidden">Stop</button>
+              </div>
+            </section>
+          </main>
+
+          <footer class="footer">
+            <span class="version" id="extVersion"></span>
+          </footer>
+        </div>
+
+        <script>
+          // ---- Tab switching (mirrors sidepanel.js) ----
+          const tabs = [document.getElementById("tabChat"), document.getElementById("tabTools")];
+          const chatView = document.getElementById("chatView");
+          const toolsView = document.getElementById("toolsView");
+          tabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+              const target = tab.dataset.view;
+              tabs.forEach((t) => {
+                const active = t === tab;
+                t.classList.toggle("active", active);
+                t.setAttribute("aria-selected", String(active));
+              });
+              chatView.classList.toggle("hidden", target !== "chatView");
+              toolsView.classList.toggle("hidden", target !== "toolsView");
+            });
+          });
+
+          // ---- Simulated streaming chat ----
+          const chatMessages = document.getElementById("chatMessages");
+          const chatEmpty = document.getElementById("chatEmpty");
+          const chatInput = document.getElementById("chatInput");
+          const chatSend = document.getElementById("chatSend");
+          const chatStop = document.getElementById("chatStop");
+          const chatError = document.getElementById("chatError");
+          const includeContext = document.getElementById("includeContext");
+          const pageContextPreview = document.getElementById("pageContextPreview");
+
+          const DEMO_CONTEXT =
+            "Title: Example Article\nURL: https://example.com/article\n\nSelected text:\nThe quick brown fox jumps over the lazy dog.";
+
+          let isStreaming = false;
+          let controller = null;
+
+          function addMessage(role, text) {
+            if (chatEmpty) chatEmpty.classList.add("hidden");
+            const bubble = document.createElement("div");
+            bubble.className = "chat-msg " + role;
+            bubble.textContent = text;
+            chatMessages.appendChild(bubble);
+            chatMessages.scrollTo({ top: chatMessages.scrollHeight });
+            return bubble;
+          }
+          function setStreamingUI(on) {
+            isStreaming = on;
+            chatSend.classList.toggle("hidden", on);
+            chatStop.classList.toggle("hidden", !on);
+            chatInput.toggleAttribute("disabled", on);
+          }
+          includeContext.addEventListener("change", () => {
+            pageContextPreview.textContent = includeContext.checked
+              ? DEMO_CONTEXT
+              : "(page context disabled)";
+          });
+
+          function fakeStream(onChunk, signal) {
+            const reply =
+              "Sure! Based on the page you're viewing, the quick brown fox is a classic " +
+              "typographic pangram used to showcase fonts. 🦊 It contains every letter of " +
+              "the English alphabet at least once, which makes it handy for testing layouts.";
+            return new Promise((resolve, reject) => {
+              let i = 0;
+              const timer = setInterval(() => {
+                if (signal.aborted) {
+                  clearInterval(timer);
+                  reject(new DOMException("Aborted", "AbortError"));
+                  return;
+                }
+                if (i >= reply.length) {
+                  clearInterval(timer);
+                  resolve(reply);
+                  return;
+                }
+                const slice = reply.slice(i, i + 3);
+                i += 3;
+                onChunk(slice);
+              }, 40);
+            });
+          }
+
+          async function sendMessage() {
+            if (isStreaming) return;
+            const message = chatInput.value.trim();
+            if (!message) return;
+            addMessage("user", message);
+            chatInput.value = "";
+            chatError.classList.add("hidden");
+            const assistant = addMessage("assistant", "");
+            let acc = "";
+            controller = { aborted: false };
+            setStreamingUI(true);
+            try {
+              const full = await fakeStream((chunk) => {
+                acc += chunk;
+                assistant.textContent = acc;
+                chatMessages.scrollTo({ top: chatMessages.scrollHeight });
+              }, controller);
+              assistant.textContent = full;
+            } catch (e) {
+              if (e && e.name === "AbortError") assistant.textContent = acc + " ⏹ (stopped)";
+              else chatError.classList.remove("hidden");
+            } finally {
+              setStreamingUI(false);
+            }
+          }
+
+          chatSend.addEventListener("click", sendMessage);
+          chatStop.addEventListener("click", () => {
+            if (controller) controller.aborted = true;
+          });
+          chatInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage();
+            }
+          });
+        </script>
+      </body>
+    </div>
+    <div class="demo-hint">Demo only — streaming simulated locally. No API key needed.</div>
+  </body>
+</html>
