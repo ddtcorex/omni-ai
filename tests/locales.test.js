@@ -185,3 +185,24 @@ describe("the overlay language chip", () => {
     expect(contentSource).not.toMatch(/getMessage\(\s*"ui_to"\s*\)/);
   });
 });
+
+describe("catalogues translate UI copy, not just brand names", () => {
+  // Core directive 7's carve-out covers brand NAMES (`Custom Gateway`,
+  // `OpenRouter`, `LiteLLM`, `Together AI`). These three sentences are ordinary
+  // UI copy that happens to contain a brand name, so every catalogue must
+  // translate the sentence and keep only the names in Latin script. Eight
+  // catalogues inherited them from English and needed aligning.
+  const SENTENCES = [
+    "settings_customGatewayHint",
+    "settings_customGatewayUrlNote",
+    "settings_customGatewayKeyNote",
+  ];
+
+  test.each(SENTENCES)("%s is translated in every catalogue", (key) => {
+    const english = readMessages("en")[key].message;
+    const untranslated = localeDirs
+      .filter((locale) => locale !== "en")
+      .filter((locale) => readMessages(locale)[key].message === english);
+    expect(untranslated).toEqual([]);
+  });
+});
