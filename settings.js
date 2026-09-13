@@ -190,19 +190,26 @@ export function populateLanguageSelect(select, query = "", pinnedCode = select?.
     getMessage: (key) => i18n.getMessage(key),
   });
 
+  /**
+   * @param {{ code: string, label: string }} option
+   * @returns {HTMLOptionElement}
+   */
+  const buildOption = (option) => {
+    const el = document.createElement("option");
+    el.value = option.code;
+    el.textContent = option.label;
+    return el;
+  };
+
   groups.forEach((group) => {
-    let container = select;
-    if (group.label) {
-      container = document.createElement("optgroup");
-      container.label = group.label;
-      select.appendChild(container);
+    if (!group.label) {
+      group.options.forEach((option) => select.appendChild(buildOption(option)));
+      return;
     }
-    group.options.forEach((option) => {
-      const el = document.createElement("option");
-      el.value = option.code;
-      el.textContent = option.label;
-      container.appendChild(el);
-    });
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = group.label;
+    group.options.forEach((option) => optgroup.appendChild(buildOption(option)));
+    select.appendChild(optgroup);
   });
 
   if (pinnedCode) select.value = pinnedCode;
