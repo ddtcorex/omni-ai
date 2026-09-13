@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI модельдеріне негізделген барлығы біріктірілген AI көмекшісі: жазу жақсарту, жылдам әрекеттер және ақылды құралдар",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI панелін ашу",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Бет құралдары",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Қорытындылау",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Ақылды аударма",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Түсіндіру",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Орындалып жатыр…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Нәтиже",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Бұл бетті оқу мүмкін емес",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Бұл бетте жұмыс істейтін мәтін жоқ",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Дереккөз:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI-ге кез келген сұрақ қойыңыз...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Жылдам әрекеттер мәзірін көрсету",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Контекст",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Жазуды жақсарту",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Жылдам әрекеттер",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "Пошта",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Чат",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Әлеуметтік желілер",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Техникалық",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Академиялық",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Грамматиканы түзеу",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Емле мен грамматиканы түзейді",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Айқындықты жақсарту",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Тонды өзгерту",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Ықшамдау",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Кеңейту",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Қайта тұжырымдау",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Аудару",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Қорытындылау",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Жауап беру",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Эмодзи қосу",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Дайын",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Өңделуде...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Қате",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Параметрлер",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API кілті",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "API кілтіңізді Google AI Studio-дан алыңыз",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI моделі",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Пайдаланылатын AI моделін таңдаңыз",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Әдепкі контекст",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Аударма тілі",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Параметрлерді сақтау",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Қалқымалы Omni AI түймесін көрсету",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Тек пернетақта жарлықтары мен контекст мәзірлерін пайдалану үшін мұны өшіріңіз.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Шапшаң әрекеттер",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Қалқымалы белгішеге тінтуірді апарғанда осы әрекеттерді көрсету, сонда оларды толық мәзірді ашпай-ақ іске қосуға болады (4-ке дейін).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Негізгі тілге аудару",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Әдепкі тілге аудару",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Қосулы",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Өшірулі",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Параметрлер сақталды!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Көшіру",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Алмастыру",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Түсіндіру",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Тіл: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI көмегімен жақсарту",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI көмегімен түсіндіру",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI көмегімен аудару",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AI көмегімен қайта тұжырымдау",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI көмегімен эмодзи қосу",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI көмегімен қорытындылау",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI-ден сұрау",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API кілті конфигурацияланбаған. API кілтіңізді Параметрлерде қосыңыз.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Gemini API кілтін енгізіңіз...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Қате: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API кілті конфигурацияланбаған",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API кілті конфигурацияланбаған",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API кілті конфигурацияланбаған",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API кілті конфигурацияланбаған",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway негізгі URL мекенжайы конфигурацияланбаған",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "$MODEL$ үшін API кілті конфигурацияланбаған",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Әдепкі тон",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Жазу жақсартулар мен жауаптар үшін әдепкі тон",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Кәсіби",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Бейресми",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Жылы шырайлы",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Тікелей",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Сенімді",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Жылдам сұрақ",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Нәтиже",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Ойланып жатыр...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Артқа",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Көшірілді!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Мәтін таңдалмаған. Алдымен мәтінді таңдаңыз.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Сіздің AI көмекшіңіз",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Тақырып",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Қалаған көріністі таңдаңыз",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Жүйелік әдепкі",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Қараңғы",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Ашық",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Негізгі тіл",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Жылдам әрекеттерге арналған негізгі тіліңіз",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Конфигурацияны тексеру",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Пернетақта жарлықтары",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Пайдалану тарихы",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Барлық әрекеттер",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Өңделген сөздер",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Жасалған сөздер",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Бағдарлама туралы",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Мәселе туралы хабарлау",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Тарихты тазалау",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API кілті",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Тегін кілтті console.groq.com сайтынан алыңыз",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API кілті",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "API кілтін platform.openai.com сайтынан алыңыз",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API кілтін алу",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API кілтін алу",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API кілтін алу",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API кілті",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "API кілтін console.anthropic.com сайтынан алыңыз",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API кілтін алу",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Anthropic Console қызметіне өту"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Тіркелу немесе кіру"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Жаңа API кілтін жасау"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome браузерінде реттеу",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Жарлықтарды Chrome параметрлерінде реттеңіз",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Жаңарту",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Аудармалар үшін әдепкі тіл",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Ағылшын"
+  },
+  "lang_vi": {
+    "message": "Вьетнам"
+  },
+  "lang_es": {
+    "message": "Испан"
+  },
+  "lang_fr": {
+    "message": "Француз"
+  },
+  "lang_de": {
+    "message": "Неміс"
+  },
+  "lang_it": {
+    "message": "Итальян"
+  },
+  "lang_pt": {
+    "message": "Португал"
+  },
+  "lang_ja": {
+    "message": "Жапон"
+  },
+  "lang_ko": {
+    "message": "Корей"
+  },
+  "lang_zh": {
+    "message": "Қытай"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Тілдерді іздеу",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Жиі қолданылатын",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Барлық тілдер",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Барлық пайдалану тарихын тазалауға сенімдісіз бе?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Алдымен API кілтін/эндпоинтті енгізіңіз.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Жарамдылығы тексерілуде...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Конфигурация жарамды! Жасауға дайын.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Қосылымды тексеру сәтсіз аяқталды",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Тексерілуде...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Сақтау сәтсіз аяқталды",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio қызметіне өту"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "«Create API Key» түймесін басыңыз"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Кілтті алмасу буферіне көшіру"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console қызметіне өту"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Тіркелу немесе кіру"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Жаңа API кілтін жасау"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform қызметіне өту"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Тіркелу немесе кіру"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Жаңа API кілтін жасау"
+  },
+  "overlay_suggested_fix": {
+    "message": "Ұсынылған түзету",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Қабылдау",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Бас тарту",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Ешбір мәселе табылмады",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Мәтін керемет!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Ақылды аударма",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Қате",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Аудару сәтсіз аяқталды",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Ескірген)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Қосымша",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Теңшелген модель атауы",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Теңшелген модель ID енгізіңіз",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Теңшелген модель атауын енгізіңіз",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "мысалы: your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "OpenAI-мен үйлесімді кез келген API эндпоинтіне қосылу",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "мысалы: https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "API кілтіңізді енгізіңіз...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway конфигурациясы",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI-мен үйлесімді API интерфейстерін қолдайды (OpenRouter, LiteLLM, Together AI және т.б.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Кейбір шлюздер үшін міндетті емес (мысалы, OpenRouter тегін жоспары)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Чат",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Құралдар",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Осы бет туралы сұраңыз…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Жіберу",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Тоқтату",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Бет контексті",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Бет контекстін қосу",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Ағымдағы бет туралы әңгімені бастаңыз.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Бірдеңе дұрыс болмады. Қайталап көріңіз.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Чатты тазалау",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Бұл әңгімені тазалауға сенімдісіз бе?",
+    "description": "Clear chat session confirmation"
+  }
+}

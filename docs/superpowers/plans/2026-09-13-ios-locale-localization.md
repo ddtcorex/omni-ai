@@ -532,3 +532,18 @@ The `ui_to` constraint documented in wave 3 paid off: Finnish, Czech, Hungarian 
 Four of the six (Croatian, Slovak, Slovenian, Bulgarian) are case-inflecting Slavic languages and used the colon or preposition form the wave-3 constraint calls for; none attached an ending to the nominative token. Bulgarian's `на` happens to take the same form as the nominative label, so it reads naturally without a colon.
 
 Two agents independently noticed a genuine inconsistency worth recording rather than fixing quietly: the `es` catalogue from wave 0/1 left `settings_customGatewayHint`, `settings_customGatewayUrlNote` and `settings_customGatewayKeyNote` in English, while Catalan translated them (rule 6 protects brand names, not whole sentences). Both are defensible readings, and the `identical-to-en` column in `scripts/locale-status.mjs` is what makes the divergence visible. A future pass should decide one way and align all 40 catalogues.
+
+**Wave 6** executed 2026-09-13 on `chore/i18n-wave-6`: `lt kk kn ml or pa`, 6 x 182 keys. Parity gate, directory probe and placeholder probe all pass:
+
+| Locale | `error_apiKeyNotConfiguredFor` | `ui_to` |
+| --- | --- | --- |
+| `lt` | `API raktas nesukonfigūruotas gemini-3.6-flash` | `Kalba: anglų` |
+| `kk` | `gemini-3.6-flash үшін API кілті конфигурацияланбаған` | `Тіл: Ағылшын` |
+| `kn` | `gemini-3.6-flash ಗಾಗಿ API ಕೀ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ` | `ಭಾಷೆ: ಇಂಗ್ಲಿಷ್` |
+| `ml` | `gemini-3.6-flash എന്നതിനായി API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല` | `ഭാഷ: ഇംഗ്ലീഷ്` |
+| `or` | `gemini-3.6-flash ପାଇଁ API କୀ ବିନ୍ୟାସ କରାଯାଇନାହିଁ` | `ଭାଷା: ଇଂରାଜୀ` |
+| `pa` | `gemini-3.6-flash ਲਈ API ਕੁੰਜੀ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ` | `ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ` |
+
+Four of the six are verb-final Indic languages and put the model id before the verb; only Punjabi used a separate postposition for `ui_to`, and the other five used the colon label. `lt` and `kk` are the first locales where an agent reported the colon form as the only safe option for a case-inflecting language.
+
+**Measured divergence, from `scripts/locale-status.mjs` and a direct comparison:** exactly 8 of the 45 non-English catalogues still carry the three Custom Gateway sentences in English (`de es fr it ja ko pt zh`), and those 8 are precisely the catalogues that were 14 keys behind before wave 0, so the sentences were inherited rather than authored. The other 37 translate them. `docs/FOLLOWUPS.md` row 19 records the 24-string fix and the policy question; nothing was changed in this wave, because silently rewriting eight already-merged catalogues inside a "add six new locales" PR would bury the decision.

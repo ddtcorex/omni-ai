@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI മോഡലുകൾ കൊണ്ട് പ്രവർത്തിക്കുന്ന ഓൾ-ഇൻ-വൺ AI അസിസ്റ്റന്റ് - എഴുത്ത് മെച്ചപ്പെടുത്തൽ, ദ്രുത പ്രവർത്തനങ്ങൾ, സ്മാർട്ട് സൗകര്യങ്ങൾ",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI പാനൽ തുറക്കുക",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "പേജ് ടൂളുകൾ",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "സംഗ്രഹിക്കുക",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "സ്മാർട്ട് വിവർത്തനം",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "വിശദീകരിക്കുക",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "പ്രവർത്തിക്കുന്നു…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "ഫലം",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "ഈ പേജ് വായിക്കാനാകുന്നില്ല",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "ഈ പേജിൽ പ്രവർത്തിക്കാൻ ഉള്ളടക്കമില്ല",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "ഉറവിടം:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI-യോട് എന്തും ചോദിക്കൂ...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "ദ്രുത പ്രവർത്തന മെനു കാണിക്കുക",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "സന്ദർഭം",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "എഴുത്ത് മെച്ചപ്പെടുത്തുക",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "ദ്രുത പ്രവർത്തനങ്ങൾ",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "ഇമെയിൽ",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "ചാറ്റ്",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "സോഷ്യൽ",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "സാങ്കേതിക",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "അക്കാദമിക്",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "വ്യാകരണം ശരിയാക്കുക",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "അക്ഷരത്തെറ്റുകളും വ്യാകരണവും ശരിയാക്കുന്നു",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "വ്യക്തത മെച്ചപ്പെടുത്തുക",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "ടോൺ മാറ്റുക",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "ചുരുക്കുക",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "വികസിപ്പിക്കുക",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "മാറ്റിയെഴുതുക",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "വിവർത്തനം ചെയ്യുക",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "സംഗ്രഹിക്കുക",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "മറുപടി",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "ഇമോജി ചേർക്കുക",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "തയ്യാർ",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "പ്രോസസ്സ് ചെയ്യുന്നു...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "പിശക്",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "ക്രമീകരണങ്ങൾ",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API കീ",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Google AI Studio-യിൽ നിന്ന് നിങ്ങളുടെ API കീ നേടുക",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI മോഡൽ",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "ഉപയോഗിക്കേണ്ട AI മോഡൽ തിരഞ്ഞെടുക്കുക",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "ഡിഫോൾട്ട് സന്ദർഭം",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "വിവർത്തന ഭാഷ",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "ക്രമീകരണങ്ങൾ സേവ് ചെയ്യുക",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "ഫ്ലോട്ടിംഗ് Omni AI ബട്ടൺ കാണിക്കുക",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "കീബോർഡ് കുറുക്കുവഴികളും കോൺടെക്സ്റ്റ് മെനുവും മാത്രം ഉപയോഗിക്കാൻ ഇത് ഓഫ് ചെയ്യുക.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "ഫ്ലാഷ് പ്രവർത്തനങ്ങൾ",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "ഫ്ലോട്ടിംഗ് ഐക്കണിന് മേൽ ഹോവർ ചെയ്യുമ്പോൾ ഈ പ്രവർത്തനങ്ങൾ കാണിക്കുക, അങ്ങനെ മുഴുവൻ മെനുവും തുറക്കാതെ അവ പ്രവർത്തിപ്പിക്കാം (പരമാവധി 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "പ്രാഥമിക ഭാഷയിലേക്ക് വിവർത്തനം ചെയ്യുക",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "ഡിഫോൾട്ട് ഭാഷയിലേക്ക് വിവർത്തനം ചെയ്യുക",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "ഓൺ",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "ഓഫ്",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "ക്രമീകരണങ്ങൾ സേവ് ചെയ്തു!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "പകർത്തുക",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "മാറ്റിസ്ഥാപിക്കുക",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "വിശദീകരിക്കുക",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "ഭാഷ: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI ഉപയോഗിച്ച് മെച്ചപ്പെടുത്തുക",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI ഉപയോഗിച്ച് വിശദീകരിക്കുക",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI ഉപയോഗിച്ച് വിവർത്തനം ചെയ്യുക",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AI ഉപയോഗിച്ച് മാറ്റിയെഴുതുക",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI ഉപയോഗിച്ച് ഇമോജി ചേർക്കുക",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI ഉപയോഗിച്ച് സംഗ്രഹിക്കുക",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI-യോട് ചോദിക്കുക",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല. ക്രമീകരണങ്ങളിൽ നിങ്ങളുടെ API കീ ചേർക്കുക.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "നിങ്ങളുടെ Gemini API കീ നൽകുക...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "പിശക്: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway ബേസ് URL കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "$MODEL$ എന്നതിനായി API കീ കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "ഡിഫോൾട്ട് ടോൺ",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "എഴുത്ത് മെച്ചപ്പെടുത്തലുകൾക്കും മറുപടികൾക്കുമുള്ള ഡിഫോൾട്ട് ടോൺ",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "പ്രൊഫഷണൽ",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "കാഷ്വൽ",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "സൗഹൃദപരം",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "നേരിട്ടുള്ള",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "ആത്മവിശ്വാസത്തോടെ",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "ദ്രുത ചോദ്യം",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "ഫലം",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "ചിന്തിക്കുന്നു...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "പിന്നോട്ട്",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "പകർത്തി!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "ടെക്സ്റ്റ് തിരഞ്ഞെടുത്തിട്ടില്ല. ആദ്യം കുറച്ച് ടെക്സ്റ്റ് തിരഞ്ഞെടുക്കുക.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "നിങ്ങളുടെ AI അസിസ്റ്റന്റ്",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "തീം",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "നിങ്ങൾക്ക് ഇഷ്ടമുള്ള രൂപം തിരഞ്ഞെടുക്കുക",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "സിസ്റ്റം ഡിഫോൾട്ട്",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "ഇരുണ്ട",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "വെളുത്ത",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "പ്രാഥമിക ഭാഷ",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "ദ്രുത പ്രവർത്തനങ്ങൾക്കുള്ള നിങ്ങളുടെ പ്രധാന ഭാഷ",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "കോൺഫിഗറേഷൻ പരിശോധിക്കുക",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "കീബോർഡ് കുറുക്കുവഴികൾ",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "ഉപയോഗ ചരിത്രം",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "ആകെ പ്രവർത്തനങ്ങൾ",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "പ്രോസസ്സ് ചെയ്ത വാക്കുകൾ",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "സൃഷ്ടിച്ച വാക്കുകൾ",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "ആപ്പിനെക്കുറിച്ച്",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "ചരിത്രം മായ്ക്കുക",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API കീ",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com-ൽ സൗജന്യ കീ നേടുക",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API കീ",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com-ൽ API കീ നേടുക",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API കീ നേടുക",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API കീ നേടുക",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API കീ നേടുക",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API കീ",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com-ൽ API കീ നേടുക",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API കീ നേടുക",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Anthropic Console-ലേക്ക് പോകുക"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "സൈൻ അപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ലോഗിൻ ചെയ്യുക"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "പുതിയ API കീ സൃഷ്ടിക്കുക"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome-ൽ ഇഷ്ടാനുസൃതമാക്കുക",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chrome ക്രമീകരണങ്ങളിൽ കുറുക്കുവഴികൾ ഇഷ്ടാനുസൃതമാക്കുക",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "പുതുക്കുക",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "വിവർത്തനങ്ങൾക്കുള്ള ഡിഫോൾട്ട് ഭാഷ",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "ഇംഗ്ലീഷ്"
+  },
+  "lang_vi": {
+    "message": "വിയറ്റ്നാമീസ്"
+  },
+  "lang_es": {
+    "message": "സ്പാനിഷ്"
+  },
+  "lang_fr": {
+    "message": "ഫ്രഞ്ച്"
+  },
+  "lang_de": {
+    "message": "ജർമ്മൻ"
+  },
+  "lang_it": {
+    "message": "ഇറ്റാലിയൻ"
+  },
+  "lang_pt": {
+    "message": "പോർച്ചുഗീസ്"
+  },
+  "lang_ja": {
+    "message": "ജാപ്പനീസ്"
+  },
+  "lang_ko": {
+    "message": "കൊറിയൻ"
+  },
+  "lang_zh": {
+    "message": "ചൈനീസ്"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "ഭാഷകൾ തിരയുക",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "സാധാരണ ഭാഷകൾ",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "എല്ലാ ഭാഷകളും",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "എല്ലാ ഉപയോഗ ചരിത്രവും മായ്ച്ചുകളയണമെന്ന് ഉറപ്പാണോ?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "ആദ്യം ഒരു API കീ/എൻഡ്പോയിന്റ് നൽകുക.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "സാധുത പരിശോധിക്കുന്നു...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "കോൺഫിഗറേഷൻ സാധുവാണ്! സൃഷ്ടിക്കാൻ തയ്യാർ.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "കണക്ഷൻ പരിശോധന പരാജയപ്പെട്ടു",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "പരിശോധിക്കുന്നു...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "സേവ് ചെയ്യാനായില്ല",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio-ലേക്ക് പോകുക"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "'Create API Key' ക്ലിക്ക് ചെയ്യുക"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "കീ ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console-ലേക്ക് പോകുക"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "സൈൻ അപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ലോഗിൻ ചെയ്യുക"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "പുതിയ API കീ സൃഷ്ടിക്കുക"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform-ലേക്ക് പോകുക"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "സൈൻ അപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ലോഗിൻ ചെയ്യുക"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "പുതിയ API കീ സൃഷ്ടിക്കുക"
+  },
+  "overlay_suggested_fix": {
+    "message": "നിർദ്ദേശിത തിരുത്ത്",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "സ്വീകരിക്കുക",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "നിരസിക്കുക",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "പ്രശ്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "ടെക്സ്റ്റ് മികച്ചതാണ്!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "സ്മാർട്ട് വിവർത്തനം",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "പിശക്",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "വിവർത്തനം പരാജയപ്പെട്ടു",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(പഴയത്)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "കൂടുതൽ ക്രമീകരണങ്ങൾ",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "ഇഷ്ടാനുസൃത മോഡൽ പേര്",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "ഇഷ്ടാനുസൃത മോഡൽ ഐഡി നൽകുക",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "ഒരു ഇഷ്ടാനുസൃത മോഡൽ പേര് നൽകുക",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "ഉദാ. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "ഏതൊരു OpenAI-കോംപാറ്റിബിൾ API എൻഡ്പോയിന്റിലേക്കും ബന്ധിപ്പിക്കുക",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "ഉദാ. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "നിങ്ങളുടെ API കീ നൽകുക...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway കോൺഫിഗറേഷൻ",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI-കോംപാറ്റിബിൾ API-കളെ പിന്തുണയ്ക്കുന്നു (OpenRouter, LiteLLM, Together AI തുടങ്ങിയവ)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "ചില ഗേറ്റ്വേകൾക്ക് ഓപ്ഷണൽ (ഉദാ: OpenRouter സൗജന്യ പ്ലാൻ)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "ചാറ്റ്",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "ടൂളുകൾ",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "ഈ പേജിനെക്കുറിച്ച് ചോദിക്കുക…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "അയയ്ക്കുക",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "നിർത്തുക",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "പേജ് സന്ദർഭം",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "പേജ് സന്ദർഭം ഉൾപ്പെടുത്തുക",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "നിലവിലെ പേജിനെക്കുറിച്ച് ഒരു സംഭാഷണം ആരംഭിക്കുക.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "എന്തോ കുഴപ്പം സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "ചാറ്റ് മായ്ക്കുക",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "ഈ സംഭാഷണം മായ്ച്ചുകളയണമെന്ന് ഉറപ്പാണോ?",
+    "description": "Clear chat session confirmation"
+  }
+}
