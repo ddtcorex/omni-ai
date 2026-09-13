@@ -554,7 +554,7 @@
     "description": "Custom Gateway label"
   },
   "settings_customGatewayHint": {
-    "message": "Connect to any OpenAI-compatible API endpoint",
+    "message": "Connettiti a qualsiasi endpoint API compatibile con OpenAI",
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
@@ -570,11 +570,11 @@
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {
-    "message": "Supports OpenAI-compatible APIs (OpenRouter, LiteLLM, Together AI, etc.)",
+    "message": "Supporta API compatibili con OpenAI (OpenRouter, LiteLLM, Together AI, ecc.)",
     "description": "Note about supported API formats"
   },
   "settings_customGatewayKeyNote": {
-    "message": "Optional for some gateways (e.g., OpenRouter free tier)",
+    "message": "Opzionale per alcuni gateway (ad es. il piano gratuito di OpenRouter)",
     "description": "Note about API key being optional"
   },
   "sidepanel_title": {

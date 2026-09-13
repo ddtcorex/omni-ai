@@ -554,7 +554,7 @@
     "description": "Custom Gateway label"
   },
   "settings_customGatewayHint": {
-    "message": "Connect to any OpenAI-compatible API endpoint",
+    "message": "OpenAI 호환 API 엔드포인트에 연결합니다",
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
@@ -570,11 +570,11 @@
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {
-    "message": "Supports OpenAI-compatible APIs (OpenRouter, LiteLLM, Together AI, etc.)",
+    "message": "OpenAI 호환 API를 지원합니다(OpenRouter, LiteLLM, Together AI 등)",
     "description": "Note about supported API formats"
   },
   "settings_customGatewayKeyNote": {
-    "message": "Optional for some gateways (e.g., OpenRouter free tier)",
+    "message": "일부 게이트웨이에서는 선택 사항입니다(예: OpenRouter 무료 등급)",
     "description": "Note about API key being optional"
   },
   "sidepanel_title": {
