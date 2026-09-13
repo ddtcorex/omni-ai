@@ -151,6 +151,22 @@
     "message": "Tắt để chỉ dùng phím tắt và menu chuột phải.",
     "description": "Văn bản trợ giúp cho tùy chọn nút nổi"
   },
+  "settings_flashActions": {
+    "message": "Thao Tác Nhanh",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Hiện các thao tác này khi hover vào icon nổi, để chạy ngay không cần mở menu đầy đủ (tối đa 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Dịch sang ngôn ngữ chính",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Dịch sang ngôn ngữ phụ",
+    "description": "Flash action checkbox label"
+  },
   "settings_on": {
     "message": "Bật",
     "description": "Tùy chọn cài đặt bật"

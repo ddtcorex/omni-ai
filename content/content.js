@@ -99,6 +99,38 @@ let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
 const resultCache = new Map();
 
+// Flash Actions: hovering the floating quick-action icon reveals a row of
+// user-configured shortcuts (Settings > Flash Actions) that skip straight to
+// a result, without opening the full quick-action menu.
+const FLASH_ACTIONS_HOVER_DELAY = 500;
+const FLASH_ACTIONS_HIDE_GRACE = 150;
+const DEFAULT_FLASH_ACTIONS = ["rephrase", "grammar", "translate_primary"];
+const FLASH_ACTION_LABEL_KEYS = {
+  translate_primary: "settings_flashAction_translatePrimary",
+  translate_default: "settings_flashAction_translateDefault",
+  grammar: "action_grammar",
+  rephrase: "action_rephrase",
+  reply: "action_reply",
+  emoji: "action_emojify",
+  tone: "action_tone",
+  summarize: "action_summarize",
+  explain: "action_explain",
+};
+const FLASH_ACTION_ICONS = {
+  translate_primary: ICONS.translate,
+  translate_default: ICONS.translate,
+  grammar: ICONS.grammar,
+  rephrase: ICONS.rephrase,
+  reply: ICONS.reply,
+  emoji: ICONS.emoji,
+  tone: ICONS.tone,
+  summarize: ICONS.summarize,
+  explain: ICONS.explain,
+};
+let flashActionsRow = null;
+let flashHoverTimer = null;
+let flashHideTimer = null;
+
 // Store state for navigation
 let lastMenuContext = null;
 let currentAnchorRect = null;
@@ -807,6 +839,16 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
   ensureUiRoot().appendChild(button);
 }
 
+function resolveQuickBtnText(text, inputElement) {
+  return (
+    text ||
+    (inputElement
+      ? getSelectedText() ||
+        (inputElement.value ? inputElement.value.trim() : inputElement.innerText.trim())
+      : "")
+  );
+}
+
 function setupQuickBtnEvents(text = null, inputElement = null) {
   quickActionBtn.addEventListener("mousedown", (e) => {
     e.stopPropagation();
@@ -821,23 +863,135 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
 
     const isInput = !!inputElement;
     if (isInput) activeInputElement = inputElement;
-    const currentText =
-      text ||
-      (inputElement
-        ? getSelectedText() ||
-          (inputElement.value ? inputElement.value.trim() : inputElement.innerText.trim())
-        : "");
+    const currentText = resolveQuickBtnText(text, inputElement);
     const btnRect = quickActionBtn.getBoundingClientRect();
 
     showQuickActionMenu(currentText, btnRect, null, isInput);
   });
+
+  quickActionBtn.addEventListener("mouseenter", () => {
+    clearTimeout(flashHideTimer);
+    clearTimeout(flashHoverTimer);
+    flashHoverTimer = setTimeout(() => {
+      showFlashActions(resolveQuickBtnText(text, inputElement), !!inputElement);
+    }, FLASH_ACTIONS_HOVER_DELAY);
+  });
+
+  quickActionBtn.addEventListener("mouseleave", scheduleHideFlashActions);
 }
 
 function hideQuickActionButton() {
+  clearTimeout(flashHoverTimer);
+  hideFlashActions();
   if (quickActionBtn) {
     quickActionBtn.remove();
     quickActionBtn = null;
   }
+}
+
+function scheduleHideFlashActions() {
+  clearTimeout(flashHoverTimer);
+  clearTimeout(flashHideTimer);
+  flashHideTimer = setTimeout(hideFlashActions, FLASH_ACTIONS_HIDE_GRACE);
+}
+
+function hideFlashActions() {
+  clearTimeout(flashHideTimer);
+  if (flashActionsRow) {
+    flashActionsRow.remove();
+    flashActionsRow = null;
+  }
+}
+
+/**
+ * Build and position the flash-actions row beside the floating icon, reading
+ * the user's selection from Settings > Flash Actions. No-ops if there's no
+ * text (mirrors PROCESSING_START's guard) or the icon disappeared while the
+ * hover delay/settings read was in flight.
+ */
+async function showFlashActions(text, isInput) {
+  if (!text || !quickActionBtn) return;
+
+  let selectedActions = DEFAULT_FLASH_ACTIONS;
+  if (isContextValid()) {
+    try {
+      const { getSettingsBag } = await import(chrome.runtime.getURL("lib/storage.js"));
+      const settings = await getSettingsBag();
+      selectedActions = settings?.flashActions || DEFAULT_FLASH_ACTIONS;
+    } catch {
+      selectedActions = DEFAULT_FLASH_ACTIONS;
+    }
+  }
+  if (!quickActionBtn || !selectedActions.length) return;
+
+  hideFlashActions();
+
+  const row = document.createElement("div");
+  row.className = "omni-ai-flash-actions";
+  row.innerHTML = selectedActions
+    .map(
+      (action) => `
+      <button class="omni-ai-flash-btn" data-flash-action="${action}" title="${i18n.getMessage(FLASH_ACTION_LABEL_KEYS[action] || action)}">
+        ${FLASH_ACTION_ICONS[action] || ICONS.magic}
+      </button>`,
+    )
+    .join("");
+
+  row.addEventListener("mousedown", (e) => e.stopPropagation());
+  row.addEventListener("mouseenter", () => clearTimeout(flashHideTimer));
+  row.addEventListener("mouseleave", scheduleHideFlashActions);
+  row.querySelectorAll("[data-flash-action]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerFlashAction(/** @type {HTMLElement} */ (btn).dataset.flashAction, text, isInput);
+    });
+  });
+
+  const ICON_SIZE = 22;
+  const GAP = 6;
+  const rowWidth = selectedActions.length * ICON_SIZE + (selectedActions.length - 1) * GAP;
+  const btnRect = quickActionBtn.getBoundingClientRect();
+  let top = btnRect.top + window.scrollY;
+  let left = btnRect.right + window.scrollX + GAP;
+
+  if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
+    const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
+      top,
+      left,
+      rowWidth,
+      ICON_SIZE,
+      window.scrollX,
+      window.scrollY,
+      window.innerWidth,
+      window.innerHeight,
+    );
+    top = clamped.top;
+    // Only take the clamped left if it didn't just squeeze the row under the
+    // button (clamping alone can't know to flip sides); flip to the button's
+    // left edge instead when the row would otherwise overlap it.
+    left =
+      clamped.left < btnRect.left + window.scrollX
+        ? btnRect.left + window.scrollX - rowWidth - GAP
+        : clamped.left;
+  }
+
+  row.style.top = `${top}px`;
+  row.style.left = `${left}px`;
+
+  await ensureUiRootReady();
+  if (!quickActionBtn) return;
+  ensureUiRoot().appendChild(row);
+  flashActionsRow = row;
+}
+
+function triggerFlashAction(action, text, isInput) {
+  hideFlashActions();
+  if (quickActionBtn) {
+    quickActionBtn.innerHTML = `<div class="ds-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
+    quickActionBtn.style.cursor = "wait";
+  }
+  handleAction(action, text, isInput);
 }
 
 // ============================================
@@ -1483,6 +1637,12 @@ function extractPageContent() {
 }
 
 function showLoadingInOverlay() {
+  // A flash action (triggerFlashAction()) calls handleAction() directly,
+  // without ever opening the menu overlay -- nothing to show in-place
+  // loading in yet. showResultOverlay() creates the overlay itself once the
+  // result arrives, so this is a safe no-op rather than a missed state.
+  if (!overlay) return;
+
   // Try to find the content area to replace, or the grid if first time
   let content = overlay.querySelector(".omni-ai-content-area");
   const menuGrid = overlay.querySelector(".omni-ai-menu-grid");
@@ -1874,18 +2034,34 @@ async function showQuickAskOverlay(
   setTimeout(() => positionOverlay(currentAnchorRect), 10);
 }
 
-function showErrorInOverlay(msg) {
-  if (overlay) {
-    overlay.innerHTML = `
-        <div class="omni-ai-overlay-header">
-            <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
-            <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
-        </div>
-        <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
-            ${msg}
-        </div>`;
-    overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+async function showErrorInOverlay(msg) {
+  // A flash action (triggerFlashAction()) reaches this via handleAction()'s
+  // catch/error branch without ever opening the menu overlay first -- create
+  // one here too (mirroring showResultOverlay()'s own self-creation), or the
+  // error would render nowhere and leave the floating icon's spinner frozen.
+  hideQuickActionButton();
+  const isNewOverlay = !overlay;
+  if (isNewOverlay) {
+    await ensureUiRootReady();
+    const el = document.createElement("div");
+    el.className = "omni-ai-overlay";
+    overlay = el;
+    ensureUiRoot().appendChild(overlay);
+    currentAnchorRect = getSelectionRect() || currentAnchorRect;
   }
+
+  overlay.innerHTML = `
+      <div class="omni-ai-overlay-header">
+          <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
+          <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+      </div>
+      <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
+          ${msg}
+      </div>`;
+  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  // positionOverlay() measures the overlay's rendered height to clamp it to
+  // the viewport, so it must run after innerHTML is set, not before.
+  if (isNewOverlay) positionOverlay(currentAnchorRect);
 }
 
 // Run

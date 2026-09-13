@@ -187,6 +187,22 @@
     "message": "Turn this off to use keyboard shortcuts and context menus only.",
     "description": "Floating action button preference help text"
   },
+  "settings_flashActions": {
+    "message": "Flash Actions",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Show these actions when hovering the floating icon, so you can run them without opening the full menu (up to 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Translate to Primary Language",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Translate to Default Language",
+    "description": "Flash action checkbox label"
+  },
   "settings_on": {
     "message": "On",
     "description": "Enabled setting option"

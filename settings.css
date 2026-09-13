@@ -309,6 +309,30 @@ body {
   text-decoration: underline;
 }
 
+/* Flash Actions (hover-reveal actions beside the floating quick-action icon) */
+.flash-actions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.flash-action-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--omni-border);
+  border-radius: var(--omni-radius-md);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.flash-action-option:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Field Note (below inputs) */
 .field-note {
   font-size: 11px;

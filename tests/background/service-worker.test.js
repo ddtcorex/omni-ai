@@ -90,6 +90,23 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it("seeds the default flash actions on install without clobbering an existing selection", async () => {
+    chromeMock.storage.local.get.mockResolvedValue({
+      settings: { flashActions: ["summarize"] },
+    });
+    await import("../../background/service-worker");
+
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+    installed({ reason: "install" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.storage.local.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({ flashActions: ["summarize"] }),
+      }),
+    );
+  });
+
   it("recreates context menus and seeds new setting defaults on update, not just install", async () => {
     // Reloading an unpacked extension in chrome://extensions (a routine dev
     // action per AGENTS.md's Dev Loop) fires onInstalled with reason
