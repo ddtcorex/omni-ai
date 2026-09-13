@@ -1925,7 +1925,20 @@ async function replaceSelectedText(newText, specificElement = null) {
     fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
   };
 
-  if (context.id === "static") return false;
+  if (context.id === "static") {
+    // Diagnostic: this branch silently no-ops (Replace click just does
+    // nothing, overlay stays open) whenever the resolved target isn't an
+    // editable field -- e.g. activeInputElement is stale/wrong, or the page
+    // itself moved focus elsewhere before Replace was clicked.
+    console.warn(
+      "[Omni AI] Replace: resolved target isn't editable, doing nothing.",
+      "activeElement:",
+      activeElement,
+      "activeInputElement:",
+      activeInputElement,
+    );
+    return false;
+  }
 
   const replacement = await /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.replaceViaAdapters(
     activeElement,
