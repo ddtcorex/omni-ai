@@ -1,0 +1,713 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI மாடல்களால் இயக்கப்படும் ஆல்-இன்-ஒன் AI உதவியாளர் - எழுத்து மேம்பாடு, விரைவு செயல்கள் மற்றும் ஸ்மார்ட் பயன்பாடுகள்",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI பேனலைத் திற",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "பக்கக் கருவிகள்",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "சுருக்கம்",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "ஸ்மார்ட் மொழிபெயர்ப்பு",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "விளக்கு",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "செயலில் உள்ளது…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "முடிவு",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "இந்தப் பக்கத்தைப் படிக்க முடியவில்லை",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "இந்தப் பக்கத்தில் செயல்பட எதுவும் இல்லை",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "இதிலிருந்து:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Omni AI-யிடம் எதையும் கேளுங்கள்...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "விரைவு செயல்கள் மெனுவைக் காட்டு",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "சூழல்",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "எழுத்தை மேம்படுத்து",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "விரைவு செயல்கள்",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "மின்னஞ்சல்",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "அரட்டை",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "சமூகம்",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "தொழில்நுட்பம்",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "கல்வி",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "இலக்கணத்தைச் சரிசெய்",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "எழுத்துப்பிழை மற்றும் இலக்கணத்தைச் சரிசெய்கிறது",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "தெளிவை மேம்படுத்து",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "தொனியை மாற்று",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "சுருக்கமாக்கு",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "விரிவாக்கு",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "மறுவாக்கியம் செய்",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "மொழிபெயர்",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "சுருக்கு",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "பதிலளி",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "எமோஜி சேர்",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "தயார்",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "செயலாக்குகிறது...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "பிழை",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "அமைப்புகள்",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API விசை",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Google AI Studio-இல் உங்கள் API விசையைப் பெறுங்கள்",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI மாடல்",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "பயன்படுத்த வேண்டிய AI மாடலைத் தேர்ந்தெடுக்கவும்",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "இயல்புநிலை சூழல்",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "மொழிபெயர்ப்பு மொழி",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "அமைப்புகளைச் சேமி",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "மிதக்கும் Omni AI பொத்தானைக் காட்டு",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "விசைப்பலகை குறுக்குவழிகள் மற்றும் சூழல் மெனுக்களை மட்டும் பயன்படுத்த இதை அணைக்கவும்.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "ஃபிளாஷ் செயல்கள்",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "மிதக்கும் ஐகானின் மீது கர்சரை வைத்தால் இந்தச் செயல்களைக் காட்டு, முழு மெனுவையும் திறக்காமல் அவற்றை இயக்கலாம் (அதிகபட்சம் 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "முதன்மை மொழிக்கு மொழிபெயர்",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "இயல்புநிலை மொழிக்கு மொழிபெயர்",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "இயக்கம்",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "அணைப்பு",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "அமைப்புகள் சேமிக்கப்பட்டன!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "நகலெடு",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "மாற்று",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "விளக்கு",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "→",
+    "description": "To language preposition"
+  },
+  "contextMenu_improve": {
+    "message": "Omni AI மூலம் மேம்படுத்து",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Omni AI மூலம் விளக்கு",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Omni AI மூலம் மொழிபெயர்",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Omni AI மூலம் மறுவாக்கியம் செய்",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Omni AI மூலம் எமோஜி சேர்",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Omni AI மூலம் சுருக்கு",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Omni AI-யிடம் கேள்",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API விசை அமைக்கப்படவில்லை. அமைப்புகளில் உங்கள் API விசையைச் சேர்க்கவும்.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "உங்கள் Gemini API விசையை உள்ளிடவும்...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "பிழை: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API விசை அமைக்கப்படவில்லை",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API விசை அமைக்கப்படவில்லை",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API விசை அமைக்கப்படவில்லை",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API விசை அமைக்கப்படவில்லை",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway அடிப்படை URL அமைக்கப்படவில்லை",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "$MODEL$ க்கு API விசை அமைக்கப்படவில்லை",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "இயல்புநிலை தொனி",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "எழுத்து மேம்பாடுகள் மற்றும் பதில்களுக்கான இயல்புநிலை தொனி",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "தொழில்முறை",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "சாதாரண",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "நட்பான",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "நேரடி",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "நம்பிக்கையான",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "விரைவு கேள்வி",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "முடிவு",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "சிந்திக்கிறது...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "பின்செல்",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "நகலெடுக்கப்பட்டது!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "எந்த உரையும் தேர்ந்தெடுக்கப்படவில்லை. முதலில் சிறிது உரையைத் தேர்ந்தெடுக்கவும்.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "உங்கள் AI உதவியாளர்",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "தீம்",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "உங்களுக்கு விருப்பமான தோற்றத்தைத் தேர்ந்தெடுக்கவும்",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "சிஸ்டம் இயல்புநிலை",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "இருள்",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "ஒளி",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "முதன்மை மொழி",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "விரைவு செயல்களுக்கான உங்கள் முதன்மை மொழி",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "கட்டமைப்பைச் சரிபார்",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "விசைப்பலகை குறுக்குவழிகள்",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "பயன்பாட்டு வரலாறு",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "மொத்த செயல்கள்",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "செயலாக்கப்பட்ட சொற்கள்",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "உருவாக்கப்பட்ட சொற்கள்",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "பற்றி",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "சிக்கலைப் புகாரளி",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "வரலாற்றை அழி",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API விசை",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "console.groq.com-இல் இலவச விசையைப் பெறுங்கள்",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API விசை",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "platform.openai.com-இல் API விசையைப் பெறுங்கள்",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API விசையைப் பெறு",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API விசையைப் பெறு",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API விசையைப் பெறு",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API விசை",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "console.anthropic.com-இல் API விசையைப் பெறுங்கள்",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API விசையைப் பெறு",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Anthropic Console-க்குச் செல்"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "பதிவு செய்யவும் அல்லது உள்நுழையவும்"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "புதிய API விசையை உருவாக்கு"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Chrome-இல் தனிப்பயனாக்கு",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Chrome அமைப்புகளில் குறுக்குவழிகளைத் தனிப்பயனாக்கவும்",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "புதுப்பி",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "மொழிபெயர்ப்புகளுக்கான இயல்புநிலை மொழி",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "ஆங்கிலம்"
+  },
+  "lang_vi": {
+    "message": "வியட்நாமியம்"
+  },
+  "lang_es": {
+    "message": "ஸ்பானிஷ்"
+  },
+  "lang_fr": {
+    "message": "பிரெஞ்சு"
+  },
+  "lang_de": {
+    "message": "ஜெர்மன்"
+  },
+  "lang_it": {
+    "message": "இத்தாலியம்"
+  },
+  "lang_pt": {
+    "message": "போர்த்துகீசியம்"
+  },
+  "lang_ja": {
+    "message": "ஜப்பானியம்"
+  },
+  "lang_ko": {
+    "message": "கொரியம்"
+  },
+  "lang_zh": {
+    "message": "சீனம்"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "மொழிகளைத் தேடுங்கள்",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "பொதுவானவை",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "அனைத்து மொழிகளும்",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "அனைத்து பயன்பாட்டு வரலாற்றையும் அழிக்க விரும்புகிறீர்களா?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "முதலில் API விசை/எண்ட்பாயின்ட்டை உள்ளிடவும்.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "சரிபார்க்கிறது...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "கட்டமைப்பு சரியானது! உருவாக்கத் தயார்.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "இணைப்புச் சரிபார்ப்பு தோல்வியடைந்தது",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "சரிபார்க்கிறது...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "சேமிக்க முடியவில்லை",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Google AI Studio-க்குச் செல்"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Create API Key என்பதைக் கிளிக் செய்யவும்"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "விசையை கிளிப்போர்டுக்கு நகலெடுக்கவும்"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Groq Console-க்குச் செல்"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "பதிவு செய்யவும் அல்லது உள்நுழையவும்"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "புதிய API விசையை உருவாக்கு"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "OpenAI Platform-க்குச் செல்"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "பதிவு செய்யவும் அல்லது உள்நுழையவும்"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "புதிய API விசையை உருவாக்கு"
+  },
+  "overlay_suggested_fix": {
+    "message": "பரிந்துரைக்கப்பட்ட திருத்தம்",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "ஏற்க",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "நிராகரி",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "எந்தச் சிக்கலும் இல்லை",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "உரை அருமையாக உள்ளது!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "ஸ்மார்ட் மொழிபெயர்ப்பு",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "பிழை",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "மொழிபெயர்ப்பு தோல்வியடைந்தது",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(பழையது)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "மேம்பட்டவை",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "தனிப்பயன் மாடல் பெயர்",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "தனிப்பயன் மாடல் ID-ஐ உள்ளிடவும்",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "தனிப்பயன் மாடல் பெயரை உள்ளிடவும்",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "எ.கா. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "OpenAI-இணக்கமான எந்த API எண்ட்பாயின்ட்டுடனும் இணைக்கவும்",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "எ.கா. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "உங்கள் API விசையை உள்ளிடவும்...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway கட்டமைப்பு",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI-இணக்கமான API-களை ஆதரிக்கிறது (OpenRouter, LiteLLM, Together AI போன்றவை)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "சில கேட்வேகளுக்கு விருப்பத்தேர்வு (எ.கா., OpenRouter இலவச திட்டம்)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "அரட்டை",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "கருவிகள்",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "இந்தப் பக்கம் பற்றிக் கேளுங்கள்…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "அனுப்பு",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "நிறுத்து",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "பக்கச் சூழல்",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "பக்கச் சூழலைச் சேர்",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "தற்போதைய பக்கம் பற்றி ஒரு உரையாடலைத் தொடங்கவும்.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "அரட்டையை அழி",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "இந்த உரையாடலை அழிக்க விரும்புகிறீர்களா?",
+    "description": "Clear chat session confirmation"
+  }
+}

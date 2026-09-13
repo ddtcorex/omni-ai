@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "Универсальный ИИ-помощник на базе ИИ-моделей: улучшение текста, быстрые действия и умные инструменты",
+    "message": "ผู้ช่วย AI ครบวงจรที่ขับเคลื่อนด้วยโมเดล AI - ปรับปรุงงานเขียน ทำงานด่วน และเครื่องมืออัจฉริยะ",
     "description": "Extension description"
   },
   "popup_title": {
@@ -12,287 +12,287 @@
     "description": "Popup title"
   },
   "command_openPanel": {
-    "message": "Открыть панель Omni AI",
+    "message": "เปิดแผง Omni AI",
     "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
   },
   "sidepanel_title": {
-    "message": "Инструменты страницы",
+    "message": "เครื่องมือหน้าเว็บ",
     "description": "Side panel section heading"
   },
   "sidepanel_summarize": {
-    "message": "Сводка",
+    "message": "สรุป",
     "description": "Side panel action button: summarize the current page"
   },
   "sidepanel_translate": {
-    "message": "Умный перевод",
+    "message": "แปลอัจฉริยะ",
     "description": "Side panel action button: translate the current page"
   },
   "sidepanel_explain": {
-    "message": "Объяснить",
+    "message": "อธิบาย",
     "description": "Side panel action button: explain the current page"
   },
   "sidepanel_loading": {
-    "message": "Работаем…",
+    "message": "กำลังดำเนินการ…",
     "description": "Side panel status while an action is running"
   },
   "sidepanel_resultLabel": {
-    "message": "Результат",
+    "message": "ผลลัพธ์",
     "description": "Side panel label above the AI result text"
   },
   "sidepanel_cantReadPage": {
-    "message": "Не удалось прочитать эту страницу",
+    "message": "ไม่สามารถอ่านหน้านี้ได้",
     "description": "Side panel error when the content script isn't reachable on the active tab"
   },
   "sidepanel_noContent": {
-    "message": "На этой странице нет текста для работы",
+    "message": "ไม่มีเนื้อหาให้ทำงานบนหน้านี้",
     "description": "Side panel error when the page has no extractable text"
   },
   "sidepanel_resultFrom": {
-    "message": "Источник:",
+    "message": "จาก:",
     "description": "Side panel prefix before the title of the page a result describes"
   },
   "popup_quickAsk": {
-    "message": "Спросите Omni AI о чём угодно...",
+    "message": "ถาม Omni AI ได้ทุกเรื่อง...",
     "description": "Quick ask placeholder"
   },
   "command_openQuickMenu": {
-    "message": "Показать меню быстрых действий",
+    "message": "แสดงเมนูการทำงานด่วน",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
   "popup_context": {
-    "message": "Контекст",
+    "message": "บริบท",
     "description": "Context section title"
   },
   "popup_improveWriting": {
-    "message": "Улучшить текст",
+    "message": "ปรับปรุงงานเขียน",
     "description": "Improve writing section title"
   },
   "popup_quickActions": {
-    "message": "Быстрые действия",
+    "message": "การทำงานด่วน",
     "description": "Quick actions section title"
   },
   "preset_email": {
-    "message": "Письмо",
+    "message": "อีเมล",
     "description": "Email preset"
   },
   "preset_chat": {
-    "message": "Чат",
+    "message": "แชท",
     "description": "Chat preset"
   },
   "preset_social": {
-    "message": "Соцсети",
+    "message": "โซเชียล",
     "description": "Social preset"
   },
   "preset_technical": {
-    "message": "Технический",
+    "message": "เทคนิค",
     "description": "Technical preset"
   },
   "preset_academic": {
-    "message": "Академический",
+    "message": "วิชาการ",
     "description": "Academic preset"
   },
   "action_grammar": {
-    "message": "Исправить грамматику",
+    "message": "แก้ไวยากรณ์",
     "description": "Grammar action"
   },
   "desc_grammar": {
-    "message": "Исправляет орфографию и грамматику",
+    "message": "แก้ไขการสะกดและไวยากรณ์",
     "description": "Description for grammar action"
   },
   "action_clarity": {
-    "message": "Повысить ясность",
+    "message": "เพิ่มความชัดเจน",
     "description": "Clarity action"
   },
   "action_tone": {
-    "message": "Изменить тон",
+    "message": "เปลี่ยนโทน",
     "description": "Tone action"
   },
   "action_concise": {
-    "message": "Сократить",
+    "message": "ทำให้กระชับ",
     "description": "Concise action"
   },
   "action_expand": {
-    "message": "Расширить",
+    "message": "ขยายความ",
     "description": "Expand action"
   },
   "action_rephrase": {
-    "message": "Перефразировать",
+    "message": "เขียนใหม่",
     "description": "Rephrase action"
   },
   "action_translate": {
-    "message": "Перевести",
+    "message": "แปล",
     "description": "Translate action"
   },
   "action_summarize": {
-    "message": "Сводка",
+    "message": "สรุป",
     "description": "Summarize action"
   },
   "action_reply": {
-    "message": "Ответить",
+    "message": "ตอบกลับ",
     "description": "Reply action"
   },
   "action_emojify": {
-    "message": "Добавить эмодзи",
+    "message": "ใส่อีโมจิ",
     "description": "Emojify action"
   },
   "status_ready": {
-    "message": "Готово",
+    "message": "พร้อม",
     "description": "Status ready"
   },
   "status_processing": {
-    "message": "Обработка...",
+    "message": "กำลังประมวลผล...",
     "description": "Status processing"
   },
   "status_error": {
-    "message": "Ошибка",
+    "message": "ข้อผิดพลาด",
     "description": "Status error"
   },
   "settings_title": {
-    "message": "Настройки",
+    "message": "การตั้งค่า",
     "description": "Settings page title"
   },
   "settings_geminiApiKey": {
-    "message": "Ключ API Gemini",
+    "message": "คีย์ API ของ Gemini",
     "description": "Gemini API key label"
   },
   "settings_geminiApiKeyHint": {
-    "message": "Получите ключ API в Google AI Studio",
+    "message": "รับคีย์ API ของคุณได้ที่ Google AI Studio",
     "description": "Gemini API key hint"
   },
   "settings_model": {
-    "message": "ИИ-модель",
+    "message": "โมเดล AI",
     "description": "AI model label"
   },
   "settings_modelHint": {
-    "message": "Выберите используемую ИИ-модель",
+    "message": "เลือกโมเดล AI ที่ต้องการใช้",
     "description": "AI model hint"
   },
   "settings_defaultPreset": {
-    "message": "Контекст по умолчанию",
+    "message": "บริบทเริ่มต้น",
     "description": "Default preset label"
   },
   "settings_language": {
-    "message": "Язык перевода",
+    "message": "ภาษาที่ใช้แปล",
     "description": "Translation language label"
   },
   "settings_save": {
-    "message": "Сохранить настройки",
+    "message": "บันทึกการตั้งค่า",
     "description": "Save button"
   },
   "settings_showFloatingButton": {
-    "message": "Показывать плавающую кнопку Omni AI",
+    "message": "แสดงปุ่มลอย Omni AI",
     "description": "Floating action button preference label"
   },
   "settings_showFloatingButtonHint": {
-    "message": "Отключите, чтобы использовать только сочетания клавиш и контекстные меню.",
+    "message": "ปิดตัวเลือกนี้เพื่อใช้เฉพาะปุ่มลัดและเมนูคลิกขวา",
     "description": "Floating action button preference help text"
   },
   "settings_flashActions": {
-    "message": "Мгновенные действия",
+    "message": "การทำงานลัด",
     "description": "Flash actions setting label"
   },
   "settings_flashActionsHint": {
-    "message": "Показывать эти действия при наведении на плавающую кнопку, чтобы запускать их без открытия полного меню (до 4).",
+    "message": "แสดงการทำงานเหล่านี้เมื่อวางเมาส์บนไอคอนลอย เพื่อให้เรียกใช้ได้โดยไม่ต้องเปิดเมนูเต็ม (สูงสุด 4 รายการ)",
     "description": "Flash actions setting help text"
   },
   "settings_flashAction_translatePrimary": {
-    "message": "Перевести на основной язык",
+    "message": "แปลเป็นภาษาหลัก",
     "description": "Flash action checkbox label"
   },
   "settings_flashAction_translateDefault": {
-    "message": "Перевести на язык по умолчанию",
+    "message": "แปลเป็นภาษาเริ่มต้น",
     "description": "Flash action checkbox label"
   },
   "settings_on": {
-    "message": "Вкл.",
+    "message": "เปิด",
     "description": "Enabled setting option"
   },
   "settings_off": {
-    "message": "Выкл.",
+    "message": "ปิด",
     "description": "Disabled setting option"
   },
   "settings_saved": {
-    "message": "Настройки сохранены!",
+    "message": "บันทึกการตั้งค่าแล้ว!",
     "description": "Save confirmation"
   },
   "overlay_copy": {
-    "message": "Копировать",
+    "message": "คัดลอก",
     "description": "Copy button"
   },
   "overlay_replace": {
-    "message": "Заменить",
+    "message": "แทนที่",
     "description": "Replace button"
   },
   "action_explain": {
-    "message": "Объяснить",
+    "message": "อธิบาย",
     "description": "Explain action"
   },
   "ui_to": {
-    "message": "На",
+    "message": "เป็นภาษา",
     "description": "To language preposition"
   },
   "contextMenu_improve": {
-    "message": "Улучшить с помощью Omni AI",
+    "message": "ปรับปรุงด้วย Omni AI",
     "description": "Context menu improve"
   },
   "contextMenu_explain": {
-    "message": "Объяснить с помощью Omni AI",
+    "message": "อธิบายด้วย Omni AI",
     "description": "Context menu explain"
   },
   "contextMenu_translate": {
-    "message": "Перевести с помощью Omni AI",
+    "message": "แปลด้วย Omni AI",
     "description": "Context menu translate"
   },
   "contextMenu_rephrase": {
-    "message": "Перефразировать с помощью Omni AI",
+    "message": "เขียนใหม่ด้วย Omni AI",
     "description": "Context menu rephrase"
   },
   "contextMenu_emojify": {
-    "message": "Добавить эмодзи с помощью Omni AI",
+    "message": "เพิ่มอีโมจิด้วย Omni AI",
     "description": "Context menu add emoji"
   },
   "contextMenu_summarize": {
-    "message": "Кратко изложить с помощью Omni AI",
+    "message": "สรุปด้วย Omni AI",
     "description": "Context menu summarize"
   },
   "contextMenu_ask": {
-    "message": "Спросить Omni AI",
+    "message": "ถาม Omni AI",
     "description": "Context menu quick ask"
   },
   "error_noApiKey": {
-    "message": "Ключ API не настроен. Добавьте ключ API в настройках.",
+    "message": "ยังไม่ได้ตั้งค่าคีย์ API โปรดเพิ่มคีย์ API ของคุณในการตั้งค่า",
     "description": "No API key error"
   },
   "settings_geminiApiKeyPlaceholder": {
-    "message": "Введите ключ API Gemini...",
+    "message": "ป้อนคีย์ API ของ Gemini...",
     "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
-    "message": "Ошибка: ",
+    "message": "ข้อผิดพลาด: ",
     "description": "Error prefix"
   },
   "error_apiKeyNotConfigured_gemini": {
-    "message": "Ключ API Gemini не настроен",
+    "message": "ยังไม่ได้ตั้งค่าคีย์ API ของ Gemini",
     "description": "Shown when the Gemini API key is missing"
   },
   "error_apiKeyNotConfigured_openai": {
-    "message": "Ключ API OpenAI не настроен",
+    "message": "ยังไม่ได้ตั้งค่าคีย์ API ของ OpenAI",
     "description": "Shown when the OpenAI API key is missing"
   },
   "error_apiKeyNotConfigured_groq": {
-    "message": "Ключ API Groq не настроен",
+    "message": "ยังไม่ได้ตั้งค่าคีย์ API ของ Groq",
     "description": "Shown when the Groq API key is missing"
   },
   "error_apiKeyNotConfigured_anthropic": {
-    "message": "Ключ API Anthropic не настроен",
+    "message": "ยังไม่ได้ตั้งค่าคีย์ API ของ Anthropic",
     "description": "Shown when the Anthropic API key is missing"
   },
   "error_customGatewayBaseUrlNotConfigured": {
-    "message": "Базовый URL Custom Gateway не настроен",
+    "message": "ยังไม่ได้ตั้งค่า base URL ของ Custom Gateway",
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Ключ API не настроен для $MODEL$",
+    "message": "ยังไม่ได้ตั้งค่าคีย์ API สำหรับ $MODEL$",
     "placeholders": {
       "model": {
         "content": "$1"
@@ -301,341 +301,341 @@
     "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
   },
   "settings_defaultTone": {
-    "message": "Тон по умолчанию",
+    "message": "โทนเริ่มต้น",
     "description": "Default tone label"
   },
   "settings_defaultToneHint": {
-    "message": "Тон по умолчанию для улучшения текста и ответов",
+    "message": "โทนเริ่มต้นสำหรับการปรับปรุงงานเขียนและการตอบกลับ",
     "description": "Default tone hint"
   },
   "tone_professional": {
-    "message": "Деловой",
+    "message": "มืออาชีพ",
     "description": "Professional tone"
   },
   "tone_casual": {
-    "message": "Непринуждённый",
+    "message": "เป็นกันเอง",
     "description": "Casual tone"
   },
   "tone_friendly": {
-    "message": "Дружелюбный",
+    "message": "เป็นมิตร",
     "description": "Friendly tone"
   },
   "tone_direct": {
-    "message": "Прямой",
+    "message": "ตรงไปตรงมา",
     "description": "Direct tone"
   },
   "tone_confident": {
-    "message": "Уверенный",
+    "message": "มั่นใจ",
     "description": "Confident tone"
   },
   "quick_ask_title": {
-    "message": "Быстрый вопрос",
+    "message": "ถามด่วน",
     "description": "Quick ask overlay title"
   },
   "overlay_result": {
-    "message": "Результат",
+    "message": "ผลลัพธ์",
     "description": "Result title"
   },
   "status_thinking": {
-    "message": "Думаю...",
+    "message": "กำลังคิด...",
     "description": "Thinking status"
   },
   "btn_back": {
-    "message": "Назад",
+    "message": "ย้อนกลับ",
     "description": "Back button title"
   },
   "msg_copied": {
-    "message": "Скопировано!",
+    "message": "คัดลอกแล้ว!",
     "description": "Copied message"
   },
   "error_noSelection": {
-    "message": "Текст не выделен. Сначала выделите текст.",
+    "message": "ยังไม่ได้เลือกข้อความ โปรดเลือกข้อความก่อน",
     "description": "No selection error"
   },
   "settings_tagline": {
-    "message": "Ваш ИИ-помощник",
+    "message": "ผู้ช่วย AI ของคุณ",
     "description": "App tagline"
   },
   "settings_theme": {
-    "message": "Тема",
+    "message": "ธีม",
     "description": "Theme label"
   },
   "settings_themeHint": {
-    "message": "Выберите предпочитаемое оформление",
+    "message": "เลือกรูปแบบที่คุณต้องการ",
     "description": "Theme hint"
   },
   "theme_system": {
-    "message": "Как в системе",
+    "message": "ตามระบบ",
     "description": "System theme"
   },
   "theme_dark": {
-    "message": "Тёмная",
+    "message": "มืด",
     "description": "Dark theme"
   },
   "theme_light": {
-    "message": "Светлая",
+    "message": "สว่าง",
     "description": "Light theme"
   },
   "settings_primaryLanguage": {
-    "message": "Основной язык",
+    "message": "ภาษาหลัก",
     "description": "Primary language label"
   },
   "settings_primaryLanguageHint": {
-    "message": "Ваш основной язык для быстрых действий",
+    "message": "ภาษาหลักของคุณสำหรับการทำงานด่วน",
     "description": "Primary language hint"
   },
   "settings_validate": {
-    "message": "Проверить конфигурацию",
+    "message": "ตรวจสอบการตั้งค่า",
     "description": "Validate button"
   },
   "settings_shortcuts": {
-    "message": "Сочетания клавиш",
+    "message": "ปุ่มลัด",
     "description": "Shortcuts section title"
   },
   "settings_history": {
-    "message": "История использования",
+    "message": "ประวัติการใช้งาน",
     "description": "History section title"
   },
   "stats_totalActions": {
-    "message": "Всего действий",
+    "message": "การทำงานทั้งหมด",
     "description": "Total actions stat"
   },
   "stats_wordsProcessed": {
-    "message": "Обработано слов",
+    "message": "คำที่ประมวลผล",
     "description": "Words processed stat"
   },
   "stats_wordsGenerated": {
-    "message": "Создано слов",
+    "message": "คำที่สร้างขึ้น",
     "description": "Words generated stat"
   },
   "settings_about": {
-    "message": "О программе",
+    "message": "เกี่ยวกับ",
     "description": "About section title"
   },
   "btn_reportIssue": {
-    "message": "Сообщить о проблеме",
+    "message": "รายงานปัญหา",
     "description": "Report issue link"
   },
   "btn_clearHistory": {
-    "message": "Очистить историю",
+    "message": "ล้างประวัติ",
     "description": "Clear history button tooltip"
   },
   "settings_groqKey": {
-    "message": "Ключ API Groq",
+    "message": "คีย์ API ของ Groq",
     "description": "Groq API key label"
   },
   "settings_groqKeyHint": {
-    "message": "Получите бесплатный ключ на console.groq.com",
+    "message": "รับคีย์ฟรีได้ที่ console.groq.com",
     "description": "Groq API key hint"
   },
   "settings_openaiKey": {
-    "message": "Ключ API OpenAI",
+    "message": "คีย์ API ของ OpenAI",
     "description": "OpenAI API key label"
   },
   "settings_openaiKeyHint": {
-    "message": "Получите ключ API на platform.openai.com",
+    "message": "รับคีย์ API ได้ที่ platform.openai.com",
     "description": "OpenAI API key hint"
   },
   "settings_tooltip_gemini": {
-    "message": "Получить ключ API",
+    "message": "รับคีย์ API",
     "description": "Gemini tooltip title"
   },
   "settings_tooltip_groq": {
-    "message": "Получить ключ API Groq",
+    "message": "รับคีย์ API ของ Groq",
     "description": "Groq tooltip title"
   },
   "settings_tooltip_openai": {
-    "message": "Получить ключ API OpenAI",
+    "message": "รับคีย์ API ของ OpenAI",
     "description": "OpenAI tooltip title"
   },
   "settings_anthropicKey": {
-    "message": "Ключ API Anthropic",
+    "message": "คีย์ API ของ Anthropic",
     "description": "Anthropic API key label"
   },
   "settings_anthropicKeyHint": {
-    "message": "Получите ключ API на console.anthropic.com",
+    "message": "รับคีย์ API ได้ที่ console.anthropic.com",
     "description": "Anthropic API key hint"
   },
   "settings_tooltip_anthropic": {
-    "message": "Получить ключ API Anthropic",
+    "message": "รับคีย์ API ของ Anthropic",
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Перейти в Anthropic Console"
+    "message": "ไปที่ Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "สมัครหรือเข้าสู่ระบบ"
   },
   "settings_tooltip_anthropic_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "สร้างคีย์ API ใหม่"
   },
   "settings_shortcuts_customize": {
-    "message": "Настроить в Chrome",
+    "message": "ปรับแต่งใน Chrome",
     "description": "Customize shortcut label"
   },
   "settings_shortcuts_hint": {
-    "message": "Настройте сочетания клавиш в настройках Chrome",
+    "message": "ปรับแต่งปุ่มลัดได้ในการตั้งค่า Chrome",
     "description": "Customize shortcuts hint"
   },
   "btn_refresh": {
-    "message": "Обновить",
+    "message": "รีเฟรช",
     "description": "Refresh button tooltip"
   },
   "settings_languageHint": {
-    "message": "Язык перевода по умолчанию",
+    "message": "ภาษาเริ่มต้นสำหรับการแปล",
     "description": "Translation language hint"
   },
   "lang_en": {
-    "message": "Английский"
+    "message": "อังกฤษ"
   },
   "lang_vi": {
-    "message": "Вьетнамский"
+    "message": "เวียดนาม"
   },
   "lang_es": {
-    "message": "Испанский"
+    "message": "สเปน"
   },
   "lang_fr": {
-    "message": "Французский"
+    "message": "ฝรั่งเศส"
   },
   "lang_de": {
-    "message": "Немецкий"
+    "message": "เยอรมัน"
   },
   "lang_it": {
-    "message": "Итальянский"
+    "message": "อิตาลี"
   },
   "lang_pt": {
-    "message": "Португальский"
+    "message": "โปรตุเกส"
   },
   "lang_ja": {
-    "message": "Японский"
+    "message": "ญี่ปุ่น"
   },
   "lang_ko": {
-    "message": "Корейский"
+    "message": "เกาหลี"
   },
   "lang_zh": {
-    "message": "Китайский"
+    "message": "จีน"
   },
   "settings_languageSearchPlaceholder": {
-    "message": "Поиск языков",
+    "message": "ค้นหาภาษา",
     "description": "Placeholder for the search box that filters the language pickers"
   },
   "settings_languagesCommon": {
-    "message": "Популярные",
+    "message": "ภาษาที่ใช้บ่อย",
     "description": "First optgroup label in the language pickers"
   },
   "settings_languagesAll": {
-    "message": "Все языки",
+    "message": "ทุกภาษา",
     "description": "Second optgroup label listing every supported language"
   },
   "settings_confirmClearHistory": {
-    "message": "Вы уверены, что хотите очистить всю историю использования?",
+    "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติการใช้งานทั้งหมด?",
     "description": "Clear history confirmation"
   },
   "settings_errorNoApiKey": {
-    "message": "Сначала введите ключ API или эндпоинт.",
+    "message": "โปรดป้อนคีย์ API/ปลายทางก่อน",
     "description": "No API key entered error"
   },
   "settings_validating": {
-    "message": "Проверка...",
+    "message": "กำลังตรวจสอบ...",
     "description": "Validating status"
   },
   "settings_configValid": {
-    "message": "Конфигурация верна! Можно генерировать.",
+    "message": "การตั้งค่าถูกต้อง! พร้อมสำหรับการสร้างข้อความ",
     "description": "Config valid success"
   },
   "settings_connectionFailed": {
-    "message": "Не удалось проверить подключение",
+    "message": "การตรวจสอบการเชื่อมต่อล้มเหลว",
     "description": "Connection failed error"
   },
   "settings_checking": {
-    "message": "Проверка...",
+    "message": "กำลังตรวจสอบ...",
     "description": "Checking status"
   },
   "settings_failedToSave": {
-    "message": "Не удалось сохранить",
+    "message": "บันทึกไม่สำเร็จ",
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Перейти в Google AI Studio"
+    "message": "ไปที่ Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
-    "message": "Нажмите «Create API Key»"
+    "message": "คลิก Create API Key"
   },
   "settings_tooltip_gemini_s3": {
-    "message": "Скопируйте ключ в буфер обмена"
+    "message": "คัดลอกคีย์ไปยังคลิปบอร์ด"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Перейти в Groq Console"
+    "message": "ไปที่ Groq Console"
   },
   "settings_tooltip_groq_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "สมัครหรือเข้าสู่ระบบ"
   },
   "settings_tooltip_groq_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "สร้างคีย์ API ใหม่"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Перейти в OpenAI Platform"
+    "message": "ไปที่ OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "สมัครหรือเข้าสู่ระบบ"
   },
   "settings_tooltip_openai_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "สร้างคีย์ API ใหม่"
   },
   "overlay_suggested_fix": {
-    "message": "Предлагаемое исправление",
+    "message": "ข้อเสนอการแก้ไข",
     "description": "Suggested fix label"
   },
   "overlay_accept": {
-    "message": "Принять",
+    "message": "ยอมรับ",
     "description": "Accept button"
   },
   "overlay_dismiss": {
-    "message": "Отклонить",
+    "message": "ไม่สนใจ",
     "description": "Dismiss button"
   },
   "overlay_no_issues": {
-    "message": "Проблем не найдено",
+    "message": "ไม่พบปัญหา",
     "description": "No issues message"
   },
   "overlay_no_issues_content": {
-    "message": "Текст отличный!",
+    "message": "ข้อความดูดีมาก!",
     "description": "No issues check details"
   },
   "overlay_smart_translation": {
-    "message": "Умный перевод",
+    "message": "การแปลอัจฉริยะ",
     "description": "Smart translation label"
   },
   "overlay_error": {
-    "message": "Ошибка",
+    "message": "ข้อผิดพลาด",
     "description": "Error label"
   },
   "overlay_translation_failed": {
-    "message": "Не удалось перевести",
+    "message": "การแปลล้มเหลว",
     "description": "Translation failed message"
   },
   "settings_legacyModelPrefix": {
-    "message": "(Устаревшая)",
+    "message": "(รุ่นเก่า)",
     "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
   },
   "settings_advanced": {
-    "message": "Дополнительно",
+    "message": "ขั้นสูง",
     "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
   },
   "settings_customModel": {
-    "message": "Название пользовательской модели",
+    "message": "ชื่อโมเดลกำหนดเอง",
     "description": "Custom model label"
   },
   "settings_customModelHint": {
-    "message": "Введите идентификатор пользовательской модели",
+    "message": "ป้อน ID ของโมเดลกำหนดเอง",
     "description": "Custom model hint"
   },
   "settings_errorNoCustomModel": {
-    "message": "Введите название пользовательской модели",
+    "message": "โปรดป้อนชื่อโมเดลกำหนดเอง",
     "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
-    "message": "например, your-model-id",
+    "message": "เช่น your-model-id",
     "description": "Placeholder for settings_customModelPlaceholder"
   },
   "settings_customGatewayTitle": {
@@ -643,71 +643,71 @@
     "description": "Custom Gateway label"
   },
   "settings_customGatewayHint": {
-    "message": "Подключение к любому эндпоинту API, совместимому с OpenAI",
+    "message": "เชื่อมต่อกับปลายทาง API ที่เข้ากันได้กับ OpenAI",
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
-    "message": "например, https://openrouter.ai/api/v1",
+    "message": "เช่น https://openrouter.ai/api/v1",
     "description": "Placeholder for Custom Gateway base URL"
   },
   "settings_customGatewayKeyPlaceholder": {
-    "message": "Введите ключ API...",
+    "message": "ป้อนคีย์ API ของคุณ...",
     "description": "Placeholder for Custom Gateway API key"
   },
   "settings_tooltip_customGateway": {
-    "message": "Настройка Custom Gateway",
+    "message": "การตั้งค่า Custom Gateway",
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {
-    "message": "Поддерживаются API, совместимые с OpenAI (OpenRouter, LiteLLM, Together AI и др.)",
+    "message": "รองรับ API ที่เข้ากันได้กับ OpenAI (OpenRouter, LiteLLM, Together AI ฯลฯ)",
     "description": "Note about supported API formats"
   },
   "settings_customGatewayKeyNote": {
-    "message": "Необязателен для некоторых шлюзов (например, бесплатного тарифа OpenRouter)",
+    "message": "ไม่บังคับสำหรับบางเกตเวย์ (เช่น แพ็กเกจฟรีของ OpenRouter)",
     "description": "Note about API key being optional"
   },
   "sidebar_tab_chat": {
-    "message": "Чат",
+    "message": "แชท",
     "description": "Sidebar tab label: chat"
   },
   "sidebar_tab_tools": {
-    "message": "Инструменты",
+    "message": "เครื่องมือ",
     "description": "Sidebar tab label: tools"
   },
   "sidebar_chat_placeholder": {
-    "message": "Спросите об этой странице…",
+    "message": "ถามเกี่ยวกับหน้านี้…",
     "description": "Chat input placeholder"
   },
   "sidebar_chat_send": {
-    "message": "Отправить",
+    "message": "ส่ง",
     "description": "Chat send button"
   },
   "sidebar_chat_stop": {
-    "message": "Остановить",
+    "message": "หยุด",
     "description": "Chat stop button"
   },
   "sidebar_chat_pageContext": {
-    "message": "Контекст страницы",
+    "message": "บริบทของหน้า",
     "description": "Page context section label"
   },
   "sidebar_chat_includeContext": {
-    "message": "Учитывать контекст страницы",
+    "message": "รวมบริบทของหน้า",
     "description": "Toggle to include page context"
   },
   "sidebar_chat_empty": {
-    "message": "Начните беседу о текущей странице.",
+    "message": "เริ่มสนทนาเกี่ยวกับหน้าปัจจุบัน",
     "description": "Empty chat hint"
   },
   "sidebar_chat_error": {
-    "message": "Что-то пошло не так. Попробуйте ещё раз.",
+    "message": "เกิดข้อผิดพลาด โปรดลองอีกครั้ง",
     "description": "Chat error message"
   },
   "sidebar_chat_clear": {
-    "message": "Очистить чат",
+    "message": "ล้างแชท",
     "description": "Clear chat session button title"
   },
   "sidebar_chat_confirmClear": {
-    "message": "Вы уверены, что хотите очистить эту беседу?",
+    "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างบทสนทนานี้?",
     "description": "Clear chat session confirmation"
   }
 }

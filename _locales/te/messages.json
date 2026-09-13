@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "Универсальный ИИ-помощник на базе ИИ-моделей: улучшение текста, быстрые действия и умные инструменты",
+    "message": "AI మోడళ్లతో నడిచే ఆల్-ఇన్-వన్ AI సహాయకుడు, రచన మెరుగుదల, శీఘ్ర చర్యలు మరియు స్మార్ట్ సౌకర్యాలు",
     "description": "Extension description"
   },
   "popup_title": {
@@ -12,287 +12,287 @@
     "description": "Popup title"
   },
   "command_openPanel": {
-    "message": "Открыть панель Omni AI",
+    "message": "Omni AI ప్యానెల్ను తెరవండి",
     "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
   },
   "sidepanel_title": {
-    "message": "Инструменты страницы",
+    "message": "పేజీ సాధనాలు",
     "description": "Side panel section heading"
   },
   "sidepanel_summarize": {
-    "message": "Сводка",
+    "message": "సారాంశం",
     "description": "Side panel action button: summarize the current page"
   },
   "sidepanel_translate": {
-    "message": "Умный перевод",
+    "message": "స్మార్ట్ అనువాదం",
     "description": "Side panel action button: translate the current page"
   },
   "sidepanel_explain": {
-    "message": "Объяснить",
+    "message": "వివరించండి",
     "description": "Side panel action button: explain the current page"
   },
   "sidepanel_loading": {
-    "message": "Работаем…",
+    "message": "పని జరుగుతోంది…",
     "description": "Side panel status while an action is running"
   },
   "sidepanel_resultLabel": {
-    "message": "Результат",
+    "message": "ఫలితం",
     "description": "Side panel label above the AI result text"
   },
   "sidepanel_cantReadPage": {
-    "message": "Не удалось прочитать эту страницу",
+    "message": "ఈ పేజీని చదవలేము",
     "description": "Side panel error when the content script isn't reachable on the active tab"
   },
   "sidepanel_noContent": {
-    "message": "На этой странице нет текста для работы",
+    "message": "ఈ పేజీలో పని చేయడానికి ఏమీ లేదు",
     "description": "Side panel error when the page has no extractable text"
   },
   "sidepanel_resultFrom": {
-    "message": "Источник:",
+    "message": "మూలం:",
     "description": "Side panel prefix before the title of the page a result describes"
   },
   "popup_quickAsk": {
-    "message": "Спросите Omni AI о чём угодно...",
+    "message": "Omni AIని ఏదైనా అడగండి...",
     "description": "Quick ask placeholder"
   },
   "command_openQuickMenu": {
-    "message": "Показать меню быстрых действий",
+    "message": "శీఘ్ర చర్యల మెనూను చూపించండి",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
   "popup_context": {
-    "message": "Контекст",
+    "message": "సందర్భం",
     "description": "Context section title"
   },
   "popup_improveWriting": {
-    "message": "Улучшить текст",
+    "message": "రచనను మెరుగుపరచండి",
     "description": "Improve writing section title"
   },
   "popup_quickActions": {
-    "message": "Быстрые действия",
+    "message": "శీఘ్ర చర్యలు",
     "description": "Quick actions section title"
   },
   "preset_email": {
-    "message": "Письмо",
+    "message": "ఇమెయిల్",
     "description": "Email preset"
   },
   "preset_chat": {
-    "message": "Чат",
+    "message": "చాట్",
     "description": "Chat preset"
   },
   "preset_social": {
-    "message": "Соцсети",
+    "message": "సోషల్",
     "description": "Social preset"
   },
   "preset_technical": {
-    "message": "Технический",
+    "message": "సాంకేతిక",
     "description": "Technical preset"
   },
   "preset_academic": {
-    "message": "Академический",
+    "message": "అకడమిక్",
     "description": "Academic preset"
   },
   "action_grammar": {
-    "message": "Исправить грамматику",
+    "message": "వ్యాకరణం సరిచేయండి",
     "description": "Grammar action"
   },
   "desc_grammar": {
-    "message": "Исправляет орфографию и грамматику",
+    "message": "అక్షర దోషాలు మరియు వ్యాకరణాన్ని సరిచేస్తుంది",
     "description": "Description for grammar action"
   },
   "action_clarity": {
-    "message": "Повысить ясность",
+    "message": "స్పష్టతను మెరుగుపరచండి",
     "description": "Clarity action"
   },
   "action_tone": {
-    "message": "Изменить тон",
+    "message": "స్వరం మార్చండి",
     "description": "Tone action"
   },
   "action_concise": {
-    "message": "Сократить",
+    "message": "సంక్షిప్తంగా చేయండి",
     "description": "Concise action"
   },
   "action_expand": {
-    "message": "Расширить",
+    "message": "విస్తరించండి",
     "description": "Expand action"
   },
   "action_rephrase": {
-    "message": "Перефразировать",
+    "message": "మళ్లీ రాయండి",
     "description": "Rephrase action"
   },
   "action_translate": {
-    "message": "Перевести",
+    "message": "అనువదించండి",
     "description": "Translate action"
   },
   "action_summarize": {
-    "message": "Сводка",
+    "message": "సారాంశం చేయండి",
     "description": "Summarize action"
   },
   "action_reply": {
-    "message": "Ответить",
+    "message": "ప్రత్యుత్తరం",
     "description": "Reply action"
   },
   "action_emojify": {
-    "message": "Добавить эмодзи",
+    "message": "ఎమోజీలు జోడించండి",
     "description": "Emojify action"
   },
   "status_ready": {
-    "message": "Готово",
+    "message": "సిద్ధం",
     "description": "Status ready"
   },
   "status_processing": {
-    "message": "Обработка...",
+    "message": "ప్రాసెస్ అవుతోంది...",
     "description": "Status processing"
   },
   "status_error": {
-    "message": "Ошибка",
+    "message": "లోపం",
     "description": "Status error"
   },
   "settings_title": {
-    "message": "Настройки",
+    "message": "సెట్టింగ్లు",
     "description": "Settings page title"
   },
   "settings_geminiApiKey": {
-    "message": "Ключ API Gemini",
+    "message": "Gemini API కీ",
     "description": "Gemini API key label"
   },
   "settings_geminiApiKeyHint": {
-    "message": "Получите ключ API в Google AI Studio",
+    "message": "మీ API కీని Google AI Studio నుండి పొందండి",
     "description": "Gemini API key hint"
   },
   "settings_model": {
-    "message": "ИИ-модель",
+    "message": "AI మోడల్",
     "description": "AI model label"
   },
   "settings_modelHint": {
-    "message": "Выберите используемую ИИ-модель",
+    "message": "ఉపయోగించాల్సిన AI మోడల్ను ఎంచుకోండి",
     "description": "AI model hint"
   },
   "settings_defaultPreset": {
-    "message": "Контекст по умолчанию",
+    "message": "డిఫాల్ట్ సందర్భం",
     "description": "Default preset label"
   },
   "settings_language": {
-    "message": "Язык перевода",
+    "message": "అనువాద భాష",
     "description": "Translation language label"
   },
   "settings_save": {
-    "message": "Сохранить настройки",
+    "message": "సెట్టింగ్లను సేవ్ చేయండి",
     "description": "Save button"
   },
   "settings_showFloatingButton": {
-    "message": "Показывать плавающую кнопку Omni AI",
+    "message": "తేలియాడే Omni AI బటన్ను చూపించండి",
     "description": "Floating action button preference label"
   },
   "settings_showFloatingButtonHint": {
-    "message": "Отключите, чтобы использовать только сочетания клавиш и контекстные меню.",
+    "message": "కీబోర్డ్ షార్ట్‌కట్‌లు మరియు కాంటెక్స్ట్ మెనూలను మాత్రమే ఉపయోగించడానికి దీన్ని ఆఫ్ చేయండి.",
     "description": "Floating action button preference help text"
   },
   "settings_flashActions": {
-    "message": "Мгновенные действия",
+    "message": "ఫ్లాష్ చర్యలు",
     "description": "Flash actions setting label"
   },
   "settings_flashActionsHint": {
-    "message": "Показывать эти действия при наведении на плавающую кнопку, чтобы запускать их без открытия полного меню (до 4).",
+    "message": "తేలియాడే చిహ్నంపై హోవర్ చేసినప్పుడు ఈ చర్యలను చూపిస్తుంది, దీని వల్ల పూర్తి మెనూను తెరవకుండా వాటిని అమలు చేయవచ్చు (గరిష్ఠం 4).",
     "description": "Flash actions setting help text"
   },
   "settings_flashAction_translatePrimary": {
-    "message": "Перевести на основной язык",
+    "message": "ప్రాథమిక భాషలోకి అనువదించండి",
     "description": "Flash action checkbox label"
   },
   "settings_flashAction_translateDefault": {
-    "message": "Перевести на язык по умолчанию",
+    "message": "డిఫాల్ట్ భాషలోకి అనువదించండి",
     "description": "Flash action checkbox label"
   },
   "settings_on": {
-    "message": "Вкл.",
+    "message": "ఆన్",
     "description": "Enabled setting option"
   },
   "settings_off": {
-    "message": "Выкл.",
+    "message": "ఆఫ్",
     "description": "Disabled setting option"
   },
   "settings_saved": {
-    "message": "Настройки сохранены!",
+    "message": "సెట్టింగ్లు సేవ్ అయ్యాయి!",
     "description": "Save confirmation"
   },
   "overlay_copy": {
-    "message": "Копировать",
+    "message": "కాపీ",
     "description": "Copy button"
   },
   "overlay_replace": {
-    "message": "Заменить",
+    "message": "భర్తీ చేయండి",
     "description": "Replace button"
   },
   "action_explain": {
-    "message": "Объяснить",
+    "message": "వివరించండి",
     "description": "Explain action"
   },
   "ui_to": {
-    "message": "На",
+    "message": "లోకి",
     "description": "To language preposition"
   },
   "contextMenu_improve": {
-    "message": "Улучшить с помощью Omni AI",
+    "message": "Omni AIతో మెరుగుపరచండి",
     "description": "Context menu improve"
   },
   "contextMenu_explain": {
-    "message": "Объяснить с помощью Omni AI",
+    "message": "Omni AIతో వివరించండి",
     "description": "Context menu explain"
   },
   "contextMenu_translate": {
-    "message": "Перевести с помощью Omni AI",
+    "message": "Omni AIతో అనువదించండి",
     "description": "Context menu translate"
   },
   "contextMenu_rephrase": {
-    "message": "Перефразировать с помощью Omni AI",
+    "message": "Omni AIతో మళ్లీ రాయండి",
     "description": "Context menu rephrase"
   },
   "contextMenu_emojify": {
-    "message": "Добавить эмодзи с помощью Omni AI",
+    "message": "Omni AIతో ఎమోజీని జోడించండి",
     "description": "Context menu add emoji"
   },
   "contextMenu_summarize": {
-    "message": "Кратко изложить с помощью Omni AI",
+    "message": "Omni AIతో సారాంశం చేయండి",
     "description": "Context menu summarize"
   },
   "contextMenu_ask": {
-    "message": "Спросить Omni AI",
+    "message": "Omni AIని అడగండి",
     "description": "Context menu quick ask"
   },
   "error_noApiKey": {
-    "message": "Ключ API не настроен. Добавьте ключ API в настройках.",
+    "message": "API కీ కాన్ఫిగర్ చేయబడలేదు. దయచేసి సెట్టింగ్లలో మీ API కీని జోడించండి.",
     "description": "No API key error"
   },
   "settings_geminiApiKeyPlaceholder": {
-    "message": "Введите ключ API Gemini...",
+    "message": "మీ Gemini API కీని నమోదు చేయండి...",
     "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
-    "message": "Ошибка: ",
+    "message": "లోపం: ",
     "description": "Error prefix"
   },
   "error_apiKeyNotConfigured_gemini": {
-    "message": "Ключ API Gemini не настроен",
+    "message": "Gemini API కీ కాన్ఫిగర్ చేయబడలేదు",
     "description": "Shown when the Gemini API key is missing"
   },
   "error_apiKeyNotConfigured_openai": {
-    "message": "Ключ API OpenAI не настроен",
+    "message": "OpenAI API కీ కాన్ఫిగర్ చేయబడలేదు",
     "description": "Shown when the OpenAI API key is missing"
   },
   "error_apiKeyNotConfigured_groq": {
-    "message": "Ключ API Groq не настроен",
+    "message": "Groq API కీ కాన్ఫిగర్ చేయబడలేదు",
     "description": "Shown when the Groq API key is missing"
   },
   "error_apiKeyNotConfigured_anthropic": {
-    "message": "Ключ API Anthropic не настроен",
+    "message": "Anthropic API కీ కాన్ఫిగర్ చేయబడలేదు",
     "description": "Shown when the Anthropic API key is missing"
   },
   "error_customGatewayBaseUrlNotConfigured": {
-    "message": "Базовый URL Custom Gateway не настроен",
+    "message": "Custom Gateway బేస్ URL కాన్ఫిగర్ చేయబడలేదు",
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "Ключ API не настроен для $MODEL$",
+    "message": "$MODEL$ కోసం API కీ కాన్ఫిగర్ చేయబడలేదు",
     "placeholders": {
       "model": {
         "content": "$1"
@@ -301,341 +301,341 @@
     "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
   },
   "settings_defaultTone": {
-    "message": "Тон по умолчанию",
+    "message": "డిఫాల్ట్ స్వరం",
     "description": "Default tone label"
   },
   "settings_defaultToneHint": {
-    "message": "Тон по умолчанию для улучшения текста и ответов",
+    "message": "రచన మెరుగుదలలు మరియు ప్రత్యుత్తరాల కోసం డిఫాల్ట్ స్వరం",
     "description": "Default tone hint"
   },
   "tone_professional": {
-    "message": "Деловой",
+    "message": "ప్రొఫెషనల్",
     "description": "Professional tone"
   },
   "tone_casual": {
-    "message": "Непринуждённый",
+    "message": "క్యాజువల్",
     "description": "Casual tone"
   },
   "tone_friendly": {
-    "message": "Дружелюбный",
+    "message": "స్నేహపూర్వకం",
     "description": "Friendly tone"
   },
   "tone_direct": {
-    "message": "Прямой",
+    "message": "నేరుగా",
     "description": "Direct tone"
   },
   "tone_confident": {
-    "message": "Уверенный",
+    "message": "ఆత్మవిశ్వాసం",
     "description": "Confident tone"
   },
   "quick_ask_title": {
-    "message": "Быстрый вопрос",
+    "message": "శీఘ్ర ప్రశ్న",
     "description": "Quick ask overlay title"
   },
   "overlay_result": {
-    "message": "Результат",
+    "message": "ఫలితం",
     "description": "Result title"
   },
   "status_thinking": {
-    "message": "Думаю...",
+    "message": "ఆలోచిస్తోంది...",
     "description": "Thinking status"
   },
   "btn_back": {
-    "message": "Назад",
+    "message": "వెనుకకు",
     "description": "Back button title"
   },
   "msg_copied": {
-    "message": "Скопировано!",
+    "message": "కాపీ అయింది!",
     "description": "Copied message"
   },
   "error_noSelection": {
-    "message": "Текст не выделен. Сначала выделите текст.",
+    "message": "ఏ వచనమూ ఎంచుకోబడలేదు. దయచేసి ముందుగా కొంత వచనాన్ని ఎంచుకోండి.",
     "description": "No selection error"
   },
   "settings_tagline": {
-    "message": "Ваш ИИ-помощник",
+    "message": "మీ AI సహాయకుడు",
     "description": "App tagline"
   },
   "settings_theme": {
-    "message": "Тема",
+    "message": "థీమ్",
     "description": "Theme label"
   },
   "settings_themeHint": {
-    "message": "Выберите предпочитаемое оформление",
+    "message": "మీకు నచ్చిన రూపాన్ని ఎంచుకోండి",
     "description": "Theme hint"
   },
   "theme_system": {
-    "message": "Как в системе",
+    "message": "సిస్టమ్ డిఫాల్ట్",
     "description": "System theme"
   },
   "theme_dark": {
-    "message": "Тёмная",
+    "message": "డార్క్",
     "description": "Dark theme"
   },
   "theme_light": {
-    "message": "Светлая",
+    "message": "లైట్",
     "description": "Light theme"
   },
   "settings_primaryLanguage": {
-    "message": "Основной язык",
+    "message": "ప్రాథమిక భాష",
     "description": "Primary language label"
   },
   "settings_primaryLanguageHint": {
-    "message": "Ваш основной язык для быстрых действий",
+    "message": "శీఘ్ర చర్యల కోసం మీ ప్రధాన భాష",
     "description": "Primary language hint"
   },
   "settings_validate": {
-    "message": "Проверить конфигурацию",
+    "message": "కాన్ఫిగరేషన్ను ధృవీకరించండి",
     "description": "Validate button"
   },
   "settings_shortcuts": {
-    "message": "Сочетания клавиш",
+    "message": "కీబోర్డ్ షార్ట్‌కట్‌లు",
     "description": "Shortcuts section title"
   },
   "settings_history": {
-    "message": "История использования",
+    "message": "వినియోగ చరిత్ర",
     "description": "History section title"
   },
   "stats_totalActions": {
-    "message": "Всего действий",
+    "message": "మొత్తం చర్యలు",
     "description": "Total actions stat"
   },
   "stats_wordsProcessed": {
-    "message": "Обработано слов",
+    "message": "ప్రాసెస్ చేసిన పదాలు",
     "description": "Words processed stat"
   },
   "stats_wordsGenerated": {
-    "message": "Создано слов",
+    "message": "సృష్టించిన పదాలు",
     "description": "Words generated stat"
   },
   "settings_about": {
-    "message": "О программе",
+    "message": "గురించి",
     "description": "About section title"
   },
   "btn_reportIssue": {
-    "message": "Сообщить о проблеме",
+    "message": "సమస్యను నివేదించండి",
     "description": "Report issue link"
   },
   "btn_clearHistory": {
-    "message": "Очистить историю",
+    "message": "చరిత్రను క్లియర్ చేయండి",
     "description": "Clear history button tooltip"
   },
   "settings_groqKey": {
-    "message": "Ключ API Groq",
+    "message": "Groq API కీ",
     "description": "Groq API key label"
   },
   "settings_groqKeyHint": {
-    "message": "Получите бесплатный ключ на console.groq.com",
+    "message": "console.groq.comలో ఉచిత కీని పొందండి",
     "description": "Groq API key hint"
   },
   "settings_openaiKey": {
-    "message": "Ключ API OpenAI",
+    "message": "OpenAI API కీ",
     "description": "OpenAI API key label"
   },
   "settings_openaiKeyHint": {
-    "message": "Получите ключ API на platform.openai.com",
+    "message": "platform.openai.comలో API కీని పొందండి",
     "description": "OpenAI API key hint"
   },
   "settings_tooltip_gemini": {
-    "message": "Получить ключ API",
+    "message": "API కీని పొందండి",
     "description": "Gemini tooltip title"
   },
   "settings_tooltip_groq": {
-    "message": "Получить ключ API Groq",
+    "message": "Groq API కీని పొందండి",
     "description": "Groq tooltip title"
   },
   "settings_tooltip_openai": {
-    "message": "Получить ключ API OpenAI",
+    "message": "OpenAI API కీని పొందండి",
     "description": "OpenAI tooltip title"
   },
   "settings_anthropicKey": {
-    "message": "Ключ API Anthropic",
+    "message": "Anthropic API కీ",
     "description": "Anthropic API key label"
   },
   "settings_anthropicKeyHint": {
-    "message": "Получите ключ API на console.anthropic.com",
+    "message": "console.anthropic.comలో API కీని పొందండి",
     "description": "Anthropic API key hint"
   },
   "settings_tooltip_anthropic": {
-    "message": "Получить ключ API Anthropic",
+    "message": "Anthropic API కీని పొందండి",
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Перейти в Anthropic Console"
+    "message": "Anthropic Consoleకు వెళ్లండి"
   },
   "settings_tooltip_anthropic_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "సైన్ అప్ చేయండి లేదా లాగిన్ అవ్వండి"
   },
   "settings_tooltip_anthropic_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "కొత్త API కీని సృష్టించండి"
   },
   "settings_shortcuts_customize": {
-    "message": "Настроить в Chrome",
+    "message": "Chromeలో అనుకూలీకరించండి",
     "description": "Customize shortcut label"
   },
   "settings_shortcuts_hint": {
-    "message": "Настройте сочетания клавиш в настройках Chrome",
+    "message": "Chrome సెట్టింగ్లలో షార్ట్‌కట్‌లను అనుకూలీకరించండి",
     "description": "Customize shortcuts hint"
   },
   "btn_refresh": {
-    "message": "Обновить",
+    "message": "రిఫ్రెష్",
     "description": "Refresh button tooltip"
   },
   "settings_languageHint": {
-    "message": "Язык перевода по умолчанию",
+    "message": "అనువాదాల కోసం డిఫాల్ట్ భాష",
     "description": "Translation language hint"
   },
   "lang_en": {
-    "message": "Английский"
+    "message": "ఆంగ్లం"
   },
   "lang_vi": {
-    "message": "Вьетнамский"
+    "message": "వియత్నామీస్"
   },
   "lang_es": {
-    "message": "Испанский"
+    "message": "స్పానిష్"
   },
   "lang_fr": {
-    "message": "Французский"
+    "message": "ఫ్రెంచ్"
   },
   "lang_de": {
-    "message": "Немецкий"
+    "message": "జర్మన్"
   },
   "lang_it": {
-    "message": "Итальянский"
+    "message": "ఇటాలియన్"
   },
   "lang_pt": {
-    "message": "Португальский"
+    "message": "పోర్చుగీస్"
   },
   "lang_ja": {
-    "message": "Японский"
+    "message": "జపనీస్"
   },
   "lang_ko": {
-    "message": "Корейский"
+    "message": "కొరియన్"
   },
   "lang_zh": {
-    "message": "Китайский"
+    "message": "చైనీస్"
   },
   "settings_languageSearchPlaceholder": {
-    "message": "Поиск языков",
+    "message": "భాషలను వెతకండి",
     "description": "Placeholder for the search box that filters the language pickers"
   },
   "settings_languagesCommon": {
-    "message": "Популярные",
+    "message": "సాధారణం",
     "description": "First optgroup label in the language pickers"
   },
   "settings_languagesAll": {
-    "message": "Все языки",
+    "message": "అన్ని భాషలు",
     "description": "Second optgroup label listing every supported language"
   },
   "settings_confirmClearHistory": {
-    "message": "Вы уверены, что хотите очистить всю историю использования?",
+    "message": "మీరు మొత్తం వినియోగ చరిత్రను క్లియర్ చేయాలనుకుంటున్నారా?",
     "description": "Clear history confirmation"
   },
   "settings_errorNoApiKey": {
-    "message": "Сначала введите ключ API или эндпоинт.",
+    "message": "దయచేసి ముందుగా API కీ/ఎండ్‌పాయింట్‌ను నమోదు చేయండి.",
     "description": "No API key entered error"
   },
   "settings_validating": {
-    "message": "Проверка...",
+    "message": "ధృవీకరిస్తోంది...",
     "description": "Validating status"
   },
   "settings_configValid": {
-    "message": "Конфигурация верна! Можно генерировать.",
+    "message": "కాన్ఫిగరేషన్ చెల్లుబాటు అవుతుంది! రూపొందించడానికి సిద్ధం.",
     "description": "Config valid success"
   },
   "settings_connectionFailed": {
-    "message": "Не удалось проверить подключение",
+    "message": "కనెక్షన్ తనిఖీ విఫలమైంది",
     "description": "Connection failed error"
   },
   "settings_checking": {
-    "message": "Проверка...",
+    "message": "తనిఖీ చేస్తోంది...",
     "description": "Checking status"
   },
   "settings_failedToSave": {
-    "message": "Не удалось сохранить",
+    "message": "సేవ్ చేయడం విఫలమైంది",
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Перейти в Google AI Studio"
+    "message": "Google AI Studioకు వెళ్లండి"
   },
   "settings_tooltip_gemini_s2": {
-    "message": "Нажмите «Create API Key»"
+    "message": "Create API Key పై క్లిక్ చేయండి"
   },
   "settings_tooltip_gemini_s3": {
-    "message": "Скопируйте ключ в буфер обмена"
+    "message": "కీని క్లిప్‌బోర్డ్‌కు కాపీ చేయండి"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Перейти в Groq Console"
+    "message": "Groq Consoleకు వెళ్లండి"
   },
   "settings_tooltip_groq_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "సైన్ అప్ చేయండి లేదా లాగిన్ అవ్వండి"
   },
   "settings_tooltip_groq_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "కొత్త API కీని సృష్టించండి"
   },
   "settings_tooltip_openai_s1": {
-    "message": "Перейти в OpenAI Platform"
+    "message": "OpenAI Platformకు వెళ్లండి"
   },
   "settings_tooltip_openai_s2": {
-    "message": "Зарегистрируйтесь или войдите"
+    "message": "సైన్ అప్ చేయండి లేదా లాగిన్ అవ్వండి"
   },
   "settings_tooltip_openai_s3": {
-    "message": "Создайте новый ключ API"
+    "message": "కొత్త API కీని సృష్టించండి"
   },
   "overlay_suggested_fix": {
-    "message": "Предлагаемое исправление",
+    "message": "సూచించిన సవరణ",
     "description": "Suggested fix label"
   },
   "overlay_accept": {
-    "message": "Принять",
+    "message": "అంగీకరించండి",
     "description": "Accept button"
   },
   "overlay_dismiss": {
-    "message": "Отклонить",
+    "message": "విస్మరించండి",
     "description": "Dismiss button"
   },
   "overlay_no_issues": {
-    "message": "Проблем не найдено",
+    "message": "ఎలాంటి సమస్యలు కనుగొనబడలేదు",
     "description": "No issues message"
   },
   "overlay_no_issues_content": {
-    "message": "Текст отличный!",
+    "message": "వచనం బాగుంది!",
     "description": "No issues check details"
   },
   "overlay_smart_translation": {
-    "message": "Умный перевод",
+    "message": "స్మార్ట్ అనువాదం",
     "description": "Smart translation label"
   },
   "overlay_error": {
-    "message": "Ошибка",
+    "message": "లోపం",
     "description": "Error label"
   },
   "overlay_translation_failed": {
-    "message": "Не удалось перевести",
+    "message": "అనువాదం విఫలమైంది",
     "description": "Translation failed message"
   },
   "settings_legacyModelPrefix": {
-    "message": "(Устаревшая)",
+    "message": "(పాత)",
     "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
   },
   "settings_advanced": {
-    "message": "Дополнительно",
+    "message": "అధునాతన",
     "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
   },
   "settings_customModel": {
-    "message": "Название пользовательской модели",
+    "message": "అనుకూల మోడల్ పేరు",
     "description": "Custom model label"
   },
   "settings_customModelHint": {
-    "message": "Введите идентификатор пользовательской модели",
+    "message": "అనుకూల మోడల్ IDని నమోదు చేయండి",
     "description": "Custom model hint"
   },
   "settings_errorNoCustomModel": {
-    "message": "Введите название пользовательской модели",
+    "message": "దయచేసి అనుకూల మోడల్ పేరును నమోదు చేయండి",
     "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
-    "message": "например, your-model-id",
+    "message": "ఉదా. your-model-id",
     "description": "Placeholder for settings_customModelPlaceholder"
   },
   "settings_customGatewayTitle": {
@@ -643,71 +643,71 @@
     "description": "Custom Gateway label"
   },
   "settings_customGatewayHint": {
-    "message": "Подключение к любому эндпоинту API, совместимому с OpenAI",
+    "message": "ఏదైనా OpenAI-అనుకూల API ఎండ్‌పాయింట్‌కు కనెక్ట్ చేయండి",
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
-    "message": "например, https://openrouter.ai/api/v1",
+    "message": "ఉదా. https://openrouter.ai/api/v1",
     "description": "Placeholder for Custom Gateway base URL"
   },
   "settings_customGatewayKeyPlaceholder": {
-    "message": "Введите ключ API...",
+    "message": "మీ API కీని నమోదు చేయండి...",
     "description": "Placeholder for Custom Gateway API key"
   },
   "settings_tooltip_customGateway": {
-    "message": "Настройка Custom Gateway",
+    "message": "Custom Gateway కాన్ఫిగరేషన్",
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {
-    "message": "Поддерживаются API, совместимые с OpenAI (OpenRouter, LiteLLM, Together AI и др.)",
+    "message": "OpenAI-అనుకూల APIలకు మద్దతు ఇస్తుంది (OpenRouter, LiteLLM, Together AI మొదలైనవి)",
     "description": "Note about supported API formats"
   },
   "settings_customGatewayKeyNote": {
-    "message": "Необязателен для некоторых шлюзов (например, бесплатного тарифа OpenRouter)",
+    "message": "కొన్ని గేట్‌వేలకు ఐచ్ఛికం (ఉదా., OpenRouter ఉచిత టైర్)",
     "description": "Note about API key being optional"
   },
   "sidebar_tab_chat": {
-    "message": "Чат",
+    "message": "చాట్",
     "description": "Sidebar tab label: chat"
   },
   "sidebar_tab_tools": {
-    "message": "Инструменты",
+    "message": "సాధనాలు",
     "description": "Sidebar tab label: tools"
   },
   "sidebar_chat_placeholder": {
-    "message": "Спросите об этой странице…",
+    "message": "ఈ పేజీ గురించి అడగండి…",
     "description": "Chat input placeholder"
   },
   "sidebar_chat_send": {
-    "message": "Отправить",
+    "message": "పంపండి",
     "description": "Chat send button"
   },
   "sidebar_chat_stop": {
-    "message": "Остановить",
+    "message": "ఆపండి",
     "description": "Chat stop button"
   },
   "sidebar_chat_pageContext": {
-    "message": "Контекст страницы",
+    "message": "పేజీ సందర్భం",
     "description": "Page context section label"
   },
   "sidebar_chat_includeContext": {
-    "message": "Учитывать контекст страницы",
+    "message": "పేజీ సందర్భాన్ని చేర్చండి",
     "description": "Toggle to include page context"
   },
   "sidebar_chat_empty": {
-    "message": "Начните беседу о текущей странице.",
+    "message": "ప్రస్తుత పేజీ గురించి సంభాషణను ప్రారంభించండి.",
     "description": "Empty chat hint"
   },
   "sidebar_chat_error": {
-    "message": "Что-то пошло не так. Попробуйте ещё раз.",
+    "message": "ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి.",
     "description": "Chat error message"
   },
   "sidebar_chat_clear": {
-    "message": "Очистить чат",
+    "message": "చాట్‌ను క్లియర్ చేయండి",
     "description": "Clear chat session button title"
   },
   "sidebar_chat_confirmClear": {
-    "message": "Вы уверены, что хотите очистить эту беседу?",
+    "message": "మీరు ఈ సంభాషణను క్లియర్ చేయాలనుకుంటున్నారా?",
     "description": "Clear chat session confirmation"
   }
 }
