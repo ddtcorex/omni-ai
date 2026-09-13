@@ -22,6 +22,7 @@ Highlight any text on any website to see the **✨ Omni AI Floating Button**. On
 - **Change Tone** - Swiftly switch between Professional, Casual, Formal, and more.
 - **Ask AI** - Direct chat contextually based on your selection (Alt+A opens an in-page overlay).
 - **Page Tools** - Click the toolbar icon to open a side panel with one-click Summarize / Smart Translate / Explain for the whole page you're on.
+- **Sidebar Chat** - A streaming AI chat tab in the side panel: ask about the page you're viewing (auto page context, capped at ~8000 chars), with history and live token-by-token responses streamed over a `chrome.runtime` Port.
 
 ### 📋 Writing Enhancements
 
@@ -202,7 +203,10 @@ omni-ai/
 ├── settings.html           # Main configuration page
 ├── settings.js
 ├── settings.css
-├── sidepanel/               # Page Tools side panel (Summarize/Translate/Explain)
+├── lib/
+│   ├── sidebar-chat.js     # Sidebar Chat prompt builder (page context + history)
+│   └── omni-chat-port.js   # Streaming chat Port handler (chrome.runtime "omni-chat")
+├── sidepanel/              # Side panel: Page Tools + streaming Chat tab
 │   ├── sidepanel.html
 │   ├── sidepanel.js
 │   └── sidepanel.css
@@ -218,6 +222,30 @@ omni-ai/
 - **Vanilla JavaScript**: Lightweight, no heavy frameworks, maximum performance.
 - **Modern CSS**: Variables, Flex/Grid, Glassmorphism, and smooth animations.
 - **Provider Architecture**: Easily extendable to add new AI providers — see `lib/providers/` and the `AI_PROVIDERS` registry.
+
+---
+
+## 🤝 Contributing & CI Gate
+
+`master` is **branch-protected**: you cannot push to it directly, and a PR can
+only merge when **both** GitHub checks are green — `verify` and `e2e (playwright)`
+— and the branch is up to date with `master`. Contributors (human or AI agent)
+must therefore run the local equivalent of the pipeline **before** pushing:
+
+```bash
+npm run verify          # typecheck + ESLint + Prettier --check + Jest coverage
+npx playwright test     # E2E: extension loads in MV3, side panel, smoke
+```
+
+- Never push a known-red state and rely on CI to catch it. Fix locally and
+  re-run until both commands are green.
+- Keep your feature branch rebased/up to date with `master` so the
+  "up-to-date before merge" check passes.
+- Exact CI invocations live in `.github/workflows/ci.yml` — treat that file as
+  the source of truth for what the gate runs.
+
+See `AGENTS.md` ("Pre-Push Gate") for the full agent checklist that mirrors this
+pipeline.
 
 ---
 

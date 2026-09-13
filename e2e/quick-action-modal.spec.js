@@ -319,11 +319,136 @@ test("Back button returns to the action menu after a keyboard-shortcut-triggered
         .click();
     });
 
-    const menuVisible = await page.evaluate(() => {
-      const host = document.getElementById("omni-ai-shadow-host");
-      return !!host.shadowRoot.querySelector(".omni-ai-menu-grid");
+    // The menu grid re-renders asynchronously after the Back click (shadow DOM
+    // swap), so poll for it instead of reading it in the same tick -- a direct
+    // synchronous read raced on slower CI runners (flaky e2e).
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const host = document.getElementById("omni-ai-shadow-host");
+          return !!host.shadowRoot.querySelector(".omni-ai-menu-grid");
+        }),
+      )
+      .toBe(true);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Alt+O opens the quick-action menu directly, without clicking the floating icon first", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="text">The quick brown fox jumps over the lazy dog for quick-menu shortcut testing.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "TRANSLATED");
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.locator("#text").evaluate((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
     });
-    expect(menuVisible).toBe(true);
+
+    // Simulate the background script's SHOW_QUICK_ACTION_MENU (what Alt+O
+    // ultimately sends) rather than a real OS-level keyboard shortcut, which
+    // Playwright cannot reliably trigger for a browser-action command.
+    await sw.evaluate(async (port) => {
+      const tabs = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      const message = { type: "SHOW_QUICK_ACTION_MENU" };
+      let lastError;
+      for (let i = 0; i < 20; i++) {
+        try {
+          await chrome.tabs.sendMessage(tabs[0].id, message, { frameId: 0 });
+          lastError = null;
+          break;
+        } catch (err) {
+          lastError = err;
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+      if (lastError) throw lastError;
+    }, port);
+
+    // The menu should open directly -- no floating icon ever appears.
+    await expect(page.locator('[data-action="rephrase"]')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("the auto Smart Translation card re-calls the AI after a language-setting change, instead of reusing a stale cached translation", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="target">Xin chào các bạn, đây là một câu tiếng Việt để dịch.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // seedConfig() only touches chrome.storage.local; primaryLanguage/
+    // defaultLanguage live in chrome.storage.sync, seeded separately here.
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "vi", defaultLanguage: "en" });
+    });
+
+    let callCount = 0;
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      callCount += 1;
+      const replyText =
+        callCount === 1 ? "FIRST-TRANSLATION-EN" : "SECOND-TRANSLATION-AFTER-SETTING-CHANGE";
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: replyText }] } }] }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    const box = await page.locator("#target").boundingBox();
+    await page.mouse.move(box.x + 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+    await page.mouse.up();
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    const translateCard = page.locator("#omniAiTranslateCard");
+    await expect(translateCard).toContainText("FIRST-TRANSLATION-EN", { timeout: 5000 });
+
+    // Close the menu, change the language settings, then re-select the
+    // EXACT same text again. handleSelectionChange() no-ops while
+    // isOverlayVisible is true, so the overlay must actually be dismissed
+    // (there's no Escape-key handler) before a fresh selection registers.
+    await page.locator("#omniAiClose").click();
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "en", defaultLanguage: "vi" });
+    });
+
+    await page.mouse.move(box.x + 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+    await page.mouse.up();
+
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    // Must call the AI again and show the fresh result -- not the cached
+    // FIRST-TRANSLATION-EN from before the language settings changed.
+    await expect(translateCard).toContainText("SECOND-TRANSLATION-AFTER-SETTING-CHANGE", {
+      timeout: 5000,
+    });
   } finally {
     await context.close();
     server.close();

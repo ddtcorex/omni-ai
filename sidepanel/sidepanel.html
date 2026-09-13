@@ -41,32 +41,128 @@
         </button>
       </header>
 
+      <nav class="tab-nav" role="tablist">
+        <button
+          id="tabChat"
+          class="tab-btn active"
+          role="tab"
+          aria-selected="true"
+          data-view="chatView"
+        >
+          <span class="tab-icon">💬</span>
+          <span class="tab-label">__MSG_sidebar_tab_chat__</span>
+        </button>
+        <button
+          id="tabTools"
+          class="tab-btn"
+          role="tab"
+          aria-selected="false"
+          data-view="toolsView"
+        >
+          <span class="tab-icon">🛠️</span>
+          <span class="tab-label">__MSG_sidebar_tab_tools__</span>
+        </button>
+      </nav>
+
       <main class="page-tools">
-        <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
+        <section id="toolsView" class="tab-view hidden">
+          <h2 class="page-tools-title">__MSG_sidepanel_title__</h2>
 
-        <div class="action-buttons">
-          <button id="summarizeBtn" class="ds-btn-primary" data-action="summarize">
-            <span class="action-icon">📄</span>
-            <span class="action-label">__MSG_sidepanel_summarize__</span>
-          </button>
-          <button id="translateBtn" class="ds-btn-primary" data-action="smart_translate">
-            <span class="action-icon">🌐</span>
-            <span class="action-label">__MSG_sidepanel_translate__</span>
-          </button>
-          <button id="explainBtn" class="ds-btn-primary" data-action="explain">
-            <span class="action-icon">💡</span>
-            <span class="action-label">__MSG_sidepanel_explain__</span>
-          </button>
-        </div>
+          <div class="action-buttons">
+            <button id="summarizeBtn" class="ds-btn-primary" data-action="summarize">
+              <span class="action-icon">📄</span>
+              <span class="action-label">__MSG_sidepanel_summarize__</span>
+            </button>
+            <button id="translateBtn" class="ds-btn-primary" data-action="smart_translate">
+              <span class="action-icon">🌐</span>
+              <span class="action-label">__MSG_sidepanel_translate__</span>
+            </button>
+            <button id="explainBtn" class="ds-btn-primary" data-action="explain">
+              <span class="action-icon">💡</span>
+              <span class="action-label">__MSG_sidepanel_explain__</span>
+            </button>
+          </div>
 
-        <div id="statusLine" class="status-line hidden"></div>
-        <div id="loadingSpinner" class="ds-spinner hidden" style="margin: 12px auto"></div>
+          <div id="statusLine" class="status-line hidden"></div>
+          <div id="loadingSpinner" class="ds-spinner hidden" style="margin: 12px auto"></div>
 
-        <div id="resultArea" class="ds-card hidden">
-          <div class="result-label">__MSG_sidepanel_resultLabel__</div>
-          <div id="resultSource" class="result-source"></div>
-          <div id="resultText" class="result-text"></div>
-        </div>
+          <div id="resultArea" class="ds-card hidden">
+            <div class="result-label">__MSG_sidepanel_resultLabel__</div>
+            <div id="resultSource" class="result-source"></div>
+            <div id="resultText" class="result-text"></div>
+          </div>
+        </section>
+
+        <section id="chatView" class="tab-view">
+          <div class="chat-page-context">
+            <div class="chat-context-row">
+              <label class="chat-context-toggle">
+                <input type="checkbox" id="includeContext" checked />
+                <span>__MSG_sidebar_chat_includeContext__</span>
+              </label>
+              <button id="clearChatBtn" class="ds-icon-btn" title="__MSG_sidebar_chat_clear__">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <details class="chat-context-details">
+              <summary>__MSG_sidebar_chat_pageContext__</summary>
+              <pre id="pageContextPreview" class="chat-context-preview"></pre>
+            </details>
+          </div>
+
+          <div id="chatMessages" class="chat-messages">
+            <div class="chat-empty" id="chatEmpty">__MSG_sidebar_chat_empty__</div>
+          </div>
+
+          <div class="chat-error hidden" id="chatError">__MSG_sidebar_chat_error__</div>
+
+          <div class="chat-input-row">
+            <div class="chat-input-wrap">
+              <textarea
+                id="chatInput"
+                class="chat-input"
+                rows="2"
+                placeholder="__MSG_sidebar_chat_placeholder__"
+              ></textarea>
+              <button id="chatSend" class="chat-fab chat-send" title="__MSG_sidebar_chat_send__">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+              <button
+                id="chatStop"
+                class="chat-fab chat-stop hidden"
+                title="__MSG_sidebar_chat_stop__"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer class="footer">

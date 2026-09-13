@@ -1,5 +1,10 @@
 import { addToHistory } from "../lib/history.js";
-import { getSyncPreferences, getApiKey as getStoredApiKey } from "../lib/storage.js";
+import {
+  getSyncPreferences,
+  getApiKey as getStoredApiKey,
+  getCustomGatewayConfig,
+  getApiModel,
+} from "../lib/storage.js";
 import {
   quickAsk,
   improveText,
@@ -11,6 +16,9 @@ import {
   generateContent,
   smartTranslate,
 } from "../lib/ai-service.js";
+import { generateContentStream } from "../lib/providers/index.js";
+import { createOmniChatHandler } from "../lib/omni-chat-port.js";
+import { getProviderByModel } from "../lib/ai-providers.js";
 
 /**
  * Omni AI - Service Worker
@@ -126,6 +134,11 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
     return;
   }
 
+  if (command === "quick_menu") {
+    sendToActiveEditor(tab.id, { type: "SHOW_QUICK_ACTION_MENU" }).catch(() => {});
+    return;
+  }
+
   // Handle other commands via selected text
   try {
     // Notify content script to show processing state (spin icon)
@@ -181,6 +194,7 @@ async function initializeSettings() {
       autoClose: false,
       showNotifications: true,
       showFloatingButton: true,
+      flashActions: ["smart_translate", "rephrase", "grammar"],
     },
   };
 
@@ -654,4 +668,42 @@ async function processSelectedText(tabId, text, action, isInput = false) {
  */
 async function getApiKey() {
   return (await getStoredApiKey("geminiApiKey")) || "";
+}
+
+// ============================================
+// Omni Chat (Sidebar) streaming port
+// ============================================
+
+const PROVIDER_KEY_MAP = {
+  google: "geminiApiKey",
+  openai: "openaiApiKey",
+  groq: "groqApiKey",
+  anthropic: "anthropicApiKey",
+  customGateway: "customGatewayApiKey",
+};
+
+async function getChatConfig(modelId, temperature) {
+  const model = modelId || (await getApiModel());
+  const providerInfo = getProviderByModel(model);
+  const providerId = providerInfo?.id || "google";
+  const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
+
+  const config = { apiKey, model, provider: providerId, temperature: temperature ?? 0.7 };
+
+  if (providerId === "customGateway") {
+    const gw = await getCustomGatewayConfig();
+    config.baseUrl = gw.customGatewayBaseUrl;
+    if (gw.customGatewayModelName) config.model = gw.customGatewayModelName;
+  }
+  return config;
+}
+
+const omniChatHandler = createOmniChatHandler({ generateContentStream, getChatConfig });
+
+if (chrome.runtime?.onConnect) {
+  chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "omni-chat") {
+      omniChatHandler(port);
+    }
+  });
 }

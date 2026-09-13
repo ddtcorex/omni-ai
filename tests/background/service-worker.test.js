@@ -2,6 +2,7 @@
 // what the tests assert against, so no namespace imports are needed here.
 jest.mock("../../lib/history");
 jest.mock("../../lib/ai-service");
+jest.mock("../../lib/providers/index");
 
 describe("Service Worker Integration", () => {
   let chromeMock;
@@ -15,6 +16,7 @@ describe("Service Worker Integration", () => {
       runtime: {
         onInstalled: { addListener: jest.fn() },
         onMessage: { addListener: jest.fn() },
+        onConnect: { addListener: jest.fn() },
         getURL: jest.fn((path) => path),
       },
       i18n: { getMessage: jest.fn((key) => key) },
@@ -84,6 +86,23 @@ describe("Service Worker Integration", () => {
           autoClose: true,
           showFloatingButton: true,
         }),
+      }),
+    );
+  });
+
+  it("seeds the default flash actions on install without clobbering an existing selection", async () => {
+    chromeMock.storage.local.get.mockResolvedValue({
+      settings: { flashActions: ["summarize"] },
+    });
+    await import("../../background/service-worker");
+
+    const installed = chromeMock.runtime.onInstalled.addListener.mock.calls[0][0];
+    installed({ reason: "install" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.storage.local.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({ flashActions: ["summarize"] }),
       }),
     );
   });
@@ -216,6 +235,23 @@ describe("Service Worker Integration", () => {
       expect.objectContaining({ type: "GET_SELECTION" }),
       { frameId: 0 },
     );
+  });
+
+  it("routes the quick_menu shortcut to opening the quick action menu directly, not an AI action", async () => {
+    const AIService = await import("../../lib/ai-service");
+
+    await import("../../background/service-worker");
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_menu", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      { type: "SHOW_QUICK_ACTION_MENU" },
+      { frameId: 0 },
+    );
+    expect(AIService.improveText).not.toHaveBeenCalled();
   });
 
   it("routes the quick_translate shortcut through smartTranslate, matching the on-page Smart Translation card", async () => {
@@ -483,5 +519,54 @@ describe("Service Worker Integration", () => {
     // VALIDATE_CONFIG case was reached via fall-through (the bug).
     expect(sendResponse).toHaveBeenCalledTimes(1);
     expect(sendResponse).toHaveBeenCalledWith({ success: true, apiKey: "k-test" });
+  });
+
+  it("omni-chat port resolves the configured model/provider (e.g. Custom Gateway) instead of always defaulting to Gemini", async () => {
+    // Regression test: getChatConfig() used to read a nonexistent "activeModel"
+    // key off chrome.storage.sync (Storage Map only ever put primaryLanguage/
+    // defaultLanguage/omni_ai_theme there), so it always fell through to the
+    // "google" provider default regardless of what the user actually
+    // configured (apiModel lives in chrome.storage.local).
+    chromeMock.storage.local.get.mockResolvedValue({
+      apiModel: "custom-gateway",
+      customGatewayApiKey: "gw-secret-key",
+      customGatewayBaseUrl: "https://gw.example.com/v1",
+      customGatewayModelName: "my-custom-model",
+      geminiApiKey: "should-not-be-used",
+    });
+
+    const providers = await import("../../lib/providers/index");
+    providers.generateContentStream.mockResolvedValue("assistant reply");
+
+    await import("../../background/service-worker");
+    const handlePort = chromeMock.runtime.onConnect.addListener.mock.calls[0][0];
+
+    const port = {
+      name: "omni-chat",
+      onMessage: { addListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn() },
+      postMessage: jest.fn(),
+    };
+    handlePort(port);
+    const onMessage = port.onMessage.addListener.mock.calls[0][0];
+
+    await onMessage({ type: "chat", message: "hi", pageContext: "", history: [] });
+
+    expect(providers.generateContentStream).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        apiKey: "gw-secret-key",
+        baseUrl: "https://gw.example.com/v1",
+        model: "my-custom-model",
+        // config.model is overwritten with the user's raw upstream model
+        // name above, which never matches an AI_PROVIDERS registry id -- the
+        // explicit provider hint is what lets generateContentStream() route
+        // correctly instead of silently falling back to Gemini (see
+        // tests/lib/providers/index.stream.test.js for that half of the fix).
+        provider: "customGateway",
+      }),
+      expect.any(Function),
+      expect.any(Object),
+    );
   });
 });

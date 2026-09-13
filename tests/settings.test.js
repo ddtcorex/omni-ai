@@ -32,6 +32,20 @@ const FIXTURE_IDS = [
   "refreshHistory",
   "clearHistory",
   "historyList",
+  "flashActionsList",
+];
+
+const FLASH_ACTION_IDS = [
+  "smart_translate",
+  "translate_primary",
+  "translate_default",
+  "grammar",
+  "rephrase",
+  "reply",
+  "emoji",
+  "tone",
+  "summarize",
+  "explain",
 ];
 
 const SUPPORTED_LOCALES = ["en", "vi", "es", "fr", "de", "it", "pt", "ja", "ko", "zh"];
@@ -49,6 +63,12 @@ function buildFixture() {
     }
     if (["themeSelector", "defaultPreset", "showFloatingButton"].includes(id)) {
       return `<select id="${id}"><option value="">-</option></select>`;
+    }
+    if (id === "flashActionsList") {
+      const boxes = FLASH_ACTION_IDS.map(
+        (action) => `<label><input type="checkbox" data-flash-action="${action}" /></label>`,
+      ).join("\n");
+      return `<div id="${id}">${boxes}</div>`;
     }
     if (
       id === "toggleApiKey" ||
@@ -260,5 +280,84 @@ describe("settings.js", () => {
     document.getElementById("apiModel").value = "google-custom";
     document.getElementById("apiModel").dispatchEvent(new Event("change"));
     expect(document.getElementById("advancedProviderSettings").open).toBe(true);
+  });
+
+  describe("Flash Actions", () => {
+    function checkedFlashActions() {
+      return Array.from(document.querySelectorAll("[data-flash-action]"))
+        .filter((el) => el.checked)
+        .map((el) => el.dataset.flashAction)
+        .sort();
+    }
+
+    it("loadSettings checks the default flash actions when none are saved", async () => {
+      chrome.storage.local.get.mockResolvedValue({});
+      await Settings.loadSettings();
+      expect(checkedFlashActions()).toEqual(["grammar", "rephrase", "smart_translate"].sort());
+    });
+
+    it("loadSettings checks exactly the flash actions saved in settings.flashActions", async () => {
+      chrome.storage.local.get.mockResolvedValue({
+        settings: { flashActions: ["summarize", "explain"] },
+      });
+      await Settings.loadSettings();
+      expect(checkedFlashActions()).toEqual(["explain", "summarize"].sort());
+    });
+
+    it("saveSettings persists the checked flash actions into settings.flashActions", async () => {
+      chrome.storage.local.get.mockResolvedValue({});
+      await Settings.loadSettings();
+      Settings.setupEventListeners();
+
+      // saveSettings() reads .value off every provider-key field regardless
+      // of which one changed; the fixture only has genuine <input>s for
+      // fields an earlier test already covers, so prime the rest here.
+      [
+        "geminiApiKey",
+        "groqApiKey",
+        "openaiApiKey",
+        "anthropicApiKey",
+        "customGatewayApiKey",
+        "customModelName",
+        "customGatewayBaseUrl",
+      ].forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+
+      document
+        .querySelectorAll("[data-flash-action]")
+        .forEach((el) => /** @type {HTMLInputElement} */ (el.checked = false));
+      document.querySelector('[data-flash-action="tone"]').checked = true;
+      document.querySelector('[data-flash-action="emoji"]').checked = true;
+
+      chrome.storage.local.set.mockClear();
+      document.getElementById("saveBtn").click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      const [savedArg] = chrome.storage.local.set.mock.calls.at(-1);
+      expect(savedArg.settings.flashActions.sort()).toEqual(["emoji", "tone"]);
+    });
+
+    it("disables the remaining checkboxes once 4 flash actions are checked, and re-enables them when one is unchecked", async () => {
+      chrome.storage.local.get.mockResolvedValue({});
+      await Settings.loadSettings();
+      Settings.setupEventListeners();
+
+      // Default state has 3 checked (rephrase, grammar, smart_translate);
+      // checking a 4th should trip the cap.
+      const explainBox = /** @type {HTMLInputElement} */ (
+        document.querySelector('[data-flash-action="explain"]')
+      );
+      explainBox.checked = true;
+      explainBox.dispatchEvent(new Event("change", { bubbles: true }));
+
+      const boxes = Array.from(document.querySelectorAll("[data-flash-action]"));
+      const unchecked = boxes.filter((b) => !(/** @type {HTMLInputElement} */ (b).checked));
+      expect(unchecked.every((b) => /** @type {HTMLInputElement} */ (b).disabled)).toBe(true);
+
+      explainBox.checked = false;
+      explainBox.dispatchEvent(new Event("change", { bubbles: true }));
+      expect(boxes.every((b) => !(/** @type {HTMLInputElement} */ (b).disabled))).toBe(true);
+    });
   });
 });

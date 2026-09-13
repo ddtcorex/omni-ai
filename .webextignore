@@ -1,0 +1,11 @@
+# Demo / non-extension files that should not be linted as part of the extension
+sidebar-chat-demo.html
+
+# Test and tooling artifacts
+tests/
+coverage/
+dist/
+build/
+
+# Node
+node_modules/
