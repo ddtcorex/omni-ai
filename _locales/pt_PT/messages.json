@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Assistente de IA tudo-em-um com AI Models - Melhoria de escrita, ações rápidas e utilitários inteligentes",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Abrir o painel do Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Ferramentas da página",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Resumir",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Tradução inteligente",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Explicar",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "A processar…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Resultado",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Não é possível ler esta página",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Nenhum conteúdo nesta página",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "De:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Pergunte qualquer coisa ao Omni AI...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Mostrar o menu de ações rápidas",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Contexto",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Melhorar Escrita",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Ações Rápidas",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "E-mail",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Redes Sociais",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Técnico",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Académico",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Corrigir Gramática",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Corrige ortografia e gramática",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Melhorar Clareza",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Alterar Tom",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Tornar Conciso",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Expandir",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Reescrever",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Traduzir",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Resumir",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Responder",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Adicionar Emojis",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Pronto",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "A processar...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Erro",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Configurações",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Chave API Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Obtenha a sua chave no Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "Modelo de IA",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Selecione o modelo de IA a utilizar",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Contexto Predefinido",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Idioma de Tradução",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Guardar Configurações",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Mostrar o botão flutuante do Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Desative para usar apenas atalhos de teclado e menus de contexto.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Ações rápidas",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Mostre estas ações ao passar o rato sobre o ícone flutuante, para as executar sem abrir o menu completo (até 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Traduzir para o idioma principal",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Traduzir para o idioma predefinido",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Ativado",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Desativado",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Configurações guardadas!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Copiar",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Substituir",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Explicar",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Para $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Melhorar com Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Explicar com Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Traduzir com Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Reformular com Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Adicionar emoji com Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Resumir com Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Perguntar à Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Chave API não configurada. Por favor, adicione a sua chave Gemini nas configurações.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Introduza a sua chave API Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Erro: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Chave de API do Gemini não configurada",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Chave de API da OpenAI não configurada",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Chave de API da Groq não configurada",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Chave de API da Anthropic não configurada",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "URL base do Custom Gateway não configurada",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Chave de API não configurada para $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Tom Predefinido",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Tom utilizado por predefinição para melhorias e respostas",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Profissional",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Informal",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Amigável",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Direto",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Confiante",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Pergunta Rápida",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Resultado",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "A pensar...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Voltar",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Copiado!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Nenhum texto selecionado. Por favor, selecione algum texto primeiro.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "O seu assistente de IA",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Tema",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Escolha a sua aparência preferida",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Predefinição do sistema",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Escuro",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Claro",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Idioma Principal",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "O seu idioma habitual para ações rápidas",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Validar Configuração",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Atalhos de Teclado",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Histórico de Uso",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Total de Ações",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Palavras Processadas",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Palavras Geradas",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Sobre o Omni AI",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Reportar problema",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Limpar Histórico",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Chave API Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Obtenha uma chave grátis em console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Chave API OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Obtenha a sua chave em platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Obter Chave Gemini",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Obter Chave Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Obter Chave OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Chave API Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Obtenha a sua chave em console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Obter Chave Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Acesse Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Registe-se ou inicie sessão"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Crie uma nova chave API"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Personalizar no Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Gerir atalhos nas configurações do Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Atualizar",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Idioma de destino predefinido para traduções",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Inglês"
+  },
+  "lang_vi": {
+    "message": "Vietnamita"
+  },
+  "lang_es": {
+    "message": "Espanhol"
+  },
+  "lang_fr": {
+    "message": "Francês"
+  },
+  "lang_de": {
+    "message": "Alemão"
+  },
+  "lang_it": {
+    "message": "Italiano"
+  },
+  "lang_pt": {
+    "message": "Português"
+  },
+  "lang_ja": {
+    "message": "Japonês"
+  },
+  "lang_ko": {
+    "message": "Coreano"
+  },
+  "lang_zh": {
+    "message": "Chinês"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Pesquisar idiomas",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Comuns",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Todos os idiomas",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Tem a certeza de que pretende limpar todo o histórico?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Por favor, introduza primeiro uma chave API ou endpoint.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "A validar...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Configuração válida! Tudo pronto para gerar.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Falha na ligação",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "A verificar...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Erro ao guardar",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Acesse Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Clique em 'Create API Key'"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Copie a chave para a área de transferência"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Acesse Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Registe-se ou inicie sessão"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Crie uma nova chave API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Acesse OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Registe-se ou inicie sessão"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Crie uma nova chave API"
+  },
+  "overlay_suggested_fix": {
+    "message": "Correção sugerida",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Aceitar",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Dispensar",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Nenhum problema encontrado",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "O texto parece excelente!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Tradução Inteligente",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Erro",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Falha na tradução",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Legado)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Avançado",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Nome do modelo personalizado",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Introduza o ID do modelo personalizado",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Introduza um nome de modelo personalizado",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "ex.: id-do-seu-modelo",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Ligue-se a qualquer endpoint de API compatível com OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "ex.: https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Introduza a sua chave API...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Configuração do Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Suporta APIs compatíveis com OpenAI (OpenRouter, LiteLLM, Together AI, etc.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Opcional para alguns gateways (por exemplo, plano gratuito do OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Ferramentas",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Pergunte sobre esta página…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Enviar",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Parar",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Contexto da página",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Incluir contexto da página",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Inicie uma conversa sobre a página atual.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Algo deu errado. Tente novamente.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Limpar conversa",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Tem a certeza de que pretende limpar esta conversa?",
+    "description": "Clear chat session confirmation"
+  }
+}

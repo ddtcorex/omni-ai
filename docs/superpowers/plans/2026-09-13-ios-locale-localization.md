@@ -547,3 +547,24 @@ Two agents independently noticed a genuine inconsistency worth recording rather 
 Four of the six are verb-final Indic languages and put the model id before the verb; only Punjabi used a separate postposition for `ui_to`, and the other five used the colon label. `lt` and `kk` are the first locales where an agent reported the colon form as the only safe option for a case-inflecting language.
 
 **Measured divergence, from `scripts/locale-status.mjs` and a direct comparison:** exactly 8 of the 45 non-English catalogues still carry the three Custom Gateway sentences in English (`de es fr it ja ko pt zh`), and those 8 are precisely the catalogues that were 14 keys behind before wave 0, so the sentences were inherited rather than authored. The other 37 translate them. `docs/FOLLOWUPS.md` row 19 records the 24-string fix and the policy question; nothing was changed in this wave, because silently rewriting eight already-merged catalogues inside a "add six new locales" PR would bury the decision.
+
+**Wave 7 (final)** executed 2026-09-14 on `chore/i18n-wave-7`: `zh_TW zh_HK pt_PT es_419 fr_CA en_GB`, 6 x 182 keys. With this the plan is complete: **52 of the 55 Apple System Language entries** ship a directory, and the remaining three fall back to a base language by design.
+
+For the regional variants the brief changed: each agent started **from the existing base catalogue** (`zh`, `pt`, `es`, `fr`, `en`) and adapted it, rather than translating from English. That both cut the work and carried the wave-0 alignment forward automatically.
+
+| Locale | `error_apiKeyNotConfiguredFor` | `ui_to` | Differs from base |
+| --- | --- | --- | --- |
+| `zh_TW` | `未設定 gemini-3.6-flash 的 API 金鑰` | `到 英語` | 156 of 182 |
+| `zh_HK` | `未為 gemini-3.6-flash 設定 API 密鑰` | `至 英語` | 157 |
+| `pt_PT` | `Chave de API não configurada para gemini-3.6-flash` | `Para Inglês` | 44 |
+| `es_419` | `Clave de API no configurada para gemini-3.6-flash` | `A Inglés` | 14 |
+| `fr_CA` | `Clé API non configurée pour gemini-3.6-flash` | `Vers Anglais` | 9 |
+| `en_GB` | `API key not configured for gemini-3.6-flash` | `To English` | 5 |
+
+All six directories were accepted by Chrome, including the underscore names (`zh_TW`, `es_419`, `pt_PT`, `fr_CA`, `en_GB`), which the directory probe confirms at 4 of 4 strings each. `en_GB` changed exactly 5 strings, all spelling: `Summarise` for `Summarize` in three keys and `Customise` for `Customize` in two, which is what the pre-measured US/UK scan predicted.
+
+**Finding worth keeping, reported by four of the six agents independently:** the base catalogues are **not** structurally aligned with `en`. `fr`, `zh`, `es` and `pt` carry translated `description` values and a key order that differs from `en` in most positions, so "copy `description` verbatim from the base" contradicts the parity assertion. The correct reading, which every agent found, is: take key order, `description` and `placeholders` from `en`, and inherit only the `message` values from the base. The plan's own instruction was ambiguous on that point and is now recorded here.
+
+**Leftover measured, not fixed:** three sibling keys of the Custom Gateway family are still English in the eight wave-0-lagging catalogues (`settings_customGatewayUrlPlaceholder`, `settings_customGatewayKeyPlaceholder`, `settings_tooltip_customGateway`), plus one of them in `zh_TW`. They are `docs/FOLLOWUPS.md` row 20. Everything else the comparison surfaces is a genuine cognate (`Chat`, `Error`, `Context`, `Direct`, `Email`, `Send`), not a missed translation.
+
+Plan status: all seven tasks are executed and every wave has merged except this one. Once it does, this plan file should be pruned under the repo's "plans are transient" convention, with `docs/FOLLOWUPS.md` rows 17 and 20 carrying what remains.
