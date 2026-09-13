@@ -32,12 +32,125 @@ test("sidebar chat tab renders and sends a message", async () => {
     await page.locator("#chatSend").click();
 
     await expect(page.locator(".chat-msg.user").first()).toHaveText("Hello from the test");
-    // assistant bubble should appear
-    await expect(page.locator(".chat-msg.assistant").first()).toBeVisible();
+    // Reaches a terminal state: either a real streamed reply, or (no API
+    // key is configured in this harness) an error -- in which case the
+    // thinking bubble is removed in favor of the #chatError banner instead
+    // of being left dangling. Either way, #chatEmpty must stay hidden.
+    await expect(
+      page.locator(".chat-msg.assistant:not(.thinking), #chatError:not(.hidden)").first(),
+    ).toBeVisible();
     // The "start a conversation" hint must disappear once a message is sent
     // -- addChatMessage() adds the "hidden" class, but there was no
     // .chat-empty.hidden CSS rule to actually hide it.
     await expect(page.locator("#chatEmpty")).toBeHidden();
+  } finally {
+    await context.close();
+  }
+});
+
+function stubChatPort(page) {
+  return page.addInitScript(() => {
+    const listeners = [];
+    const fakePort = {
+      postMessage: () => {},
+      onMessage: {
+        addListener: (fn) => listeners.push(fn),
+        removeListener: (fn) => {
+          const i = listeners.indexOf(fn);
+          if (i !== -1) listeners.splice(i, 1);
+        },
+      },
+      onDisconnect: { addListener: () => {} },
+      disconnect: () => {},
+    };
+    const realConnect = chrome.runtime.connect.bind(chrome.runtime);
+    chrome.runtime.connect = (opts) => (opts?.name === "omni-chat" ? fakePort : realConnect(opts));
+    window.__sendFakeChatMessage = (msg) => listeners.forEach((fn) => fn(msg));
+  });
+}
+
+test("shows a thinking indicator immediately, replaced by the reply once the first chunk streams in", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await stubChatPort(page);
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    await page.locator("#chatInput").fill("Hello");
+    await page.locator("#chatSend").click();
+
+    // Thinking dots appear right away, before any response has arrived --
+    // this is the whole point: sending shouldn't look frozen.
+    await expect(page.locator(".chat-msg.assistant.thinking")).toBeVisible();
+
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "chunk", text: "Hi there" }));
+    await expect(page.locator(".chat-msg.assistant")).toHaveText("Hi there");
+    await expect(page.locator(".chat-msg.assistant.thinking")).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+});
+
+test("an error before any chunk removes the thinking bubble instead of leaving it stuck", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await stubChatPort(page);
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    await page.locator("#chatInput").fill("Hello");
+    await page.locator("#chatSend").click();
+    await expect(page.locator(".chat-msg.assistant.thinking")).toBeVisible();
+
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "error", error: "boom" }));
+
+    await expect(page.locator(".chat-msg.assistant")).toHaveCount(0);
+    await expect(page.locator("#chatError")).toHaveText("boom");
+  } finally {
+    await context.close();
+  }
+});
+
+test("clicking Stop before any chunk arrives removes the thinking bubble instead of leaving it stuck", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await stubChatPort(page);
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    await page.locator("#chatInput").fill("Hello");
+    await page.locator("#chatSend").click();
+    await expect(page.locator(".chat-msg.assistant.thinking")).toBeVisible();
+
+    await page.locator("#chatStop").click();
+
+    await expect(page.locator(".chat-msg.assistant")).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+});
+
+test("clicking Stop after a chunk already arrived keeps the partial reply", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await stubChatPort(page);
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+    await page.locator("#chatInput").fill("Hello");
+    await page.locator("#chatSend").click();
+    await page.evaluate(() =>
+      window.__sendFakeChatMessage({ type: "chunk", text: "Partial reply" }),
+    );
+    await expect(page.locator(".chat-msg.assistant")).toHaveText("Partial reply");
+
+    await page.locator("#chatStop").click();
+
+    await expect(page.locator(".chat-msg.assistant")).toHaveText("Partial reply");
   } finally {
     await context.close();
   }

@@ -41,6 +41,9 @@ const chatHistory = [];
 let chatPort = null;
 let currentPageContext = "";
 let isStreaming = false;
+/** @type {HTMLElement | null} the in-flight assistant bubble, while it may
+ * still be showing the "thinking" indicator (no chunk has arrived yet) */
+let currentAssistantBubble = null;
 
 async function init() {
   if (elements.extVersion) {
@@ -322,6 +325,10 @@ function sendChatMessage() {
 
   const port = connectChatPort();
   const assistantBubble = addChatMessage("assistant", "");
+  assistantBubble.classList.add("thinking");
+  assistantBubble.innerHTML =
+    '<span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span>';
+  currentAssistantBubble = assistantBubble;
   let acc = "";
 
   setStreamingUI(true);
@@ -330,14 +337,24 @@ function sendChatMessage() {
     if (!msg) return;
     if (msg.type === "chunk") {
       acc += msg.text;
+      assistantBubble.classList.remove("thinking");
       assistantBubble.textContent = acc;
       elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
     } else if (msg.type === "done") {
+      // Defensive: a reply that completes with no separate "chunk" message
+      // would otherwise leave the thinking dots stuck forever.
+      assistantBubble.classList.remove("thinking");
+      if (!assistantBubble.textContent) assistantBubble.textContent = msg.text || "";
       chatHistory.push({ role: "user", content: message });
       chatHistory.push({ role: "assistant", content: msg.text });
       port.onMessage.removeListener(handler);
+      currentAssistantBubble = null;
       setStreamingUI(false);
     } else if (msg.type === "error") {
+      // The error surfaces separately via #chatError -- remove the
+      // now-pointless empty/thinking bubble instead of leaving it dangling.
+      assistantBubble.remove();
+      currentAssistantBubble = null;
       if (elements.chatError) {
         elements.chatError.textContent = msg.error || i18n.getMessage("sidebar_chat_error");
         elements.chatError.classList.remove("hidden");
@@ -360,6 +377,15 @@ function stopChat() {
     chatPort.disconnect();
     chatPort = null;
   }
+  // Disconnecting the port aborts the stream silently (no "done"/"error"
+  // message comes back), so a bubble that never got its first chunk would
+  // otherwise be left animating the thinking dots forever. A bubble that
+  // already has real text (a chunk arrived before Stop was clicked) is left
+  // alone -- that partial reply is still worth keeping.
+  if (currentAssistantBubble?.classList.contains("thinking")) {
+    currentAssistantBubble.remove();
+  }
+  currentAssistantBubble = null;
   setStreamingUI(false);
 }
 
