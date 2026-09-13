@@ -73,3 +73,24 @@ describe("command_openQuickMenu i18n key", () => {
     expect(messages.command_openQuickMenu.message.length).toBeGreaterThan(0);
   });
 });
+
+describe("content script module exposure", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8"));
+  const contentSource = fs.readFileSync(path.join(__dirname, "../content/content.js"), "utf8");
+
+  test("every lib module the content script imports is web-accessible", () => {
+    // The content script is injected into the page, so every lib/*.js it pulls
+    // in through chrome.runtime.getURL must be listed in web_accessible_resources
+    // or the import rejects at runtime inside a real extension.
+    const exposed = new Set(manifest.web_accessible_resources[0].resources);
+    const imported = new Set(
+      [...contentSource.matchAll(/getURL\(\s*["'`](lib\/[\w-]+\.js)["'`]/g)].map(
+        (match) => match[1],
+      ),
+    );
+    expect(imported.size).toBeGreaterThan(0);
+    imported.forEach((modulePath) => {
+      expect(exposed).toContain(modulePath);
+    });
+  });
+});

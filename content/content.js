@@ -62,7 +62,10 @@ async function initializeI18n() {
     const enData = await enRes.json();
 
     let targetData = {};
-    if (userLang !== "en") {
+    // primaryLanguage is a translation language, and only UI_LOCALE_CODES ship
+    // under _locales/, so skip the request for the rest of them.
+    const { UI_LOCALE_CODES } = await import(chrome.runtime.getURL("lib/languages.js"));
+    if (userLang !== "en" && UI_LOCALE_CODES.includes(userLang)) {
       try {
         const targetUrl = chrome.runtime.getURL(`_locales/${userLang}/messages.json`);
         // eslint-disable-next-line no-restricted-syntax -- local extension resource (locale JSON via chrome.runtime.getURL), not an AI provider call.
@@ -1100,9 +1103,12 @@ async function showQuickActionMenu(
   const pFlag = languageFlags[primaryLanguage] || "🌐";
   const dFlag = languageFlags[defaultLanguage] || "🏳️";
 
-  // Use localized language names
-  const pCode = i18n.getMessage(`lang_${primaryLanguage}`) || primaryLanguage.toUpperCase();
-  const dCode = i18n.getMessage(`lang_${defaultLanguage}`) || defaultLanguage.toUpperCase();
+  // Language names come from the shared registry (a locale's translated name
+  // when there is one, otherwise the language's own name): 43 translation
+  // languages would otherwise need 43 x locale name strings.
+  const { resolveLanguageLabel } = await import(chrome.runtime.getURL("lib/languages.js"));
+  const pCode = resolveLanguageLabel(primaryLanguage, (key) => i18n.getMessage(key));
+  const dCode = resolveLanguageLabel(defaultLanguage, (key) => i18n.getMessage(key));
 
   await ensureUiRootReady();
 
