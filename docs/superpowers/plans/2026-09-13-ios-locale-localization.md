@@ -517,3 +517,18 @@ Resolved strings, read from a real extension per locale:
 | `he` | `מפתח ה-API אינו מוגדר עבור gemini-3.6-flash` | `שפה: אנגלית` |
 
 The `ui_to` constraint documented in wave 3 paid off: Finnish, Czech, Hungarian and Hebrew would all have needed a case ending or a prepositional inflection attached to the language name, and each used a separate marker or a colon label instead of forcing one. Hebrew also needed no special handling for right-to-left, since JSON is always logical order.
+
+**Wave 5** executed 2026-09-13 on `chore/i18n-wave-5`: `ms ca hr sk sl bg`, 6 x 182 keys, same process. Parity gate, directory probe and placeholder probe all pass:
+
+| Locale | `error_apiKeyNotConfiguredFor` | `ui_to` |
+| --- | --- | --- |
+| `ms` | `Kunci API belum dikonfigurasikan untuk gemini-3.6-flash` | `Ke Inggeris` |
+| `ca` | `La clau API no està configurada per a gemini-3.6-flash` | `A Anglès` |
+| `hr` | `API ključ nije konfiguriran za gemini-3.6-flash` | `Jezik: Engleski` |
+| `sk` | `Kľúč API nie je nakonfigurovaný pre gemini-3.6-flash` | `Jazyk: Angličtina` |
+| `sl` | `Ključ API ni nastavljen za gemini-3.6-flash` | `Jezik: Angleščina` |
+| `bg` | `API ключът не е конфигуриран за gemini-3.6-flash` | `На Английски` |
+
+Four of the six (Croatian, Slovak, Slovenian, Bulgarian) are case-inflecting Slavic languages and used the colon or preposition form the wave-3 constraint calls for; none attached an ending to the nominative token. Bulgarian's `на` happens to take the same form as the nominative label, so it reads naturally without a colon.
+
+Two agents independently noticed a genuine inconsistency worth recording rather than fixing quietly: the `es` catalogue from wave 0/1 left `settings_customGatewayHint`, `settings_customGatewayUrlNote` and `settings_customGatewayKeyNote` in English, while Catalan translated them (rule 6 protects brand names, not whole sentences). Both are defensible readings, and the `identical-to-en` column in `scripts/locale-status.mjs` is what makes the divergence visible. A future pass should decide one way and align all 40 catalogues.

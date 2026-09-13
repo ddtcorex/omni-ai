@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Vse v enem: AI pomočnik, ki ga poganjajo modeli AI - izboljševanje pisanja, hitra dejanja in pametna orodja",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Odpri ploščo Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Orodja za stran",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Povzemi",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Pametno prevajanje",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Razloži",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "V obdelavi…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Rezultat",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Te strani ni mogoče prebrati",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Na tej strani ni vsebine za obdelavo",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "S strani:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Vprašaj Omni AI karkoli...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Pokaži meni hitrih dejanj",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Kontekst",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Izboljšaj pisanje",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Hitra dejanja",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "E-pošta",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Klepet",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Družbena omrežja",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Tehnično",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Akademsko",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Popravi slovnico",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Popravi črkovanje in slovnico",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Izboljšaj jasnost",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Spremeni ton",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Skrajšaj",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Razširi",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Preoblikuj",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Prevedi",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Povzemi",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Odgovori",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Dodaj emoji",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Pripravljeno",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Obdelava...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Napaka",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Nastavitve",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Ključ API za Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Ključ API pridobite v Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "Model AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Izberite model AI, ki ga želite uporabljati",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Privzeti kontekst",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Jezik prevajanja",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Shrani nastavitve",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Pokaži plavajoči gumb Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Izklopite to, če želite uporabljati samo bližnjice na tipkovnici in kontekstne menije.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Takojšnja dejanja",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Pokažite ta dejanja, ko z miško preidete čez plavajočo ikono, da jih lahko zaženete brez odpiranja celotnega menija (največ 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Prevedi v primarni jezik",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Prevedi v privzeti jezik",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Vklopljeno",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Izklopljeno",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Nastavitve so shranjene!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Kopiraj",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Zamenjaj",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Razloži",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Jezik: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Izboljšaj z Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Razloži z Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Prevedi z Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Preoblikuj z Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Dodaj emoji z Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Povzemi z Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Vprašaj Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Ključ API ni nastavljen. Dodajte svoj ključ API v nastavitvah.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Vnesite svoj ključ API za Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Napaka: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Ključ API za Gemini ni nastavljen",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Ključ API za OpenAI ni nastavljen",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Ključ API za Groq ni nastavljen",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Ključ API za Anthropic ni nastavljen",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Osnovni URL za Custom Gateway ni nastavljen",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Ključ API ni nastavljen za $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Privzeti ton",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Privzeti ton za izboljšave pisanja in odgovore",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Profesionalno",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Sproščeno",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Prijazno",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Neposredno",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Samozavestno",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Hitro vprašanje",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Rezultat",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Razmišljam...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Nazaj",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Kopirano!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Ni izbranega besedila. Najprej izberite besedilo.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Vaš AI pomočnik",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Tema",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Izberite želeni videz",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Sistemsko privzeto",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Temna",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Svetla",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Primarni jezik",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Vaš glavni jezik za hitra dejanja",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Preveri konfiguracijo",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Bližnjice na tipkovnici",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Zgodovina uporabe",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Skupaj dejanj",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Obdelane besede",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Ustvarjene besede",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "O aplikaciji",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Prijavi težavo",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Počisti zgodovino",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Ključ API za Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Brezplačni ključ pridobite na console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Ključ API za OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Ključ API pridobite na platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Pridobi ključ API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Pridobi ključ API za Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Pridobi ključ API za OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Ključ API za Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Ključ API pridobite na console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Pridobi ključ API za Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Pojdite v Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Registrirajte se ali prijavite"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Ustvarite nov ključ API"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Prilagodite v Chromu",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Bližnjice prilagodite v nastavitvah Chroma",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Osveži",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Privzeti jezik za prevajanje",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Angleščina"
+  },
+  "lang_vi": {
+    "message": "Vietnamščina"
+  },
+  "lang_es": {
+    "message": "Španščina"
+  },
+  "lang_fr": {
+    "message": "Francoščina"
+  },
+  "lang_de": {
+    "message": "Nemščina"
+  },
+  "lang_it": {
+    "message": "Italijanščina"
+  },
+  "lang_pt": {
+    "message": "Portugalščina"
+  },
+  "lang_ja": {
+    "message": "Japonščina"
+  },
+  "lang_ko": {
+    "message": "Korejščina"
+  },
+  "lang_zh": {
+    "message": "Kitajščina"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Iskanje jezikov",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Pogosti",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Vsi jeziki",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Ali ste prepričani, da želite počistiti vso zgodovino uporabe?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Najprej vnesite ključ API ali končno točko.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Preverjanje...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Konfiguracija je veljavna! Pripravljeno za ustvarjanje.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Preverjanje povezave ni uspelo",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Preverjanje...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Shranjevanje ni uspelo",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Pojdite v Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Kliknite »Create API Key«"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Kopirajte ključ v odložišče"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Pojdite v Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Registrirajte se ali prijavite"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Ustvarite nov ključ API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Pojdite v OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Registrirajte se ali prijavite"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Ustvarite nov ključ API"
+  },
+  "overlay_suggested_fix": {
+    "message": "Predlagani popravek",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Sprejmi",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Zavrni",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Ni najdenih težav",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Besedilo je odlično!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Pametno prevajanje",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Napaka",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Prevajanje ni uspelo",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Zastarelo)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Napredno",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Ime modela po meri",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Vnesite ID modela po meri",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Vnesite ime modela po meri",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "npr. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Povežite se s katero koli končno točko API, združljivo z OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "npr. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Vnesite svoj ključ API...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Konfiguracija Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Podpira API, združljive z OpenAI (OpenRouter, LiteLLM, Together AI itd.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Neobvezno pri nekaterih prehodih (npr. brezplačni paket OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Klepet",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Orodja",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Vprašajte o tej strani…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Pošlji",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Ustavi",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Kontekst strani",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Vključi kontekst strani",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Začnite pogovor o trenutni strani.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Prišlo je do napake. Poskusite znova.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Počisti klepet",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Ali ste prepričani, da želite počistiti ta pogovor?",
+    "description": "Clear chat session confirmation"
+  }
+}
