@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Minden az egyben AI-asszisztens AI-modellekkel - szövegjavítás, gyors műveletek és okos segédeszközök",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Omni AI panel megnyitása",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Oldaleszközök",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Összefoglalás",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Okos fordítás",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Magyarázat",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Dolgozom rajta…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Eredmény",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Ez az oldal nem olvasható",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Ezen az oldalon nincs feldolgozható tartalom",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Innen:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Kérdezz bármit az Omni AI-tól...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Gyorsműveletek menü megjelenítése",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Kontextus",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Szövegjavítás",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Gyorsműveletek",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "E-mail",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Csevegés",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Közösségi",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Technikai",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Tudományos",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Nyelvhelyesség javítása",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Kijavítja a helyesírást és a nyelvtant",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Világosabb megfogalmazás",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Hangnem módosítása",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Tömörítés",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Kifejtés",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Átfogalmazás",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Fordítás",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Összefoglalás",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Válasz",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Emojik hozzáadása",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Kész",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Feldolgozás...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Hiba",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Beállítások",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API-kulcs",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "API-kulcs beszerzése a Google AI Studio-ból",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI-modell",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Válaszd ki a használni kívánt AI-modellt",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Alapértelmezett kontextus",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Fordítási nyelv",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Beállítások mentése",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Lebegő Omni AI gomb megjelenítése",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Kapcsold ki, ha csak a gyorsbillentyűket és a helyi menüket szeretnéd használni.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Azonnali műveletek",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Ezek a műveletek a lebegő ikon fölé vive jelennek meg, így a teljes menü megnyitása nélkül futtathatod őket (legfeljebb 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Fordítás az elsődleges nyelvre",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Fordítás az alapértelmezett nyelvre",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Be",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Ki",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "A beállítások elmentve!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Másolás",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Csere",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Magyarázat",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Nyelv: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Javítás az Omni AI-val",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Magyarázat az Omni AI-val",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Fordítás az Omni AI-val",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Átfogalmazás az Omni AI-val",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Emoji hozzáadása az Omni AI-val",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Összefoglalás az Omni AI-val",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Kérdezd az Omni AI-t",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Az API-kulcs nincs beállítva. Add meg az API-kulcsodat a Beállításokban.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Add meg a Gemini API-kulcsod...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Hiba: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "A Gemini API-kulcs nincs beállítva",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Az OpenAI API-kulcs nincs beállítva",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "A Groq API-kulcs nincs beállítva",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Az Anthropic API-kulcs nincs beállítva",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "A Custom Gateway alap URL-je nincs beállítva",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "A $MODEL$ modellhez nincs beállítva API-kulcs",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Alapértelmezett hangnem",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Alapértelmezett hangnem a szövegjavításhoz és a válaszokhoz",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Professzionális",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Kötetlen",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Barátságos",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Direkt",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Magabiztos",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Gyors kérdezés",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Eredmény",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Gondolkodom...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Vissza",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Másolva!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Nincs kijelölt szöveg. Először jelölj ki szöveget.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Az AI-asszisztensed",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Téma",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Válaszd ki a kívánt megjelenést",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Rendszer alapértelmezett",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Sötét",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Világos",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Elsődleges nyelv",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "A fő nyelved a gyorsműveletekhez",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Konfiguráció ellenőrzése",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Gyorsbillentyűk",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Használati előzmények",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Összes művelet",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Feldolgozott szavak",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Generált szavak",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Névjegy",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Hiba bejelentése",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Előzmények törlése",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API-kulcs",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Ingyenes kulcs a console.groq.com oldalon",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API-kulcs",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "API-kulcs a platform.openai.com oldalon",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "API-kulcs beszerzése",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Groq API-kulcs beszerzése",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "OpenAI API-kulcs beszerzése",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API-kulcs",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "API-kulcs a console.anthropic.com oldalon",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Anthropic API-kulcs beszerzése",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Ugrás az Anthropic Console felületre"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Regisztrálj vagy jelentkezz be"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Hozz létre új API-kulcsot"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Testreszabás a Chrome-ban",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "A gyorsbillentyűk testreszabása a Chrome beállításaiban",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Frissítés",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Alapértelmezett nyelv a fordításokhoz",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Angol"
+  },
+  "lang_vi": {
+    "message": "Vietnámi"
+  },
+  "lang_es": {
+    "message": "Spanyol"
+  },
+  "lang_fr": {
+    "message": "Francia"
+  },
+  "lang_de": {
+    "message": "Német"
+  },
+  "lang_it": {
+    "message": "Olasz"
+  },
+  "lang_pt": {
+    "message": "Portugál"
+  },
+  "lang_ja": {
+    "message": "Japán"
+  },
+  "lang_ko": {
+    "message": "Koreai"
+  },
+  "lang_zh": {
+    "message": "Kínai"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Nyelvek keresése",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Gyakori",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Minden nyelv",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Biztosan törölni szeretnéd a teljes használati előzményt?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Először add meg az API-kulcsot vagy a végpontot.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Ellenőrzés...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "A konfiguráció érvényes! Készen áll a generálásra.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "A kapcsolat ellenőrzése sikertelen",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Ellenőrzés...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "A mentés sikertelen",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Ugrás a Google AI Studio felületre"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Kattints a Create API Key elemre"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Másold a kulcsot a vágólapra"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Ugrás a Groq Console felületre"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Regisztrálj vagy jelentkezz be"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Hozz létre új API-kulcsot"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Ugrás az OpenAI Platform felületre"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Regisztrálj vagy jelentkezz be"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Hozz létre új API-kulcsot"
+  },
+  "overlay_suggested_fix": {
+    "message": "Javasolt javítás",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Elfogadás",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Elvetés",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Nem találtam problémát",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "A szöveg remek!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Okos fordítás",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Hiba",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "A fordítás sikertelen",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Örökölt)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Speciális",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Egyéni modell neve",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Add meg az egyéni modell azonosítóját",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Add meg az egyéni modell nevét",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "pl. sajat-modell-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Csatlakozás bármely OpenAI-kompatibilis API-végponthoz",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "pl. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Add meg az API-kulcsod...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway konfigurációja",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "OpenAI-kompatibilis API-kat támogat (OpenRouter, LiteLLM, Together AI stb.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Egyes átjáróknál nem kötelező (pl. OpenRouter ingyenes csomag)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Csevegés",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Eszközök",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Kérdezz erről az oldalról…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Küldés",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Leállítás",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Oldal kontextusa",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Oldal kontextusának hozzáadása",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Kezdj beszélgetést az aktuális oldalról.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Valami hiba történt. Próbáld újra.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Csevegés törlése",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Biztosan törölni szeretnéd ezt a beszélgetést?",
+    "description": "Clear chat session confirmation"
+  }
+}

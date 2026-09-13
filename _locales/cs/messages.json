@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI asistent vše v jednom poháněný AI modely: vylepšování psaní, rychlé akce a chytré nástroje",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Otevřít panel Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Nástroje stránky",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Shrnout",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Chytrý překlad",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Vysvětlit",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Pracuji na tom…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Výsledek",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Tuto stránku nelze přečíst",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Na této stránce není s čím pracovat",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Z:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Zeptejte se Omni AI na cokoli...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Zobrazit nabídku rychlých akcí",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Kontext",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Vylepšit psaní",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Rychlé akce",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "E-mail",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Sociální sítě",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Technický",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Akademický",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Opravit gramatiku",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Opraví pravopis a gramatiku",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Zvýšit srozumitelnost",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Změnit tón",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Zkrátit",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Rozšířit",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Přeformulovat",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Přeložit",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Shrnout",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Odpovědět",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Přidat emoji",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Připraveno",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Zpracovává se...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Chyba",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Nastavení",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Klíč API Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Získejte svůj klíč API v Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "Model AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Vyberte model AI, který chcete použít",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Výchozí kontext",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Jazyk překladu",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Uložit nastavení",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Zobrazovat plovoucí tlačítko Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Vypněte, pokud chcete používat pouze klávesové zkratky a kontextové nabídky.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Bleskové akce",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Zobrazit tyto akce při najetí na plovoucí ikonu, abyste je mohli spustit bez otevření celé nabídky (max. 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Přeložit do hlavního jazyka",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Přeložit do výchozího jazyka",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Zapnuto",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Vypnuto",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Nastavení uloženo!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Kopírovat",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Nahradit",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Vysvětlit",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Jazyk: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Vylepšit pomocí Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Vysvětlit pomocí Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Přeložit pomocí Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Přeformulovat pomocí Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Přidat emoji pomocí Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Shrnout pomocí Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Zeptat se Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Klíč API není nakonfigurován. Přidejte prosím svůj klíč API v nastavení.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Zadejte svůj klíč API Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Chyba: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Klíč API Gemini není nakonfigurován",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Klíč API OpenAI není nakonfigurován",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Klíč API Groq není nakonfigurován",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Klíč API Anthropic není nakonfigurován",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Základní URL Custom Gateway není nakonfigurována",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Klíč API není nakonfigurován pro $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Výchozí tón",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Výchozí tón pro vylepšování textu a odpovědi",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Profesionální",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Neformální",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Přátelský",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Přímý",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Sebevědomý",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Rychlý dotaz",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Výsledek",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Přemýšlím...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Zpět",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Zkopírováno!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Není vybrán žádný text. Nejprve prosím vyberte nějaký text.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Váš AI asistent",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Motiv",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Zvolte preferovaný vzhled",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Výchozí systémový",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Tmavý",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Světlý",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Hlavní jazyk",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Váš hlavní jazyk pro rychlé akce",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Ověřit konfiguraci",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Klávesové zkratky",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Historie používání",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Celkem akcí",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Zpracovaná slova",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Vygenerovaná slova",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "O aplikaci",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Nahlásit problém",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Vymazat historii",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Klíč API Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Získejte bezplatný klíč na console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Klíč API OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Získejte klíč API na platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Získat klíč API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Získat klíč API Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Získat klíč API OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Klíč API Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Získejte klíč API na console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Získat klíč API Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Přejděte na Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Zaregistrujte se nebo se přihlaste"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Vytvořte nový klíč API"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Přizpůsobit v Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Zkratky si přizpůsobte v nastavení Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Obnovit",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Výchozí jazyk pro překlady",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Angličtina"
+  },
+  "lang_vi": {
+    "message": "Vietnamština"
+  },
+  "lang_es": {
+    "message": "Španělština"
+  },
+  "lang_fr": {
+    "message": "Francouzština"
+  },
+  "lang_de": {
+    "message": "Němčina"
+  },
+  "lang_it": {
+    "message": "Italština"
+  },
+  "lang_pt": {
+    "message": "Portugalština"
+  },
+  "lang_ja": {
+    "message": "Japonština"
+  },
+  "lang_ko": {
+    "message": "Korejština"
+  },
+  "lang_zh": {
+    "message": "Čínština"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Hledat jazyky",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Běžné",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Všechny jazyky",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Opravdu chcete vymazat celou historii používání?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Nejprve prosím zadejte klíč API nebo koncový bod.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Ověřování...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Konfigurace je platná! Připraveno ke generování.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Kontrola připojení selhala",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Kontrola...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Uložení se nezdařilo",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Přejděte do Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Klikněte na Vytvořit klíč API"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Zkopírujte klíč do schránky"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Přejděte na Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Zaregistrujte se nebo se přihlaste"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Vytvořte nový klíč API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Přejděte na OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Zaregistrujte se nebo se přihlaste"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Vytvořte nový klíč API"
+  },
+  "overlay_suggested_fix": {
+    "message": "Navrhovaná oprava",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Přijmout",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Zamítnout",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Nenalezeny žádné problémy",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Text vypadá skvěle!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Chytrý překlad",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Chyba",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Překlad se nezdařil",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Zastaralé)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Pokročilé",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Název vlastního modelu",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Zadejte ID vlastního modelu",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Zadejte prosím název vlastního modelu",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "např. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Připojte se k libovolnému koncovému bodu API kompatibilnímu s OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "např. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Zadejte svůj klíč API...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Konfigurace Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Podporuje API kompatibilní s OpenAI (OpenRouter, LiteLLM, Together AI atd.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "U některých bran je volitelný (např. bezplatná úroveň OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Nástroje",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Zeptejte se na tuto stránku…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Odeslat",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Zastavit",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Kontext stránky",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Zahrnout kontext stránky",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Začněte konverzaci o aktuální stránce.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Něco se pokazilo. Zkuste to prosím znovu.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Vymazat chat",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Opravdu chcete vymazat tuto konverzaci?",
+    "description": "Clear chat session confirmation"
+  }
+}

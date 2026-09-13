@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Ολοκληρωμένος βοηθός AI με υποστήριξη μοντέλων AI - βελτίωση γραφής, γρήγορες ενέργειες και έξυπνα εργαλεία",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Άνοιγμα πίνακα Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Εργαλεία σελίδας",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Σύνοψη",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Έξυπνη μετάφραση",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Εξήγηση",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Σε εξέλιξη…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Αποτέλεσμα",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Δεν είναι δυνατή η ανάγνωση αυτής της σελίδας",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Δεν υπάρχει περιεχόμενο για επεξεργασία σε αυτή τη σελίδα",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Από:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Ρωτήστε το Omni AI ό,τι θέλετε...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Εμφάνιση μενού γρήγορων ενεργειών",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Πλαίσιο",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Βελτίωση γραφής",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Γρήγορες ενέργειες",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "Email",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Συνομιλία",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Κοινωνικά",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Τεχνικό",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Ακαδημαϊκό",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Διόρθωση γραμματικής",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Διορθώνει ορθογραφία και γραμματική",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Βελτίωση σαφήνειας",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Αλλαγή ύφους",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Πιο συνοπτικό",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Επέκταση",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Αναδιατύπωση",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Μετάφραση",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Σύνοψη",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Απάντηση",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Προσθήκη emoji",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Έτοιμο",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Επεξεργασία...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Σφάλμα",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Ρυθμίσεις",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Κλειδί API Gemini",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Αποκτήστε το κλειδί API από το Google AI Studio",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "Μοντέλο AI",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Επιλέξτε το μοντέλο AI που θα χρησιμοποιηθεί",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Προεπιλεγμένο πλαίσιο",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Γλώσσα μετάφρασης",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Αποθήκευση ρυθμίσεων",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Εμφάνιση αιωρούμενου κουμπιού Omni AI",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Απενεργοποιήστε το για χρήση μόνο συντομεύσεων πληκτρολογίου και μενού περιβάλλοντος.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Άμεσες ενέργειες",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Εμφάνιση αυτών των ενεργειών όταν περνάτε τον δείκτη πάνω από το αιωρούμενο εικονίδιο, ώστε να τις εκτελείτε χωρίς άνοιγμα του πλήρους μενού (έως 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Μετάφραση στην κύρια γλώσσα",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Μετάφραση στην προεπιλεγμένη γλώσσα",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Ενεργό",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Ανενεργό",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Οι ρυθμίσεις αποθηκεύτηκαν!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Αντιγραφή",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Αντικατάσταση",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Εξήγηση",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Σε $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Βελτίωση με το Omni AI",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Εξήγηση με το Omni AI",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Μετάφραση με το Omni AI",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Αναδιατύπωση με το Omni AI",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Προσθήκη emoji με το Omni AI",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Σύνοψη με το Omni AI",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Ρώτα το Omni AI",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "Το κλειδί API δεν έχει ρυθμιστεί. Προσθέστε το κλειδί API στις Ρυθμίσεις.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Εισαγάγετε το κλειδί API Gemini...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Σφάλμα: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Το κλειδί API Gemini δεν έχει ρυθμιστεί",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "Το κλειδί API OpenAI δεν έχει ρυθμιστεί",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Το κλειδί API Groq δεν έχει ρυθμιστεί",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Το κλειδί API Anthropic δεν έχει ρυθμιστεί",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Η βασική διεύθυνση URL του Custom Gateway δεν έχει ρυθμιστεί",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "Το κλειδί API δεν έχει ρυθμιστεί για $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Προεπιλεγμένο ύφος",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Προεπιλεγμένο ύφος για βελτιώσεις κειμένου και απαντήσεις",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Επαγγελματικό",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Χαλαρό",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Φιλικό",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Άμεσο",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Με αυτοπεποίθηση",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Γρήγορη ερώτηση",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Αποτέλεσμα",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Σκέψη...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Πίσω",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Αντιγράφηκε!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Δεν έχει επιλεγεί κείμενο. Επιλέξτε πρώτα κάποιο κείμενο.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "Ο βοηθός AI σας",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Θέμα",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Επιλέξτε την εμφάνιση που προτιμάτε",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Προεπιλογή συστήματος",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Σκούρο",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Φωτεινό",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Κύρια γλώσσα",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Η κύρια γλώσσα σας για τις γρήγορες ενέργειες",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Έλεγχος διαμόρφωσης",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Συντομεύσεις πληκτρολογίου",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Ιστορικό χρήσης",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Σύνολο ενεργειών",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Λέξεις που επεξεργάστηκαν",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Λέξεις που δημιουργήθηκαν",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Σχετικά",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Αναφορά προβλήματος",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Εκκαθάριση ιστορικού",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Κλειδί API Groq",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Αποκτήστε δωρεάν κλειδί στο console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "Κλειδί API OpenAI",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Αποκτήστε κλειδί API στο platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Απόκτηση κλειδιού API",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Απόκτηση κλειδιού API Groq",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Απόκτηση κλειδιού API OpenAI",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Κλειδί API Anthropic",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Αποκτήστε κλειδί API στο console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Απόκτηση κλειδιού API Anthropic",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Μετάβαση στο Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Εγγραφείτε ή συνδεθείτε"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Δημιουργήστε νέο κλειδί API"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Προσαρμογή στο Chrome",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Προσαρμόστε τις συντομεύσεις στις ρυθμίσεις του Chrome",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Ανανέωση",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Προεπιλεγμένη γλώσσα για μεταφράσεις",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Αγγλικά"
+  },
+  "lang_vi": {
+    "message": "Βιετναμέζικα"
+  },
+  "lang_es": {
+    "message": "Ισπανικά"
+  },
+  "lang_fr": {
+    "message": "Γαλλικά"
+  },
+  "lang_de": {
+    "message": "Γερμανικά"
+  },
+  "lang_it": {
+    "message": "Ιταλικά"
+  },
+  "lang_pt": {
+    "message": "Πορτογαλικά"
+  },
+  "lang_ja": {
+    "message": "Ιαπωνικά"
+  },
+  "lang_ko": {
+    "message": "Κορεατικά"
+  },
+  "lang_zh": {
+    "message": "Κινεζικά"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Αναζήτηση γλωσσών",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Συνηθισμένες",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Όλες οι γλώσσες",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Θέλετε σίγουρα να εκκαθαρίσετε όλο το ιστορικό χρήσης;",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Εισαγάγετε πρώτα ένα κλειδί API/Endpoint.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Γίνεται έλεγχος...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Η διαμόρφωση είναι έγκυρη! Έτοιμη για δημιουργία.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Ο έλεγχος σύνδεσης απέτυχε",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Έλεγχος...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Η αποθήκευση απέτυχε",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Μετάβαση στο Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Κάντε κλικ στο «Create API Key»"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Αντιγράψτε το κλειδί στο πρόχειρο"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Μετάβαση στο Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Εγγραφείτε ή συνδεθείτε"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Δημιουργήστε νέο κλειδί API"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Μετάβαση στο OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Εγγραφείτε ή συνδεθείτε"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Δημιουργήστε νέο κλειδί API"
+  },
+  "overlay_suggested_fix": {
+    "message": "Προτεινόμενη διόρθωση",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Αποδοχή",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Απόρριψη",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Δεν βρέθηκαν προβλήματα",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Το κείμενο είναι εξαιρετικό!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Έξυπνη μετάφραση",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Σφάλμα",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Η μετάφραση απέτυχε",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Παλαιότερο)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Για προχωρημένους",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Όνομα προσαρμοσμένου μοντέλου",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Εισαγάγετε το αναγνωριστικό του προσαρμοσμένου μοντέλου",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Εισαγάγετε ένα όνομα προσαρμοσμένου μοντέλου",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "π.χ. your-model-id",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Σύνδεση με οποιοδήποτε endpoint API συμβατό με OpenAI",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "π.χ. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Εισαγάγετε το κλειδί API...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Διαμόρφωση Custom Gateway",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Υποστηρίζει API συμβατά με OpenAI (OpenRouter, LiteLLM, Together AI κ.λπ.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Προαιρετικό για ορισμένα gateways (π.χ. δωρεάν βαθμίδα του OpenRouter)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Συνομιλία",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Εργαλεία",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Ρωτήστε για αυτή τη σελίδα…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Αποστολή",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Διακοπή",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Πλαίσιο σελίδας",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Συμπερίληψη πλαισίου σελίδας",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Ξεκινήστε μια συνομιλία για την τρέχουσα σελίδα.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Κάτι πήγε στραβά. Δοκιμάστε ξανά.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Εκκαθάριση συνομιλίας",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Θέλετε σίγουρα να εκκαθαρίσετε αυτή τη συνομιλία;",
+    "description": "Clear chat session confirmation"
+  }
+}

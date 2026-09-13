@@ -1,0 +1,718 @@
+{
+  "extName": {
+    "message": "Omni AI",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Kaikenkattava AI-avustaja tekoälymallien voimin: kirjoittamisen parantaminen, pikatoiminnot ja älykkäät apuvälineet",
+    "description": "Extension description"
+  },
+  "popup_title": {
+    "message": "Omni AI",
+    "description": "Popup title"
+  },
+  "command_openPanel": {
+    "message": "Avaa Omni AI -paneeli",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
+  "sidepanel_title": {
+    "message": "Sivun työkalut",
+    "description": "Side panel section heading"
+  },
+  "sidepanel_summarize": {
+    "message": "Tiivistä",
+    "description": "Side panel action button: summarize the current page"
+  },
+  "sidepanel_translate": {
+    "message": "Älykäs käännös",
+    "description": "Side panel action button: translate the current page"
+  },
+  "sidepanel_explain": {
+    "message": "Selitä",
+    "description": "Side panel action button: explain the current page"
+  },
+  "sidepanel_loading": {
+    "message": "Työstetään…",
+    "description": "Side panel status while an action is running"
+  },
+  "sidepanel_resultLabel": {
+    "message": "Tulos",
+    "description": "Side panel label above the AI result text"
+  },
+  "sidepanel_cantReadPage": {
+    "message": "Tätä sivua ei voi lukea",
+    "description": "Side panel error when the content script isn't reachable on the active tab"
+  },
+  "sidepanel_noContent": {
+    "message": "Tällä sivulla ei ole käsiteltävää sisältöä",
+    "description": "Side panel error when the page has no extractable text"
+  },
+  "sidepanel_resultFrom": {
+    "message": "Sivulta:",
+    "description": "Side panel prefix before the title of the page a result describes"
+  },
+  "popup_quickAsk": {
+    "message": "Kysy Omni AI:lta mitä tahansa...",
+    "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Näytä pikatoimintojen valikko",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
+  },
+  "popup_context": {
+    "message": "Konteksti",
+    "description": "Context section title"
+  },
+  "popup_improveWriting": {
+    "message": "Paranna kirjoitusta",
+    "description": "Improve writing section title"
+  },
+  "popup_quickActions": {
+    "message": "Pikatoiminnot",
+    "description": "Quick actions section title"
+  },
+  "preset_email": {
+    "message": "Sähköposti",
+    "description": "Email preset"
+  },
+  "preset_chat": {
+    "message": "Chat",
+    "description": "Chat preset"
+  },
+  "preset_social": {
+    "message": "Sosiaalinen",
+    "description": "Social preset"
+  },
+  "preset_technical": {
+    "message": "Tekninen",
+    "description": "Technical preset"
+  },
+  "preset_academic": {
+    "message": "Akateeminen",
+    "description": "Academic preset"
+  },
+  "action_grammar": {
+    "message": "Korjaa kielioppi",
+    "description": "Grammar action"
+  },
+  "desc_grammar": {
+    "message": "Korjaa oikeinkirjoituksen ja kieliopin",
+    "description": "Description for grammar action"
+  },
+  "action_clarity": {
+    "message": "Paranna selkeyttä",
+    "description": "Clarity action"
+  },
+  "action_tone": {
+    "message": "Muuta sävyä",
+    "description": "Tone action"
+  },
+  "action_concise": {
+    "message": "Tiivistä",
+    "description": "Concise action"
+  },
+  "action_expand": {
+    "message": "Laajenna",
+    "description": "Expand action"
+  },
+  "action_rephrase": {
+    "message": "Muotoile uudelleen",
+    "description": "Rephrase action"
+  },
+  "action_translate": {
+    "message": "Käännä",
+    "description": "Translate action"
+  },
+  "action_summarize": {
+    "message": "Tee yhteenveto",
+    "description": "Summarize action"
+  },
+  "action_reply": {
+    "message": "Vastaa",
+    "description": "Reply action"
+  },
+  "action_emojify": {
+    "message": "Lisää emojit",
+    "description": "Emojify action"
+  },
+  "status_ready": {
+    "message": "Valmis",
+    "description": "Status ready"
+  },
+  "status_processing": {
+    "message": "Käsitellään...",
+    "description": "Status processing"
+  },
+  "status_error": {
+    "message": "Virhe",
+    "description": "Status error"
+  },
+  "settings_title": {
+    "message": "Asetukset",
+    "description": "Settings page title"
+  },
+  "settings_geminiApiKey": {
+    "message": "Gemini API -avain",
+    "description": "Gemini API key label"
+  },
+  "settings_geminiApiKeyHint": {
+    "message": "Hanki API-avaimesi Google AI Studiosta",
+    "description": "Gemini API key hint"
+  },
+  "settings_model": {
+    "message": "AI-malli",
+    "description": "AI model label"
+  },
+  "settings_modelHint": {
+    "message": "Valitse käytettävä AI-malli",
+    "description": "AI model hint"
+  },
+  "settings_defaultPreset": {
+    "message": "Oletuskonteksti",
+    "description": "Default preset label"
+  },
+  "settings_language": {
+    "message": "Käännöskieli",
+    "description": "Translation language label"
+  },
+  "settings_save": {
+    "message": "Tallenna asetukset",
+    "description": "Save button"
+  },
+  "settings_showFloatingButton": {
+    "message": "Näytä kelluva Omni AI -painike",
+    "description": "Floating action button preference label"
+  },
+  "settings_showFloatingButtonHint": {
+    "message": "Poista tämä käytöstä, jos haluat käyttää vain pikanäppäimiä ja kontekstivalikkoja.",
+    "description": "Floating action button preference help text"
+  },
+  "settings_flashActions": {
+    "message": "Nopeat toiminnot",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Näytä nämä toiminnot kelluvaa kuvaketta osoitettaessa, jotta voit suorittaa ne avaamatta koko valikkoa (enintään 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Käännä ensisijaiselle kielelle",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Käännä oletuskielelle",
+    "description": "Flash action checkbox label"
+  },
+  "settings_on": {
+    "message": "Päällä",
+    "description": "Enabled setting option"
+  },
+  "settings_off": {
+    "message": "Pois",
+    "description": "Disabled setting option"
+  },
+  "settings_saved": {
+    "message": "Asetukset tallennettu!",
+    "description": "Save confirmation"
+  },
+  "overlay_copy": {
+    "message": "Kopioi",
+    "description": "Copy button"
+  },
+  "overlay_replace": {
+    "message": "Korvaa",
+    "description": "Replace button"
+  },
+  "action_explain": {
+    "message": "Selitä",
+    "description": "Explain action"
+  },
+  "ui_to": {
+    "message": "Kieli: $LANGUAGE$",
+    "placeholders": {
+      "language": {
+        "content": "$1"
+      }
+    },
+    "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
+  },
+  "contextMenu_improve": {
+    "message": "Paranna Omni AI:lla",
+    "description": "Context menu improve"
+  },
+  "contextMenu_explain": {
+    "message": "Selitä Omni AI:lla",
+    "description": "Context menu explain"
+  },
+  "contextMenu_translate": {
+    "message": "Käännä Omni AI:lla",
+    "description": "Context menu translate"
+  },
+  "contextMenu_rephrase": {
+    "message": "Muotoile uudelleen Omni AI:lla",
+    "description": "Context menu rephrase"
+  },
+  "contextMenu_emojify": {
+    "message": "Lisää emoji Omni AI:lla",
+    "description": "Context menu add emoji"
+  },
+  "contextMenu_summarize": {
+    "message": "Tee yhteenveto Omni AI:lla",
+    "description": "Context menu summarize"
+  },
+  "contextMenu_ask": {
+    "message": "Kysy Omni AI:lta",
+    "description": "Context menu quick ask"
+  },
+  "error_noApiKey": {
+    "message": "API-avainta ei ole määritetty. Lisää API-avaimesi asetuksissa.",
+    "description": "No API key error"
+  },
+  "settings_geminiApiKeyPlaceholder": {
+    "message": "Syötä Gemini API -avaimesi...",
+    "description": "Gemini API key input placeholder"
+  },
+  "error_prefix": {
+    "message": "Virhe: ",
+    "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API -avainta ei ole määritetty",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API -avainta ei ole määritetty",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API -avainta ei ole määritetty",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API -avainta ei ole määritetty",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway -palvelun perus-URL-osoitetta ei ole määritetty",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "API-avainta ei ole määritetty kohteelle $MODEL$",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      }
+    },
+    "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
+  },
+  "settings_defaultTone": {
+    "message": "Oletussävy",
+    "description": "Default tone label"
+  },
+  "settings_defaultToneHint": {
+    "message": "Oletussävy kirjoituksen parantamiseen ja vastauksiin",
+    "description": "Default tone hint"
+  },
+  "tone_professional": {
+    "message": "Ammattimainen",
+    "description": "Professional tone"
+  },
+  "tone_casual": {
+    "message": "Rento",
+    "description": "Casual tone"
+  },
+  "tone_friendly": {
+    "message": "Ystävällinen",
+    "description": "Friendly tone"
+  },
+  "tone_direct": {
+    "message": "Suora",
+    "description": "Direct tone"
+  },
+  "tone_confident": {
+    "message": "Varma",
+    "description": "Confident tone"
+  },
+  "quick_ask_title": {
+    "message": "Pikakysely",
+    "description": "Quick ask overlay title"
+  },
+  "overlay_result": {
+    "message": "Tulos",
+    "description": "Result title"
+  },
+  "status_thinking": {
+    "message": "Mietitään...",
+    "description": "Thinking status"
+  },
+  "btn_back": {
+    "message": "Takaisin",
+    "description": "Back button title"
+  },
+  "msg_copied": {
+    "message": "Kopioitu!",
+    "description": "Copied message"
+  },
+  "error_noSelection": {
+    "message": "Tekstiä ei ole valittu. Valitse ensin teksti.",
+    "description": "No selection error"
+  },
+  "settings_tagline": {
+    "message": "AI-avustajasi",
+    "description": "App tagline"
+  },
+  "settings_theme": {
+    "message": "Teema",
+    "description": "Theme label"
+  },
+  "settings_themeHint": {
+    "message": "Valitse haluamasi ulkoasu",
+    "description": "Theme hint"
+  },
+  "theme_system": {
+    "message": "Järjestelmän oletus",
+    "description": "System theme"
+  },
+  "theme_dark": {
+    "message": "Tumma",
+    "description": "Dark theme"
+  },
+  "theme_light": {
+    "message": "Vaalea",
+    "description": "Light theme"
+  },
+  "settings_primaryLanguage": {
+    "message": "Ensisijainen kieli",
+    "description": "Primary language label"
+  },
+  "settings_primaryLanguageHint": {
+    "message": "Pääkielesi pikatoiminnoille",
+    "description": "Primary language hint"
+  },
+  "settings_validate": {
+    "message": "Tarkista määritykset",
+    "description": "Validate button"
+  },
+  "settings_shortcuts": {
+    "message": "Pikanäppäimet",
+    "description": "Shortcuts section title"
+  },
+  "settings_history": {
+    "message": "Käyttöhistoria",
+    "description": "History section title"
+  },
+  "stats_totalActions": {
+    "message": "Toimintoja yhteensä",
+    "description": "Total actions stat"
+  },
+  "stats_wordsProcessed": {
+    "message": "Käsitellyt sanat",
+    "description": "Words processed stat"
+  },
+  "stats_wordsGenerated": {
+    "message": "Luodut sanat",
+    "description": "Words generated stat"
+  },
+  "settings_about": {
+    "message": "Tietoja",
+    "description": "About section title"
+  },
+  "btn_reportIssue": {
+    "message": "Ilmoita ongelmasta",
+    "description": "Report issue link"
+  },
+  "btn_clearHistory": {
+    "message": "Tyhjennä historia",
+    "description": "Clear history button tooltip"
+  },
+  "settings_groqKey": {
+    "message": "Groq API -avain",
+    "description": "Groq API key label"
+  },
+  "settings_groqKeyHint": {
+    "message": "Hanki ilmainen avain osoitteesta console.groq.com",
+    "description": "Groq API key hint"
+  },
+  "settings_openaiKey": {
+    "message": "OpenAI API -avain",
+    "description": "OpenAI API key label"
+  },
+  "settings_openaiKeyHint": {
+    "message": "Hanki API-avain osoitteesta platform.openai.com",
+    "description": "OpenAI API key hint"
+  },
+  "settings_tooltip_gemini": {
+    "message": "Hanki API-avain",
+    "description": "Gemini tooltip title"
+  },
+  "settings_tooltip_groq": {
+    "message": "Hanki Groq API -avain",
+    "description": "Groq tooltip title"
+  },
+  "settings_tooltip_openai": {
+    "message": "Hanki OpenAI API -avain",
+    "description": "OpenAI tooltip title"
+  },
+  "settings_anthropicKey": {
+    "message": "Anthropic API -avain",
+    "description": "Anthropic API key label"
+  },
+  "settings_anthropicKeyHint": {
+    "message": "Hanki API-avain osoitteesta console.anthropic.com",
+    "description": "Anthropic API key hint"
+  },
+  "settings_tooltip_anthropic": {
+    "message": "Hanki Anthropic API -avain",
+    "description": "Anthropic tooltip title"
+  },
+  "settings_tooltip_anthropic_s1": {
+    "message": "Avaa Anthropic Console"
+  },
+  "settings_tooltip_anthropic_s2": {
+    "message": "Rekisteröidy tai kirjaudu sisään"
+  },
+  "settings_tooltip_anthropic_s3": {
+    "message": "Luo uusi API-avain"
+  },
+  "settings_shortcuts_customize": {
+    "message": "Mukauta Chromessa",
+    "description": "Customize shortcut label"
+  },
+  "settings_shortcuts_hint": {
+    "message": "Mukauta pikanäppäimiä Chromen asetuksissa",
+    "description": "Customize shortcuts hint"
+  },
+  "btn_refresh": {
+    "message": "Päivitä",
+    "description": "Refresh button tooltip"
+  },
+  "settings_languageHint": {
+    "message": "Käännösten oletuskieli",
+    "description": "Translation language hint"
+  },
+  "lang_en": {
+    "message": "Englanti"
+  },
+  "lang_vi": {
+    "message": "Vietnam"
+  },
+  "lang_es": {
+    "message": "Espanja"
+  },
+  "lang_fr": {
+    "message": "Ranska"
+  },
+  "lang_de": {
+    "message": "Saksa"
+  },
+  "lang_it": {
+    "message": "Italia"
+  },
+  "lang_pt": {
+    "message": "Portugali"
+  },
+  "lang_ja": {
+    "message": "Japani"
+  },
+  "lang_ko": {
+    "message": "Korea"
+  },
+  "lang_zh": {
+    "message": "Kiina"
+  },
+  "settings_languageSearchPlaceholder": {
+    "message": "Hae kieliä",
+    "description": "Placeholder for the search box that filters the language pickers"
+  },
+  "settings_languagesCommon": {
+    "message": "Yleiset",
+    "description": "First optgroup label in the language pickers"
+  },
+  "settings_languagesAll": {
+    "message": "Kaikki kielet",
+    "description": "Second optgroup label listing every supported language"
+  },
+  "settings_confirmClearHistory": {
+    "message": "Haluatko varmasti tyhjentää koko käyttöhistorian?",
+    "description": "Clear history confirmation"
+  },
+  "settings_errorNoApiKey": {
+    "message": "Syötä ensin API-avain tai päätepiste.",
+    "description": "No API key entered error"
+  },
+  "settings_validating": {
+    "message": "Tarkistetaan...",
+    "description": "Validating status"
+  },
+  "settings_configValid": {
+    "message": "Määritykset ovat kunnossa! Valmis luomaan.",
+    "description": "Config valid success"
+  },
+  "settings_connectionFailed": {
+    "message": "Yhteyden tarkistus epäonnistui",
+    "description": "Connection failed error"
+  },
+  "settings_checking": {
+    "message": "Tarkistetaan...",
+    "description": "Checking status"
+  },
+  "settings_failedToSave": {
+    "message": "Tallennus epäonnistui",
+    "description": "Failed to save error"
+  },
+  "settings_tooltip_gemini_s1": {
+    "message": "Avaa Google AI Studio"
+  },
+  "settings_tooltip_gemini_s2": {
+    "message": "Napsauta Create API Key"
+  },
+  "settings_tooltip_gemini_s3": {
+    "message": "Kopioi avain leikepöydälle"
+  },
+  "settings_tooltip_groq_s1": {
+    "message": "Avaa Groq Console"
+  },
+  "settings_tooltip_groq_s2": {
+    "message": "Rekisteröidy tai kirjaudu sisään"
+  },
+  "settings_tooltip_groq_s3": {
+    "message": "Luo uusi API-avain"
+  },
+  "settings_tooltip_openai_s1": {
+    "message": "Avaa OpenAI Platform"
+  },
+  "settings_tooltip_openai_s2": {
+    "message": "Rekisteröidy tai kirjaudu sisään"
+  },
+  "settings_tooltip_openai_s3": {
+    "message": "Luo uusi API-avain"
+  },
+  "overlay_suggested_fix": {
+    "message": "Ehdotettu korjaus",
+    "description": "Suggested fix label"
+  },
+  "overlay_accept": {
+    "message": "Hyväksy",
+    "description": "Accept button"
+  },
+  "overlay_dismiss": {
+    "message": "Hylkää",
+    "description": "Dismiss button"
+  },
+  "overlay_no_issues": {
+    "message": "Ongelmia ei löytynyt",
+    "description": "No issues message"
+  },
+  "overlay_no_issues_content": {
+    "message": "Teksti näyttää hyvältä!",
+    "description": "No issues check details"
+  },
+  "overlay_smart_translation": {
+    "message": "Älykäs käännös",
+    "description": "Smart translation label"
+  },
+  "overlay_error": {
+    "message": "Virhe",
+    "description": "Error label"
+  },
+  "overlay_translation_failed": {
+    "message": "Käännös epäonnistui",
+    "description": "Translation failed message"
+  },
+  "settings_legacyModelPrefix": {
+    "message": "(Vanha)",
+    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
+  },
+  "settings_advanced": {
+    "message": "Lisäasetukset",
+    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
+  },
+  "settings_customModel": {
+    "message": "Mukautetun mallin nimi",
+    "description": "Custom model label"
+  },
+  "settings_customModelHint": {
+    "message": "Syötä mukautetun mallin tunnus",
+    "description": "Custom model hint"
+  },
+  "settings_errorNoCustomModel": {
+    "message": "Syötä mukautetun mallin nimi",
+    "description": "No custom model error"
+  },
+  "settings_customModelPlaceholder": {
+    "message": "esim. oma-mallitunnus",
+    "description": "Placeholder for settings_customModelPlaceholder"
+  },
+  "settings_customGatewayTitle": {
+    "message": "Custom Gateway",
+    "description": "Custom Gateway label"
+  },
+  "settings_customGatewayHint": {
+    "message": "Yhdistä mihin tahansa OpenAI-yhteensopivaan API-päätepisteeseen",
+    "description": "Custom Gateway hint"
+  },
+  "settings_customGatewayUrlPlaceholder": {
+    "message": "esim. https://openrouter.ai/api/v1",
+    "description": "Placeholder for Custom Gateway base URL"
+  },
+  "settings_customGatewayKeyPlaceholder": {
+    "message": "Syötä API-avaimesi...",
+    "description": "Placeholder for Custom Gateway API key"
+  },
+  "settings_tooltip_customGateway": {
+    "message": "Custom Gateway -määritykset",
+    "description": "Custom Gateway tooltip title"
+  },
+  "settings_customGatewayUrlNote": {
+    "message": "Tukee OpenAI-yhteensopivia API-rajapintoja (OpenRouter, LiteLLM, Together AI, ym.)",
+    "description": "Note about supported API formats"
+  },
+  "settings_customGatewayKeyNote": {
+    "message": "Valinnainen joillekin yhdyskäytäville (esim. OpenRouterin ilmainen taso)",
+    "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Työkalut",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Kysy tästä sivusta…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Lähetä",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Pysäytä",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Sivun konteksti",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Sisällytä sivun konteksti",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Aloita keskustelu nykyisestä sivusta.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Jotain meni pieleen. Yritä uudelleen.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Tyhjennä chat",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Haluatko varmasti tyhjentää tämän keskustelun?",
+    "description": "Clear chat session confirmation"
+  }
+}

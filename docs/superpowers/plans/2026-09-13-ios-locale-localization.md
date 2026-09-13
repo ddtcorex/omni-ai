@@ -504,3 +504,16 @@ Resolved strings, read from a real extension per locale:
 | `sv` | `API-nyckeln är inte konfigurerad för gemini-3.6-flash` | `Till Engelska` |
 | `da` | `API-nøglen er ikke konfigureret til gemini-3.6-flash` | `Til Engelsk` |
 | `no` | `API-nøkkelen er ikke konfigurert for gemini-3.6-flash` | `Til Engelsk` |
+
+**Wave 4** executed 2026-09-13 on `chore/i18n-wave-4`: `fi cs ro hu el he`, 6 x 182 keys, same process. All six passed the parity gate, the directory probe and the placeholder probe:
+
+| Locale | `error_apiKeyNotConfiguredFor` | `ui_to` |
+| --- | --- | --- |
+| `fi` | `API-avainta ei ole määritetty kohteelle gemini-3.6-flash` | `Kieli: Englanti` |
+| `cs` | `Klíč API není nakonfigurován pro gemini-3.6-flash` | `Jazyk: Angličtina` |
+| `ro` | `Cheia API nu este configurată pentru gemini-3.6-flash` | `În Engleză` |
+| `hu` | `A gemini-3.6-flash modellhez nincs beállítva API-kulcs` | `Nyelv: Angol` |
+| `el` | `Το κλειδί API δεν έχει ρυθμιστεί για gemini-3.6-flash` | `Σε Αγγλικά` |
+| `he` | `מפתח ה-API אינו מוגדר עבור gemini-3.6-flash` | `שפה: אנגלית` |
+
+The `ui_to` constraint documented in wave 3 paid off: Finnish, Czech, Hungarian and Hebrew would all have needed a case ending or a prepositional inflection attached to the language name, and each used a separate marker or a colon label instead of forcing one. Hebrew also needed no special handling for right-to-left, since JSON is always logical order.
