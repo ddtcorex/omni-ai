@@ -440,9 +440,9 @@ Line 166 becomes:
 
 - [ ] **Step 2: Verify no stale reference remains**
 
-Run: `grep -rn "jest-chrome" AGENTS.md README.md docs/ 2>/dev/null`
+Run: `grep -rn "jest-chrome" --include=*.md --include=*.js . --exclude-dir=node_modules --exclude-dir=coverage --exclude-dir=.git | grep -v "^./docs/" | grep -v package-lock`
 
-Expected: no hits.
+Expected: only the deliberate mentions that explain the replacement (`jest.setup.js`, `tests/helpers/chrome-mock.js`, `tests/helpers/chrome-mock.test.js`, and the rationale comment in `tests/background/service-worker.test.js`). An allowlist grep scoped to `AGENTS.md README.md docs/` is NOT sufficient: it cannot see `CONTRIBUTING.md`, which is exactly how a stale "Unit: Jest + jest-chrome" line survived the first pass of this task.
 
 - [ ] **Step 3: Commit**
 
@@ -503,3 +503,27 @@ Expected: `CLOSED` (dependabot closes its own PR once the dependency reaches the
 **Placeholder scan:** no TBD, no "handle edge cases", no "similar to Task N". Every code step carries the full file content it produces. The one intentionally open-ended step is Task 3 Step 4, which is a bounded triage with named candidates, exact isolating commands and a stop-and-report rule, because the concrete jest 30 breakages cannot be known before the bump is run.
 
 **Type consistency:** `createChromeMock()` is the only identifier crossing task boundaries, exported from `tests/helpers/chrome-mock.js` and consumed in `jest.setup.js` as `require("./tests/helpers/chrome-mock").createChromeMock()`. The path in the setup file is relative to the repository root, which is where `jest.setup.js` lives and what `setupFilesAfterEach` resolves against.
+
+---
+
+## Execution Record (2026-09-13)
+
+Executed inline in one session. Commits on `chore/jest-30-migration`, in order:
+
+| Commit    | Task | Subject                                                              |
+| --------- | ---- | -------------------------------------------------------------------- |
+| `aa0088e` | 0    | docs(plans): add jest 30 migration plan                              |
+| `4bb0b8d` | 1    | test(helpers): add explicit chrome API mock to replace jest-chrome    |
+| `ddd6c9f` | 2    | test(setup): use the repo-owned chrome mock and drop jest-chrome      |
+| `e92a979` | 3    | chore(deps): upgrade jest and jest-environment-jsdom to 30.5.1        |
+| `b428e17` | 4    | docs: replace jest-chrome references with the shared chrome mock      |
+| `ae3953d` | 4    | docs(tooling): record why jest-chrome was dropped for the shared mock |
+
+Verification actually run, from a clean `rm -rf node_modules`: `npm ci` exit 0, `npm run verify` exit 0 with 28 suites / 230 tests, `npx playwright test` exit 0 with 44 passed. jest 30 plus jsdom 26 needed **zero** changes to existing test files; the only new test files are the helper's own suite and the guard suite added after review.
+
+### Deviations from this plan
+
+1. **`CONTRIBUTING.md` and `docs/DEV-TOOLING.md` were also updated** (Task 4 named only `AGENTS.md`). Both contained prescriptive text telling contributors to use jest-chrome. The plan's verification step in Task 4 has been corrected to an exclusion grep because its allowlist is what let `CONTRIBUTING.md` slip through.
+2. **An execution record and a guard suite were added after code review** (`tests/testing-stack.test.js`). The review found that the event half of the mock did not match the parity claim in its own comment: `hasListener` / `hasListeners` were hardcoded to `false` regardless of registered listeners, and `callListeners`, the idiom this repo's sidebar-chat plan teaches for driving `chrome.runtime.onConnect`, was missing. `createEvent` is now `Set`-backed with truthful `hasListener` / `hasListeners` / `getListeners` / `clearListeners` / `callListeners`, and the header comment states plainly that events are the one deliberate departure from jest-chrome rather than claiming full parity.
+3. **Environment caveat discovered during execution:** this machine's shell exports `NODE_ENV=production`, so plain `npm ci` silently omits every devDependency (this repo has no runtime dependencies at all) and then fails at the `prepare` script with `sh: 1: husky: not found`. All npm commands in this plan's gates were run as `env -u NODE_ENV npm ...`. CI does not set `NODE_ENV`, so CI is unaffected, but a local run without the `env -u` prefix is not a valid reproduction of CI.
+4. **The local Playwright suite needed `npx playwright install chromium`** for revision 1243 after `@playwright/test` moved to 1.63.0; without it all 44 e2e tests fail in about 10ms with `Executable doesn't exist`, which looks like a mass failure but is a missing browser.
