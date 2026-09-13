@@ -18,4 +18,24 @@ describe("manifest.json MV3 validity", () => {
     expect(manifest.background.service_worker).toBe("background/service-worker.js");
     expect(manifest.background).not.toHaveProperty("scripts");
   });
+
+  test("_execute_action command description explains what it does, not just the extension name", () => {
+    // This description is what Chrome renders at chrome://extensions/shortcuts
+    // for the row with no suggested_key. Reusing __MSG_popup_title__ ("Omni AI")
+    // there told the user which extension, not what pressing the shortcut does.
+    expect(manifest.commands._execute_action.description).toBe("__MSG_command_openPanel__");
+  });
+});
+
+describe("command_openPanel i18n key", () => {
+  const locales = ["en", "vi"];
+
+  test.each(locales)("_locales/%s/messages.json defines command_openPanel", (locale) => {
+    const messages = JSON.parse(
+      fs.readFileSync(path.join(__dirname, `../_locales/${locale}/messages.json`), "utf8"),
+    );
+    expect(messages.command_openPanel).toBeDefined();
+    expect(messages.command_openPanel.message).toEqual(expect.any(String));
+    expect(messages.command_openPanel.message.length).toBeGreaterThan(0);
+  });
 });

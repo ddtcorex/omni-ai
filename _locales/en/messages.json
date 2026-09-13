@@ -11,6 +11,10 @@
     "message": "Omni AI",
     "description": "Popup title"
   },
+  "command_openPanel": {
+    "message": "Open Omni AI Panel",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
   "sidepanel_title": {
     "message": "Page Tools",
     "description": "Side panel section heading"

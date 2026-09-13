@@ -44,7 +44,7 @@
   },
   "commands": {
     "_execute_action": {
-      "description": "__MSG_popup_title__"
+      "description": "__MSG_command_openPanel__"
     },
     "quick_ask": {
       "suggested_key": {

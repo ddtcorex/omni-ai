@@ -11,6 +11,10 @@
     "message": "Omni AI",
     "description": "Popup title"
   },
+  "command_openPanel": {
+    "message": "Mở bảng Omni AI",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
   "popup_quickAsk": {
     "message": "Hỏi Omni AI bất cứ điều gì...",
     "description": "Quick ask placeholder"
