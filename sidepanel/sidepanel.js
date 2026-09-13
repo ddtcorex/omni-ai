@@ -31,6 +31,7 @@ const elements = {
   includeContext: /** @type {HTMLInputElement | null} */ (
     document.getElementById("includeContext")
   ),
+  clearChatBtn: /** @type {HTMLElement | null} */ (document.getElementById("clearChatBtn")),
   pageContextPreview: /** @type {HTMLElement | null} */ (
     document.getElementById("pageContextPreview")
   ),
@@ -389,9 +390,29 @@ function stopChat() {
   setStreamingUI(false);
 }
 
+function clearChat() {
+  if (!confirm(i18n.getMessage("sidebar_chat_confirmClear"))) return;
+
+  if (chatPort) {
+    chatPort.disconnect();
+    chatPort = null;
+  }
+  currentAssistantBubble = null;
+  setStreamingUI(false);
+
+  chatHistory.length = 0;
+  elements.chatMessages?.querySelectorAll(".chat-msg").forEach((el) => el.remove());
+  elements.chatEmpty?.classList.remove("hidden");
+  if (elements.chatError) {
+    elements.chatError.textContent = "";
+    elements.chatError.classList.add("hidden");
+  }
+}
+
 function setupChat() {
   elements.chatSend?.addEventListener("click", sendChatMessage);
   elements.chatStop?.addEventListener("click", stopChat);
+  elements.clearChatBtn?.addEventListener("click", clearChat);
   elements.chatInput?.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();

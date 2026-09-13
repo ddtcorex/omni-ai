@@ -676,5 +676,13 @@
   "sidebar_chat_error": {
     "message": "Something went wrong. Please try again.",
     "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Clear chat",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Are you sure you want to clear this conversation?",
+    "description": "Clear chat session confirmation"
   }
 }

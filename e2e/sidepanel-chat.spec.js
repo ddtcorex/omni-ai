@@ -52,7 +52,9 @@ function stubChatPort(page) {
   return page.addInitScript(() => {
     const listeners = [];
     const fakePort = {
-      postMessage: () => {},
+      postMessage: (msg) => {
+        window.__lastChatPostMessage = msg;
+      },
       onMessage: {
         addListener: (fn) => listeners.push(fn),
         removeListener: (fn) => {
@@ -151,6 +153,61 @@ test("clicking Stop after a chunk already arrived keeps the partial reply", asyn
     await page.locator("#chatStop").click();
 
     await expect(page.locator(".chat-msg.assistant")).toHaveText("Partial reply");
+  } finally {
+    await context.close();
+  }
+});
+
+test("clearing the chat resets both the visible messages and the history sent on the next send", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await stubChatPort(page);
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+    page.on("dialog", (dialog) => dialog.accept());
+
+    await page.locator("#chatInput").fill("Hello");
+    await page.locator("#chatSend").click();
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "chunk", text: "Hi there" }));
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "done", text: "Hi there" }));
+    await expect(page.locator(".chat-msg")).toHaveCount(2);
+
+    await page.locator("#clearChatBtn").click();
+
+    await expect(page.locator(".chat-msg")).toHaveCount(0);
+    await expect(page.locator("#chatEmpty")).toBeVisible();
+
+    // The next send must not carry the cleared conversation as history --
+    // chatHistory is an in-memory array the JS mutates in place, so the DOM
+    // being empty doesn't by itself prove the array was actually reset.
+    await page.locator("#chatInput").fill("Second message");
+    await page.locator("#chatSend").click();
+    const lastMsg = await page.evaluate(() => window.__lastChatPostMessage);
+    expect(lastMsg.history).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
+test("declining the clear confirmation keeps the conversation", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await stubChatPort(page);
+    const extId = new URL(sw.url()).host;
+    await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+    page.on("dialog", (dialog) => dialog.dismiss());
+
+    await page.locator("#chatInput").fill("Hello");
+    await page.locator("#chatSend").click();
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "chunk", text: "Hi there" }));
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "done", text: "Hi there" }));
+    await expect(page.locator(".chat-msg")).toHaveCount(2);
+
+    await page.locator("#clearChatBtn").click();
+
+    await expect(page.locator(".chat-msg")).toHaveCount(2);
   } finally {
     await context.close();
   }

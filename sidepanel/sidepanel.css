@@ -214,6 +214,13 @@ body {
   font-size: 12px;
 }
 
+.chat-context-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--omni-spacing-sm);
+}
+
 .chat-context-toggle {
   display: inline-flex;
   align-items: center;

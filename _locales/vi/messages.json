@@ -661,5 +661,13 @@
   "sidebar_chat_error": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Xóa cuộc trò chuyện",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này không?",
+    "description": "Clear chat session confirmation"
   }
 }
