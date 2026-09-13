@@ -1096,3 +1096,17 @@ gh pr create --title "feat: 43 translation languages with a searchable picker" -
 **Deliberate non-goals:** manual source-language selection (the model detects it), adding UI locales (separate plan), and translation quality for low-resource languages (a model limitation, not code).
 
 **Known interaction with the companion plan:** `lib/languages.js` `UI_LOCALE_CODES` is the one place a new UI locale becomes visible. The iOS locale plan grows that array; the on-disk parity test in Task 1 is what forces the two to stay in step.
+
+## Execution Record
+
+Executed 2026-09-13 on `feature/language-support`. Deviations from the plan as written, all deliberate:
+
+1. **i18n key for a regional code is lowercased.** The plan's test expected `lang_zh_TW`; the repo's keys are all lowercase (`lang_zh`), and `resolveLanguageLabel` lowercases the whole code before replacing `-` with `_`, so the key is `lang_zh_tw`. The test was corrected to match the repo convention rather than the reverse.
+2. **`populateLanguageSelect` had a real bug in the plan's snippet.** It created an `optgroup` but never appended it to the `select`, so the picker rendered empty. The TDD cycle caught it: the "renders every registry language, grouped into common and all" test failed with 0 groups. The implementation now appends the group before filling it.
+3. **The pickers are populated inside `loadSettings`, not only in `init()`.** Two pre-existing tests call `loadSettings()` directly, which exposed that the repo's own `populateModelSelect` runs inside `loadSettings` right before the saved value is applied. The pickers follow that same order, so a saved code always has an option to land on.
+4. **Filtering keeps the current value selectable.** The plan asserted the filtered option list was exactly the matches; it is the matches plus the currently selected code, because dropping it would blank `select.value` and Save would then persist an empty language. The test now states that contract explicitly.
+5. **`CHANGELOG.md` gained an `## [Unreleased]` section** instead of an entry under the released `[2.4.0]` heading, which would have claimed the feature shipped in 2.4.0.
+6. **`docs/FOLLOWUPS.md` grew a row 17, and row 12 was marked resolved.** Row 12 recorded the `SUPPORTED_LOCALES` duplication between `settings.js` and `tests/settings.test.js`; this branch removes that duplication, so leaving the row open would have been stale information.
+7. **Test counts differ from the plan's estimate:** `tests/lib/languages.test.js` has 23 tests (the plan estimated 20), and the whole unit suite went from 235 tests / 29 suites to 272 tests / 32 suites.
+
+Gate results: `env -u NODE_ENV npx jest` 272 passed, `env -u NODE_ENV npx playwright test` 44 passed, `env -u NODE_ENV npm run verify` green.
