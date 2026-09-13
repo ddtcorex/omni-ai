@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "AI মডেল দ্বারা চালিত অল-ইন-ওয়ান AI অ্যাসিস্ট্যান্ট: লেখার উন্নতি, কুইক অ্যাকশন ও স্মার্ট ইউটিলিটি",
+    "message": "Alt-i-ett-AI-assistent drevet av AI-modeller: tekstforbedring, hurtighandlinger og smarte verktøy",
     "description": "Extension description"
   },
   "popup_title": {
@@ -12,223 +12,223 @@
     "description": "Popup title"
   },
   "command_openPanel": {
-    "message": "Omni AI প্যানেল খুলুন",
+    "message": "Åpne Omni AI-panelet",
     "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
   },
   "sidepanel_title": {
-    "message": "পেজ টুলস",
+    "message": "Verktøy for siden",
     "description": "Side panel section heading"
   },
   "sidepanel_summarize": {
-    "message": "সারসংক্ষেপ",
+    "message": "Oppsummer",
     "description": "Side panel action button: summarize the current page"
   },
   "sidepanel_translate": {
-    "message": "স্মার্ট অনুবাদ",
+    "message": "Smart oversettelse",
     "description": "Side panel action button: translate the current page"
   },
   "sidepanel_explain": {
-    "message": "ব্যাখ্যা করুন",
+    "message": "Forklar",
     "description": "Side panel action button: explain the current page"
   },
   "sidepanel_loading": {
-    "message": "কাজ চলছে…",
+    "message": "Jobber med saken…",
     "description": "Side panel status while an action is running"
   },
   "sidepanel_resultLabel": {
-    "message": "ফলাফল",
+    "message": "Resultat",
     "description": "Side panel label above the AI result text"
   },
   "sidepanel_cantReadPage": {
-    "message": "এই পেজটি পড়া যাচ্ছে না",
+    "message": "Kan ikke lese denne siden",
     "description": "Side panel error when the content script isn't reachable on the active tab"
   },
   "sidepanel_noContent": {
-    "message": "এই পেজে কাজ করার মতো কিছু নেই",
+    "message": "Ingen tekst å jobbe med på denne siden",
     "description": "Side panel error when the page has no extractable text"
   },
   "sidepanel_resultFrom": {
-    "message": "সূত্র:",
+    "message": "Fra:",
     "description": "Side panel prefix before the title of the page a result describes"
   },
   "popup_quickAsk": {
-    "message": "Omni AI-কে যেকোনো কিছু জিজ্ঞাসা করুন...",
+    "message": "Spør Omni AI om hva som helst...",
     "description": "Quick ask placeholder"
   },
   "command_openQuickMenu": {
-    "message": "কুইক অ্যাকশন মেনু দেখান",
+    "message": "Vis hurtighandlingsmenyen",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
   "popup_context": {
-    "message": "প্রসঙ্গ",
+    "message": "Kontekst",
     "description": "Context section title"
   },
   "popup_improveWriting": {
-    "message": "লেখা উন্নত করুন",
+    "message": "Forbedre tekst",
     "description": "Improve writing section title"
   },
   "popup_quickActions": {
-    "message": "কুইক অ্যাকশন",
+    "message": "Hurtighandlinger",
     "description": "Quick actions section title"
   },
   "preset_email": {
-    "message": "ইমেল",
+    "message": "E-post",
     "description": "Email preset"
   },
   "preset_chat": {
-    "message": "চ্যাট",
+    "message": "Chat",
     "description": "Chat preset"
   },
   "preset_social": {
-    "message": "সোশ্যাল",
+    "message": "Sosiale medier",
     "description": "Social preset"
   },
   "preset_technical": {
-    "message": "টেকনিক্যাল",
+    "message": "Teknisk",
     "description": "Technical preset"
   },
   "preset_academic": {
-    "message": "একাডেমিক",
+    "message": "Akademisk",
     "description": "Academic preset"
   },
   "action_grammar": {
-    "message": "ব্যাকরণ ঠিক করুন",
+    "message": "Rett grammatikk",
     "description": "Grammar action"
   },
   "desc_grammar": {
-    "message": "বানান ও ব্যাকরণ সংশোধন করে",
+    "message": "Retter opp skrivefeil og grammatikk",
     "description": "Description for grammar action"
   },
   "action_clarity": {
-    "message": "স্পষ্টতা বাড়ান",
+    "message": "Forbedre klarhet",
     "description": "Clarity action"
   },
   "action_tone": {
-    "message": "টোন পরিবর্তন করুন",
+    "message": "Endre tone",
     "description": "Tone action"
   },
   "action_concise": {
-    "message": "সংক্ষিপ্ত করুন",
+    "message": "Gjør kortere",
     "description": "Concise action"
   },
   "action_expand": {
-    "message": "প্রসারিত করুন",
+    "message": "Utvid",
     "description": "Expand action"
   },
   "action_rephrase": {
-    "message": "ভিন্নভাবে লিখুন",
+    "message": "Omformuler",
     "description": "Rephrase action"
   },
   "action_translate": {
-    "message": "অনুবাদ করুন",
+    "message": "Oversett",
     "description": "Translate action"
   },
   "action_summarize": {
-    "message": "সারসংক্ষেপ করুন",
+    "message": "Oppsummer",
     "description": "Summarize action"
   },
   "action_reply": {
-    "message": "উত্তর দিন",
+    "message": "Svar",
     "description": "Reply action"
   },
   "action_emojify": {
-    "message": "ইমোজি যোগ করুন",
+    "message": "Legg til emoji",
     "description": "Emojify action"
   },
   "status_ready": {
-    "message": "প্রস্তুত",
+    "message": "Klar",
     "description": "Status ready"
   },
   "status_processing": {
-    "message": "প্রক্রিয়াকরণ চলছে...",
+    "message": "Behandler...",
     "description": "Status processing"
   },
   "status_error": {
-    "message": "ত্রুটি",
+    "message": "Feil",
     "description": "Status error"
   },
   "settings_title": {
-    "message": "সেটিংস",
+    "message": "Innstillinger",
     "description": "Settings page title"
   },
   "settings_geminiApiKey": {
-    "message": "Gemini API কী",
+    "message": "Gemini API-nøkkel",
     "description": "Gemini API key label"
   },
   "settings_geminiApiKeyHint": {
-    "message": "Google AI Studio থেকে আপনার API কী নিন",
+    "message": "Hent API-nøkkelen din fra Google AI Studio",
     "description": "Gemini API key hint"
   },
   "settings_model": {
-    "message": "AI মডেল",
+    "message": "AI-modell",
     "description": "AI model label"
   },
   "settings_modelHint": {
-    "message": "ব্যবহারের জন্য AI মডেল নির্বাচন করুন",
+    "message": "Velg AI-modellen du vil bruke",
     "description": "AI model hint"
   },
   "settings_defaultPreset": {
-    "message": "ডিফল্ট প্রসঙ্গ",
+    "message": "Standardkontekst",
     "description": "Default preset label"
   },
   "settings_language": {
-    "message": "অনুবাদের ভাষা",
+    "message": "Språk for oversettelse",
     "description": "Translation language label"
   },
   "settings_save": {
-    "message": "সেটিংস সংরক্ষণ করুন",
+    "message": "Lagre innstillinger",
     "description": "Save button"
   },
   "settings_showFloatingButton": {
-    "message": "ভাসমান Omni AI বাটন দেখান",
+    "message": "Vis flytende Omni AI-knapp",
     "description": "Floating action button preference label"
   },
   "settings_showFloatingButtonHint": {
-    "message": "শুধু কীবোর্ড শর্টকাট ও কনটেক্সট মেনু ব্যবহার করতে এটি বন্ধ করুন।",
+    "message": "Slå dette av for å bruke bare hurtigtaster og kontekstmenyer.",
     "description": "Floating action button preference help text"
   },
   "settings_flashActions": {
-    "message": "ফ্ল্যাশ অ্যাকশন",
+    "message": "Hurtighandlinger ved hover",
     "description": "Flash actions setting label"
   },
   "settings_flashActionsHint": {
-    "message": "ভাসমান আইকনের উপর কার্সার রাখলে এই অ্যাকশনগুলো দেখানো হবে, যাতে পুরো মেনু না খুলেই সেগুলো চালানো যায় (সর্বোচ্চ ৪টি)।",
+    "message": "Vis disse handlingene når du holder markøren over det flytende ikonet, slik at du kan kjøre dem uten å åpne hele menyen (opptil 4).",
     "description": "Flash actions setting help text"
   },
   "settings_flashAction_translatePrimary": {
-    "message": "প্রাথমিক ভাষায় অনুবাদ করুন",
+    "message": "Oversett til primærspråket",
     "description": "Flash action checkbox label"
   },
   "settings_flashAction_translateDefault": {
-    "message": "ডিফল্ট ভাষায় অনুবাদ করুন",
+    "message": "Oversett til standardspråket",
     "description": "Flash action checkbox label"
   },
   "settings_on": {
-    "message": "চালু",
+    "message": "På",
     "description": "Enabled setting option"
   },
   "settings_off": {
-    "message": "বন্ধ",
+    "message": "Av",
     "description": "Disabled setting option"
   },
   "settings_saved": {
-    "message": "সেটিংস সংরক্ষিত হয়েছে!",
+    "message": "Innstillingene er lagret!",
     "description": "Save confirmation"
   },
   "overlay_copy": {
-    "message": "কপি",
+    "message": "Kopier",
     "description": "Copy button"
   },
   "overlay_replace": {
-    "message": "প্রতিস্থাপন",
+    "message": "Erstatt",
     "description": "Replace button"
   },
   "action_explain": {
-    "message": "ব্যাখ্যা করুন",
+    "message": "Forklar",
     "description": "Explain action"
   },
   "ui_to": {
-    "message": "$LANGUAGE$ ভাষায়",
+    "message": "Til $LANGUAGE$",
     "placeholders": {
       "language": {
         "content": "$1"
@@ -237,67 +237,67 @@
     "description": "Language chip in the overlay menu; $LANGUAGE$ is substituted with a nominative language label, so use a separate marker word (or a label with a colon) rather than an inflection that would have to attach to the name, and do not rely on a case the caller does not control"
   },
   "contextMenu_improve": {
-    "message": "Omni AI দিয়ে উন্নত করুন",
+    "message": "Forbedre med Omni AI",
     "description": "Context menu improve"
   },
   "contextMenu_explain": {
-    "message": "Omni AI দিয়ে ব্যাখ্যা করুন",
+    "message": "Forklar med Omni AI",
     "description": "Context menu explain"
   },
   "contextMenu_translate": {
-    "message": "Omni AI দিয়ে অনুবাদ করুন",
+    "message": "Oversett med Omni AI",
     "description": "Context menu translate"
   },
   "contextMenu_rephrase": {
-    "message": "Omni AI দিয়ে ভিন্নভাবে লিখুন",
+    "message": "Omformuler med Omni AI",
     "description": "Context menu rephrase"
   },
   "contextMenu_emojify": {
-    "message": "Omni AI দিয়ে ইমোজি যোগ করুন",
+    "message": "Legg til emoji med Omni AI",
     "description": "Context menu add emoji"
   },
   "contextMenu_summarize": {
-    "message": "Omni AI দিয়ে সারসংক্ষেপ করুন",
+    "message": "Oppsummer med Omni AI",
     "description": "Context menu summarize"
   },
   "contextMenu_ask": {
-    "message": "Omni AI-কে জিজ্ঞাসা করুন",
+    "message": "Spør Omni AI",
     "description": "Context menu quick ask"
   },
   "error_noApiKey": {
-    "message": "API কী কনফিগার করা নেই। অনুগ্রহ করে সেটিংসে আপনার API কী যোগ করুন।",
+    "message": "API-nøkkelen er ikke konfigurert. Legg til API-nøkkelen din i Innstillinger.",
     "description": "No API key error"
   },
   "settings_geminiApiKeyPlaceholder": {
-    "message": "আপনার Gemini API কী লিখুন...",
+    "message": "Skriv inn Gemini API-nøkkelen din...",
     "description": "Gemini API key input placeholder"
   },
   "error_prefix": {
-    "message": "ত্রুটি: ",
+    "message": "Feil: ",
     "description": "Error prefix"
   },
   "error_apiKeyNotConfigured_gemini": {
-    "message": "Gemini API কী কনফিগার করা নেই",
+    "message": "Gemini API-nøkkel er ikke konfigurert",
     "description": "Shown when the Gemini API key is missing"
   },
   "error_apiKeyNotConfigured_openai": {
-    "message": "OpenAI API কী কনফিগার করা নেই",
+    "message": "OpenAI API-nøkkel er ikke konfigurert",
     "description": "Shown when the OpenAI API key is missing"
   },
   "error_apiKeyNotConfigured_groq": {
-    "message": "Groq API কী কনফিগার করা নেই",
+    "message": "Groq API-nøkkel er ikke konfigurert",
     "description": "Shown when the Groq API key is missing"
   },
   "error_apiKeyNotConfigured_anthropic": {
-    "message": "Anthropic API কী কনফিগার করা নেই",
+    "message": "Anthropic API-nøkkel er ikke konfigurert",
     "description": "Shown when the Anthropic API key is missing"
   },
   "error_customGatewayBaseUrlNotConfigured": {
-    "message": "Custom Gateway বেস URL কনফিগার করা নেই",
+    "message": "Basis-URL for Custom Gateway er ikke konfigurert",
     "description": "Shown when the Custom Gateway base URL is missing"
   },
   "error_apiKeyNotConfiguredFor": {
-    "message": "$MODEL$ এর জন্য API কী কনফিগার করা নেই",
+    "message": "API-nøkkelen er ikke konfigurert for $MODEL$",
     "placeholders": {
       "model": {
         "content": "$1"
@@ -306,341 +306,341 @@
     "description": "Shown when no API key is configured for a model; $MODEL$ is substituted with the model id (for example 'API key not configured for gemini-3.6-flash')"
   },
   "settings_defaultTone": {
-    "message": "ডিফল্ট টোন",
+    "message": "Standardtone",
     "description": "Default tone label"
   },
   "settings_defaultToneHint": {
-    "message": "লেখার উন্নতি ও উত্তরের জন্য ডিফল্ট টোন",
+    "message": "Standardtone for tekstforbedringer og svar",
     "description": "Default tone hint"
   },
   "tone_professional": {
-    "message": "পেশাদার",
+    "message": "Profesjonell",
     "description": "Professional tone"
   },
   "tone_casual": {
-    "message": "ঘরোয়া",
+    "message": "Uformell",
     "description": "Casual tone"
   },
   "tone_friendly": {
-    "message": "বন্ধুত্বপূর্ণ",
+    "message": "Vennlig",
     "description": "Friendly tone"
   },
   "tone_direct": {
-    "message": "সরাসরি",
+    "message": "Direkte",
     "description": "Direct tone"
   },
   "tone_confident": {
-    "message": "আত্মবিশ্বাসী",
+    "message": "Selvsikker",
     "description": "Confident tone"
   },
   "quick_ask_title": {
-    "message": "কুইক আস্ক",
+    "message": "Hurtigspørsmål",
     "description": "Quick ask overlay title"
   },
   "overlay_result": {
-    "message": "ফলাফল",
+    "message": "Resultat",
     "description": "Result title"
   },
   "status_thinking": {
-    "message": "ভাবছে...",
+    "message": "Tenker...",
     "description": "Thinking status"
   },
   "btn_back": {
-    "message": "ফিরে যান",
+    "message": "Tilbake",
     "description": "Back button title"
   },
   "msg_copied": {
-    "message": "কপি হয়েছে!",
+    "message": "Kopiert!",
     "description": "Copied message"
   },
   "error_noSelection": {
-    "message": "কোনো টেক্সট নির্বাচন করা হয়নি। অনুগ্রহ করে আগে কিছু টেক্সট নির্বাচন করুন।",
+    "message": "Ingen tekst er merket. Merk litt tekst først.",
     "description": "No selection error"
   },
   "settings_tagline": {
-    "message": "আপনার AI সহকারী",
+    "message": "Din AI-assistent",
     "description": "App tagline"
   },
   "settings_theme": {
-    "message": "থিম",
+    "message": "Tema",
     "description": "Theme label"
   },
   "settings_themeHint": {
-    "message": "আপনার পছন্দের চেহারা বেছে নিন",
+    "message": "Velg utseendet du foretrekker",
     "description": "Theme hint"
   },
   "theme_system": {
-    "message": "সিস্টেম ডিফল্ট",
+    "message": "Systemstandard",
     "description": "System theme"
   },
   "theme_dark": {
-    "message": "ডার্ক",
+    "message": "Mørk",
     "description": "Dark theme"
   },
   "theme_light": {
-    "message": "লাইট",
+    "message": "Lys",
     "description": "Light theme"
   },
   "settings_primaryLanguage": {
-    "message": "প্রাথমিক ভাষা",
+    "message": "Primærspråk",
     "description": "Primary language label"
   },
   "settings_primaryLanguageHint": {
-    "message": "কুইক অ্যাকশনের জন্য আপনার প্রধান ভাষা",
+    "message": "Hovedspråket ditt for hurtighandlinger",
     "description": "Primary language hint"
   },
   "settings_validate": {
-    "message": "কনফিগারেশন যাচাই করুন",
+    "message": "Valider konfigurasjonen",
     "description": "Validate button"
   },
   "settings_shortcuts": {
-    "message": "কীবোর্ড শর্টকাট",
+    "message": "Hurtigtaster",
     "description": "Shortcuts section title"
   },
   "settings_history": {
-    "message": "ব্যবহারের ইতিহাস",
+    "message": "Brukshistorikk",
     "description": "History section title"
   },
   "stats_totalActions": {
-    "message": "মোট অ্যাকশন",
+    "message": "Handlinger totalt",
     "description": "Total actions stat"
   },
   "stats_wordsProcessed": {
-    "message": "প্রক্রিয়াকৃত শব্দ",
+    "message": "Ord behandlet",
     "description": "Words processed stat"
   },
   "stats_wordsGenerated": {
-    "message": "উৎপন্ন শব্দ",
+    "message": "Ord generert",
     "description": "Words generated stat"
   },
   "settings_about": {
-    "message": "সম্পর্কে",
+    "message": "Om",
     "description": "About section title"
   },
   "btn_reportIssue": {
-    "message": "সমস্যা জানান",
+    "message": "Rapporter problem",
     "description": "Report issue link"
   },
   "btn_clearHistory": {
-    "message": "ইতিহাস মুছুন",
+    "message": "Tøm historikken",
     "description": "Clear history button tooltip"
   },
   "settings_groqKey": {
-    "message": "Groq API কী",
+    "message": "Groq API-nøkkel",
     "description": "Groq API key label"
   },
   "settings_groqKeyHint": {
-    "message": "console.groq.com থেকে বিনামূল্যে কী নিন",
+    "message": "Få en gratis nøkkel på console.groq.com",
     "description": "Groq API key hint"
   },
   "settings_openaiKey": {
-    "message": "OpenAI API কী",
+    "message": "OpenAI API-nøkkel",
     "description": "OpenAI API key label"
   },
   "settings_openaiKeyHint": {
-    "message": "platform.openai.com থেকে API কী নিন",
+    "message": "Få API-nøkkel på platform.openai.com",
     "description": "OpenAI API key hint"
   },
   "settings_tooltip_gemini": {
-    "message": "API কী নিন",
+    "message": "Hent API-nøkkel",
     "description": "Gemini tooltip title"
   },
   "settings_tooltip_groq": {
-    "message": "Groq API কী নিন",
+    "message": "Hent Groq API-nøkkel",
     "description": "Groq tooltip title"
   },
   "settings_tooltip_openai": {
-    "message": "OpenAI API কী নিন",
+    "message": "Hent OpenAI API-nøkkel",
     "description": "OpenAI tooltip title"
   },
   "settings_anthropicKey": {
-    "message": "Anthropic API কী",
+    "message": "Anthropic API-nøkkel",
     "description": "Anthropic API key label"
   },
   "settings_anthropicKeyHint": {
-    "message": "console.anthropic.com থেকে API কী নিন",
+    "message": "Få API-nøkkel på console.anthropic.com",
     "description": "Anthropic API key hint"
   },
   "settings_tooltip_anthropic": {
-    "message": "Anthropic API কী নিন",
+    "message": "Hent Anthropic API-nøkkel",
     "description": "Anthropic tooltip title"
   },
   "settings_tooltip_anthropic_s1": {
-    "message": "Anthropic Console-এ যান"
+    "message": "Gå til Anthropic Console"
   },
   "settings_tooltip_anthropic_s2": {
-    "message": "সাইন আপ বা লগ ইন করুন"
+    "message": "Registrer deg eller logg inn"
   },
   "settings_tooltip_anthropic_s3": {
-    "message": "নতুন API কী তৈরি করুন"
+    "message": "Opprett ny API-nøkkel"
   },
   "settings_shortcuts_customize": {
-    "message": "Chrome-এ কাস্টমাইজ করুন",
+    "message": "Tilpass i Chrome",
     "description": "Customize shortcut label"
   },
   "settings_shortcuts_hint": {
-    "message": "Chrome সেটিংসে শর্টকাট কাস্টমাইজ করুন",
+    "message": "Tilpass hurtigtaster i Chromes innstillinger",
     "description": "Customize shortcuts hint"
   },
   "btn_refresh": {
-    "message": "রিফ্রেশ",
+    "message": "Oppdater",
     "description": "Refresh button tooltip"
   },
   "settings_languageHint": {
-    "message": "অনুবাদের জন্য ডিফল্ট ভাষা",
+    "message": "Standardspråk for oversettelser",
     "description": "Translation language hint"
   },
   "lang_en": {
-    "message": "ইংরেজি"
+    "message": "Engelsk"
   },
   "lang_vi": {
-    "message": "ভিয়েতনামি"
+    "message": "Vietnamesisk"
   },
   "lang_es": {
-    "message": "স্প্যানিশ"
+    "message": "Spansk"
   },
   "lang_fr": {
-    "message": "ফরাসি"
+    "message": "Fransk"
   },
   "lang_de": {
-    "message": "জার্মান"
+    "message": "Tysk"
   },
   "lang_it": {
-    "message": "ইতালীয়"
+    "message": "Italiensk"
   },
   "lang_pt": {
-    "message": "পর্তুগিজ"
+    "message": "Portugisisk"
   },
   "lang_ja": {
-    "message": "জাপানি"
+    "message": "Japansk"
   },
   "lang_ko": {
-    "message": "কোরিয়ান"
+    "message": "Koreansk"
   },
   "lang_zh": {
-    "message": "চীনা"
+    "message": "Kinesisk"
   },
   "settings_languageSearchPlaceholder": {
-    "message": "ভাষা খুঁজুন",
+    "message": "Søk i språk",
     "description": "Placeholder for the search box that filters the language pickers"
   },
   "settings_languagesCommon": {
-    "message": "প্রচলিত",
+    "message": "Vanlige",
     "description": "First optgroup label in the language pickers"
   },
   "settings_languagesAll": {
-    "message": "সব ভাষা",
+    "message": "Alle språk",
     "description": "Second optgroup label listing every supported language"
   },
   "settings_confirmClearHistory": {
-    "message": "আপনি কি নিশ্চিত যে আপনি সব ব্যবহারের ইতিহাস মুছে ফেলতে চান?",
+    "message": "Er du sikker på at du vil tømme hele brukshistorikken?",
     "description": "Clear history confirmation"
   },
   "settings_errorNoApiKey": {
-    "message": "অনুগ্রহ করে আগে একটি API কী/এন্ডপয়েন্ট লিখুন।",
+    "message": "Skriv inn en API-nøkkel/endepunkt først.",
     "description": "No API key entered error"
   },
   "settings_validating": {
-    "message": "যাচাই করা হচ্ছে...",
+    "message": "Validerer...",
     "description": "Validating status"
   },
   "settings_configValid": {
-    "message": "কনফিগারেশন সঠিক! তৈরি করার জন্য প্রস্তুত।",
+    "message": "Konfigurasjonen er gyldig! Klar til å generere.",
     "description": "Config valid success"
   },
   "settings_connectionFailed": {
-    "message": "সংযোগ পরীক্ষা ব্যর্থ হয়েছে",
+    "message": "Tilkoblingssjekken mislyktes",
     "description": "Connection failed error"
   },
   "settings_checking": {
-    "message": "পরীক্ষা করা হচ্ছে...",
+    "message": "Sjekker...",
     "description": "Checking status"
   },
   "settings_failedToSave": {
-    "message": "সংরক্ষণ করা যায়নি",
+    "message": "Lagring mislyktes",
     "description": "Failed to save error"
   },
   "settings_tooltip_gemini_s1": {
-    "message": "Google AI Studio-এ যান"
+    "message": "Gå til Google AI Studio"
   },
   "settings_tooltip_gemini_s2": {
-    "message": "Create API Key-এ ক্লিক করুন"
+    "message": "Klikk på Create API Key"
   },
   "settings_tooltip_gemini_s3": {
-    "message": "কী ক্লিপবোর্ডে কপি করুন"
+    "message": "Kopier nøkkelen til utklippstavlen"
   },
   "settings_tooltip_groq_s1": {
-    "message": "Groq Console-এ যান"
+    "message": "Gå til Groq Console"
   },
   "settings_tooltip_groq_s2": {
-    "message": "সাইন আপ বা লগ ইন করুন"
+    "message": "Registrer deg eller logg inn"
   },
   "settings_tooltip_groq_s3": {
-    "message": "নতুন API কী তৈরি করুন"
+    "message": "Opprett ny API-nøkkel"
   },
   "settings_tooltip_openai_s1": {
-    "message": "OpenAI Platform-এ যান"
+    "message": "Gå til OpenAI Platform"
   },
   "settings_tooltip_openai_s2": {
-    "message": "সাইন আপ বা লগ ইন করুন"
+    "message": "Registrer deg eller logg inn"
   },
   "settings_tooltip_openai_s3": {
-    "message": "নতুন API কী তৈরি করুন"
+    "message": "Opprett ny API-nøkkel"
   },
   "overlay_suggested_fix": {
-    "message": "প্রস্তাবিত সংশোধন",
+    "message": "Foreslått rettelse",
     "description": "Suggested fix label"
   },
   "overlay_accept": {
-    "message": "গ্রহণ করুন",
+    "message": "Godta",
     "description": "Accept button"
   },
   "overlay_dismiss": {
-    "message": "বাতিল করুন",
+    "message": "Avvis",
     "description": "Dismiss button"
   },
   "overlay_no_issues": {
-    "message": "কোনো সমস্যা পাওয়া যায়নি",
+    "message": "Ingen problemer funnet",
     "description": "No issues message"
   },
   "overlay_no_issues_content": {
-    "message": "টেক্সটটি দারুণ দেখাচ্ছে!",
+    "message": "Teksten ser bra ut!",
     "description": "No issues check details"
   },
   "overlay_smart_translation": {
-    "message": "স্মার্ট অনুবাদ",
+    "message": "Smart oversettelse",
     "description": "Smart translation label"
   },
   "overlay_error": {
-    "message": "ত্রুটি",
+    "message": "Feil",
     "description": "Error label"
   },
   "overlay_translation_failed": {
-    "message": "অনুবাদ ব্যর্থ হয়েছে",
+    "message": "Oversettelsen mislyktes",
     "description": "Translation failed message"
   },
   "settings_legacyModelPrefix": {
-    "message": "(লিগ্যাসি)",
+    "message": "(Eldre)",
     "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
   },
   "settings_advanced": {
-    "message": "অ্যাডভান্সড",
+    "message": "Avansert",
     "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
   },
   "settings_customModel": {
-    "message": "কাস্টম মডেলের নাম",
+    "message": "Egendefinert modellnavn",
     "description": "Custom model label"
   },
   "settings_customModelHint": {
-    "message": "কাস্টম মডেল আইডি লিখুন",
+    "message": "Skriv inn ID-en til den egendefinerte modellen",
     "description": "Custom model hint"
   },
   "settings_errorNoCustomModel": {
-    "message": "অনুগ্রহ করে একটি কাস্টম মডেলের নাম লিখুন",
+    "message": "Skriv inn et egendefinert modellnavn",
     "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
-    "message": "যেমন: your-model-id",
+    "message": "f.eks. din-modell-id",
     "description": "Placeholder for settings_customModelPlaceholder"
   },
   "settings_customGatewayTitle": {
@@ -648,71 +648,71 @@
     "description": "Custom Gateway label"
   },
   "settings_customGatewayHint": {
-    "message": "যেকোনো OpenAI-সামঞ্জস্যপূর্ণ API এন্ডপয়েন্টের সাথে সংযোগ করুন",
+    "message": "Koble til et hvilket som helst OpenAI-kompatibelt API-endepunkt",
     "description": "Custom Gateway hint"
   },
   "settings_customGatewayUrlPlaceholder": {
-    "message": "যেমন: https://openrouter.ai/api/v1",
+    "message": "f.eks. https://openrouter.ai/api/v1",
     "description": "Placeholder for Custom Gateway base URL"
   },
   "settings_customGatewayKeyPlaceholder": {
-    "message": "আপনার API কী লিখুন...",
+    "message": "Skriv inn API-nøkkelen din...",
     "description": "Placeholder for Custom Gateway API key"
   },
   "settings_tooltip_customGateway": {
-    "message": "Custom Gateway কনফিগারেশন",
+    "message": "Konfigurasjon av Custom Gateway",
     "description": "Custom Gateway tooltip title"
   },
   "settings_customGatewayUrlNote": {
-    "message": "OpenAI-সামঞ্জস্যপূর্ণ API সমর্থন করে (OpenRouter, LiteLLM, Together AI ইত্যাদি)",
+    "message": "Støtter OpenAI-kompatible API-er (OpenRouter, LiteLLM, Together AI, osv.)",
     "description": "Note about supported API formats"
   },
   "settings_customGatewayKeyNote": {
-    "message": "কিছু গেটওয়ের জন্য ঐচ্ছিক (যেমন OpenRouter-এর ফ্রি টিয়ার)",
+    "message": "Valgfritt for enkelte gatewayer (f.eks. OpenRouter gratisnivå)",
     "description": "Note about API key being optional"
   },
   "sidebar_tab_chat": {
-    "message": "চ্যাট",
+    "message": "Chat",
     "description": "Sidebar tab label: chat"
   },
   "sidebar_tab_tools": {
-    "message": "টুলস",
+    "message": "Verktøy",
     "description": "Sidebar tab label: tools"
   },
   "sidebar_chat_placeholder": {
-    "message": "এই পেজ সম্পর্কে জিজ্ঞাসা করুন…",
+    "message": "Spør om denne siden…",
     "description": "Chat input placeholder"
   },
   "sidebar_chat_send": {
-    "message": "পাঠান",
+    "message": "Send",
     "description": "Chat send button"
   },
   "sidebar_chat_stop": {
-    "message": "থামান",
+    "message": "Stopp",
     "description": "Chat stop button"
   },
   "sidebar_chat_pageContext": {
-    "message": "পেজ প্রসঙ্গ",
+    "message": "Sidekontekst",
     "description": "Page context section label"
   },
   "sidebar_chat_includeContext": {
-    "message": "পেজ প্রসঙ্গ অন্তর্ভুক্ত করুন",
+    "message": "Inkluder sidekontekst",
     "description": "Toggle to include page context"
   },
   "sidebar_chat_empty": {
-    "message": "বর্তমান পেজ সম্পর্কে একটি কথোপকথন শুরু করুন।",
+    "message": "Start en samtale om den gjeldende siden.",
     "description": "Empty chat hint"
   },
   "sidebar_chat_error": {
-    "message": "কিছু ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+    "message": "Noe gikk galt. Prøv igjen.",
     "description": "Chat error message"
   },
   "sidebar_chat_clear": {
-    "message": "চ্যাট মুছুন",
+    "message": "Tøm chatten",
     "description": "Clear chat session button title"
   },
   "sidebar_chat_confirmClear": {
-    "message": "আপনি কি নিশ্চিত যে আপনি এই কথোপকথন মুছে ফেলতে চান?",
+    "message": "Er du sikker på at du vil tømme denne samtalen?",
     "description": "Clear chat session confirmation"
   }
 }
