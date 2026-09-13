@@ -107,6 +107,18 @@ async function initializeI18n() {
 // Start loading immediately
 initializeI18n();
 
+// primaryLanguage is what initializeI18n() reads to pick this content
+// script's own overlay locale (see the UI_LOCALE_CODES check inside it). A
+// tab whose content script already loaded before the user changes Primary
+// Language in Settings would otherwise show stale overlay text until the
+// page is reloaded -- mirrors theme-manager.js's own storage.onChanged
+// listener for the exact same live-update reason (omni_ai_theme).
+if (isContextValid()) {
+  import(chrome.runtime.getURL("lib/storage.js"))
+    .then(({ onPrimaryLanguageChanged }) => onPrimaryLanguageChanged(initializeI18n))
+    .catch(() => {});
+}
+
 // ============================================
 // State
 // ============================================
