@@ -11,6 +11,10 @@
     "message": "Omni AI",
     "description": "Popup title"
   },
+  "command_openPanel": {
+    "message": "Open Omni AI Panel",
+    "description": "_execute_action command description and Settings shortcuts list label for opening the side panel"
+  },
   "sidepanel_title": {
     "message": "Page Tools",
     "description": "Side panel section heading"
@@ -50,6 +54,10 @@
   "popup_quickAsk": {
     "message": "Ask Omni AI anything...",
     "description": "Quick ask placeholder"
+  },
+  "command_openQuickMenu": {
+    "message": "Show Quick Actions Menu",
+    "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
   "popup_context": {
     "message": "Context",
@@ -179,6 +187,22 @@
     "message": "Turn this off to use keyboard shortcuts and context menus only.",
     "description": "Floating action button preference help text"
   },
+  "settings_flashActions": {
+    "message": "Flash Actions",
+    "description": "Flash actions setting label"
+  },
+  "settings_flashActionsHint": {
+    "message": "Show these actions when hovering the floating icon, so you can run them without opening the full menu (up to 4).",
+    "description": "Flash actions setting help text"
+  },
+  "settings_flashAction_translatePrimary": {
+    "message": "Translate to Primary Language",
+    "description": "Flash action checkbox label"
+  },
+  "settings_flashAction_translateDefault": {
+    "message": "Translate to Default Language",
+    "description": "Flash action checkbox label"
+  },
   "settings_on": {
     "message": "On",
     "description": "Enabled setting option"
@@ -246,6 +270,30 @@
   "error_prefix": {
     "message": "Error: ",
     "description": "Error prefix"
+  },
+  "error_apiKeyNotConfigured_gemini": {
+    "message": "Gemini API key not configured",
+    "description": "Shown when the Gemini API key is missing"
+  },
+  "error_apiKeyNotConfigured_openai": {
+    "message": "OpenAI API key not configured",
+    "description": "Shown when the OpenAI API key is missing"
+  },
+  "error_apiKeyNotConfigured_groq": {
+    "message": "Groq API key not configured",
+    "description": "Shown when the Groq API key is missing"
+  },
+  "error_apiKeyNotConfigured_anthropic": {
+    "message": "Anthropic API key not configured",
+    "description": "Shown when the Anthropic API key is missing"
+  },
+  "error_customGatewayBaseUrlNotConfigured": {
+    "message": "Custom Gateway base URL not configured",
+    "description": "Shown when the Custom Gateway base URL is missing"
+  },
+  "error_apiKeyNotConfiguredFor": {
+    "message": "API key not configured for",
+    "description": "Prefix concatenated with a model id, e.g. 'API key not configured for gemini-3.6-flash'"
   },
   "settings_defaultTone": {
     "message": "Default Tone",
@@ -616,5 +664,49 @@
   "settings_customGatewayKeyNote": {
     "message": "Optional for some gateways (e.g., OpenRouter free tier)",
     "description": "Note about API key being optional"
+  },
+  "sidebar_tab_chat": {
+    "message": "Chat",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "Tools",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "Ask about this page…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "Send",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "Stop",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "Page context",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "Include page context",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "Start a conversation about the current page.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "Something went wrong. Please try again.",
+    "description": "Chat error message"
+  },
+  "sidebar_chat_clear": {
+    "message": "Clear chat",
+    "description": "Clear chat session button title"
+  },
+  "sidebar_chat_confirmClear": {
+    "message": "Are you sure you want to clear this conversation?",
+    "description": "Clear chat session confirmation"
   }
 }

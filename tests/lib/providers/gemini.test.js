@@ -5,14 +5,15 @@ describe("Gemini Provider", () => {
     jest.spyOn(global, "setTimeout").mockImplementation((cb) => cb());
     global.fetch = jest.fn();
     jest.clearAllMocks();
+    chrome.i18n.getMessage.mockImplementation((key) => key);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it("throws error if apiKey is missing", async () => {
-    await expect(generateContent("test", {})).rejects.toThrow("Gemini API key not configured");
+  it("throws a localized error if apiKey is missing", async () => {
+    await expect(generateContent("test", {})).rejects.toThrow("error_apiKeyNotConfigured_gemini");
   });
 
   it("calls the correct API endpoint with correct body", async () => {

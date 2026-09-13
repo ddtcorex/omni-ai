@@ -601,5 +601,41 @@
   },
   "sidepanel_resultFrom": {
     "message": "출처:"
+  },
+  "sidebar_tab_chat": {
+    "message": "채팅",
+    "description": "Sidebar tab label: chat"
+  },
+  "sidebar_tab_tools": {
+    "message": "도구",
+    "description": "Sidebar tab label: tools"
+  },
+  "sidebar_chat_placeholder": {
+    "message": "이 페이지에 대해 질문하기…",
+    "description": "Chat input placeholder"
+  },
+  "sidebar_chat_send": {
+    "message": "전송",
+    "description": "Chat send button"
+  },
+  "sidebar_chat_stop": {
+    "message": "중지",
+    "description": "Chat stop button"
+  },
+  "sidebar_chat_pageContext": {
+    "message": "페이지 컨텍스트",
+    "description": "Page context section label"
+  },
+  "sidebar_chat_includeContext": {
+    "message": "페이지 컨텍스트 포함",
+    "description": "Toggle to include page context"
+  },
+  "sidebar_chat_empty": {
+    "message": "현재 페이지에 대해 대화를 시작하세요.",
+    "description": "Empty chat hint"
+  },
+  "sidebar_chat_error": {
+    "message": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "description": "Chat error message"
   }
 }
