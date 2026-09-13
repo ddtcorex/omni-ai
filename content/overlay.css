@@ -28,8 +28,8 @@
    via content.js ensureUiStyles()). No local --ai-* / --omni-* definitions here. */
 
 /* Defensive reset against host-page styles */
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn),
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn) * {
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn, .omni-ai-flash-btn),
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn, .omni-ai-flash-btn) * {
   box-sizing: border-box;
 }
 
@@ -400,6 +400,7 @@
   position: absolute;
   z-index: 2147483647;
   display: flex;
+  align-items: center;
   gap: 6px;
   animation: omniAiScaleIn 0.15s;
 }
@@ -431,7 +432,10 @@
 }
 
 .omni-ai-flash-btn:hover {
-  transform: scale(1.1);
+  /* Matches .omni-ai-quick-btn's own hover scale exactly, so the hovered
+     flash button enlarges consistently with the floating icon instead of
+     looking like a mismatched size next to it. */
+  transform: scale(1.15);
   background: var(--omni-accent-gradient);
   color: #fff;
 }

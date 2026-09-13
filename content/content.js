@@ -15,6 +15,10 @@ const ICONS = {
   explain: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
   tone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>`,
   translate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10 15.3 15.3 0 0 1 4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+  // Bidirectional swap arrows -- distinguishes Smart Translate (auto-detects
+  // direction) from the one-directional translate_primary/translate_default,
+  // which would otherwise share the same globe icon and look identical.
+  translateSmart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`,
   ask: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
   reply: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>`,
   emoji: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>`,
@@ -104,8 +108,9 @@ const resultCache = new Map();
 // a result, without opening the full quick-action menu.
 const FLASH_ACTIONS_HOVER_DELAY = 500;
 const FLASH_ACTIONS_HIDE_GRACE = 150;
-const DEFAULT_FLASH_ACTIONS = ["translate_primary", "rephrase", "grammar"];
+const DEFAULT_FLASH_ACTIONS = ["smart_translate", "rephrase", "grammar"];
 const FLASH_ACTION_LABEL_KEYS = {
+  smart_translate: "overlay_smart_translation",
   translate_primary: "settings_flashAction_translatePrimary",
   translate_default: "settings_flashAction_translateDefault",
   grammar: "action_grammar",
@@ -125,6 +130,7 @@ const FLASH_ACTION_LABEL_KEYS = {
 // earlier decision) and has grammar before rephrase -- DEFAULT_FLASH_ACTIONS
 // above wants rephrase before grammar.
 const FLASH_ACTION_CANONICAL_ORDER = [
+  "smart_translate",
   "translate_primary",
   "translate_default",
   "rephrase",
@@ -136,6 +142,7 @@ const FLASH_ACTION_CANONICAL_ORDER = [
   "explain",
 ];
 const FLASH_ACTION_ICONS = {
+  smart_translate: ICONS.translateSmart,
   translate_primary: ICONS.translate,
   translate_default: ICONS.translate,
   grammar: ICONS.grammar,
@@ -985,7 +992,11 @@ async function showFlashActions(text, inputElement) {
   const GAP = 6;
   const rowWidth = selectedActions.length * ICON_SIZE + (selectedActions.length - 1) * GAP;
   const btnRect = quickActionBtn.getBoundingClientRect();
-  let top = btnRect.top + window.scrollY;
+  // Align centers, not tops: the icon's own rendered height doesn't always
+  // exactly equal its authored size (e.g. residual scale from its entrance
+  // animation), so matching tops alone can leave the row's true center a
+  // couple px off from the icon's -- aligning centers is robust to that.
+  let top = btnRect.top + btnRect.height / 2 - ICON_SIZE / 2 + window.scrollY;
   let left = btnRect.right + window.scrollX + GAP;
 
   if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
@@ -1230,7 +1241,11 @@ async function showQuickActionMenu(
   } else {
     // Non-Input: Trigger Translation (Smart)
     const smartAction = "smart_translate";
-    const cacheKey = `${smartAction}|${text.trim()}|chat`;
+    // Includes primaryLanguage/defaultLanguage: smartTranslate()'s result
+    // depends on both (it toggles direction between them), so a stale cache
+    // entry from before a language-setting change would otherwise keep
+    // returning the old (now-wrong) translation for the same text.
+    const cacheKey = `${smartAction}|${text.trim()}|chat|${primaryLanguage}|${defaultLanguage}`;
 
     if (resultCache.has(cacheKey)) {
       setTimeout(() => {
@@ -1322,8 +1337,19 @@ async function handleAction(action, text, isInput) {
     }
   }
 
+  // translate_primary/translate_default/smart_translate results depend on
+  // the user's Primary/Translation Language settings too, not just the text
+  // -- fold those into the cache key so a language change doesn't keep
+  // returning a stale translation cached under the old settings.
+  let langCacheSuffix = "";
+  if (["translate_primary", "translate_default", "smart_translate"].includes(action)) {
+    const { getSyncPreferences } = await import(chrome.runtime.getURL("lib/storage.js"));
+    const { primaryLanguage, defaultLanguage } = await getSyncPreferences();
+    langCacheSuffix = `|${primaryLanguage}|${defaultLanguage}`;
+  }
+
   // Skip cache for rephrase to always get fresh results
-  const cacheKey = `${action}|${text.trim()}|${preset}`;
+  const cacheKey = `${action}|${text.trim()}|${preset}${langCacheSuffix}`;
   if (action !== "rephrase" && resultCache.has(cacheKey)) {
     showResultOverlay(
       {

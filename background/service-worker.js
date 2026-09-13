@@ -194,7 +194,7 @@ async function initializeSettings() {
       autoClose: false,
       showNotifications: true,
       showFloatingButton: true,
-      flashActions: ["translate_primary", "rephrase", "grammar"],
+      flashActions: ["smart_translate", "rephrase", "grammar"],
     },
   };
 
