@@ -892,7 +892,7 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
     clearTimeout(flashHideTimer);
     clearTimeout(flashHoverTimer);
     flashHoverTimer = setTimeout(() => {
-      showFlashActions(resolveQuickBtnText(text, inputElement), !!inputElement);
+      showFlashActions(resolveQuickBtnText(text, inputElement), inputElement);
     }, FLASH_ACTIONS_HOVER_DELAY);
   });
 
@@ -928,7 +928,7 @@ function hideFlashActions() {
  * text (mirrors PROCESSING_START's guard) or the icon disappeared while the
  * hover delay/settings read was in flight.
  */
-async function showFlashActions(text, isInput) {
+async function showFlashActions(text, inputElement) {
   if (!text || !quickActionBtn) return;
 
   let selectedActions = DEFAULT_FLASH_ACTIONS;
@@ -977,7 +977,7 @@ async function showFlashActions(text, isInput) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      triggerFlashAction(/** @type {HTMLElement} */ (btn).dataset.flashAction, text, isInput);
+      triggerFlashAction(/** @type {HTMLElement} */ (btn).dataset.flashAction, text, inputElement);
     });
   });
 
@@ -1018,7 +1018,14 @@ async function showFlashActions(text, isInput) {
   flashActionsRow = row;
 }
 
-function triggerFlashAction(action, text, isInput) {
+function triggerFlashAction(action, text, inputElement) {
+  const isInput = !!inputElement;
+  // Mirrors the menu-click handler in setupQuickBtnEvents(): clicking inside
+  // the shadow root (the flash row) can leave document.activeElement no
+  // longer pointing at the original field, so replaceSelectedText()'s
+  // fallback needs this tracked explicitly -- otherwise Replace silently
+  // targets the wrong element (or nothing) for input/textarea fields.
+  if (isInput) activeInputElement = inputElement;
   hideFlashActions();
   if (quickActionBtn) {
     quickActionBtn.innerHTML = `<div class="ds-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;

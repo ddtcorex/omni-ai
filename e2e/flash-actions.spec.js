@@ -272,3 +272,42 @@ test("moving from the floating icon into the flash-actions row keeps it visible"
     server.close();
   }
 });
+
+test("Replace works after running a flash action on an <input> field", async () => {
+  const INPUT_FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(INPUT_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase"]);
+    await stubGemini(context, "WORLD-VIA-FLASH");
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.evaluate(() => {
+      const el = document.getElementById("target");
+      el.focus();
+      el.setSelectionRange(6, 11); // selects "world"
+    });
+    await page.locator("#target").dispatchEvent("mouseup");
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+
+    const flashBtn = page.locator('[data-flash-action="rephrase"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await flashBtn.click();
+
+    const replaceBtn = page.locator("#omniAiReplace");
+    await expect(replaceBtn).toBeVisible({ timeout: 5000 });
+    await replaceBtn.click();
+
+    await expect(page.locator("#target")).toHaveValue("Hello WORLD-VIA-FLASH, this is a test.");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
