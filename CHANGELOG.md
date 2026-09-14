@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.5.1] - 2026-09-14
 
 ### Removed
 
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Post-merge review of the 43-language feature (PR #158) found five real gaps**, all now fixed: the quick-action menu's per-language flag emoji only covered the original 10 languages (the other 33 showed a generic globe); the two language-search `aria-label`s were never resolved from their `__MSG_` token, so a screen reader announced the raw placeholder text; the browser-locale auto-detect for a first-time user's default Primary Language only recognized the 10 originally-shipped UI locales instead of all 43 translation languages; `content/content.js`'s dynamic import of the language registry inside the quick-action menu had no error handling, so a failed load (e.g. an extension reload mid-click) silently dropped the whole menu instead of just the flag label.
+- **Changing Primary Language now applies immediately, without a page reload.** An already-open tab's own content-script overlay used to keep showing its old-language UI text until the page was refreshed, and Settings' own page had the same problem after clicking Save: `localizeDOM()` replaces `__MSG_key__` tokens in place, so once the DOM held only already-resolved text, a second call had nothing left to re-resolve and silently did nothing. Both now refresh live: the content script listens for the `chrome.storage.sync` change, and Settings re-localizes itself (from a cache of each element's original template) right after a successful save.
 
 ### Internal
 
