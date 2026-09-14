@@ -103,9 +103,7 @@ should itself be shown in another language. If that is ever done, add the
 translated description text to this file first so the two stay in sync.
 
 SINGLE PURPOSE
-Unified writing assistant and productivity tool: it applies AI writing
-actions to the text the user selects, and summarizes, translates or
-explains the page the user is reading.
+Unified writing assistant and productivity tool: it applies AI writing actions to the text the user selects, and summarizes, translates or explains the page the user is reading.
 
 PERMISSION JUSTIFICATIONS
 Paste from `docs/PERMISSION_JUSTIFICATIONS.txt`. That file holds the

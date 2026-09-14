@@ -14,25 +14,15 @@ sidepanel/sidepanel.html, sidepanel/sidepanel.js.
 sidePanel
 =========
 
-Justification to paste (988 characters, under the 1000 character store limit):
+Justification to paste (991 characters, under the 1000 character store limit):
 
-The sidePanel permission opens Omni AI's browser side panel, a docked panel
-that stays attached to the browser window. It hosts the extension's "Page
-Tools": one-click AI actions (Summarize, Smart Translate, Explain) that run on
-the whole page the user is reading.
+The sidePanel permission opens Omni AI's browser side panel, a docked panel that stays attached to the browser window. It hosts the extension's "Page Tools": one-click AI actions (Summarize, Smart Translate, Explain) that run on the whole page the user is reading.
 
-Clicking the toolbar icon opens the panel via
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }). The
-buttons read the current page's text and send it to the AI provider the user
-configured in Settings to produce a summary, translation, or explanation.
+Clicking the toolbar icon opens the panel via chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }). The buttons read the current page's text and send it to the AI provider the user configured in Settings to produce a summary, translation, or explanation.
 
-A docked panel is used instead of a popup because a popup closes when it loses
-focus at the moment the user scrolls back into a long article. The side panel
-stays open while the user reads, so the result remains visible.
+A docked panel is used instead of a popup because a popup closes when it loses focus at the moment the user scrolls back into a long article. The side panel stays open while the user reads, so the result remains visible.
 
-Data handling: the panel reads page text only when the user invokes a Page Tool,
-sent directly to the user's chosen provider via their own API key, never stored
-or sent to any Omni AI backend, and used only for the requested result.
+Data handling: the panel reads page text only when the user invokes a Page Tool, sent directly to the user's chosen provider via their own API key, never stored or sent to any Omni AI backend, and used only for the requested result.
 
 ====================================================================
 
@@ -42,36 +32,20 @@ Declaration for the "Privacy practices" (data collection) questions
 When Google asks whether the extension collects or transmits user data, answer
 truthfully per the code:
 
-- Yes: the extension sends the content of the active page (for Page Tools) and
-  the user's selected text (for Selection Menu actions) to the AI provider the
-  user chooses (Google Gemini, OpenAI, Groq, Anthropic Claude, or a Custom
-  Gateway), using the user's own API key.
-- No: it does NOT send that data to an Omni AI backend/server (none exists),
-  does NOT store it, does NOT use it for advertising, and does NOT sell or
-  share it.
-- This is user-initiated data sent to a third-party provider of the user's
-  choosing, and is limited strictly to producing the requested AI result
-  (summarize, translate, explain, rephrase, grammar, tone, emoji, etc.).
+- Yes: the extension sends the content of the active page (for Page Tools) and the user's selected text (for Selection Menu actions) to the AI provider the user chooses (Google Gemini, OpenAI, Groq, Anthropic Claude, or a Custom Gateway), using the user's own API key.
+- No: it does NOT send that data to an Omni AI backend/server (none exists), does NOT store it, does NOT use it for advertising, and does NOT sell or share it.
+- This is user-initiated data sent to a third-party provider of the user's choosing, and is limited strictly to producing the requested AI result (summarize, translate, explain, rephrase, grammar, tone, emoji, etc.).
 
-Note on the "third party" wording: declaring that data is sent to a third party
-does NOT contradict the "no Omni AI backend" claim: the third party here is
-the AI provider the user configured, while no Omni AI backend exists. Describe
-it exactly as above.
+Note on the "third party" wording: declaring that data is sent to a third party does NOT contradict the "no Omni AI backend" claim: the third party here is the AI provider the user configured, while no Omni AI backend exists. Describe it exactly as above.
 
 ====================================================================
 
 activeTab (only if Google requests a justification)
 ====================================================
 
-The activeTab permission is used by the content script (content/content.js) to
-read the active page's text and selection so the user can run AI actions
-(grammar, rephrase, summarize, translate, explain, emoji, etc.) directly on that
-content. Access is granted only after the user explicitly interacts with the
-extension (clicking the toolbar icon, selecting text, or invoking a command),
-never in the background.
+The activeTab permission is used by the content script (content/content.js) to read the active page's text and selection so the user can run AI actions (grammar, rephrase, summarize, translate, explain, emoji, etc.) directly on that content. Access is granted only after the user explicitly interacts with the extension (clicking the toolbar icon, selecting text, or invoking a command), never in the background.
 
-No justification is currently required by the store for this permission. Do not
-add it to the listing unless Google flags it.
+No justification is currently required by the store for this permission. Do not add it to the listing unless Google flags it.
 
 ====================================================================
 
@@ -81,10 +55,16 @@ Verification log
 2026-09-14: re-verified against `manifest.json`. The requested permission
 set is unchanged (`storage`, `activeTab`, `contextMenus`, `sidePanel`;
 host permissions `https://*/*` and `http://*/*`), so no justification
-block here needed a substantive change. Only punctuation was cleaned up
-in the sidePanel block, and the character count on that heading was
-recomputed to match. That number is the length of the paste block with
-its line wrapping collapsed to single spaces, which is what the store
-counts; the wrapping in this file is for reading only. Recheck it the
-same way after editing the block, so the heading never overstates the
+block here needed a substantive change.
+
+2026-09-14: every paste block in this file (sidePanel, the Declaration
+bullets, activeTab) used to be hard-wrapped at ~80 columns for readability,
+with a note that the wrapping was "for reading only" and had to be
+collapsed to single spaces before pasting. In practice that meant retyping
+or manually rejoining the text before every paste, and it was easy to get
+wrong. Each paragraph now lives on one physical line (blank lines still
+separate paragraphs), so selecting and pasting a block works directly, no
+manual rejoining needed. The sidePanel heading's character count (991) is
+the literal length of that block as it now sits in the file; recompute it
+the same way after any edit there, so the heading never overstates the
 margin under the store's 1000 character limit.
