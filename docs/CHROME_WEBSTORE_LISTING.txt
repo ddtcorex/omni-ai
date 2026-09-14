@@ -55,87 +55,50 @@ Install Omni AI and bring AI to every tab you open.
 
 ====================================================================
 END OF THE TEXT FOR THE STORE'S "DESCRIPTION" FIELD
-Everything below is metadata for the other dashboard fields. It is not
-pasted into the description.
+Everything below is metadata for the other dashboard fields. It is not pasted into the description.
 ====================================================================
 
 MAINTENANCE RULE
-Re-check this file against the shipped extension before every upload, in
-the same commit as the version bump (AGENTS.md § Release Flow, step 4).
-The two fields that drift most are the feature list and the keyboard
-shortcuts, because nothing enforces them. The language counts are derived
-from source: 43 translation languages live in `lib/languages.js`
-(`LANGUAGES`) and the 52 interface locales are the `_locales/` directories
-listed in `UI_LOCALE_CODES` in that same file.
+Re-check this file against the shipped extension before every upload, in the same commit as the version bump (AGENTS.md § Release Flow, step 4). The two fields that drift most are the feature list and the keyboard shortcuts, because nothing enforces them. The language counts are derived from source: 43 translation languages live in `lib/languages.js` (`LANGUAGES`) and the 52 interface locales are the `_locales/` directories listed in `UI_LOCALE_CODES` in that same file.
 
 PRODUCT NAME
 Omni AI
 
 SUMMARY (132 character limit)
-The manifest ships a localized name and summary rather than hardcoded
-strings: `manifest.json` declares `"name": "__MSG_extName__"` and
-`"description": "__MSG_extDescription__"`, and Chrome resolves both from
-the active `_locales/<locale>/messages.json`. That is what Chrome itself
-displays in all 52 shipped locales, on chrome://extensions, in the
-extension menu and in the install prompt.
+The manifest ships a localized name and summary rather than hardcoded strings: `manifest.json` declares `"name": "__MSG_extName__"` and `"description": "__MSG_extDescription__"`, and Chrome resolves both from the active `_locales/<locale>/messages.json`. That is what Chrome itself displays in all 52 shipped locales, on chrome://extensions, in the extension menu and in the install prompt.
 
-The Chrome Web Store listing page is a separate surface: its title and
-summary come from the dashboard fields, not from the manifest, so those
-are English today. Localizing the store page itself is optional and is
-done in the dashboard's language tab.
+The Chrome Web Store listing page is a separate surface: its title and summary come from the dashboard fields, not from the manifest, so those are English today. Localizing the store page itself is optional and is done in the dashboard's language tab.
 
 English source strings (`_locales/en/messages.json`):
   extName:        Omni AI
-  extDescription: All-in-One AI Assistant powered by AI Models: writing enhancement, quick actions, and smart utilities
-                  (101 characters; keep it on ONE line when pasting, the wrap here is only for this file)
+  extDescription: All-in-One AI Assistant powered by AI Models: writing enhancement, quick actions, and smart utilities (101 characters; paste it as one line)
 
 CATEGORY
 Productivity (Search Tools as the secondary choice if Productivity is taken)
 
 LANGUAGES
-The listing language is English. Chrome localizes the extension's own name
-and summary automatically from `_locales`, independently of the store
-listing text, so no dashboard work is required for the 52 locales to take
-effect in Chrome itself.
+The listing language is English. Chrome localizes the extension's own name and summary automatically from `_locales`, independently of the store listing text, so no dashboard work is required for the 52 locales to take effect in Chrome itself.
 
-The dashboard's language tab is only needed when the long description above
-should itself be shown in another language. If that is ever done, add the
-translated description text to this file first so the two stay in sync.
+The dashboard's language tab is only needed when the long description above should itself be shown in another language. If that is ever done, add the translated description text to this file first so the two stay in sync.
 
 SINGLE PURPOSE
 Unified writing assistant and productivity tool: it applies AI writing actions to the text the user selects, and summarizes, translates or explains the page the user is reading.
 
 PERMISSION JUSTIFICATIONS
-Paste from `docs/PERMISSION_JUSTIFICATIONS.txt`. That file holds the
-justification blocks for the four requested permissions
-(`storage`, `activeTab`, `contextMenus`, `sidePanel`) plus the answers for
-the Privacy practices data collection questions. It is the source of truth
-for those fields; do not retype them from memory here.
+Paste from `docs/PERMISSION_JUSTIFICATIONS.txt`. That file holds the justification blocks for the four requested permissions (`storage`, `activeTab`, `contextMenus`, `sidePanel`) plus the answers for the Privacy practices data collection questions. It is the source of truth for those fields; do not retype them from memory here.
 
 PRIVACY POLICY URL
-The store requires a publicly reachable URL, not a repository file. The
-policy text lives in `docs/PRIVACY_POLICY.md`; whoever publishes it is
-responsible for re-publishing after any edit to that file, otherwise the
-store keeps serving the older text. A URL is already registered in the
-dashboard, but its value is not written down in this repository, so treat it
-as unknown here and record it the next time the dashboard is open.
+The store requires a publicly reachable URL, not a repository file. The policy text lives in `docs/PRIVACY_POLICY.md`; whoever publishes it is responsible for re-publishing after any edit to that file, otherwise the store keeps serving the older text. A URL is already registered in the dashboard, but its value is not written down in this repository, so treat it as unknown here and record it the next time the dashboard is open.
 
 DATA USAGE DISCLOSURES
-Answer the dashboard's data collection questions exactly as written in the
-declaration block of `docs/PERMISSION_JUSTIFICATIONS.txt`: the extension
-sends the selected text and, for Page Tools, the active page's text
-directly to the AI provider the user configured, using the user's own API
-key. It does not send that data to any Omni AI backend, does not store it,
-does not use it for advertising, and does not sell or share it.
+Answer the dashboard's data collection questions exactly as written in the declaration block of `docs/PERMISSION_JUSTIFICATIONS.txt`: the extension sends the selected text and, for Page Tools, the active page's text directly to the AI provider the user configured, using the user's own API key. It does not send that data to any Omni AI backend, does not store it, does not use it for advertising, and does not sell or share it.
 
 SCREENSHOTS (1280x800)
-Suggest four, in this order, since they cover the workflow a reviewer and a
-new user both look for:
+Suggest four, in this order, since they cover the workflow a reviewer and a new user both look for:
 1. The floating button and the quick action menu on a highlighted paragraph.
 2. A result card with the Replace action visible, showing an edit in place.
 3. The side panel with Summarize, Smart Translate and Explain.
 4. Settings, showing the provider cards and the language picker.
 
 ICONS
-`assets/icons/` (a 128x128 PNG is required by the store; convert the SVG if
-only the vector is present).
+`assets/icons/` (a 128x128 PNG is required by the store; convert the SVG if only the vector is present).
