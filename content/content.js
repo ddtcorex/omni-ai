@@ -585,9 +585,9 @@ function updateTranslateCard(card, result, text, isInput) {
   // Bind Copy
   const copyBtn = card.querySelector("#omniAiCopyTrans");
   if (copyBtn) {
-    copyBtn.addEventListener("click", (e) => {
+    copyBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
-      navigator.clipboard.writeText(result);
+      if (!(await copyTextToClipboard(result))) return;
       // Visual feedback
       copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--omni-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
       setTimeout(() => {
@@ -1711,6 +1711,56 @@ function sendMessageToBackground(message) {
   });
 }
 
+/**
+ * Copy text to the clipboard, tolerating hosts that block the async
+ * Clipboard API via a `Permissions-Policy: clipboard-write=()` header (e.g.
+ * vnexpress.net). navigator.clipboard.writeText() runs against the page's
+ * own document, so it inherits that policy the same way page scripts would
+ * and rejects with NotAllowedError; the legacy execCommand("copy") path is
+ * not gated by Permissions-Policy, so it still works there.
+ *
+ * document.featurePolicy.allowsFeature() reliably reports that block ahead
+ * of time (confirmed against a real Permissions-Policy: clipboard-write=()
+ * response), so check it first and skip straight to the fallback: calling
+ * the async API anyway would still fail and additionally logs a Permissions
+ * Policy violation to the DevTools Issues panel that a try/catch cannot
+ * suppress. Chrome (this extension's only target) has shipped
+ * document.featurePolicy for years, but guard with `?? true` in case that
+ * ever changes, so we still attempt the modern API rather than assume block.
+ */
+async function copyTextToClipboard(text) {
+  const featurePolicy = /** @type {any} */ (document).featurePolicy;
+  const policyAllows = featurePolicy?.allowsFeature?.("clipboard-write") ?? true;
+  if (policyAllows && navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      console.warn("[Omni AI] navigator.clipboard.writeText blocked, falling back:", error);
+    }
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.top = "0";
+  textarea.style.left = "0";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  ensureUiRoot().appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+
+  let success = false;
+  try {
+    success = document.execCommand("copy");
+  } catch (error) {
+    console.warn("[Omni AI] Fallback clipboard copy failed:", error);
+  }
+  textarea.remove();
+  return success;
+}
+
 // ============================================
 // Legacy Helper Refactors (Delegates to Strategies)
 // ============================================
@@ -1990,8 +2040,8 @@ async function showResultOverlay(payload, isInput = false) {
 
   // Copy
   const copyBtn = overlay.querySelector("#omniAiCopy");
-  copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(result);
+  copyBtn.addEventListener("click", async () => {
+    if (!(await copyTextToClipboard(result))) return;
     copyBtn.textContent = i18n.getMessage("msg_copied");
     setTimeout(() => (copyBtn.textContent = i18n.getMessage("overlay_copy")), 1500);
   });
@@ -2174,8 +2224,8 @@ async function showQuickAskOverlay(
   if (!autoQuery) input.focus({ preventScroll: true });
 
   // Copy Logic
-  copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(resultText.innerText);
+  copyBtn.addEventListener("click", async () => {
+    if (!(await copyTextToClipboard(resultText.innerText))) return;
     copyBtn.textContent = i18n.getMessage("msg_copied");
     setTimeout(() => (copyBtn.textContent = i18n.getMessage("overlay_copy")), 1500);
   });
