@@ -85,7 +85,7 @@ SINGLE PURPOSE
 Unified writing assistant and productivity tool: it applies AI writing actions to the text the user selects, and summarizes, translates or explains the page the user is reading.
 
 PERMISSION JUSTIFICATIONS
-Paste from `docs/PERMISSION_JUSTIFICATIONS.txt`. That file holds the justification blocks for the four requested permissions (`storage`, `activeTab`, `contextMenus`, `sidePanel`) plus the answers for the Privacy practices data collection questions. It is the source of truth for those fields; do not retype them from memory here.
+Paste from `docs/PERMISSION_JUSTIFICATIONS.txt`. That file holds the justification blocks for the four requested permissions (`storage`, `activeTab`, `contextMenus`, `sidePanel`), the host permission field (`https://*/*` and `http://*/*`), plus the answers for the Privacy practices data collection questions. It is the source of truth for those fields; do not retype them from memory here.
 
 PRIVACY POLICY URL
 The store requires a publicly reachable URL, not a repository file. The policy text lives in `docs/PRIVACY_POLICY.md`; whoever publishes it is responsible for re-publishing after any edit to that file, otherwise the store keeps serving the older text. A URL is already registered in the dashboard, but its value is not written down in this repository, so treat it as unknown here and record it the next time the dashboard is open.

@@ -1,8 +1,35 @@
 PERMISSION JUSTIFICATIONS: Omni AI
 
-Source of truth for the Chrome Web Store "Privacy practices" (Phuong thuc bao ve quyen rieng tu) permission justification fields. Paste the matching block below into the Chrome Web Store Developer Dashboard, Privacy tab, Permission justification. Keep this file in sync with manifest.json permissions whenever they change.
+Source of truth for the Chrome Web Store "Privacy practices" permission justification fields. Paste the matching block below into the Chrome Web Store Developer Dashboard, Privacy tab, Permission justification. The dashboard asks for a justification for every one of `manifest.json`'s permissions and its host permission field: `storage`, `activeTab`, `contextMenus`, `sidePanel`, and the host permissions `https://*/*` and `http://*/*`. Keep this file in sync with manifest.json permissions whenever they change.
 
-Verified against source: manifest.json, background/service-worker.js, sidepanel/sidepanel.html, sidepanel/sidepanel.js.
+Verified against source: manifest.json, background/service-worker.js, content/content.js, sidepanel/sidepanel.html, sidepanel/sidepanel.js.
+
+====================================================================
+
+storage
+=======
+
+Justification to paste (616 characters, under the 1000 character store limit):
+
+The storage permission lets Omni AI save the user's own preferences entirely on-device. chrome.storage.sync holds the primary/secondary translation language and the light/dark theme, so they follow the user's signed-in Chrome profile across devices. chrome.storage.local holds the AI provider API key(s) the user enters, the selected model/preset, Custom Gateway settings, and local usage statistics (actions run, words processed). Nothing here is sent to any Omni AI server: none exists. It is read only to restore the user's own settings and to send their configured API key directly to the AI provider they chose.
+
+====================================================================
+
+activeTab
+=========
+
+Justification to paste (583 characters, under the 1000 character store limit):
+
+The activeTab permission lets the extension read the content and selection of the tab the user is actively working in, only after they explicitly interact with the extension: clicking the toolbar icon, selecting text that triggers the floating button, or invoking a keyboard shortcut or a right-click menu item. That access runs the requested AI action (grammar, rephrase, summarize, translate, explain, emoji, etc.) on the page's text and inserts the result back in place with the Replace action. It is never granted or used in the background without that explicit user interaction.
+
+====================================================================
+
+contextMenus
+============
+
+Justification to paste (541 characters, under the 1000 character store limit):
+
+The contextMenus permission adds right-click menu items (Rephrase, Fix Grammar, Translate, Summarize, Explain, Add Emoji, and Ask Omni AI) so the user can trigger an AI action on selected text, or on the page itself, directly from the browser's native context menu, without first opening the extension's own UI. Selecting an item sends the relevant text to the AI provider the user configured in Settings, using their own API key, and shows the result back on the page. No text is read or sent unless the user explicitly chooses a menu item.
 
 ====================================================================
 
@@ -21,6 +48,15 @@ Data handling: the panel reads page text only when the user invokes a Page Tool,
 
 ====================================================================
 
+Host permission (https://*/* and http://*/*)
+=============================================
+
+Justification to paste (620 characters, under the 1000 character store limit):
+
+The host permissions (https://*/* and http://*/*) let Omni AI's content script run on every page automatically, since text selection can happen on any website and the floating button and quick-action menu must be ready the moment the user selects text, without requiring a click first. They also let the background service worker send the user's request directly to whichever AI provider endpoint the user has configured in Settings, Google Gemini, OpenAI, Groq, Anthropic Claude, or an arbitrary Custom Gateway URL the user supplies, since that endpoint cannot be known in advance or limited to a fixed list of domains.
+
+====================================================================
+
 Declaration for the "Privacy practices" (data collection) questions
 ===================================================================
 
@@ -34,18 +70,11 @@ Note on the "third party" wording: declaring that data is sent to a third party 
 
 ====================================================================
 
-activeTab (only if Google requests a justification)
-====================================================
-
-The activeTab permission is used by the content script (content/content.js) to read the active page's text and selection so the user can run AI actions (grammar, rephrase, summarize, translate, explain, emoji, etc.) directly on that content. Access is granted only after the user explicitly interacts with the extension (clicking the toolbar icon, selecting text, or invoking a command), never in the background.
-
-No justification is currently required by the store for this permission. Do not add it to the listing unless Google flags it.
-
-====================================================================
-
 Verification log
 ================
 
 2026-09-14: re-verified against `manifest.json`. The requested permission set is unchanged (`storage`, `activeTab`, `contextMenus`, `sidePanel`; host permissions `https://*/*` and `http://*/*`), so no justification block here needed a substantive change.
 
-2026-09-14: every paste block in this file (sidePanel, the Declaration bullets, activeTab) used to be hard-wrapped at ~80 columns for readability, with a note that the wrapping was "for reading only" and had to be collapsed to single spaces before pasting. In practice that meant retyping or manually rejoining the text before every paste, and it was easy to get wrong. Each paragraph now lives on one physical line (blank lines still separate paragraphs), so selecting and pasting a block works directly, no manual rejoining needed. The sidePanel heading's character count (991) is the literal length of that block as it now sits in the file; recompute it the same way after any edit there, so the heading never overstates the margin under the store's 1000 character limit.
+2026-09-14: every paste block in this file (sidePanel, the Declaration bullets, activeTab) used to be hard-wrapped at ~80 columns for readability, with a note that the wrapping was "for reading only" and had to be collapsed to single spaces before pasting. In practice that meant retyping or manually rejoining the text before every paste, and it was easy to get wrong. Each paragraph now lives on one physical line (blank lines still separate paragraphs), so selecting and pasting a block works directly, no manual rejoining needed. Recompute a heading's character count the same way after any edit to its block, so it never overstates the margin under the store's 1000 character limit.
+
+2026-09-14: the dashboard's Privacy tab turned out to require a justification for every permission and for the host permission field, not just sidePanel; the maintainer flagged `storage`, `contextMenus`, `activeTab` and the host permission field as empty. Added justification blocks for all four (activeTab's earlier "no justification currently required" note was wrong for this dashboard, or Google's requirements changed since it was written).
