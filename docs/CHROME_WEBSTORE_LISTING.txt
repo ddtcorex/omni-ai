@@ -136,8 +136,7 @@ new user both look for:
 1. The floating button and the quick action menu on a highlighted paragraph.
 2. A result card with the Replace action visible, showing an edit in place.
 3. The side panel with Summarize, Smart Translate and Explain.
-4. Settings, showing the provider cards and the language picker with its
-   search box.
+4. Settings, showing the provider cards and the language picker.
 
 ICONS
 `assets/icons/` (a 128x128 PNG is required by the store; convert the SVG if
