@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.2] - 2026-09-14
+
+### Fixed
+
+- **Copy now works on sites that block the async Clipboard API.** A page sending `Permissions-Policy: clipboard-write=()` (vnexpress.net does) blocks `navigator.clipboard.writeText()` for the whole document, and `content/content.js`'s three copy buttons (the result card, Quick Ask, and the Smart Translate card) called it unawaited and uncaught: copy silently did nothing while the page console collected an unhandled `NotAllowedError`. All three now go through `copyTextToClipboard()`, which checks `document.featurePolicy.allowsFeature("clipboard-write")` first and, when the page blocks the async API, goes straight to a hidden-textarea `document.execCommand("copy")` fallback that Permissions-Policy does not gate. Checking ahead of time also keeps the blocked call out of the DevTools Issues panel, which a `try/catch` alone cannot suppress. "Copied!" is now shown only after the copy actually succeeded, so the confirmation can no longer appear when nothing was copied.
+
 ## [2.5.1] - 2026-09-14
 
 ### Removed
