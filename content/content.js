@@ -107,6 +107,18 @@ async function initializeI18n() {
 // Start loading immediately
 initializeI18n();
 
+// primaryLanguage is what initializeI18n() reads to pick this content
+// script's own overlay locale (see the UI_LOCALE_CODES check inside it). A
+// tab whose content script already loaded before the user changes Primary
+// Language in Settings would otherwise show stale overlay text until the
+// page is reloaded -- mirrors theme-manager.js's own storage.onChanged
+// listener for the exact same live-update reason (omni_ai_theme).
+if (isContextValid()) {
+  import(chrome.runtime.getURL("lib/storage.js"))
+    .then(({ onPrimaryLanguageChanged }) => onPrimaryLanguageChanged(initializeI18n))
+    .catch(() => {});
+}
+
 // ============================================
 // State
 // ============================================
@@ -165,6 +177,57 @@ const FLASH_ACTION_ICONS = {
   tone: ICONS.tone,
   summarize: ICONS.summarize,
   explain: ICONS.explain,
+};
+
+// One flag per lib/languages.js registry code, for the quick-action menu's
+// "Translate to <language>" buttons. A language spoken across many countries
+// has no single correct flag; each pick below is just the most common
+// convention (e.g. Arabic -> Saudi Arabia, Swahili -> Kenya). Unknown/future
+// codes fall back to a generic globe/blank-flag at the call site.
+const LANGUAGE_FLAGS = {
+  am: "🇪🇹",
+  ar: "🇸🇦",
+  bn: "🇧🇩",
+  zh: "🇨🇳",
+  "zh-TW": "🇹🇼",
+  cs: "🇨🇿",
+  da: "🇩🇰",
+  nl: "🇳🇱",
+  en: "🇬🇧",
+  tl: "🇵🇭",
+  fi: "🇫🇮",
+  fr: "🇫🇷",
+  de: "🇩🇪",
+  el: "🇬🇷",
+  gu: "🇮🇳",
+  ha: "🇳🇬",
+  he: "🇮🇱",
+  hi: "🇮🇳",
+  hu: "🇭🇺",
+  id: "🇮🇩",
+  it: "🇮🇹",
+  ja: "🇯🇵",
+  jv: "🇮🇩",
+  ko: "🇰🇷",
+  ms: "🇲🇾",
+  mr: "🇮🇳",
+  no: "🇳🇴",
+  fa: "🇮🇷",
+  pl: "🇵🇱",
+  pt: "🇵🇹",
+  pa: "🇮🇳",
+  ro: "🇷🇴",
+  ru: "🇷🇺",
+  es: "🇪🇸",
+  sw: "🇰🇪",
+  sv: "🇸🇪",
+  ta: "🇮🇳",
+  te: "🇮🇳",
+  th: "🇹🇭",
+  tr: "🇹🇷",
+  uk: "🇺🇦",
+  ur: "🇵🇰",
+  vi: "🇻🇳",
 };
 let flashActionsRow = null;
 let flashHoverTimer = null;
@@ -1097,28 +1160,27 @@ async function showQuickActionMenu(
     }
   }
 
-  const languageFlags = {
-    en: "🇬🇧",
-    vi: "🇻🇳",
-    es: "🇪🇸",
-    fr: "🇫🇷",
-    de: "🇩🇪",
-    it: "🇮🇹",
-    pt: "🇵🇹",
-    ja: "🇯🇵",
-    ko: "🇰🇷",
-    zh: "🇨🇳",
-  };
-
-  const pFlag = languageFlags[primaryLanguage] || "🌐";
-  const dFlag = languageFlags[defaultLanguage] || "🏳️";
+  const pFlag = LANGUAGE_FLAGS[primaryLanguage] || "🌐";
+  const dFlag = LANGUAGE_FLAGS[defaultLanguage] || "🏳️";
 
   // Language names come from the shared registry (a locale's translated name
   // when there is one, otherwise the language's own name): 43 translation
-  // languages would otherwise need 43 x locale name strings.
-  const { resolveLanguageLabel } = await import(chrome.runtime.getURL("lib/languages.js"));
-  const pCode = resolveLanguageLabel(primaryLanguage, (key) => i18n.getMessage(key));
-  const dCode = resolveLanguageLabel(defaultLanguage, (key) => i18n.getMessage(key));
+  // languages would otherwise need 43 x locale name strings. Guarded: unlike
+  // the getSyncPreferences import above, nothing calls showQuickActionMenu()
+  // with a .catch(), so an unhandled rejection here (e.g. the extension
+  // reloading mid-click) would silently drop the whole menu instead of just
+  // this label.
+  /** @type {(code: string, getMessage?: (key: string) => string) => string} */
+  let resolveLabel = (code) => String(code).toUpperCase();
+  try {
+    ({ resolveLanguageLabel: resolveLabel } = await import(
+      chrome.runtime.getURL("lib/languages.js")
+    ));
+  } catch {
+    console.warn("[Omni AI] Failed to load the language registry, using raw codes");
+  }
+  const pCode = resolveLabel(primaryLanguage, (key) => i18n.getMessage(key));
+  const dCode = resolveLabel(defaultLanguage, (key) => i18n.getMessage(key));
 
   await ensureUiRootReady();
 

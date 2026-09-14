@@ -166,7 +166,7 @@ Omni AI has two independent language settings: the languages you can **translate
 
 ### Translation languages (43)
 
-`lib/languages.js` (`LANGUAGES`) is the single source of truth for this list. The Settings pickers render it behind a search box, grouped into Common and All, and the AI prompts read the language names from the same file.
+`lib/languages.js` (`LANGUAGES`) is the single source of truth for this list. The Settings pickers render it as a plain `<select>` grouped into Common and All, and the AI prompts read the language names from the same file.
 
 Amharic, Arabic, Bengali, Chinese (Simplified), Chinese (Traditional), Czech, Danish, Dutch, English, Filipino, Finnish, French, German, Greek, Gujarati, Hausa, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Javanese, Korean, Malay, Marathi, Norwegian, Persian, Polish, Portuguese, Punjabi, Romanian, Russian, Spanish, Swahili, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian, Urdu, Vietnamese.
 

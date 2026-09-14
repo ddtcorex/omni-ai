@@ -454,3 +454,98 @@ test("the auto Smart Translation card re-calls the AI after a language-setting c
     server.close();
   }
 });
+
+test("the content script's own overlay language updates live after Settings changes Primary Language, no page reload needed", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="target">The quick brown fox jumps over the lazy dog.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // primaryLanguage is also what initializeI18n() reads to decide which
+    // _locales/<lang>/messages.json the content script's OWN overlay text
+    // (not the AI's translation output) is fetched from.
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "en", defaultLanguage: "en" });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    const dragSelect = async () => {
+      const box = await page.locator("#target").boundingBox();
+      await page.mouse.move(box.x + 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+      await page.mouse.up();
+    };
+
+    await dragSelect();
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    const label = page.locator("#omniAiTranslateCard .omni-ai-suggestion-label");
+    await expect(label).toContainText("Smart Translation");
+
+    // Change Primary Language the same way Settings' Save button does --
+    // via chrome.storage.sync, on the SAME already-open page, no reload.
+    await page.locator("#omniAiClose").click();
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "vi" });
+    });
+    // initializeI18n() re-fetches _locales/vi/messages.json asynchronously;
+    // give that a beat before re-opening the menu.
+    await page.waitForTimeout(300);
+
+    await dragSelect();
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    await expect(label).toContainText("Dịch Thông Minh");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("the quick-action menu still opens even if the language registry fails to load", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <p id="target">The quick brown fox jumps over the lazy dog.</p>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "TRANSLATED");
+
+    // showQuickActionMenu()'s dynamic import of lib/languages.js (for the
+    // pCode/dCode flag labels) has no fallback path to exercise unless that
+    // import actually rejects -- force it to. content.js runs in the
+    // extension's isolated world, so page.addInitScript() (main-world only)
+    // can't reach its chrome.runtime; routing the actual resource request at
+    // the context level works regardless of which world asked for it.
+    await context.route("**/lib/languages.js", (route) => route.abort("failed"));
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    const box = await page.locator("#target").boundingBox();
+    await page.mouse.move(box.x + 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+    await page.mouse.up();
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    // The menu must still render (with a raw-code fallback label) instead of
+    // silently failing to open at all.
+    await expect(page.locator(".omni-ai-menu-grid")).toBeVisible({ timeout: 5000 });
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

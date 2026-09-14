@@ -23,8 +23,6 @@ const FIXTURE_IDS = [
   "showFloatingButton",
   "primaryLanguage",
   "defaultLanguage",
-  "primaryLanguageSearch",
-  "defaultLanguageSearch",
   "shortcutsLink",
   "saveBtn",
   "saveStatus",
@@ -58,7 +56,7 @@ function buildFixture() {
     if (["primaryLanguage", "defaultLanguage"].includes(id)) {
       // The options are rendered from lib/languages.js at runtime, which is
       // exactly what these tests exercise, so the fixture ships an empty select.
-      return `<div><input id="${id}Search" type="search" /><select id="${id}"></select></div>`;
+      return `<select id="${id}"></select>`;
     }
     if (["themeSelector", "defaultPreset", "showFloatingButton"].includes(id)) {
       return `<select id="${id}"><option value="">-</option></select>`;
@@ -161,6 +159,18 @@ describe("settings.js", () => {
     chrome.storage.sync.get.mockResolvedValue({});
     await Settings.loadSettings();
     expect(document.getElementById("primaryLanguage").value).toBe("fr");
+  });
+
+  it("loadSettings auto-detects a translation-only language that has no shipped UI locale", async () => {
+    // "am" (Amharic) is one of the 43 translation languages but ships no
+    // _locales/am/ directory, so it's absent from UI_LOCALE_CODES. Detecting
+    // the default Primary Language must still recognize it: that setting is
+    // "your main language for quick actions" (a translation target), not a
+    // choice of which locale to display Settings in.
+    chrome.i18n.getUILanguage.mockReturnValue("am");
+    chrome.storage.sync.get.mockResolvedValue({});
+    await Settings.loadSettings();
+    expect(document.getElementById("primaryLanguage").value).toBe("am");
   });
 
   it("loadSettings respects an already-saved primaryLanguage over detection", async () => {
@@ -399,89 +409,70 @@ describe("language pickers", () => {
   });
 
   it("keeps a saved code that the registry does not know", async () => {
-    Settings.wireLanguagePicker(
-      document.getElementById("primaryLanguageSearch"),
-      document.getElementById("primaryLanguage"),
-    );
     chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "xx-legacy" });
     await Settings.loadSettings();
     expect(document.getElementById("primaryLanguage").value).toBe("xx-legacy");
   });
 
-  it("narrows the options as the search box is typed into", () => {
-    const select = document.getElementById("primaryLanguage");
-    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
-    // The value that is currently selected stays selectable: dropping it would
-    // blank select.value and Save would then persist an empty language.
-    select.value = "en";
-
-    const input = document.getElementById("primaryLanguageSearch");
-    input.value = "viet";
-    input.dispatchEvent(new Event("input"));
-
-    expect(Array.from(select.options).map((option) => option.value)).toEqual(["vi", "en"]);
-  });
-
-  it("does not lose the current selection while the search box is filtering", () => {
-    const select = document.getElementById("primaryLanguage");
-    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
-    select.value = "ja";
-
-    const input = document.getElementById("primaryLanguageSearch");
-    input.value = "viet";
-    input.dispatchEvent(new Event("input"));
-
-    expect(select.value).toBe("ja");
-  });
-});
-
-describe("language picker save path", () => {
-  let Settings;
-
-  beforeEach(async () => {
-    jest.resetModules();
-    buildFixture();
-    global.fetch = jest.fn().mockResolvedValue({ json: async () => ({}) });
-    chrome.i18n.getMessage.mockImplementation((key) => key);
-    chrome.i18n.getUILanguage = jest.fn().mockReturnValue("en-US");
-    chrome.storage.sync.get.mockResolvedValue({});
-    chrome.storage.local.get.mockResolvedValue({});
-    Settings = await import("../settings.js");
-  });
-
-  it("keeps an unknown saved code selectable while a query is active", async () => {
-    const select = document.getElementById("primaryLanguage");
-    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
-    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "xx-legacy" });
-    await Settings.loadSettings();
-    expect(select.value).toBe("xx-legacy");
-
-    const input = document.getElementById("primaryLanguageSearch");
-    input.value = "viet";
-    input.dispatchEvent(new Event("input"));
-
-    expect(select.value).toBe("xx-legacy");
-    expect(Array.from(select.options).map((option) => option.value)).toEqual(["vi", "xx-legacy"]);
-  });
-
-  it("does not persist a blanked language when Save runs while the search box is filtering", async () => {
-    const select = document.getElementById("primaryLanguage");
-    Settings.wireLanguagePicker(document.getElementById("primaryLanguageSearch"), select);
+  it("saveSettings persists the selected primary and default language", async () => {
     chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "ja", defaultLanguage: "en" });
     await Settings.loadSettings();
-    // A real theme value, so the save path exercises theme persistence instead
-    // of throwing on the fixture's empty select.
-    document.getElementById("themeSelector").value = "dark";
     Settings.setupEventListeners();
-
-    const input = document.getElementById("primaryLanguageSearch");
-    input.value = "viet";
-    input.dispatchEvent(new Event("input"));
+    // A real theme value, so the save path exercises theme persistence
+    // instead of throwing on the fixture's empty select.
+    document.getElementById("themeSelector").value = "dark";
+    document.getElementById("primaryLanguage").value = "vi";
 
     document.getElementById("saveBtn").click();
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const [saved] = chrome.storage.sync.set.mock.calls.at(-1);
-    expect(saved.primaryLanguage).toBe("ja");
+    expect(saved.primaryLanguage).toBe("vi");
+    expect(saved.defaultLanguage).toBe("en");
+  });
+
+  it("re-localizes the page's own UI immediately after Save changes Primary Language, without a reload", async () => {
+    chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "en", defaultLanguage: "en" });
+    await Settings.loadSettings();
+    Settings.setupEventListeners();
+    document.getElementById("themeSelector").value = "dark";
+
+    // Stand-in for the __MSG_-templated static text settings.html ships;
+    // buildFixture()'s minimal DOM has none of its own.
+    const probe = document.createElement("span");
+    probe.textContent = "__MSG_settings_saved__";
+    document.body.appendChild(probe);
+
+    chrome.i18n.getMessage.mockImplementation((key) => `en:${key}`);
+    Settings.localizeDOM();
+    expect(probe.textContent).toBe("en:settings_saved");
+
+    chrome.i18n.getMessage.mockImplementation((key) => `vi:${key}`);
+    document.getElementById("primaryLanguage").value = "vi";
+    document.getElementById("saveBtn").click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(probe.textContent).toBe("vi:settings_saved");
+  });
+});
+
+describe("localizeDOM", () => {
+  let Settings;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    buildFixture();
+    chrome.i18n.getMessage.mockImplementation((key) => `translated:${key}`);
+    Settings = await import("../settings.js");
+  });
+
+  it("resolves a __MSG_ token in aria-label, not just title and placeholder", () => {
+    const el = document.createElement("input");
+    el.setAttribute("aria-label", "__MSG_settings_languageSearchPlaceholder__");
+    document.body.appendChild(el);
+
+    Settings.localizeDOM();
+
+    expect(el.getAttribute("aria-label")).toBe("translated:settings_languageSearchPlaceholder");
   });
 });

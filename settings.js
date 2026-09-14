@@ -19,7 +19,7 @@ import {
   setLocalAiConfig,
   getSettingsBag,
 } from "./lib/storage.js";
-import { buildLanguageOptionGroups, UI_LOCALE_CODES } from "./lib/languages.js";
+import { buildLanguageOptionGroups, LANGUAGES } from "./lib/languages.js";
 
 /**
  * Omni AI: Options Page Script
@@ -62,12 +62,6 @@ const elements = {
   ),
   primaryLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("primaryLanguage")),
   defaultLanguage: /** @type {HTMLSelectElement} */ (document.getElementById("defaultLanguage")),
-  primaryLanguageSearch: /** @type {HTMLInputElement} */ (
-    document.getElementById("primaryLanguageSearch")
-  ),
-  defaultLanguageSearch: /** @type {HTMLInputElement} */ (
-    document.getElementById("defaultLanguageSearch")
-  ),
   shortcutsLink: document.getElementById("shortcutsLink"),
   saveBtn: document.getElementById("saveBtn"),
   saveStatus: document.getElementById("saveStatus"),
@@ -85,7 +79,12 @@ const elements = {
 // State
 let isGeminiKeyVisible = false;
 
-const SUPPORTED_LOCALES = UI_LOCALE_CODES;
+// For detecting a first-time user's default Primary Language, not for the
+// Settings UI's own display locale (that's UI_LOCALE_CODES, a different,
+// narrower list): primaryLanguage is a translation target, so a browser UI
+// language with no shipped _locales/ directory (e.g. Amharic) should still be
+// recognized if it's one of the 43 translation languages.
+const SUPPORTED_LOCALES = LANGUAGES.map((language) => language.code);
 
 // Flash Actions: shown on hovering the floating quick-action icon, so common
 // actions can run without opening the full quick-action menu.
@@ -128,8 +127,6 @@ export async function init() {
   await i18n.init();
   await initTheme(); // Initialize theme
   localizeDOM();
-  wireLanguagePicker(elements.primaryLanguageSearch, elements.primaryLanguage);
-  wireLanguagePicker(elements.defaultLanguageSearch, elements.defaultLanguage);
   await loadSettings();
   await loadStats();
   setupEventListeners();
@@ -216,66 +213,67 @@ export function populateLanguageSelect(select, query = "", pinnedCode = select?.
 }
 
 /**
- * Keep a language <select> in sync with its search box, preserving whatever is
- * currently selected even while the query filters that option out.
- * @param {HTMLInputElement|null} input
- * @param {HTMLSelectElement|null} select
- * @returns {(() => void)|undefined}
+ * Resolve every __MSG_key__ token in a string against the current i18n data.
+ * @param {string} template
+ * @returns {string}
  */
-export function wireLanguagePicker(input, select) {
-  if (!select) return undefined;
-
-  const render = () => {
-    populateLanguageSelect(select, input ? input.value : "", select.value);
-  };
-
-  if (input) input.addEventListener("input", render);
-  render();
-
-  return render;
+function resolveMessageTokens(template) {
+  return template.replace(/__MSG_(\w+)__/g, (match, key) => i18n.getMessage(key) || match);
 }
+
+/**
+ * localizeDOM() replaces __MSG_key__ tokens in place, so after the first call
+ * the DOM only holds already-resolved text: nothing left for a plain
+ * "scan for __MSG_" pass to find. That made a second call (e.g. after Save
+ * changes Primary Language) a silent no-op. This cache remembers each
+ * element's ORIGINAL token template the first time it's seen, so every later
+ * call can still re-resolve it against fresh i18n data.
+ * @type {{ attributes: Array<{el: Element, attr: string, template: string}>, textNodes: Array<{node: Text, template: string}> } | null}
+ */
+let localizationCache = null;
 
 /**
  * Localize the DOM
  */
-function localizeDOM() {
+export function localizeDOM() {
   document.title = i18n.getMessage("extName") + " - " + i18n.getMessage("settings_title");
-  // Localize attributes (title and placeholder)
-  const elementsWithAttributes = document.querySelectorAll(
-    '[title*="__MSG_"], [placeholder*="__MSG_"]',
-  );
-  elementsWithAttributes.forEach((el) => {
-    ["title", "placeholder"].forEach((attr) => {
-      const val = el.getAttribute(attr);
-      if (val && val.includes("__MSG_")) {
-        el.setAttribute(
-          attr,
-          val.replace(/__MSG_(\w+)__/g, (match, key) => {
-            return i18n.getMessage(key) || match;
-          }),
-        );
-      }
-    });
-  });
 
-  // Localize text content in body
-  const walker = document.createTreeWalker(
-    document.body,
-    NodeFilter.SHOW_TEXT,
-    null,
-    // @ts-expect-error legacy 4th argument (expandEntityReferences) is ignored by Chromium
-    false,
-  );
+  if (!localizationCache) {
+    localizationCache = { attributes: [], textNodes: [] };
 
-  let node;
-  while ((node = walker.nextNode())) {
-    const text = node.nodeValue;
-    if (text.includes("__MSG_")) {
-      node.nodeValue = text.replace(/__MSG_(\w+)__/g, (match, key) => {
-        return i18n.getMessage(key) || match;
+    const elementsWithAttributes = document.querySelectorAll(
+      '[title*="__MSG_"], [placeholder*="__MSG_"], [aria-label*="__MSG_"]',
+    );
+    elementsWithAttributes.forEach((el) => {
+      ["title", "placeholder", "aria-label"].forEach((attr) => {
+        const val = el.getAttribute(attr);
+        if (val && val.includes("__MSG_")) {
+          localizationCache.attributes.push({ el, attr, template: val });
+        }
       });
+    });
+
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null,
+      // @ts-expect-error legacy 4th argument (expandEntityReferences) is ignored by Chromium
+      false,
+    );
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue.includes("__MSG_")) {
+        localizationCache.textNodes.push({ node, template: node.nodeValue });
+      }
     }
   }
+
+  localizationCache.attributes.forEach(({ el, attr, template }) => {
+    el.setAttribute(attr, resolveMessageTokens(template));
+  });
+  localizationCache.textNodes.forEach(({ node, template }) => {
+    node.nodeValue = resolveMessageTokens(template);
+  });
 }
 
 /**
@@ -720,6 +718,18 @@ async function saveSettings() {
       aiConfig.customGatewayModelName = elements.customModelName.value.trim();
     }
     await setLocalAiConfig(aiConfig);
+
+    // Primary Language may have just changed: re-run i18n and re-localize
+    // this page's own UI immediately (content.js's onPrimaryLanguageChanged
+    // listener already handles it for other open tabs' overlays).
+    await i18n.init();
+    localizeDOM();
+    if (elements.primaryLanguage) {
+      populateLanguageSelect(elements.primaryLanguage, "", preferences.primaryLanguage);
+    }
+    if (elements.defaultLanguage) {
+      populateLanguageSelect(elements.defaultLanguage, "", preferences.defaultLanguage);
+    }
 
     showSaveStatus(i18n.getMessage("settings_saved"), "success");
   } catch (error) {

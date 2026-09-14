@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **The language pickers' search box.** Typing into it did filter the `<option>`s underneath, but a closed native `<select>` never re-renders its visible label while it's collapsed, so the box appeared to do nothing until a user thought to open the dropdown separately, confirmed by screenshot. Reverted both pickers to a plain `<select>` grouped into Common / All languages (still all 43 languages, no search).
+
+### Fixed
+
+- **Post-merge review of the 43-language feature (PR #158) found five real gaps**, all now fixed: the quick-action menu's per-language flag emoji only covered the original 10 languages (the other 33 showed a generic globe); the two language-search `aria-label`s were never resolved from their `__MSG_` token, so a screen reader announced the raw placeholder text; the browser-locale auto-detect for a first-time user's default Primary Language only recognized the 10 originally-shipped UI locales instead of all 43 translation languages; `content/content.js`'s dynamic import of the language registry inside the quick-action menu had no error handling, so a failed load (e.g. an extension reload mid-click) silently dropped the whole menu instead of just the flag label.
+
 ### Internal
 
 - **The pre-push hook uses the current Husky form.** `.husky/pre-push` still carried the two shim lines Husky 9 deprecates (`#!/usr/bin/env sh` and sourcing `_/husky.sh`). They print a deprecation warning on every push, and Husky 10 refuses to run a hook that has them, which would silently disable the pre-push gate this repo relies on. Removed, so the hook is a plain executable script like `.husky/pre-commit` already was. `tests/testing-stack.test.js` now fails if any hook reintroduces either line.
