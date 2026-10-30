@@ -78,6 +78,7 @@ describe("editor adapter registry", () => {
       "content/editor-adapters.js",
       "content/positioning.js",
       "content/ui/motion.js",
+      "content/ui/surface.js",
       "content/content.js",
     ]);
     expect(contentScript.all_frames).toBe(true);

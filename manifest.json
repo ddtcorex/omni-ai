@@ -30,6 +30,7 @@
         "content/editor-adapters.js",
         "content/positioning.js",
         "content/ui/motion.js",
+        "content/ui/surface.js",
         "content/content.js"
       ],
       "css": ["content/overlay.css"],
