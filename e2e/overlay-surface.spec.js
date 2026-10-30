@@ -593,6 +593,83 @@ test("menu actions wrap as pills, primary four first", async () => {
   }
 });
 
+// WCAG relative luminance contrast of an rgb()/rgba() text color over a
+// background, both alpha composited over the layers beneath them.
+function parseRgba(value) {
+  const m = value.match(/rgba?\(([^)]+)\)/);
+  const [r, g, b, a = 1] = m[1].split(",").map((v) => parseFloat(v));
+  return { rgb: [r, g, b], a };
+}
+function composite(layers) {
+  // layers: bottom first, each { rgb, a }.
+  return layers.reduce((acc, { rgb, a }) => rgb.map((c, i) => c * a + acc[i] * (1 - a)), [0, 0, 0]);
+}
+function contrast(fg, bg) {
+  const lum = (rgb) =>
+    rgb
+      .map((c) => c / 255)
+      .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+      .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+  const [hi, lo] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+test("dark menu pills use the prototype glass values and pass AA contrast", async () => {
+  const DARK_FIXTURE = `<!doctype html><html><body style="background:#16171c">
+  <textarea id="target" rows="3" cols="40">Hello world, this is a test.</textarea>
+</body></html>`;
+  const { server, port } = await serveFixtureHtml(DARK_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await sw.evaluate(() => chrome.storage.sync.set({ omni_ai_theme: "dark" }));
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.waitForTimeout(600); // let the pill stagger settle
+
+    const s = await page.evaluate(() => {
+      const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+      const card = getComputedStyle(root.querySelector(".omni-ai-overlay"));
+      const pill = (sel) => {
+        const el = root.querySelector(sel);
+        const cs = getComputedStyle(el);
+        return {
+          color: cs.color,
+          bg: cs.backgroundColor,
+          ring: cs.boxShadow,
+          icon: getComputedStyle(el.querySelector(".omni-ai-menu-icon")).color,
+        };
+      };
+      return {
+        cardBg: card.backgroundColor,
+        cardBorder: card.borderTopColor,
+        primary: pill('.omni-ai-menu-item.is-primary[data-action="rephrase"]'),
+        secondary: pill('.omni-ai-menu-item[data-action="explain"]'),
+        page: getComputedStyle(document.body).backgroundColor,
+      };
+    });
+    expect(s.cardBg).toBe("rgba(30, 30, 40, 0.84)");
+    expect(s.cardBorder).toBe("rgba(255, 255, 255, 0.08)");
+    expect(s.secondary.bg).toBe("rgba(255, 255, 255, 0.07)");
+    expect(s.secondary.color).toBe("rgb(179, 182, 196)");
+    expect(s.primary.bg).toBe("rgba(255, 255, 255, 0.12)");
+    expect(s.primary.color).toBe("rgb(241, 242, 246)");
+    expect(s.primary.ring).toContain("rgba(255, 255, 255, 0.06) 0px 0px 0px 1px");
+    // The glyph takes the label's color, never the purple accent.
+    expect(s.primary.icon).toBe(s.primary.color);
+    expect(s.secondary.icon).toBe(s.secondary.color);
+
+    const cardRgb = composite([parseRgba(s.page), parseRgba(s.cardBg)]);
+    for (const p of [s.primary, s.secondary]) {
+      const bg = composite([{ rgb: cardRgb, a: 1 }, parseRgba(p.bg)]);
+      expect(contrast(parseRgba(p.color).rgb, bg)).toBeGreaterThanOrEqual(4.5);
+    }
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("German labels are never truncated in the menu", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
