@@ -38,11 +38,15 @@
       place(card);
     }
 
+    // Listens on the frame's document in the capture phase while a card is
+    // open: focus often stays in the editor (the toolbar never takes it) or
+    // nowhere (a keyboard command), and Escape must close the card anyway.
+    // With no card the listener is gone, so the page keeps its Escape.
     function onKeydown(event) {
-      if (event.key === "Escape") {
-        event.stopPropagation();
-        surface.close();
-      }
+      if (event.key !== "Escape" || event.isComposing) return;
+      if (!card || closing) return;
+      event.stopPropagation();
+      surface.close();
     }
 
     function buildCard() {
@@ -51,7 +55,7 @@
       inner = document.createElement("div");
       inner.className = "omni-ai-surface-inner";
       card.appendChild(inner);
-      card.addEventListener("keydown", onKeydown);
+      document.addEventListener("keydown", onKeydown, true);
       mount().appendChild(card);
     }
 
@@ -129,7 +133,7 @@
         // Superseded by a reopen (exit false, or a stale true): keep the card.
         if (closing !== run) return;
         // Still cancelled after the retries: a close wins, remove regardless.
-        el.removeEventListener("keydown", onKeydown);
+        document.removeEventListener("keydown", onKeydown, true);
         el.remove();
         card = null;
         inner = null;
