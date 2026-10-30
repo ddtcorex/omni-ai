@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Nieuwe API-sleutel aanmaken"
   },
-  "overlay_suggested_fix": {
-    "message": "Voorgestelde correctie",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Accepteren",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Negeren",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Geen problemen gevonden",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "De tekst ziet er goed uit!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Slimme vertaling",
     "description": "Smart translation label"

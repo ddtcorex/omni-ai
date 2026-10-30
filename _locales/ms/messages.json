@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Cipta Kunci API baharu"
   },
-  "overlay_suggested_fix": {
-    "message": "Cadangan Pembetulan",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Terima",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Abaikan",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Tiada masalah ditemui",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Teks ini sudah bagus!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Terjemahan Pintar",
     "description": "Smart translation label"

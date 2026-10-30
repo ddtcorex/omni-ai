@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Создайте новый ключ API"
   },
-  "overlay_suggested_fix": {
-    "message": "Предлагаемое исправление",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Принять",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Отклонить",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Проблем не найдено",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Текст отличный!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Умный перевод",
     "description": "Smart translation label"

@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Luo uusi API-avain"
   },
-  "overlay_suggested_fix": {
-    "message": "Ehdotettu korjaus",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Hyväksy",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Hylkää",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Ongelmia ei löytynyt",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Teksti näyttää hyvältä!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Älykäs käännös",
     "description": "Smart translation label"

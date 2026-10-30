@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Ustvarite nov ključ API"
   },
-  "overlay_suggested_fix": {
-    "message": "Predlagani popravek",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Sprejmi",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Zavrni",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Ni najdenih težav",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Besedilo je odlično!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Pametno prevajanje",
     "description": "Smart translation label"

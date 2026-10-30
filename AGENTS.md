@@ -55,7 +55,7 @@ omni-ai/
 |   `-- service-worker.js    # Message router, context menus, commands, side panel registration, history writes
 |-- content/
 |   |-- editor-adapters.js   # Classic-script registry for standard/rich-text/static editors
-|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint (classic script, tested via tests/content/positioning.test.js)
+|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint, placeCard, revealSide (classic script, tested via tests/content/positioning.test.js)
 |   |-- ui/motion.js         # OMNI_MOTION: spring/morph/swap helpers on the Web Animations API (classic script, tested via tests/content/motion.test.js)
 |   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
 |   |                        #   overlay cards, text replacement, Shadow DOM host

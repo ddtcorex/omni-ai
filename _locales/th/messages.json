@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "สร้างคีย์ API ใหม่"
   },
-  "overlay_suggested_fix": {
-    "message": "ข้อเสนอการแก้ไข",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "ยอมรับ",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "ไม่สนใจ",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "ไม่พบปัญหา",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "ข้อความดูดีมาก!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "การแปลอัจฉริยะ",
     "description": "Smart translation label"

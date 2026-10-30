@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "নতুন API কী তৈরি করুন"
   },
-  "overlay_suggested_fix": {
-    "message": "প্রস্তাবিত সংশোধন",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "গ্রহণ করুন",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "বাতিল করুন",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "কোনো সমস্যা পাওয়া যায়নি",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "টেক্সটটি দারুণ দেখাচ্ছে!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "স্মার্ট অনুবাদ",
     "description": "Smart translation label"

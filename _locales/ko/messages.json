@@ -495,26 +495,6 @@
   "settings_tooltip_openai_s3": {
     "message": "새 API 키를 생성합니다"
   },
-  "overlay_suggested_fix": {
-    "message": "수정 제안",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "수락",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "무시",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "문제가 발견되지 않았습니다",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "텍스트가 좋아 보입니다!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "스마트 번역",
     "description": "Smart translation label"

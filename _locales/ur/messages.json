@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "نئی API کلید بنائیں"
   },
-  "overlay_suggested_fix": {
-    "message": "تجویز کردہ اصلاح",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "قبول کریں",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "نظر انداز کریں",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "کوئی مسئلہ نہیں ملا",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "متن بہت اچھا لگ رہا ہے!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "ہوشیار ترجمہ",
     "description": "Smart translation label"

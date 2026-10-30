@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Yeni API anahtarı oluşturun"
   },
-  "overlay_suggested_fix": {
-    "message": "Önerilen Düzeltme",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Kabul Et",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Yoksay",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Sorun bulunamadı",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Metin harika görünüyor!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Akıllı Çeviri",
     "description": "Smart translation label"

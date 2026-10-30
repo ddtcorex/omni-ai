@@ -54,4 +54,55 @@ describe("positioning helpers", () => {
       expect(positioning.getRectEndPoint([firstLine, lastLine])).toEqual({ top: 60, left: 90 });
     });
   });
+
+  describe("placeCard", () => {
+    const viewport = { width: 1024, height: 768, scrollX: 0, scrollY: 0 };
+    const card = { width: 320, height: 200 };
+
+    test("placeCard opens below the anchor when it fits", () => {
+      const result = positioning.placeCard({ top: 100, left: 50, bottom: 124 }, card, viewport);
+      expect(result).toEqual({ top: 132, left: 50, placement: "below", maxHeight: 748 });
+    });
+
+    test('placeCard opens above when there is no room below and reports placement "above"', () => {
+      const result = positioning.placeCard({ top: 700, left: 50, bottom: 724 }, card, viewport);
+      expect(result.placement).toBe("above");
+      // Card bottom edge sits one gap above the anchor top.
+      expect(result.top + card.height).toBe(700 - 8);
+    });
+
+    test("placeCard caps maxHeight at the viewport height minus 20", () => {
+      const result = positioning.placeCard(
+        { top: 100, left: 50, bottom: 124 },
+        { width: 320, height: 2000 },
+        viewport,
+      );
+      expect(result.maxHeight).toBe(768 - 20);
+    });
+
+    test("placeCard keeps the card inside the right edge", () => {
+      const result = positioning.placeCard({ top: 100, left: 1000, bottom: 124 }, card, viewport);
+      expect(result.left + card.width).toBeLessThanOrEqual(1024 - 10);
+    });
+
+    test("placeCard returns document-relative coordinates when scrolled", () => {
+      const result = positioning.placeCard({ top: 100, left: 50, bottom: 124 }, card, {
+        ...viewport,
+        scrollX: 30,
+        scrollY: 500,
+      });
+      expect(result.top).toBe(500 + 132);
+      expect(result.left).toBe(30 + 50);
+    });
+  });
+
+  describe("revealSide", () => {
+    test('revealSide returns "right" when the row fits to the right of the button', () => {
+      expect(positioning.revealSide(100, 120, 1024)).toBe("right");
+    });
+
+    test('revealSide returns "left" when the row would overflow the right edge', () => {
+      expect(positioning.revealSide(1000, 120, 1024)).toBe("left");
+    });
+  });
 });

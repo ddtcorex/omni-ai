@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Crea una clau API nova"
   },
-  "overlay_suggested_fix": {
-    "message": "Correcció suggerida",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Accepta",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Descarta",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "No s'han trobat problemes",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "El text es veu molt bé!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Traducció intel·ligent",
     "description": "Smart translation label"

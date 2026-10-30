@@ -64,14 +64,14 @@ async function clickShadow(page, selector) {
   await handle.asElement().click();
 }
 
-async function openEditorMenu(page, port) {
+async function openEditorMenu(page, port, mouse = undefined) {
   await page.goto(`http://127.0.0.1:${port}/`);
   await page.evaluate(() => {
     const el = /** @type {HTMLTextAreaElement} */ (document.getElementById("target"));
     el.focus();
     el.setSelectionRange(6, 11); // selects "world"
   });
-  await page.locator("#target").dispatchEvent("mouseup");
+  await page.locator("#target").dispatchEvent("mouseup", mouse);
   await clickShadow(page, ".omni-ai-quick-btn");
   await page.waitForFunction(
     () =>
@@ -167,6 +167,117 @@ test("a new selection closes the open card", async () => {
 
     await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
     await expect.poll(() => shadowCount(page, ".omni-ai-quick-btn"), { timeout: 2000 }).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("opening the menu in an editor sends no AI request", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    let aiRequests = 0;
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      aiRequests += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: "X" }] } }] }),
+      });
+    });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.waitForTimeout(1500);
+    expect(aiRequests).toBe(0);
+    expect(await shadowCount(page, "#omniAiMagicFix")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("the floating icon stays visible while the card is open", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "WORLD-IMPROVED");
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.waitForTimeout(300);
+    expect(await shadowCount(page, ".omni-ai-quick-btn")).toBe(1);
+
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector(".omni-ai-result-text")
+          ?.textContent.includes("IMPROVED"),
+      null,
+      { timeout: 8000 },
+    );
+    expect(await shadowCount(page, ".omni-ai-quick-btn")).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a card opened above the selection grows upward", async () => {
+  const BOTTOM_FIXTURE = `<!doctype html><html><body style="margin:0;height:3000px">
+    <textarea id="target" rows="3" cols="40" style="position:fixed;bottom:10px;left:40px">Hello world, this is a test.</textarea>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(BOTTOM_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "word ".repeat(120).trim() + " LONG-DONE");
+    const page = await context.newPage();
+    // A real selection ends at the mouse, so the toolbar lands near it.
+    await openEditorMenu(page, port, { clientX: 300, clientY: 690 });
+    await page.waitForTimeout(500);
+
+    const cardBottom = () =>
+      page.evaluate(() => {
+        const el = document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector(".omni-ai-overlay");
+        return el.getBoundingClientRect().bottom;
+      });
+    const toolbarTop = await page.evaluate(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector(".omni-ai-quick-btn")
+          .getBoundingClientRect().top,
+    );
+    const before = await cardBottom();
+    expect(before).toBeLessThanOrEqual(toolbarTop);
+
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector(".omni-ai-result-text")
+          ?.textContent.includes("LONG-DONE"),
+      null,
+      { timeout: 8000 },
+    );
+    await page.waitForTimeout(700); // height morph settles
+    const after = await cardBottom();
+    expect(Math.abs(after - before)).toBeLessThanOrEqual(2);
+    const top = await page.evaluate(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector(".omni-ai-overlay")
+          .getBoundingClientRect().top,
+    );
+    expect(top).toBeGreaterThanOrEqual(0);
   } finally {
     await context.close();
     server.close();

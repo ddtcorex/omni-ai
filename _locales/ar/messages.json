@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "أنشئ مفتاح API جديداً"
   },
-  "overlay_suggested_fix": {
-    "message": "الإصلاح المقترح",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "قبول",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "تجاهل",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "لم يتم العثور على مشكلات",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "النص يبدو رائعاً!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "ترجمة ذكية",
     "description": "Smart translation label"

@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "புதிய API விசையை உருவாக்கு"
   },
-  "overlay_suggested_fix": {
-    "message": "பரிந்துரைக்கப்பட்ட திருத்தம்",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "ஏற்க",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "நிராகரி",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "எந்தச் சிக்கலும் இல்லை",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "உரை அருமையாக உள்ளது!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "ஸ்மார்ட் மொழிபெயர்ப்பு",
     "description": "Smart translation label"
