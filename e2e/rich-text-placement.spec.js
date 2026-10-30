@@ -112,6 +112,51 @@ test("in a rich text editor the toolbar sits right of the selection end on its l
   }
 });
 
+test("in a rich text editor the card opens under the start of the selection's last line", async () => {
+  const { server, port } = await serveFixtureHtml(PAGE_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    const text = await page.evaluate(() => document.getElementById("ed").textContent);
+    const from = await textRect(page, "#ed", text.indexOf("gamma"), text.indexOf("gamma") + 1);
+    const toIndex = text.indexOf("theta") + "theta".length;
+    const to = await textRect(page, "#ed", toIndex - 1, toIndex);
+    await page.mouse.move(from.x + 1, from.y + from.h / 2);
+    await page.mouse.down();
+    await page.mouse.move(to.x + to.w - 1, to.y + to.h / 2, { steps: 8 });
+    await page.mouse.up();
+    await waitShadow(page, ".omni-ai-quick-btn");
+
+    const lines = await page.evaluate(() =>
+      Array.from(window.getSelection().getRangeAt(0).getClientRects())
+        .filter((r) => r.width > 0 && r.height > 0)
+        .map((r) => ({ left: r.left, top: r.top, right: r.right, bottom: r.bottom })),
+    );
+    const last = lines[lines.length - 1];
+    const lastLineLeft = Math.min(...lines.filter((r) => r.top >= last.top - 2).map((r) => r.left));
+
+    const btn = await page.evaluateHandle(() =>
+      document.getElementById("omni-ai-shadow-host").shadowRoot.querySelector(".omni-ai-quick-btn"),
+    );
+    await btn.asElement().click();
+    await waitShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await page.waitForTimeout(600); // enter animation and reposition settle
+
+    const card = await shadowRect(page, ".omni-ai-overlay");
+    const btnRect = await shadowRect(page, ".omni-ai-quick-btn");
+    // The ✦ stays at the selection end; the card starts under the last line.
+    expect(btnRect.left).toBeGreaterThanOrEqual(last.right);
+    expect(Math.abs(card.left - lastLineLeft)).toBeLessThanOrEqual(1);
+    // Vertical rule unchanged: below the toolbar.
+    expect(card.top).toBeGreaterThanOrEqual(btnRect.bottom);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 async function openFrame(page, port) {
   await page.goto(`http://127.0.0.1:${port}/`);
   const frameEl = await page.waitForSelector("#editor");

@@ -106,6 +106,41 @@ describe("positioning helpers", () => {
     });
   });
 
+  describe("lastLineStart", () => {
+    const rect = (left, top, width, height = 20) => ({
+      left,
+      top,
+      width,
+      height,
+      right: left + width,
+      bottom: top + height,
+    });
+
+    test("is the left edge of a single line selection", () => {
+      expect(positioning.lastLineStart([rect(120, 40, 80)])).toBe(120);
+    });
+
+    test("is the leftmost rect on the last line, not the first line", () => {
+      const rects = [
+        rect(150, 40, 100),
+        rect(40, 64, 200),
+        rect(40, 88, 60),
+        rect(100, 89, 30, 18),
+      ];
+      expect(positioning.lastLineStart(rects)).toBe(40);
+    });
+
+    test("ignores the empty rect a selection ending at a block start adds", () => {
+      const rects = [rect(150, 40, 100), rect(60, 64, 90), rect(20, 88, 0)];
+      expect(positioning.lastLineStart(rects)).toBe(60);
+    });
+
+    test("is null with no measurable rects", () => {
+      expect(positioning.lastLineStart([])).toBeNull();
+      expect(positioning.lastLineStart(null)).toBeNull();
+    });
+  });
+
   describe("toolbarCandidates", () => {
     const rect = (left, top, width, height) => ({
       left,

@@ -55,7 +55,7 @@ omni-ai/
 |   `-- service-worker.js    # Message router, context menus, commands, side panel registration, history writes
 |-- content/
 |   |-- editor-adapters.js   # Classic-script registry for standard/rich-text/static editors
-|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint, placeCard, revealSide, toolbarCandidates, samplePoints, clearOfCover (classic script, tested via tests/content/positioning.test.js)
+|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint, placeCard, revealSide, toolbarCandidates, lastLineStart, samplePoints, clearOfCover (classic script, tested via tests/content/positioning.test.js)
 |   |-- ui/motion.js         # OMNI_MOTION: spring/morph/swap helpers on the Web Animations API (classic script, tested via tests/content/motion.test.js)
 |   |-- ui/surface.js        # OMNI_SURFACE: the single morphing card (`.omni-ai-overlay` + `.omni-ai-surface-inner`) and its menu/pageCard/ask/loading/result/error state machine (tests/content/surface.test.js)
 |   |-- ui/render-helpers.js # OMNI_RENDER: escapeHtml + diffHtml; every AI/page/error string reaches overlay markup through it (tests/content/render-helpers.test.js)

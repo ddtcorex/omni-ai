@@ -1009,6 +1009,13 @@ async function createQuickBtn(rect, isInput, mousePosition = null, selectionRect
   toolbar.style.top = `${top}px`;
   toolbar.style.left = `${left}px`;
   toolbar.dataset.restLeft = String(left);
+  // A rich text card opens under the start of the selection's last line
+  // (cardAnchorRect), not at the toolbar on its end. Kept as an offset from
+  // the toolbar so it follows the toolbar when the page scrolls.
+  const lineStart = spots.length > 0 ? positioning.lastLineStart(selectionRects) : null;
+  if (lineStart !== null) {
+    toolbar.dataset.cardOffset = String(lineStart + window.scrollX - left);
+  }
 
   await uiReady;
   if (quickToolbar !== toolbar) return;
@@ -1086,10 +1093,13 @@ function cardAnchorRect() {
   if (quickToolbar && quickToolbar.isConnected) {
     // The pill's height, the quick button's horizontal edges: the button
     // never moves, while the pill's left edge does when actions reveal left.
+    // A rich text toolbar shifts the left edge to its selection's last line
+    // start (cardOffset, see createQuickBtn).
     const pill = quickToolbar.getBoundingClientRect();
     const btn = quickActionBtn.getBoundingClientRect();
     if (pill.width > 0 || pill.height > 0) {
-      const left = btn.left - TOOLBAR_INSET;
+      const offset = Number(quickToolbar.dataset.cardOffset ?? 0);
+      const left = btn.left - TOOLBAR_INSET + offset;
       base = {
         top: pill.top,
         bottom: pill.bottom,

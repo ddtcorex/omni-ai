@@ -172,6 +172,27 @@
   }
 
   /**
+   * Left edge of a selection's last line: the leftmost rect whose vertical
+   * centre lies on the last rect's line (inline formatting splits a line
+   * into several rects). The card of a rich-text selection opens here, under
+   * the text, while the toolbar sits at the selection's end. Viewport
+   * relative, like the rects; null when no rect has a size.
+   *
+   * @param {DOMRectList | DOMRect[] | null} rects Range.getClientRects()
+   * @returns {number | null}
+   */
+  function lastLineStart(rects) {
+    const lines = Array.from(rects || []).filter((r) => r.width > 0 && r.height > 0);
+    if (lines.length === 0) return null;
+    const last = lines[lines.length - 1];
+    const onLastLine = lines.filter((r) => {
+      const centre = r.top + r.height / 2;
+      return centre >= last.top && centre <= last.bottom;
+    });
+    return Math.min(...onLastLine.map((r) => r.left));
+  }
+
+  /**
    * A grid of points over a rect, inset from its edges, for hit-testing.
    *
    * @param {{left: number, top: number, width: number, height: number}} rect
@@ -227,6 +248,7 @@
     placeCard,
     revealSide,
     toolbarCandidates,
+    lastLineStart,
     samplePoints,
     clearOfCover,
   };
