@@ -23,6 +23,8 @@ const ICONS = {
   grammar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
   // The ✦ mark: a filled four-point sparkle, white on the gradient button.
   btnSparkle: `<svg viewBox="0 0 24 24" class="omni-ai-btn-icon-svg" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 1C12.9 7.2 16.8 11.1 23 12C16.8 12.9 12.9 16.8 12 23C11.1 16.8 7.2 12.9 1 12C7.2 11.1 11.1 7.2 12 1Z"/></svg>`,
+  // The ➤ send mark: a solid right-pointing arrowhead with a back notch, filled like the sparkle.
+  send: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M2.5 2.8L22 12L2.5 21.2L6.8 12Z"/></svg>`,
   back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
   retry: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>`,
   copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
@@ -1391,8 +1393,8 @@ function askBoxMarkup(placeholder) {
     <div class="omni-ai-input-wrapper">
        <div class="omni-ai-ask">
          <textarea class="omni-ai-input" rows="1" placeholder="${escapeHtml(placeholder)}" id="omniAiInlineInput"></textarea>
-         <button class="omni-ai-send-btn" id="omniAiInputBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+         <button class="omni-ai-send-btn" id="omniAiInputBtn" aria-label="${escapeHtml(i18n.getMessage("sidebar_chat_send"))}">
+            ${ICONS.send}
          </button>
        </div>
     </div>`;
