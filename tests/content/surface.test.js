@@ -297,4 +297,38 @@ describe("overlay surface", () => {
     expect(surface.isOpen()).toBe(false);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  test("Escape closes the open card while focus stays outside it", async () => {
+    const editor = document.createElement("textarea");
+    document.body.appendChild(editor);
+    editor.focus();
+    await surface.open("menu");
+    const pageHandler = jest.fn();
+    editor.addEventListener("keydown", pageHandler);
+    editor.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(surface.isOpen()).toBe(false);
+    expect(onClose).toHaveBeenCalledTimes(1);
+    // The Escape closed the card, so the page does not also act on it.
+    expect(pageHandler).not.toHaveBeenCalled();
+  });
+
+  test("Escape reaches the page untouched when no card is open", async () => {
+    await surface.open("menu");
+    await surface.close();
+    const pageHandler = jest.fn();
+    document.body.addEventListener("keydown", pageHandler);
+    document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    expect(pageHandler).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("Escape during IME composition does not close the card", async () => {
+    await surface.open("menu");
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true, isComposing: true }),
+    );
+    await new Promise((r) => setTimeout(r, 0));
+    expect(surface.isOpen()).toBe(true);
+  });
 });

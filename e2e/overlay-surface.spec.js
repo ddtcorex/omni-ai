@@ -1210,37 +1210,68 @@ test("arrow keys move focus between menu pills and Enter runs the focused action
   }
 });
 
-test("Escape closes the card from any state", async () => {
+test("Escape closes the card from any state, with focus left in the editor", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
   try {
     await seedConfig(sw);
     await stubGeminiCounted(context, { reply: () => "RESULT" });
     const page = await context.newPage();
+    // Opening through the toolbar never moves focus: it stays in the editor.
     await openEditorMenu(page, port);
-    const focusPill = () =>
-      page.evaluate(() => {
-        const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
-        (
-          root.querySelector(".omni-ai-menu-item[data-action]") || root.querySelector("button")
-        ).focus();
-      });
+    const focusEditor = () => page.evaluate(() => document.getElementById("target").focus());
+    const editorFocused = () => page.evaluate(() => document.activeElement?.id === "target");
     // Menu.
-    await focusPill();
+    expect(await editorFocused()).toBe(true);
     await page.keyboard.press("Escape");
     await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
     // Result.
     await openEditorMenu(page, port);
     await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
     await waitResultText(page, "RESULT");
-    await page.evaluate(() =>
-      document
-        .getElementById("omni-ai-shadow-host")
-        .shadowRoot.querySelector("#omniAiCopy")
-        .focus(),
-    );
+    await focusEditor();
+    expect(await editorFocused()).toBe(true);
     await page.keyboard.press("Escape");
     await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a keyboard command card closes on Escape with no focus in it", async () => {
+  const { server, port } = await serveFixtureHtml(PAGE_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await sendToTab(sw, port, { type: "PROCESSING_START", action: "rephrase" });
+    await waitShadow(page, ".omni-ai-skeleton");
+    await page.keyboard.press("Escape");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("with no card open, Escape still reaches the page", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.keyboard.press("Escape");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    await page.evaluate(() => {
+      globalThis.__pageEscapes = 0;
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") globalThis.__pageEscapes += 1;
+      });
+    });
+    await page.keyboard.press("Escape");
+    expect(await page.evaluate(() => globalThis.__pageEscapes)).toBe(1);
   } finally {
     await context.close();
     server.close();
@@ -1286,8 +1317,8 @@ test("under reduced motion the card still opens and closes, with no transform an
     );
     await clickShadow(page, ".omni-ai-quick-btn");
     await waitShadow(page, ".omni-ai-menu-grid");
-    await page.keyboard.press("Escape").catch(() => {});
-    await clickShadow(page, "#omniAiClose").catch(() => {});
+    // Escape alone closes it: no Close click to fall back on.
+    await page.keyboard.press("Escape");
     await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
     const { props, seen } = await sampler;
     expect(seen).toBeGreaterThan(0);
