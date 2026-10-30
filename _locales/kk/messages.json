@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Жаңа API кілтін жасау"
   },
-  "overlay_suggested_fix": {
-    "message": "Ұсынылған түзету",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Қабылдау",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Бас тарту",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Ешбір мәселе табылмады",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Мәтін керемет!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Ақылды аударма",
     "description": "Smart translation label"

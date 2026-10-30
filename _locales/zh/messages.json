@@ -495,26 +495,6 @@
   "settings_tooltip_openai_s3": {
     "message": "创建新的 API 密钥"
   },
-  "overlay_suggested_fix": {
-    "message": "建议修改",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "接受",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "忽略",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "未发现问题",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "文本看起来很棒！",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "智能翻译",
     "description": "Smart translation label"

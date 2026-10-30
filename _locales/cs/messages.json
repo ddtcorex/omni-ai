@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Vytvořte nový klíč API"
   },
-  "overlay_suggested_fix": {
-    "message": "Navrhovaná oprava",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Přijmout",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Zamítnout",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Nenalezeny žádné problémy",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Text vypadá skvěle!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Chytrý překlad",
     "description": "Smart translation label"

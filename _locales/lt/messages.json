@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Sukurkite naują API raktą"
   },
-  "overlay_suggested_fix": {
-    "message": "Siūlomas pataisymas",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Priimti",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Atmesti",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Problemų nerasta",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Tekstas atrodo puikiai!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Išmanusis vertimas",
     "description": "Smart translation label"

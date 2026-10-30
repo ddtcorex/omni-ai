@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "ಹೊಸ API ಕೀ ರಚಿಸಿ"
   },
-  "overlay_suggested_fix": {
-    "message": "ಸೂಚಿಸಿದ ತಿದ್ದುಪಡಿ",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "ಸ್ವೀಕರಿಸಿ",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "ವಜಾಗೊಳಿಸಿ",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "ಯಾವುದೇ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿಲ್ಲ",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "ಪಠ್ಯ ಚೆನ್ನಾಗಿದೆ!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "ಸ್ಮಾರ್ಟ್ ಅನುವಾದ",
     "description": "Smart translation label"

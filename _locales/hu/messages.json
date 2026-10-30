@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Hozz létre új API-kulcsot"
   },
-  "overlay_suggested_fix": {
-    "message": "Javasolt javítás",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Elfogadás",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Elvetés",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Nem találtam problémát",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "A szöveg remek!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Okos fordítás",
     "description": "Smart translation label"

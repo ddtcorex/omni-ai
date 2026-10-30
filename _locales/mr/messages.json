@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "नवीन API की तयार करा"
   },
-  "overlay_suggested_fix": {
-    "message": "सुचवलेली दुरुस्ती",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "स्वीकारा",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "बंद करा",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "कोणतीही अडचण आढळली नाही",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "मजकूर उत्तम आहे!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "स्मार्ट भाषांतर",
     "description": "Smart translation label"

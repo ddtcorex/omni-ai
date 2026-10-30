@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "പുതിയ API കീ സൃഷ്ടിക്കുക"
   },
-  "overlay_suggested_fix": {
-    "message": "നിർദ്ദേശിത തിരുത്ത്",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "സ്വീകരിക്കുക",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "നിരസിക്കുക",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "പ്രശ്നങ്ങളൊന്നും കണ്ടെത്തിയില്ല",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "ടെക്സ്റ്റ് മികച്ചതാണ്!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "സ്മാർട്ട് വിവർത്തനം",
     "description": "Smart translation label"

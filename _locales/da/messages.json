@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Opret en ny API-nøgle"
   },
-  "overlay_suggested_fix": {
-    "message": "Foreslået rettelse",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Acceptér",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Afvis",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Ingen problemer fundet",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Teksten ser godt ud!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Smart oversættelse",
     "description": "Smart translation label"

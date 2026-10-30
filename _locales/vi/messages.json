@@ -548,26 +548,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Tạo Khóa API mới"
   },
-  "overlay_suggested_fix": {
-    "message": "Đề xuất sửa lỗi",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Chấp nhận",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Bỏ qua",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Không tìm thấy lỗi",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Văn bản trông tuyệt vời!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Dịch Thông Minh",
     "description": "Smart translation label"

@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Creează o cheie API nouă"
   },
-  "overlay_suggested_fix": {
-    "message": "Corectare sugerată",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Acceptă",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Respinge",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Nu s-au găsit probleme",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Textul arată grozav!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Traducere inteligentă",
     "description": "Smart translation label"

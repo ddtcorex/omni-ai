@@ -446,7 +446,12 @@ function currentCardPosition() {
   const computed = window.getComputedStyle(overlay);
   const top = parseInt(computed.top, 10);
   const left = parseInt(computed.left, 10);
-  return isNaN(top) || isNaN(left) ? null : { top, left };
+  if (isNaN(top) || isNaN(left)) return null;
+  if (overlay.dataset.placement === "above") {
+    const bottom = parseFloat(computed.bottom);
+    if (!isNaN(bottom)) return { top, left, bottom, placement: "above" };
+  }
+  return { top, left };
 }
 
 function isEventInsideOmniUi(event) {
@@ -610,63 +615,6 @@ function computeDiff(original, corrected) {
   return html.replace(/__NEWLINE__\s?/g, "\n").trim();
 }
 
-function updateSmartFixCard(card, originalText, correctedText, isInput, activeElement = null) {
-  if (!card) return;
-
-  if (originalText.trim() === correctedText.trim()) {
-    card.innerHTML = `
-        <div class="omni-ai-suggestion-icon" style="background:rgba(34,197,94,0.1);color:var(--omni-success)">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-        <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="color:var(--omni-success)">${i18n.getMessage("overlay_no_issues")}</div>
-            <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_no_issues_content")}</div>
-        </div>
-    `;
-    return;
-  }
-
-  const diffHtml = computeDiff(originalText, correctedText);
-
-  card.innerHTML = `
-     <div style="flex:1;">
-        <div class="omni-ai-suggestion-label">${i18n.getMessage("overlay_suggested_fix")}</div>
-        <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; white-space: pre-wrap;">${diffHtml}</div>
-        <div style="display:flex; gap:8px; margin-top:8px;">
-            <button class="ds-btn-primary" id="omniAiAcceptFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_accept")}</button>
-            <button class="ds-btn-secondary" id="omniAiDismissFix" style="font-size:10px; padding:4px 8px;">${i18n.getMessage("overlay_dismiss")}</button>
-        </div>
-     </div>
-  `;
-
-  const acceptBtn = card.querySelector("#omniAiAcceptFix");
-  const dismissBtn = card.querySelector("#omniAiDismissFix");
-
-  acceptBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
-    if (await replaceSelectedText(correctedText, activeElement)) hideOverlay();
-  });
-
-  dismissBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    card.innerHTML = `
-        <div class="omni-ai-suggestion-icon">
-           ${ICONS.magic}
-        </div>
-        <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label">${i18n.getMessage("action_grammar")}</div>
-            <div class="omni-ai-suggestion-content">${i18n.getMessage("desc_grammar")}</div>
-        </div>
-    `;
-    card.addEventListener("click", () => handleAction("grammar", originalText, isInput), {
-      once: true,
-    });
-  });
-
-  // Re-position after content update to prevent cutoff
-  setTimeout(() => positionOverlay(currentAnchorRect), 10);
-}
-
 function updateTranslateCard(card, result, text, isInput) {
   card.innerHTML = `
       <div class="omni-ai-suggestion-info">
@@ -712,7 +660,7 @@ function updateTranslateCard(card, result, text, isInput) {
   });
 
   // Ensure position is updated after content change
-  setTimeout(() => positionOverlay(currentAnchorRect), 10);
+  setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 10);
 }
 
 function init() {
@@ -780,8 +728,7 @@ function setupMessageListener() {
         break;
 
       case "SHOW_QUICK_ASK_OVERLAY": {
-        hideQuickActionButton();
-        const rect = getSelectionRect();
+        const rect = cardAnchorRect();
         const selection = getSelectedText();
         const isInput = isTextInput(document.activeElement);
         if (isInput) activeInputElement = document.activeElement;
@@ -797,10 +744,9 @@ function setupMessageListener() {
         // for non-input selections, which throws on an undefined/empty text.
         const menuText = getSelectedText();
         if (menuText) {
-          hideQuickActionButton();
           const isInput = isTextInput(document.activeElement);
           if (isInput) activeInputElement = document.activeElement;
-          showQuickActionMenu(menuText, getSelectionRect(), null, isInput);
+          showQuickActionMenu(menuText, cardAnchorRect(), null, isInput);
         }
         sendResponse({ success: true });
         break;
@@ -1080,6 +1026,24 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
   quickActionBtn.addEventListener("mouseleave", scheduleHideFlashActions);
 }
 
+// Where a card with no explicit anchor opens: under the floating toolbar when
+// it is visible, otherwise at the selection (context menu, keyboard commands).
+function cardAnchorRect() {
+  if (quickActionBtn && quickActionBtn.isConnected) {
+    const rect = quickActionBtn.getBoundingClientRect();
+    if (rect.width > 0 || rect.height > 0) return rect;
+  }
+  return getSelectionRect();
+}
+
+// The toolbar now stays while a card is open, so a spinner a flash action or
+// the worker put inside it must not outlive the work it announced.
+function resetQuickButtonIcon() {
+  if (!quickActionBtn) return;
+  quickActionBtn.innerHTML = ICONS.btnSparkle;
+  quickActionBtn.style.cursor = "";
+}
+
 function hideQuickActionButton() {
   clearTimeout(flashHoverTimer);
   hideFlashActions();
@@ -1171,28 +1135,25 @@ async function showFlashActions(text, inputElement) {
   // animation), so matching tops alone can leave the row's true center a
   // couple px off from the icon's -- aligning centers is robust to that.
   let top = btnRect.top + btnRect.height / 2 - ICON_SIZE / 2 + window.scrollY;
-  let left = btnRect.right + window.scrollX + GAP;
-
-  if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
-    const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
-      top,
-      left,
-      rowWidth,
-      ICON_SIZE,
-      window.scrollX,
-      window.scrollY,
-      window.innerWidth,
-      window.innerHeight,
-    );
-    top = clamped.top;
-    // Only take the clamped left if it didn't just squeeze the row under the
-    // button (clamping alone can't know to flip sides); flip to the button's
-    // left edge instead when the row would otherwise overlap it.
-    left =
-      clamped.left < btnRect.left + window.scrollX
-        ? btnRect.left + window.scrollX - rowWidth - GAP
-        : clamped.left;
-  }
+  const positioning = /** @type {any} */ (self).OMNI_POSITIONING;
+  const side = positioning.revealSide(btnRect.right, rowWidth, window.innerWidth);
+  // The toolbar never moves: the row reveals to its left when it does not
+  // fit to its right.
+  let left =
+    side === "right"
+      ? btnRect.right + window.scrollX + GAP
+      : btnRect.left + window.scrollX - rowWidth - GAP;
+  if (left < window.scrollX) left = window.scrollX;
+  top = positioning.clampToViewport(
+    top,
+    left,
+    rowWidth,
+    ICON_SIZE,
+    window.scrollX,
+    window.scrollY,
+    window.innerWidth,
+    window.innerHeight,
+  ).top;
 
   row.style.top = `${top}px`;
   row.style.left = `${left}px`;
@@ -1229,10 +1190,8 @@ async function showQuickActionMenu(
   lockedPosition = null,
   isInput = false,
 ) {
-  hideQuickActionButton();
-
   // Save current anchor for re-positioning later
-  const menuAnchorRect = anchorRect || getSelectionRect();
+  const menuAnchorRect = anchorRect || cardAnchorRect();
   currentAnchorRect = menuAnchorRect;
 
   // Fetch settings
@@ -1285,7 +1244,7 @@ async function showQuickActionMenu(
   };
   overlayLockedPosition = lockedPosition;
 
-  // Editors get the menu with Smart Fix, page text gets the page card with
+  // Editors get the plain menu, page text gets the page card with
   // the Smart Translation card. The surface morphs an open card in place.
   getSurface().open(isInput ? "menu" : "pageCard", {
     text,
@@ -1371,49 +1330,10 @@ function scheduleMenuReposition(surf) {
 
 function renderMenuState(inner, data, surf) {
   const { text, isInput } = data;
-  // Quick Fix Section (With Loading State): "Thinking..." -> Smart Fix
-  const quickFix = `
-    <div class="omni-ai-quick-fix-section">
-      <div class="omni-ai-suggestion-card" id="omniAiMagicFix">
-        <div class="omni-ai-suggestion-icon">
-           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
-        </div>
-        <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("status_thinking")}</div>
-            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
-        </div>
-      </div>
-    </div>
-  `;
-  inner.innerHTML = buildMenuMarkup(data, quickFix);
+  // Editors get the plain menu: no background AI call runs until the user
+  // picks an action.
+  inner.innerHTML = buildMenuMarkup(data, "");
   bindMenuEvents(inner, text, isInput);
-
-  // TRIGGER AUTOMATIC ACTION: Smart Fix
-  const token = surf.beginRequest();
-  sendMessageToBackground({
-    type: "QUICK_ACTION",
-    payload: { action: "grammar", text, preset: "chat" },
-  })
-    .then((response) => {
-      if (!surf.isCurrent(token)) return;
-      const card = inner.querySelector("#omniAiMagicFix");
-      if (response.success && card) {
-        // Pass activeInputElement if we tracked it
-        const targetEl = activeInputElement || document.activeElement;
-        updateSmartFixCard(card, text, response.data.response, isInput, targetEl);
-      } else if (card) {
-        // Show error or revert
-        card.innerHTML = `
-            <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
-            <div class="omni-ai-suggestion-info">
-                <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
-                <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_analysis_failed")}</div>
-            </div>
-         `;
-      }
-    })
-    .catch(() => {}); // silent fail
-
   scheduleMenuReposition(surf);
 }
 
@@ -1475,7 +1395,7 @@ function renderPageCardState(inner, data, surf) {
             `;
         }
         // Ensure position is updated after content change
-        setTimeout(() => positionOverlay(currentAnchorRect), 10);
+        setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 10);
       })
       .catch(() => {});
   }
@@ -1681,121 +1601,99 @@ function getSelectionRect() {
   return context.getRect(activeElement);
 }
 
+// Gap between the anchor (toolbar or selection) and the card.
+const CARD_GAP = 8;
+
+// Place the card. Opens just under the anchor, left-aligned with it; when
+// there is no room below it opens above, and then the bottom edge is the
+// pinned one (CSS `bottom`) so height changes grow upward and the card never
+// slides over the selection. `lockedPosition` keeps an open card where it
+// already sits: {top, left} for a below card, {top, left, bottom,
+// placement: "above"} for an above card.
 function positionOverlay(anchorRect = null, lockedPosition = null) {
   if (!overlay) return;
 
   // Ensure visibility to calculate height
   overlay.style.display = "flex";
   overlay.style.visibility = "hidden";
+  overlay.style.maxHeight = "";
+  overlay.style.position = "";
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  // `bottom` resolves against the initial containing block, whose height is
+  // the viewport height without a horizontal scrollbar.
+  const containerHeight = document.documentElement.clientHeight || viewportHeight;
+
+  const pinAbove = (left, bottom) => {
+    const bottomEdge = containerHeight - bottom; // document-relative
+    const room = bottomEdge - scrollY - 10;
+    overlay.style.maxHeight = `${Math.max(120, Math.min(viewportHeight - 20, room))}px`;
+    overlay.style.top = "auto";
+    overlay.style.bottom = `${Math.round(bottom)}px`;
+    overlay.style.left = `${Math.round(left)}px`;
+    overlay.style.transformOrigin = "bottom left";
+    overlay.dataset.placement = "above";
+  };
+
+  const pinBelow = (top, left) => {
+    overlay.style.bottom = "auto";
+    overlay.style.top = `${Math.round(top)}px`;
+    overlay.style.left = `${Math.round(left)}px`;
+    overlay.style.transformOrigin = "top left";
+    overlay.dataset.placement = "below";
+  };
 
   if (lockedPosition) {
-    let { top, left } = lockedPosition;
+    if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
+      pinAbove(lockedPosition.left, lockedPosition.bottom);
+    } else {
+      let { top, left } = lockedPosition;
+      const overlayHeight = overlay.offsetHeight || 400;
+      const minTop = scrollY + 10;
+      const maxTop = viewportHeight + scrollY - overlayHeight - 10;
+      const available = viewportHeight + scrollY - 10 - top;
 
-    // Boundary checks for locked position
-    const overlayHeight = overlay.offsetHeight || 400;
-    const viewportHeight = window.innerHeight;
-    const scrollY = window.scrollY;
-    const minTop = scrollY + 10;
-    const maxTop = viewportHeight + scrollY - overlayHeight - 10;
-
-    // Safety: ensure height doesn't exceed viewport
-    if (overlayHeight > viewportHeight - 20) {
-      overlay.style.maxHeight = viewportHeight - 20 + "px";
-      // Re-measure after setting max-height
-      // overlayHeight = overlay.offsetHeight; // (Optional optimization, but let's trust CSS reflow if needed next time)
+      if (overlayHeight > available && available >= 200) {
+        // Keep the top edge still and scroll inside the card.
+        overlay.style.maxHeight = `${available}px`;
+      } else {
+        overlay.style.maxHeight = `${viewportHeight - 20}px`;
+        // Not enough room even to scroll: shift up.
+        if (top > maxTop) top = Math.max(minTop, maxTop);
+      }
+      if (top < minTop) top = minTop;
+      pinBelow(top, left);
     }
-
-    // If it goes off the bottom, shift up
-    if (top > maxTop) {
-      top = Math.max(minTop, maxTop);
-    }
-    // If it goes off the top, shift down (unlikely for locked, but good safety)
-    if (top < minTop) {
-      top = minTop;
-    }
-
-    overlay.style.top = `${top}px`;
-    overlay.style.left = `${left}px`;
     overlay.style.visibility = "visible";
     overlay.style.transform = "none";
     return;
   }
 
   if (anchorRect) {
-    const overlayWidth = 320;
-    const gap = 12;
-
-    // Preference: RIGHT-aligned with anchor (grows left)
-    // This puts the overlay to the left of the 'sparkle icon' position
-    let left = anchorRect.right - overlayWidth;
-    let top = anchorRect.bottom + gap;
-
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const overlayHeight = overlay.offsetHeight || 400;
-
-    // Safety: ensure height doesn't exceed viewport
-    if (overlayHeight > viewportHeight - 20) {
-      overlay.style.maxHeight = viewportHeight - 20 + "px";
-    }
-
-    // 1. Horizontal Boundary Check
-    // If aligning right edge causes it to go off-screen to the left:
-    if (left < 10) {
-      // Align left edge with anchor instead
-      left = anchorRect.left;
-    }
-
-    // If still off-screen to the right after that:
-    if (left + overlayWidth > viewportWidth - 10) {
-      left = viewportWidth - overlayWidth - 10;
-    }
-
-    // Always ensure it's at least 10px from the left edge
-    if (left < 10) left = 10;
-
-    // 2. Vertical Boundary Check (Prefer Below, Flip Above if needed)
-    if (top + overlayHeight > viewportHeight + window.scrollY - 10) {
-      // Flip up
-      top = anchorRect.top + window.scrollY - overlayHeight - gap;
+    const placed = /** @type {any} */ (self).OMNI_POSITIONING.placeCard(
+      { top: anchorRect.top, left: anchorRect.left, bottom: anchorRect.bottom },
+      { width: overlay.offsetWidth || 320, height: overlay.offsetHeight || 400 },
+      { width: viewportWidth, height: viewportHeight, scrollX, scrollY },
+      CARD_GAP,
+    );
+    overlay.style.maxHeight = `${placed.maxHeight}px`;
+    if (placed.placement === "above") {
+      pinAbove(placed.left, containerHeight - (anchorRect.top + scrollY - CARD_GAP));
     } else {
-      top += window.scrollY;
+      pinBelow(placed.top, placed.left);
     }
-
-    // Adjust left for scroll
-    left += window.scrollX;
-
-    // Clamp vertical final
-    const minTop = window.scrollY + 10;
-    const maxTop = viewportHeight + window.scrollY - overlayHeight - 10;
-    if (top < minTop) top = minTop;
-    if (top > maxTop) top = maxTop;
-
-    if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
-      const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
-        top,
-        left,
-        overlay.offsetWidth || overlayWidth,
-        overlay.offsetHeight || overlayHeight,
-        window.scrollX,
-        window.scrollY,
-        window.innerWidth,
-        window.innerHeight,
-      );
-      top = clamped.top;
-      left = clamped.left;
-    }
-
-    overlay.style.top = `${Math.round(top)}px`;
-    overlay.style.left = `${Math.round(left)}px`;
-    overlay.style.transformOrigin = "top right";
     overlay.style.transform = "none";
   } else {
     // True Center
     overlay.style.top = "50%";
+    overlay.style.bottom = "auto";
     overlay.style.left = "50%";
     overlay.style.transform = "translate(-50%, -50%)";
     overlay.style.position = "fixed";
+    delete overlay.dataset.placement;
   }
 
   overlay.style.visibility = "visible";
@@ -1997,14 +1895,14 @@ function renderToneSelector(activeTone) {
 }
 
 async function showResultOverlay(payload, isInput = false) {
-  hideQuickActionButton();
+  resetQuickButtonIcon();
   const surf = getSurface();
   const data = { ...payload, isInput };
 
   if (isCardOpen()) {
     // Capture current position to prevent jumping
     overlayLockedPosition = currentCardPosition();
-    if (!currentAnchorRect) currentAnchorRect = getSelectionRect();
+    if (!currentAnchorRect) currentAnchorRect = cardAnchorRect();
     return surf.to("result", data);
   }
 
@@ -2012,7 +1910,7 @@ async function showResultOverlay(payload, isInput = false) {
   // No card yet (keyboard shortcut, context menu, flash action): position
   // near the selection.
   overlayLockedPosition = null;
-  currentAnchorRect = getSelectionRect() || currentAnchorRect;
+  currentAnchorRect = cardAnchorRect() || currentAnchorRect;
   return surf.open("result", data);
 }
 
@@ -2099,7 +1997,7 @@ function renderResultState(inner, data, surf) {
                 surf,
               );
               // Ensure position is updated after tone switch
-              setTimeout(() => positionOverlay(currentAnchorRect), 50);
+              setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 50);
             }
           } catch (err) {
             if (!surf.isCurrent(token)) return;
@@ -2222,7 +2120,7 @@ async function showQuickAskOverlay(
   await ensureUiRootReady();
 
   // Save current anchor for re-positioning
-  currentAnchorRect = lockedRect || getSelectionRect() || currentAnchorRect;
+  currentAnchorRect = lockedRect || cardAnchorRect() || currentAnchorRect;
   overlayLockedPosition = null;
   askBackContext = { originalText, lockedRect };
   getSurface().open("ask", { originalText, autoQuery, isInput });
@@ -2335,7 +2233,7 @@ function renderAskState(inner, data, surf) {
   if (autoQuery) setTimeout(handleAsk, 0);
 
   // Optimize position after render to avoid cut-off
-  setTimeout(() => positionOverlay(currentAnchorRect), 10);
+  setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 10);
 }
 
 async function showErrorInOverlay(msg) {
@@ -2343,7 +2241,7 @@ async function showErrorInOverlay(msg) {
   // catch/error branch without ever opening the menu card first: the surface
   // opens one, or the error would render nowhere and leave the floating
   // icon's spinner frozen.
-  hideQuickActionButton();
+  resetQuickButtonIcon();
   const surf = getSurface();
   if (isCardOpen()) {
     overlayLockedPosition = currentCardPosition();
@@ -2351,7 +2249,7 @@ async function showErrorInOverlay(msg) {
   }
   await ensureUiRootReady();
   overlayLockedPosition = null;
-  currentAnchorRect = getSelectionRect() || currentAnchorRect;
+  currentAnchorRect = cardAnchorRect() || currentAnchorRect;
   return surf.open("error", { msg });
 }
 

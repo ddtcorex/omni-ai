@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "కొత్త API కీని సృష్టించండి"
   },
-  "overlay_suggested_fix": {
-    "message": "సూచించిన సవరణ",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "అంగీకరించండి",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "విస్మరించండి",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "ఎలాంటి సమస్యలు కనుగొనబడలేదు",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "వచనం బాగుంది!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "స్మార్ట్ అనువాదం",
     "description": "Smart translation label"

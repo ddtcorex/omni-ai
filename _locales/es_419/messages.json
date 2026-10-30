@@ -587,26 +587,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Crea una nueva clave API"
   },
-  "overlay_suggested_fix": {
-    "message": "Corrección sugerida",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Aceptar",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Descartar",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "No se encontraron problemas",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "¡El texto se ve genial!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Traducción Inteligente",
     "description": "Smart translation label"
