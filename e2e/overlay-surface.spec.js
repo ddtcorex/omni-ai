@@ -1495,3 +1495,64 @@ test("a keyboard selection change while the card is open closes it and the toolb
     server.close();
   }
 });
+
+test("a centred Quick Ask card stays put on a scrolled page when it changes state", async () => {
+  const TALL = `<!doctype html><html><body>
+    <div style="height:3000px">Top</div>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(TALL);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 1500, reply: () => "ANSWER" });
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => window.scrollTo(0, 900));
+    await sendToTab(sw, port, { type: "SHOW_QUICK_ASK_OVERLAY" });
+    await waitShadow(page, "#omniAiInlineInput");
+    // The card's box once every animation on it has finished.
+    const settledBox = async () => {
+      await page.waitForFunction(() => {
+        const card = document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector(".omni-ai-overlay");
+        // The skeleton shimmer loops forever and a finished fill stays
+        // listed: only finite animations still running count.
+        return (
+          card &&
+          card
+            .getAnimations({ subtree: true })
+            .every(
+              (a) => a.playState !== "running" || a.effect.getComputedTiming().endTime === Infinity,
+            )
+        );
+      });
+      return page.evaluate(() => {
+        const r = document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector(".omni-ai-overlay")
+          .getBoundingClientRect();
+        return { top: r.top, left: r.left };
+      });
+    };
+    const asked = await settledBox();
+    // Centred in the viewport, not somewhere in the scrolled document.
+    expect(asked.top).toBeGreaterThan(0);
+    expect(asked.top).toBeLessThan(await page.evaluate(() => window.innerHeight));
+
+    await page.keyboard.type("What is this?");
+    await page.keyboard.press("Enter");
+    await waitShadow(page, ".omni-ai-skeleton");
+    const loading = await settledBox();
+    expect(Math.abs(loading.top - asked.top)).toBeLessThanOrEqual(2);
+    expect(Math.abs(loading.left - asked.left)).toBeLessThanOrEqual(2);
+
+    await waitResultText(page, "ANSWER");
+    const result = await settledBox();
+    expect(Math.abs(result.top - asked.top)).toBeLessThanOrEqual(2);
+    expect(Math.abs(result.left - asked.left)).toBeLessThanOrEqual(2);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

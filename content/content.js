@@ -498,6 +498,8 @@ function currentCardPosition() {
   const top = parseInt(computed.top, 10);
   const left = parseInt(computed.left, 10);
   if (isNaN(top) || isNaN(left)) return null;
+  // A centred card is fixed: its top/left are viewport coordinates.
+  if (overlay.dataset.placement === "center") return { top, left, fixed: true };
   if (overlay.dataset.placement === "above") {
     const bottom = parseFloat(computed.bottom);
     if (!isNaN(bottom)) return { top, left, bottom, placement: "above" };
@@ -1848,7 +1850,8 @@ function containingBlockEdges() {
 // slides over the selection. `anchorRect.top` should already include the
 // selection (see cardAnchorRect). `lockedPosition` keeps an open card where
 // it already sits, in the card's own CSS coordinates: {top, left} for a below
-// card, {top, left, bottom, placement: "above"} for an above card.
+// card, {top, left, bottom, placement: "above"} for an above card, and
+// {top, left, fixed: true} (viewport coordinates) for a centred card.
 function positionOverlay(anchorRect = null, lockedPosition = null) {
   if (!overlay) return;
 
@@ -1887,8 +1890,10 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
       applyAbove(lockedPosition.left, lockedPosition.bottom);
     } else {
+      // A centred card stays fixed to the viewport, so it has no offset.
+      const origin = lockedPosition.fixed ? 0 : cb.top;
       const overlayHeight = overlay.offsetHeight || 400;
-      let top = lockedPosition.top + cb.top; // viewport y
+      let top = lockedPosition.top + origin; // viewport y
       const available = viewportHeight - 10 - top;
 
       if (overlayHeight > available && available >= 200) {
@@ -1902,7 +1907,11 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
         }
       }
       if (top < 10) top = 10;
-      applyBelow(top - cb.top, lockedPosition.left);
+      applyBelow(top - origin, lockedPosition.left);
+      if (lockedPosition.fixed) {
+        overlay.style.position = "fixed";
+        overlay.dataset.placement = "center";
+      }
     }
     overlay.style.visibility = "visible";
     overlay.style.transform = "none";
@@ -1925,13 +1934,20 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     }
     overlay.style.transform = "none";
   } else {
-    // True Center
-    overlay.style.top = "50%";
-    overlay.style.bottom = "auto";
-    overlay.style.left = "50%";
-    overlay.style.transform = "translate(-50%, -50%)";
+    // Centred in the viewport, in pixels rather than a translate(-50%) so the
+    // enter animation's transform cannot move it and a later state can lock
+    // the same top/left (currentCardPosition).
+    const docEl = document.documentElement;
+    const width = overlay.offsetWidth || 320;
+    const height = overlay.offsetHeight || 400;
     overlay.style.position = "fixed";
-    delete overlay.dataset.placement;
+    overlay.style.maxHeight = `${viewportHeight - 20}px`;
+    overlay.style.top = `${Math.max(10, Math.round((docEl.clientHeight - height) / 2))}px`;
+    overlay.style.bottom = "auto";
+    overlay.style.left = `${Math.max(10, Math.round((docEl.clientWidth - width) / 2))}px`;
+    overlay.style.transform = "none";
+    overlay.style.transformOrigin = "center";
+    overlay.dataset.placement = "center";
   }
 
   overlay.style.visibility = "visible";
