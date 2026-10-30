@@ -25,6 +25,8 @@ const ICONS = {
   btnSparkle: `<svg viewBox="0 0 24 24" class="omni-ai-btn-icon-svg" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 1C12.9 7.2 16.8 11.1 23 12C16.8 12.9 12.9 16.8 12 23C11.1 16.8 7.2 12.9 1 12C7.2 11.1 11.1 7.2 12 1Z"/></svg>`,
   // The ➤ send mark: a solid right-pointing arrowhead with a back notch, filled like the sparkle.
   send: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M2.5 2.8L22 12L2.5 21.2L6.8 12Z"/></svg>`,
+  // Chat bubble for the Ask state header.
+  ask: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
   back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
   retry: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>`,
   copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
@@ -1360,13 +1362,39 @@ function actionTitle(action) {
   return key ? i18n.getMessage(key) : i18n.getMessage("overlay_result");
 }
 
-// Header shared by the loading, result, error and ask states: back, a small
-// gradient mark, the title, close.
-function cardHeader(title, { back = true } = {}) {
+// The header glyph of each state is the icon of its action, so the loading and
+// result headers of one action match. Keys land in data-icon on the wrapper.
+const HEADER_ICON_KEYS = {
+  rephrase: "rephrase",
+  grammar: "grammar",
+  tone: "tone",
+  summarize: "summarize",
+  explain: "explain",
+  reply: "reply",
+  emoji: "emoji",
+  smart_translate: "translate",
+  translate_primary: "translate",
+  translate_default: "translate",
+  quick_ask: "ask",
+  ask: "ask",
+  translate: "translate",
+  error: "warn",
+};
+
+function headerIconMarkup(key) {
+  const name = HEADER_ICON_KEYS[key];
+  const svg = name ? ICONS[name] : ICONS.btnSparkle;
+  const dataIcon = name || "sparkle";
+  return `<span class="omni-ai-title-icon" data-icon="${dataIcon}" aria-hidden="true">${svg}</span>`;
+}
+
+// Header shared by the loading, result, error and ask states: back, the
+// state's action icon, the title, close.
+function cardHeader(title, { back = true, icon = "" } = {}) {
   return `
     <div class="omni-ai-overlay-header">
       ${back ? `<button class="omni-ai-icon-btn" id="omniAiBack" title="${escapeHtml(i18n.getMessage("btn_back"))}">${ICONS.back}</button>` : ""}
-      <span class="omni-ai-title-mark"></span>
+      ${headerIconMarkup(icon)}
       <span class="omni-ai-title">${escapeHtml(title)}</span>
       <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
     </div>`;
@@ -1483,6 +1511,7 @@ function renderPageCardState(inner, data, surf) {
   inner.innerHTML = `
     <div class="omni-ai-translate" id="omniAiTranslateCard">
       <div class="omni-ai-translate-head">
+        ${headerIconMarkup("translate")}
         <span class="omni-ai-suggestion-label">${escapeHtml(i18n.getMessage("overlay_smart_translation"))}</span>
         <span class="omni-ai-spacer"></span>
         <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${escapeHtml(i18n.getMessage("overlay_copy"))}" disabled>${ICONS.copy}</button>
@@ -2305,7 +2334,7 @@ function renderLoadingState(inner, data, surf) {
     ? i18n.getMessage("overlay_loading_action", [actionTitle(action)])
     : i18n.getMessage("status_working");
   inner.innerHTML = `
-    ${cardHeader(title)}
+    ${cardHeader(title, { icon: action || "" })}
     ${action === "tone" ? tonesMarkup(preset) : ""}
     ${action === "quick_ask" ? queryMarkup(query) : ""}
     <div class="omni-ai-content-area">${SKELETON}</div>`;
@@ -2339,7 +2368,7 @@ function renderResultState(inner, data, surf) {
   const canDiff = DIFF_ACTIONS.includes(action) && Boolean(originalText);
 
   inner.innerHTML = `
-    ${cardHeader(actionTitle(action))}
+    ${cardHeader(actionTitle(action), { icon: action || "" })}
     ${action === "tone" ? tonesMarkup(preset || "professional") : ""}
     ${action === "quick_ask" ? queryMarkup(query) : ""}
     <div class="omni-ai-content-area"><div class="omni-ai-result-text"></div></div>
@@ -2504,7 +2533,7 @@ function renderAskState(inner, data, surf) {
     ? `<div class="omni-ai-ask-context">${escapeHtml(String(originalText).replace(/\s+/g, " ").trim())}</div>`
     : "";
   inner.innerHTML = `
-    ${cardHeader(i18n.getMessage("quick_ask_title"))}
+    ${cardHeader(i18n.getMessage("quick_ask_title"), { icon: "ask" })}
     ${context}
     ${askBoxMarkup(placeholder)}`;
   bindCardHeader(inner, surf);
@@ -2532,7 +2561,7 @@ async function showErrorInOverlay(msg, retryData = {}) {
 function renderErrorState(inner, data, surf) {
   const title = data.action ? actionTitle(data.action) : i18n.getMessage("overlay_error");
   inner.innerHTML = `
-    ${cardHeader(title)}
+    ${cardHeader(title, { icon: "error" })}
     <div class="omni-ai-content-area">
       <div class="omni-ai-error" role="alert">
         ${ICONS.warn}

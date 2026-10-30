@@ -64,6 +64,22 @@ async function clickShadow(page, selector) {
   await handle.asElement().click();
 }
 
+// The icon wrapper in the card header: its data-icon, how many svgs it holds,
+// and how many of the old decorative gradient marks remain (none).
+function headerIcon(page) {
+  return page.evaluate(() => {
+    const header = document
+      .getElementById("omni-ai-shadow-host")
+      .shadowRoot.querySelector(".omni-ai-overlay-header");
+    const w = header.querySelector(".omni-ai-title-icon");
+    return {
+      icon: w && w.getAttribute("data-icon"),
+      svgs: w ? w.querySelectorAll("svg").length : 0,
+      mark: header.querySelectorAll(".omni-ai-title-mark").length,
+    };
+  });
+}
+
 async function openEditorMenu(page, port, mouse = undefined) {
   await page.goto(`http://127.0.0.1:${port}/`);
   await page.evaluate(() => {
@@ -865,8 +881,11 @@ test("loading shows a skeleton and the action name", async () => {
     await waitShadow(page, ".omni-ai-skeleton");
     expect(await shadowCount(page, ".omni-ai-skeleton .omni-ai-skeleton-line")).toBe(3);
     expect(await shadowText(page, ".omni-ai-overlay-header")).toContain("Rephrase");
+    expect(await headerIcon(page)).toEqual({ icon: "rephrase", svgs: 1, mark: 0 });
     expect(await shadowCount(page, ".omni-ai-overlay .ds-spinner")).toBe(0);
     await waitResultText(page, "DONE");
+    // The result header keeps the same action icon.
+    expect(await headerIcon(page)).toEqual({ icon: "rephrase", svgs: 1, mark: 0 });
     expect(await shadowCount(page, ".omni-ai-skeleton")).toBe(0);
   } finally {
     await context.close();
@@ -1160,6 +1179,7 @@ test("an AI failure shows the error inside the card with Try again", async () =>
     expect(await shadowText(page, ".omni-ai-error")).toContain("<b>bad</b> key");
     expect(await shadowCount(page, ".omni-ai-error b")).toBe(0);
     expect(await shadowText(page, "#omniAiRetry")).toContain("Try again");
+    expect(await headerIcon(page)).toEqual({ icon: "warn", svgs: 1, mark: 0 });
 
     fail = false;
     const before = stub.hits;
