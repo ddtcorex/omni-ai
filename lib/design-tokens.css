@@ -69,7 +69,7 @@
   --omni-motion-press: 0.96;
 
   /* Refined glass (overlay toolbar, card and pills): dark (default) */
-  --omni-glass-surface: rgba(30, 30, 40, 0.84);
+  --omni-glass-surface: rgba(30, 30, 40, 0.92);
   --omni-glass-border: rgba(255, 255, 255, 0.08);
   --omni-glass-ring: rgba(255, 255, 255, 0.06);
   --omni-glass-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
@@ -82,7 +82,7 @@
      --omni-text-* page tokens so the settings and side panel keep theirs. */
   --omni-glass-text: #f1f2f6;
   --omni-glass-text-secondary: #c2c5d2;
-  --omni-glass-text-tertiary: #9a9eb1;
+  --omni-glass-text-tertiary: #a8acbd;
   --omni-accent-glow: 0 2px 8px rgba(139, 92, 246, 0.4);
   /* AA companions for white content on, and accent text over, the overlay
      glass. --omni-accent-gradient stays as is for settings and side panel;
