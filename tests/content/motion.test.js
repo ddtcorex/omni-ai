@@ -318,6 +318,14 @@ describe("motion helpers", () => {
       expect(calls).toHaveLength(2);
     });
 
+    test("a render that returns false stops the morph before height and fade in", async () => {
+      const container = document.createElement("div");
+      const inner = document.createElement("div");
+      await motion.morph(container, inner, () => false);
+      // Only the fade out ran: no height animation, no fade in.
+      expect(calls).toHaveLength(1);
+    });
+
     test("exit resolves true when it completes", async () => {
       await expect(motion.exit(document.createElement("div"))).resolves.toBe(true);
     });

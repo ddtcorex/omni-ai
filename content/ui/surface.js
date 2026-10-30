@@ -87,8 +87,9 @@
       if (!opts.replace && current && current.state !== "loading") history.push(current);
       current = { state, data };
       await motion().morph(card, inner, () => {
-        // A newer transition replaced this one while it was fading out.
-        if (current && current.state === state && current.data === data) renderInto(state, data);
+        // A close or a newer transition replaced this one while it faded out.
+        if (closing || !current || current.state !== state || current.data !== data) return false;
+        renderInto(state, data);
       });
     }
 
@@ -104,7 +105,8 @@
       const previous = history.pop();
       current = previous;
       await motion().morph(card, inner, () => {
-        if (current === previous) renderInto(previous.state, previous.data);
+        if (closing || current !== previous) return false;
+        renderInto(previous.state, previous.data);
       });
     }
 
@@ -114,7 +116,12 @@
       token += 1;
       const el = card;
       const run = (async () => {
-        const completed = await motion().exit(el);
+        let completed = await motion().exit(el);
+        // Something else animated the card meanwhile: a close still wins, so
+        // exit again (a reopen clears `closing` and ends the loop).
+        for (let i = 0; i < 3 && closing === run && !completed; i += 1) {
+          completed = await motion().exit(el);
+        }
         // Superseded by a reopen (exit false, or a stale true): keep the card.
         if (closing !== run || !completed) return;
         el.removeEventListener("keydown", onKeydown);
