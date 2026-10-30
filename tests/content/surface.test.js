@@ -1,0 +1,176 @@
+/** @jest-environment jsdom */
+describe("overlay surface", () => {
+  let surface;
+  let mount;
+  let renderers;
+  let place;
+  let onClose;
+  let backFallback;
+  let exitResolvers;
+  let manualExit;
+
+  function make(extra = {}) {
+    return global.OMNI_SURFACE.create({
+      mount: () => mount,
+      renderers,
+      place,
+      onClose,
+      ...extra,
+    });
+  }
+
+  beforeEach(() => {
+    jest.resetModules();
+    global.self = global;
+    document.body.innerHTML = "";
+    mount = document.createElement("div");
+    document.body.appendChild(mount);
+    exitResolvers = [];
+    manualExit = false;
+    global.OMNI_MOTION = {
+      enter: jest.fn(() => ({})),
+      exit: jest.fn(() =>
+        manualExit ? new Promise((resolve) => exitResolvers.push(resolve)) : Promise.resolve(true),
+      ),
+      morph: jest.fn(async (container, inner, render) => render()),
+    };
+    renderers = {};
+    ["menu", "pageCard", "ask", "loading", "result", "error"].forEach((name) => {
+      renderers[name] = jest.fn((inner) => {
+        inner.textContent = name;
+      });
+    });
+    place = jest.fn();
+    onClose = jest.fn();
+    backFallback = jest.fn();
+    require("../../content/ui/surface.js");
+    surface = make({ backFallback });
+  });
+
+  test("open renders the state into a single .omni-ai-overlay and calls place", async () => {
+    await surface.open("menu", { a: 1 });
+    const cards = mount.querySelectorAll(".omni-ai-overlay");
+    expect(cards).toHaveLength(1);
+    expect(cards[0].querySelectorAll(".omni-ai-surface-inner")).toHaveLength(1);
+    expect(cards[0].textContent).toBe("menu");
+    expect(renderers.menu).toHaveBeenCalledWith(
+      cards[0].querySelector(".omni-ai-surface-inner"),
+      { a: 1 },
+      surface,
+    );
+    expect(place).toHaveBeenCalledWith(cards[0]);
+    expect(global.OMNI_MOTION.enter).toHaveBeenCalledWith(cards[0]);
+    expect(surface.isOpen()).toBe(true);
+    expect(surface.state()).toBe("menu");
+    expect(surface.card()).toBe(cards[0]);
+  });
+
+  test("to swaps content in the same card element", async () => {
+    await surface.open("menu");
+    const before = surface.card();
+    await surface.to("result", { text: "x" });
+    expect(surface.card()).toBe(before);
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(1);
+    expect(before.textContent).toBe("result");
+    expect(surface.state()).toBe("result");
+    expect(place).toHaveBeenCalledTimes(2);
+  });
+
+  test("back returns to the previous non-loading state", async () => {
+    await surface.open("menu", { m: 1 });
+    await surface.to("loading");
+    await surface.to("result");
+    await surface.back();
+    expect(surface.state()).toBe("menu");
+    expect(surface.card().textContent).toBe("menu");
+    expect(renderers.menu).toHaveBeenLastCalledWith(expect.anything(), { m: 1 }, surface);
+  });
+
+  test("back with an empty history uses backFallback", async () => {
+    await surface.open("menu");
+    await surface.back();
+    expect(backFallback).toHaveBeenCalledTimes(1);
+    expect(surface.isOpen()).toBe(true);
+  });
+
+  test("back with an empty history and no fallback closes", async () => {
+    const s = make();
+    await s.open("menu");
+    await s.back();
+    expect(s.isOpen()).toBe(false);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("close removes the card only after the exit animation resolves", async () => {
+    manualExit = true;
+    await surface.open("menu");
+    const closing = surface.close();
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(1);
+    exitResolvers[0](true);
+    await closing;
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(0);
+    expect(surface.isOpen()).toBe(false);
+    expect(surface.state()).toBeNull();
+    expect(surface.card()).toBeNull();
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("close twice is a no-op the second time", async () => {
+    await surface.open("menu");
+    await surface.close();
+    await surface.close();
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(global.OMNI_MOTION.exit).toHaveBeenCalledTimes(1);
+  });
+
+  test("a token taken before close is no longer current after it", async () => {
+    await surface.open("menu");
+    const t1 = surface.beginRequest();
+    expect(surface.isCurrent(t1)).toBe(true);
+    await surface.close();
+    expect(surface.isCurrent(t1)).toBe(false);
+  });
+
+  test("a token taken before to or back is no longer current after it", async () => {
+    await surface.open("menu");
+    const t1 = surface.beginRequest();
+    await surface.to("result");
+    expect(surface.isCurrent(t1)).toBe(false);
+    const t2 = surface.beginRequest();
+    await surface.back();
+    expect(surface.isCurrent(t2)).toBe(false);
+  });
+
+  test("opening while a close animation runs keeps exactly one card in the root", async () => {
+    manualExit = true;
+    await surface.open("menu");
+    const closing = surface.close();
+    const reopened = surface.open("ask");
+    // The real motion.exit resolves false when enter supersedes it.
+    exitResolvers[0](false);
+    await Promise.all([closing, reopened]);
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(1);
+    expect(surface.isOpen()).toBe(true);
+    expect(surface.state()).toBe("ask");
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  test("a stale exit that still reports true does not remove a reopened card", async () => {
+    manualExit = true;
+    await surface.open("menu");
+    const closing = surface.close();
+    const reopened = surface.open("ask");
+    exitResolvers[0](true);
+    await Promise.all([closing, reopened]);
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(1);
+    expect(surface.isOpen()).toBe(true);
+  });
+
+  test("Escape inside the card closes it", async () => {
+    await surface.open("menu");
+    surface.card().dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(surface.isOpen()).toBe(false);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});
