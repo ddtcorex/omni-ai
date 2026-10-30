@@ -238,7 +238,7 @@ test("a card opened above the selection grows upward", async () => {
     const page = await context.newPage();
     // A real selection ends at the mouse, so the toolbar lands near it.
     await openEditorMenu(page, port, { clientX: 300, clientY: 690 });
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(900);
 
     const cardBottom = () =>
       page.evaluate(() => {
@@ -423,6 +423,90 @@ test("closing the card mid flash action leaves no spinner on the toolbar", async
     // The stale response arrives and is dropped; the toolbar stays idle.
     await page.waitForTimeout(2000);
     expect(await idle()).toEqual({ spinner: false, cursor: "" });
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+async function expectCardAboveToolbarInViewport(page) {
+  const m = await page.evaluate(() => {
+    const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+    const card = root.querySelector(".omni-ai-overlay").getBoundingClientRect();
+    const tb = root.querySelector(".omni-ai-quick-btn").getBoundingClientRect();
+    return { cardTop: card.top, cardBottom: card.bottom, toolbarTop: tb.top, vh: innerHeight };
+  });
+  expect(m.cardTop).toBeGreaterThanOrEqual(0);
+  expect(m.cardBottom).toBeLessThanOrEqual(m.vh);
+  expect(m.cardBottom).toBeLessThanOrEqual(m.toolbarTop);
+}
+
+test("a field taller than the viewport with its top scrolled away still opens the card above the toolbar", async () => {
+  const TALL = `<!doctype html><html><body style="margin:0;height:3000px">
+    <textarea id="target" style="position:absolute;top:0;left:40px;width:400px;height:1800px">Hello world, this is a test.</textarea>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(TALL);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "X");
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => {
+      window.scrollTo(0, 500);
+      const el = /** @type {HTMLTextAreaElement} */ (document.getElementById("target"));
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await page.locator("#target").dispatchEvent("mouseup", { clientX: 300, clientY: 690 });
+    await clickShadow(page, ".omni-ai-quick-btn");
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector('.omni-ai-menu-item[data-action="rephrase"]'),
+      null,
+      { timeout: 8000 },
+    );
+    await page.waitForTimeout(800);
+    await expectCardAboveToolbarInViewport(page);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a long page selection whose start is scrolled away still opens the card above the toolbar", async () => {
+  const LONG = `<!doctype html><html><body style="margin:0;height:3000px">
+    <div id="long" style="position:absolute;top:100px;left:40px;width:400px;line-height:20px">${"Long page text. ".repeat(600)}</div>
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(LONG);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "X");
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => {
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById("long"));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      window.scrollTo(0, 700);
+    });
+    await page.locator("#long").dispatchEvent("mouseup", { clientX: 300, clientY: 690 });
+    await clickShadow(page, ".omni-ai-quick-btn");
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector("#omniAiTranslateCard"),
+      null,
+      { timeout: 8000 },
+    );
+    await page.waitForTimeout(800);
+    await expectCardAboveToolbarInViewport(page);
   } finally {
     await context.close();
     server.close();

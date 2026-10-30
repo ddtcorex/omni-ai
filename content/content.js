@@ -1055,7 +1055,11 @@ function cardAnchorRect() {
   if (!base) base = getSelectionRect();
   if (!base) return null;
   const selTop = selectionTop() ?? getSelectionRect()?.top ?? null;
-  const top = selTop === null ? base.top : Math.min(base.top, selTop);
+  // Only a selection top that is on screen with room for the card's gap and
+  // margin counts: a field or selection scrolled mostly out of view would
+  // leave no room above and push the card over the toolbar.
+  const usable = selTop !== null && selTop >= CARD_GAP + 10;
+  const top = usable ? Math.min(base.top, selTop) : base.top;
   return {
     top,
     left: base.left,
