@@ -551,3 +551,148 @@ test("the quick-action menu still opens even if the language registry fails to l
     server.close();
   }
 });
+
+// Keyboard commands cannot be driven by Playwright, so these tests send the
+// worker's messages from the service worker, exactly as the command handler
+// does (see the Back-after-keyboard-result test above).
+const WORKER_FIXTURE = `<!doctype html><html><body>
+    <p id="text">The quick brown fox jumps over the lazy dog for shortcut testing.</p>
+  </body></html>`;
+
+async function selectFixtureText(page) {
+  await page.locator("#text").evaluate((el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+
+async function sendFromWorker(sw, port, message) {
+  await sw.evaluate(
+    async ({ port, message }) => {
+      const tabs = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      let lastError;
+      for (let i = 0; i < 20; i++) {
+        try {
+          await chrome.tabs.sendMessage(tabs[0].id, message, { frameId: 0 });
+          return;
+        } catch (err) {
+          lastError = err;
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+      throw lastError;
+    },
+    { port, message },
+  );
+}
+
+const cardTitle = (page) =>
+  page.evaluate(() => {
+    const host = document.getElementById("omni-ai-shadow-host");
+    return host?.shadowRoot.querySelector(".omni-ai-title")?.textContent ?? null;
+  });
+
+test("a keyboard command opens the card in loading with the action name", async () => {
+  const { server, port } = await serveFixtureHtml(WORKER_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await selectFixtureText(page);
+
+    await sendFromWorker(sw, port, { type: "PROCESSING_START", action: "rephrase" });
+
+    await expect.poll(() => cardTitle(page)).toMatch(/rephrase/i);
+    await expect.poll(() => cardTitle(page)).toMatch(/…$/);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("PROCESSING_START without an action shows the generic Working… header", async () => {
+  const { server, port } = await serveFixtureHtml(WORKER_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await selectFixtureText(page);
+
+    await sendFromWorker(sw, port, { type: "PROCESSING_START" });
+
+    await expect.poll(() => cardTitle(page)).toBe("Working…");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a worker error opens the error state, and retry re-runs through the worker", async () => {
+  const { server, port } = await serveFixtureHtml(WORKER_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "Rephrased again.");
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await selectFixtureText(page);
+
+    // Count the SHOW_RESULT deliveries the worker makes.
+    await sw.evaluate(() => {
+      globalThis.__showResults = 0;
+      const original = chrome.tabs.sendMessage.bind(chrome.tabs);
+      chrome.tabs.sendMessage = (...args) => {
+        if (args[1]?.type === "SHOW_RESULT") globalThis.__showResults += 1;
+        return original(...args);
+      };
+    });
+
+    await sendFromWorker(sw, port, {
+      type: "SHOW_RESULT",
+      payload: {
+        action: "rephrase",
+        originalText: "The quick brown fox jumps over the lazy dog for shortcut testing.",
+        result: "Error: boom",
+        error: true,
+        isInput: false,
+      },
+    });
+
+    const inShadow = (selector) =>
+      page.evaluate(
+        (sel) => !!document.getElementById("omni-ai-shadow-host")?.shadowRoot.querySelector(sel),
+        selector,
+      );
+    await expect.poll(() => inShadow(".omni-ai-error")).toBe(true);
+    await expect.poll(() => inShadow("#omniAiRetry")).toBe(true);
+    // The injected error above was itself a delivery; count from here.
+    await sw.evaluate(() => {
+      globalThis.__showResults = 0;
+    });
+
+    await page.evaluate(() =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector("#omniAiRetry")
+        .click(),
+    );
+
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document
+              .getElementById("omni-ai-shadow-host")
+              ?.shadowRoot.querySelector(".omni-ai-result-text")?.textContent,
+        ),
+      )
+      .toBe("Rephrased again.");
+    // Only the re-run produced a SHOW_RESULT from the worker itself.
+    expect(await sw.evaluate(() => globalThis.__showResults)).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

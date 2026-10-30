@@ -180,6 +180,49 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it('quick_rephrase sends PROCESSING_START with action "rephrase"', async () => {
+    await import("../../background/service-worker");
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "Original", isInput: true });
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_rephrase", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      { type: "PROCESSING_START", action: "rephrase" },
+      expect.anything(),
+    );
+  });
+
+  it("RERUN_ACTION runs processSelectedText for the sender tab and replies success", async () => {
+    const AIService = await import("../../lib/ai-service");
+    AIService.improveText.mockResolvedValue("Improved");
+    await import("../../background/service-worker");
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+    const sendResponse = jest.fn();
+
+    const ret = messageListener(
+      { type: "RERUN_ACTION", action: "rephrase", text: "Original", isInput: true },
+      { tab: { id: 123 } },
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Replies synchronously, so no `return true` is needed.
+    expect(ret).not.toBe(true);
+    expect(sendResponse).toHaveBeenCalledWith({ success: true });
+    expect(AIService.improveText).toHaveBeenCalledWith("Original", "rephrase", "general");
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({
+        type: "SHOW_RESULT",
+        payload: expect.objectContaining({ action: "rephrase", result: "Improved", isInput: true }),
+      }),
+      expect.anything(),
+    );
+  });
+
   it("restores the active editor frame after a service-worker restart", async () => {
     chromeMock.storage.session.get.mockResolvedValue({ omni_ai_active_frame_123: 7 });
     await import("../../background/service-worker");

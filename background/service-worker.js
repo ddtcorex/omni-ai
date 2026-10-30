@@ -141,8 +141,15 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
 
   // Handle other commands via selected text
   try {
-    // Notify content script to show processing state (spin icon)
-    void sendToActiveEditor(tab.id, { type: "PROCESSING_START" }).catch(() => {});
+    let action;
+    if (command === "quick_fix_grammar") action = "grammar";
+    if (command === "quick_rephrase") action = "rephrase";
+    if (command === "quick_summarize") action = "summarize";
+    if (command === "quick_explain") action = "explain";
+    if (command === "quick_translate") action = "smart_translate";
+
+    // Open the card in its loading state, naming the action when known.
+    void sendToActiveEditor(tab.id, { type: "PROCESSING_START", action }).catch(() => {});
 
     const response = await sendToActiveEditor(tab.id, {
       type: "GET_SELECTION",
@@ -150,12 +157,6 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
 
     const selection = response?.selection;
     const isInput = response?.isInput || false;
-    let action;
-    if (command === "quick_fix_grammar") action = "grammar";
-    if (command === "quick_rephrase") action = "rephrase";
-    if (command === "quick_summarize") action = "summarize";
-    if (command === "quick_explain") action = "explain";
-    if (command === "quick_translate") action = "smart_translate";
 
     if (action) {
       if (!selection) {
@@ -318,6 +319,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then((key) => sendResponse({ success: true, apiKey: key }))
         .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
+
+    case "RERUN_ACTION":
+      // Replies synchronously (the run itself is fire-and-forget and reports
+      // through SHOW_RESULT), so no `return true` is needed here.
+      if (sender.tab?.id !== undefined) {
+        void processSelectedText(sender.tab.id, message.text, message.action, !!message.isInput);
+        sendResponse({ success: true });
+      } else {
+        sendResponse({ success: false });
+      }
+      break;
 
     case "VALIDATE_CONFIG":
       handleValidateConfig(message.payload)
