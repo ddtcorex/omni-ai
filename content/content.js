@@ -243,6 +243,10 @@ const LANGUAGE_FLAGS = {
 // is empty and zero wide until the hover reveal fills it.
 let quickToolbar = null;
 let flashActionsRow = null;
+// The text the toolbar acts on and its field (null on page text), so a card
+// that closes can tell whether the toolbar still matches the selection.
+let quickToolbarText = null;
+let quickToolbarInput = null;
 // Bumped by every reveal and collapse, so a late settings read or a finished
 // collapse never acts on a newer reveal.
 let flashRevealGen = 0;
@@ -428,6 +432,7 @@ function getSurface() {
         askBackContext = null;
         overlayLockedPosition = null;
         resetQuickButtonIcon();
+        syncToolbarToSelection();
       },
     });
   }
@@ -691,30 +696,7 @@ function setupSelectionListener() {
       const shouldShow = hasSelection || (context.id !== "static" && hasContent);
 
       if (shouldShow) {
-        reportEditorFocus(activeElement, context);
-        // Additional check: If rich text has no selection but has content,
-        // we only show if we are focused (which activeElement check covers).
-
-        // Capture Last Range if applicable (Selection based)
-        if (context.id === "richText" || context.id === "static") {
-          const sel = window.getSelection();
-          if (sel.rangeCount > 0) {
-            lastRange = sel.getRangeAt(0).cloneRange();
-          } else {
-            lastRange = null;
-          }
-        } else {
-          // Standard inputs don't use window.getSelection() ranges effectively in the same way for this tracking,
-          // so clear it to prevent stale ranges from blocking fullText detection.
-          lastRange = null;
-        }
-
-        const rect = context.getRect(activeElement);
-        const inputEl = context.id !== "static" ? activeElement : null;
-
-        // Use mouse position for any text selection (all contexts)
-        const useMousePos = mousePos && hasSelection;
-        presentQuickActionButton(rect, inputEl, result.text, useMousePos ? mousePos : null);
+        presentToolbarFor(activeElement, context, result, mousePos);
       } else {
         hideQuickActionButton();
       }
@@ -734,6 +716,13 @@ function setupSelectionListener() {
       ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") ||
       (e.shiftKey && e.key.startsWith("Arrow"))
     ) {
+      // Keys typed inside the card (the Ask box) are not a page selection.
+      if (isEventInsideOmniUi(e)) return;
+      // A new selection closes the open card, as a mouse selection does:
+      // the card and its toolbar belong to the text they were opened on.
+      if (isCardOpen() && quickToolbar && getSelectedText() !== quickToolbarText) {
+        hideOverlay();
+      }
       handleSelectionChange();
     }
   });
@@ -752,6 +741,52 @@ function setupSelectionListener() {
     const activeElement = document.activeElement;
     reportEditorFocus(activeElement, getContext(activeElement));
   });
+}
+
+// Show the toolbar for this element's text: remember the range the replace
+// will need and anchor at the mouse for a selection made with it.
+function presentToolbarFor(activeElement, context, result, mousePos = null) {
+  reportEditorFocus(activeElement, context);
+
+  // Capture Last Range if applicable (Selection based)
+  if (context.id === "richText" || context.id === "static") {
+    const sel = window.getSelection();
+    lastRange = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+  } else {
+    // Standard inputs don't use window.getSelection() ranges effectively in the same way for this tracking,
+    // so clear it to prevent stale ranges from blocking fullText detection.
+    lastRange = null;
+  }
+
+  const rect = context.getRect(activeElement);
+  const inputEl = context.id !== "static" ? activeElement : null;
+
+  // Use mouse position for any text selection (all contexts)
+  const useMousePos = mousePos && result.isSelection;
+  presentQuickActionButton(rect, inputEl, result.text, useMousePos ? mousePos : null);
+}
+
+// The toolbar belongs to the selection (spec "Floating toolbar"): it stays
+// while the card is open, and once the card closes it follows the selection
+// again. A toolbar that still matches the text stays where it is; any other
+// is dropped, and only a real selection brings a new one back (never the
+// full-text mode, which needs a click in the field), so a toolbar can never
+// act on text that is no longer selected.
+function syncToolbarToSelection() {
+  if (isCardOpen()) return;
+  let element = document.activeElement;
+  // Focus left on the card's buttons: read the field the toolbar was for.
+  if (
+    (!element || element === document.body || element === omniUiHost) &&
+    quickToolbarInput?.isConnected
+  ) {
+    element = quickToolbarInput;
+  }
+  const context = getContext(element);
+  const result = context.getText(element);
+  if (quickToolbar && result.text && result.text === quickToolbarText) return;
+  hideQuickActionButton();
+  if (result.isSelection && result.text) presentToolbarFor(element, context, result);
 }
 
 function reportEditorFocus(element, context = getContext(element)) {
@@ -818,6 +853,8 @@ function presentQuickActionButton(
   }
 
   createQuickBtn(rect, useInputPositioning, mousePosition);
+  quickToolbarText = initialText;
+  quickToolbarInput = inputElement;
   setupQuickBtnEvents(initialText, inputElement);
 }
 
@@ -1003,6 +1040,8 @@ function hideQuickActionButton() {
   quickToolbar = null;
   quickActionBtn = null;
   flashActionsRow = null;
+  quickToolbarText = null;
+  quickToolbarInput = null;
 }
 
 function scheduleHideFlashActions() {
@@ -2144,7 +2183,12 @@ function renderResultState(inner, data, surf) {
   const replaceBtn = inner.querySelector("#omniAiReplace");
   if (replaceBtn) {
     replaceBtn.addEventListener("click", async () => {
-      if (await replaceSelectedText(result)) hideOverlay();
+      // The replaced text is gone, and the toolbar with it: a leftover one
+      // would still hold the old selection.
+      if (await replaceSelectedText(result)) {
+        hideQuickActionButton();
+        hideOverlay();
+      }
     });
   }
 }
