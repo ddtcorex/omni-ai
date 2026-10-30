@@ -59,10 +59,6 @@
     "message": "விரைவு செயல்கள் மெனுவைக் காட்டு",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "சூழல்",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "எழுத்தை மேம்படுத்து",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "தயார்",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "செயலாக்குகிறது...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "பிழை",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "முடிவு",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "சிந்திக்கிறது...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "பின்செல்",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "இந்த உரையாடலை அழிக்க விரும்புகிறீர்களா?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "மாற்றங்களைக் காட்டு",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "மீண்டும் முயற்சிக்கவும்",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "இந்த உரையைப் பற்றிக் கேளுங்கள்…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "செயலாக்கப்படுகிறது…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

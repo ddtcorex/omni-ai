@@ -86,6 +86,38 @@ describe("overlay surface", () => {
     expect(renderers.menu).toHaveBeenLastCalledWith(expect.anything(), { m: 1 }, surface);
   });
 
+  test("to with replace does not push the current state onto the history", async () => {
+    await surface.open("menu", { m: 1 });
+    await surface.to("loading");
+    await surface.to("result", { r: 1 });
+    // A retry or tone re-run replaces the result: Back skips the old one.
+    await surface.to("loading", {}, { replace: true });
+    await surface.to("result", { r: 2 });
+    await surface.back();
+    expect(surface.state()).toBe("menu");
+    expect(backFallback).not.toHaveBeenCalled();
+  });
+
+  test("to with replace still takes a fresh request token", async () => {
+    await surface.open("menu");
+    await surface.to("result");
+    const t1 = surface.beginRequest();
+    await surface.to("loading", {}, { replace: true });
+    expect(surface.isCurrent(t1)).toBe(false);
+  });
+
+  test("open on an open card starts a fresh history", async () => {
+    await surface.open("menu", { m: 1 });
+    await surface.to("result");
+    // Re-entering the menu through the toolbar: no stale entry survives.
+    await surface.open("menu", { m: 2 });
+    const t1 = surface.beginRequest();
+    await surface.back();
+    expect(backFallback).toHaveBeenCalledTimes(1);
+    expect(surface.isCurrent(t1)).toBe(false);
+    expect(renderers.menu).toHaveBeenLastCalledWith(expect.anything(), { m: 2 }, surface);
+  });
+
   test("back with an empty history uses backFallback", async () => {
     await surface.open("menu");
     await surface.back();

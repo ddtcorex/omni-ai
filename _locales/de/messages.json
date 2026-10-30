@@ -15,10 +15,6 @@
     "message": "Frag Omni AI alles...",
     "description": "Platzhalter für Schnellfrage"
   },
-  "popup_context": {
-    "message": "Kontext",
-    "description": "Titel für den Kontext-Bereich"
-  },
   "popup_improveWriting": {
     "message": "Texte optimieren",
     "description": "Titel für den Schreiboptimierungs-Bereich"
@@ -90,10 +86,6 @@
   "status_ready": {
     "message": "Bereit",
     "description": "Status Bereit"
-  },
-  "status_processing": {
-    "message": "Verarbeitung...",
-    "description": "Status Verarbeitung"
   },
   "status_error": {
     "message": "Fehler",
@@ -247,10 +239,6 @@
   "overlay_result": {
     "message": "Ergebnis",
     "description": "Ergebnis-Titel"
-  },
-  "status_thinking": {
-    "message": "Überlegt...",
-    "description": "Status thinking"
   },
   "btn_back": {
     "message": "Zurück",
@@ -676,5 +664,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Möchtest du diesen Chat wirklich löschen?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Änderungen anzeigen",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Erneut versuchen",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Frag etwas zu diesem Text…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Wird bearbeitet…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

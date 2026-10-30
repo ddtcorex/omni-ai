@@ -59,10 +59,6 @@
     "message": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳ ಮೆನು ತೋರಿಸಿ",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "ಸಂದರ್ಭ",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "ಬರವಣಿಗೆ ಸುಧಾರಿಸಿ",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "ಸಿದ್ಧ",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "ದೋಷ",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "ಫಲಿತಾಂಶ",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "ಯೋಚಿಸುತ್ತಿದೆ...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "ಹಿಂದೆ",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "ಈ ಸಂಭಾಷಣೆಯನ್ನು ಅಳಿಸಲು ನಿಶ್ಚಿತವೇ?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "ಬದಲಾವಣೆಗಳನ್ನು ತೋರಿಸಿ",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "ಈ ಪಠ್ಯದ ಬಗ್ಗೆ ಕೇಳಿ…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "ಕೆಲಸ ನಡೆಯುತ್ತಿದೆ…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

@@ -59,10 +59,6 @@
     "message": "Pokaži meni hitrih dejanj",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Kontekst",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Izboljšaj pisanje",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "Pripravljeno",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Obdelava...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Napaka",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "Rezultat",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Razmišljam...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Nazaj",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Ali ste prepričani, da želite počistiti ta pogovor?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Pokaži spremembe",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Poskusi znova",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Vprašajte o tem besedilu…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Obdelava…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }
