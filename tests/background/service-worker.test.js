@@ -224,6 +224,37 @@ describe("Service Worker Integration", () => {
   });
 
   it.each([
+    ["a result", () => Promise.resolve("Improved")],
+    ["an error", () => Promise.reject(new Error("boom"))],
+  ])(
+    "RERUN_ACTION delivers %s to the frame that asked, even after the editor frame was cleared",
+    async (_label, impl) => {
+      const AIService = await import("../../lib/ai-service");
+      AIService.improveText.mockImplementation(impl);
+      await import("../../background/service-worker");
+      const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+      // The iframe editor's retry focused the shadow UI: the frame was cleared.
+      messageListener({ type: "EDITOR_FOCUSED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
+      messageListener({ type: "EDITOR_BLURRED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      messageListener(
+        { type: "RERUN_ACTION", action: "rephrase", text: "Original", isInput: true },
+        { tab: { id: 123 }, frameId: 7 },
+        jest.fn(),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      const showResults = chromeMock.tabs.sendMessage.mock.calls.filter(
+        ([, message]) => message.type === "SHOW_RESULT",
+      );
+      expect(showResults).toHaveLength(1);
+      expect(showResults[0][0]).toBe(123);
+      expect(showResults[0][2]).toEqual({ frameId: 7 });
+    },
+  );
+
+  it.each([
     ["a missing action", { text: "Original" }, { tab: { id: 123 } }],
     ["an unknown action", { action: "bogus", text: "Original" }, { tab: { id: 123 } }],
     ["empty text", { action: "rephrase", text: "   " }, { tab: { id: 123 } }],

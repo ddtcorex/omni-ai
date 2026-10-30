@@ -73,6 +73,14 @@ async function sendToActiveEditor(tabId, message) {
   return chrome.tabs.sendMessage(tabId, message, { frameId: 0 });
 }
 
+// Deliver to a known frame (the one that asked for a re-run), or else to
+// the active editor frame. A retry answers the card it came from, whatever
+// focus did in between.
+function sendToFrameOrActiveEditor(tabId, message, frameId) {
+  if (Number.isInteger(frameId)) return chrome.tabs.sendMessage(tabId, message, { frameId });
+  return sendToActiveEditor(tabId, message);
+}
+
 // ============================================
 // Installation & Setup
 // ============================================
@@ -333,7 +341,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         typeof message.text === "string" &&
         message.text.trim()
       ) {
-        void processSelectedText(sender.tab.id, message.text, message.action, !!message.isInput);
+        void processSelectedText(
+          sender.tab.id,
+          message.text,
+          message.action,
+          !!message.isInput,
+          sender.frameId,
+        );
         sendResponse({ success: true });
       } else {
         sendResponse({ success: false });
@@ -588,8 +602,14 @@ async function handleValidateConfig(payload) {
 
 /**
  * Process selected text from context menu
+ * @param {number} tabId
+ * @param {string} text
+ * @param {string} action
+ * @param {boolean} [isInput]
+ * @param {number} [frameId] the frame to answer (a re-run); absent means
+ *   the active editor frame
  */
-async function processSelectedText(tabId, text, action, isInput = false) {
+async function processSelectedText(tabId, text, action, isInput = false, frameId = undefined) {
   try {
     let result;
 
@@ -645,15 +665,19 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         result = await improveText(text, action, "general");
     }
 
-    await sendToActiveEditor(tabId, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        originalText: text,
-        result,
-        isInput,
+    await sendToFrameOrActiveEditor(
+      tabId,
+      {
+        type: "SHOW_RESULT",
+        payload: {
+          action,
+          originalText: text,
+          result,
+          isInput,
+        },
       },
-    });
+      frameId,
+    );
     // Save to history
     await addToHistory({
       action,
@@ -663,16 +687,20 @@ async function processSelectedText(tabId, text, action, isInput = false) {
       site: "context-menu",
     });
   } catch (error) {
-    await sendToActiveEditor(tabId, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        originalText: text,
-        result: `Error: ${error.message}`,
-        error: true,
-        isInput,
+    await sendToFrameOrActiveEditor(
+      tabId,
+      {
+        type: "SHOW_RESULT",
+        payload: {
+          action,
+          originalText: text,
+          result: `Error: ${error.message}`,
+          error: true,
+          isInput,
+        },
       },
-    });
+      frameId,
+    ).catch(() => {});
   }
 }
 
