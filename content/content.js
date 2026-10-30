@@ -1662,16 +1662,19 @@ async function rerunViaWorker(data) {
     },
     { replace: true },
   );
-  chrome.runtime
-    .sendMessage({
+  const failMsg = i18n.getMessage("overlay_error");
+  try {
+    const reply = await chrome.runtime.sendMessage({
       type: "RERUN_ACTION",
       action: data.action,
       text: data.originalText,
       isInput: Boolean(data.isInput),
-    })
-    .catch((error) => {
-      void showErrorInOverlay(String(error?.message || error), data);
     });
+    // The worker refused the request: no result will ever arrive.
+    if (!reply?.success) void showErrorInOverlay(failMsg, data);
+  } catch (error) {
+    void showErrorInOverlay(String(error?.message || failMsg), data);
+  }
 }
 
 // A worker result can only re-run when it carries the text to run on (the

@@ -696,3 +696,45 @@ test("a worker error opens the error state, and retry re-runs through the worker
     server.close();
   }
 });
+
+test("retry the worker refuses leaves the error state, not a stuck loading card", async () => {
+  const { server, port } = await serveFixtureHtml(WORKER_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await selectFixtureText(page);
+
+    // An action the worker does not run: RERUN_ACTION replies success false.
+    await sendFromWorker(sw, port, {
+      type: "SHOW_RESULT",
+      payload: {
+        action: "bogus",
+        originalText: "Some text",
+        result: "Error: boom",
+        error: true,
+        isInput: false,
+      },
+    });
+    const errorText = () =>
+      page.evaluate(
+        () =>
+          document
+            .getElementById("omni-ai-shadow-host")
+            ?.shadowRoot.querySelector(".omni-ai-error-text")?.textContent ?? null,
+      );
+    await expect.poll(errorText).toBe("boom");
+
+    await page.evaluate(() =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector("#omniAiRetry")
+        .click(),
+    );
+
+    await expect.poll(errorText).toBe("Error");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

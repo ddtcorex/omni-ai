@@ -121,6 +121,10 @@ chrome.sidePanel
   ?.setPanelBehavior({ openPanelOnActionClick: true })
   ?.catch((e) => console.warn("[Omni AI] setPanelBehavior failed:", e));
 
+// The actions the keyboard commands and context menu produce; RERUN_ACTION is
+// limited to them so a bad message never reaches the AI.
+const RERUN_ACTIONS = ["grammar", "rephrase", "summarize", "explain", "smart_translate", "emoji"];
+
 /**
  * Handle keyboard commands
  */
@@ -323,7 +327,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "RERUN_ACTION":
       // Replies synchronously (the run itself is fire-and-forget and reports
       // through SHOW_RESULT), so no `return true` is needed here.
-      if (sender.tab?.id !== undefined) {
+      if (
+        sender.tab?.id !== undefined &&
+        RERUN_ACTIONS.includes(message.action) &&
+        typeof message.text === "string" &&
+        message.text.trim()
+      ) {
         void processSelectedText(sender.tab.id, message.text, message.action, !!message.isInput);
         sendResponse({ success: true });
       } else {
