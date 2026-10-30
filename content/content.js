@@ -122,8 +122,9 @@ if (isContextValid()) {
 // ============================================
 // State
 // ============================================
+// Mirror of surface.card() for code that still reads the card element
+// (positionOverlay, isEventInsideOmniUi). Only the surface creates the card.
 let overlay = null;
-let isOverlayVisible = false;
 let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
 const resultCache = new Map();
@@ -361,7 +362,91 @@ function ensureUiRootReady() {
   const root = ensureUiRoot();
   // Await both so the first paint never shows the default theme before the
   // async theme class lands (avoids a flash of the wrong theme).
-  return Promise.all([ensureUiStyles(root), ensureUiTheme(omniUiHost)]).then(() => root);
+  return Promise.all([ensureUiStyles(root), ensureUiTheme(omniUiHost)]).then(() => {
+    // The --omni-motion-* tokens live on :host, so they only resolve once the
+    // shadow styles are in. Read them once per host.
+    const motion = /** @type {any} */ (self).OMNI_MOTION;
+    if (omniMotionTokenHost !== omniUiHost && motion?.refreshTokens) {
+      motion.refreshTokens(omniUiHost);
+      omniMotionTokenHost = omniUiHost;
+    }
+    return root;
+  });
+}
+
+let omniMotionTokenHost = null;
+
+// ============================================
+// Overlay Surface
+// ============================================
+
+// One morphing card for every overlay state (content/ui/surface.js). The
+// show* functions below are thin wrappers that open it or move it to a state;
+// the render*State functions own each state's markup and event wiring.
+let surface = null;
+// Position the next render keeps (top/left), or null to anchor to
+// currentAnchorRect. Lets a state change keep the card where it already is.
+let overlayLockedPosition = null;
+// Back target for a Quick Ask card opened without a menu behind it.
+let askBackContext = null;
+
+function getSurface() {
+  if (!surface) {
+    surface = /** @type {any} */ (self).OMNI_SURFACE.create({
+      mount: ensureUiRoot,
+      renderers: {
+        menu: renderMenuState,
+        pageCard: renderPageCardState,
+        ask: renderAskState,
+        loading: renderLoadingState,
+        result: renderResultState,
+        error: renderErrorState,
+      },
+      place: (card) => {
+        overlay = card;
+        positionOverlay(currentAnchorRect, overlayLockedPosition);
+      },
+      backFallback: surfaceBackFallback,
+      onClose: () => {
+        overlay = null;
+        lastMenuContext = null;
+        askBackContext = null;
+        overlayLockedPosition = null;
+      },
+    });
+  }
+  return surface;
+}
+
+function isCardOpen() {
+  return Boolean(surface && surface.isOpen());
+}
+
+// Back with nothing in the surface history: a card opened straight into a
+// result (keyboard shortcut, context menu, flash action) or into Quick Ask.
+function surfaceBackFallback() {
+  if (lastMenuContext) {
+    showQuickActionMenu(
+      lastMenuContext.text,
+      lastMenuContext.anchorRect,
+      lastMenuContext.lockedPosition,
+      lastMenuContext.isInput,
+    );
+  } else if (surface?.state() === "ask" && askBackContext?.originalText) {
+    showQuickActionMenu(askBackContext.originalText, null, askBackContext.lockedRect, false);
+  } else {
+    hideOverlay();
+  }
+}
+
+// Where the open card sits now, so the next state renders in place instead
+// of jumping back to the anchor.
+function currentCardPosition() {
+  if (!overlay || !isCardOpen() || overlay.style.display === "none") return null;
+  const computed = window.getComputedStyle(overlay);
+  const top = parseInt(computed.top, 10);
+  const left = parseInt(computed.left, 10);
+  return isNaN(top) || isNaN(left) ? null : { top, left };
 }
 
 function isEventInsideOmniUi(event) {
@@ -755,8 +840,8 @@ function setupSelectionListener() {
   const handleSelectionChange = (mousePos = null) => {
     setTimeout(() => {
       // If overlay is already open, don't show specific button logic or hide it?
-      // Usually checking !isOverlayVisible is correct.
-      if (isOverlayVisible) return;
+      // Usually checking !isCardOpen() is correct (a closing card is not open).
+      if (isCardOpen()) return;
 
       const activeElement = document.activeElement;
       const context = getContext(activeElement);
@@ -1145,18 +1230,10 @@ async function showQuickActionMenu(
   isInput = false,
 ) {
   hideQuickActionButton();
-  hideOverlay();
 
   // Save current anchor for re-positioning later
-  currentAnchorRect = anchorRect || getSelectionRect();
-
-  // Save context for Back button
-  lastMenuContext = {
-    text,
-    anchorRect: currentAnchorRect,
-    lockedPosition,
-    isInput,
-  };
+  const menuAnchorRect = anchorRect || getSelectionRect();
+  currentAnchorRect = menuAnchorRect;
 
   // Fetch settings
   let primaryLanguage = "vi";
@@ -1197,10 +1274,33 @@ async function showQuickActionMenu(
 
   await ensureUiRootReady();
 
-  // Create Overlay
-  overlay = createOverlayElement();
+  // Save context for Back button. Set after the awaits above so a close that
+  // finishes meanwhile (its onClose clears this) cannot wipe it.
+  currentAnchorRect = menuAnchorRect;
+  lastMenuContext = {
+    text,
+    anchorRect: menuAnchorRect,
+    lockedPosition,
+    isInput,
+  };
+  overlayLockedPosition = lockedPosition;
 
-  // Header
+  // Editors get the menu with Smart Fix, page text gets the page card with
+  // the Smart Translation card. The surface morphs an open card in place.
+  getSurface().open(isInput ? "menu" : "pageCard", {
+    text,
+    isInput,
+    primaryLanguage,
+    defaultLanguage,
+    pFlag,
+    dFlag,
+    pCode,
+    dCode,
+  });
+}
+
+function buildMenuMarkup(data, quickFix) {
+  const { pFlag, dFlag, pCode, dCode } = data;
   const header = `
     <div class="omni-ai-overlay-header">
        <div class="omni-ai-brand">
@@ -1211,42 +1311,6 @@ async function showQuickActionMenu(
     </div>
   `;
 
-  // Quick Fix Section (With Loading State)
-  // - If Input: Show "Thinking..." -> Smart Fix
-  // - If Text: Show "Translating..." -> Translation Result
-  let quickFix = "";
-  if (isInput) {
-    quickFix = `
-    <div class="omni-ai-quick-fix-section">
-      <div class="omni-ai-suggestion-card" id="omniAiMagicFix">
-        <div class="omni-ai-suggestion-icon">
-           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
-        </div>
-        <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("status_thinking")}</div>
-            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
-        </div>
-      </div>
-    </div>
-  `;
-  } else {
-    // Non-input: Translation Card
-    quickFix = `
-    <div class="omni-ai-quick-fix-section">
-      <div class="omni-ai-suggestion-card" id="omniAiTranslateCard">
-        <div class="omni-ai-suggestion-icon">
-           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
-        </div>
-        <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_smart_translation")}...</div>
-            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
-        </div>
-      </div>
-    </div>
-  `;
-  }
-
-  // Menu Grid
   const menu = `
     <div class="omni-ai-menu-grid">
        <button class="omni-ai-menu-item" data-action="translate_primary">
@@ -1283,7 +1347,6 @@ async function showQuickActionMenu(
     </div>
   `;
 
-  // Input
   const inputSection = `
     <div class="omni-ai-input-wrapper" style="padding: 0 12px 12px;">
        <div style="position:relative; width:100%;">
@@ -1295,103 +1358,143 @@ async function showQuickActionMenu(
     </div>
   `;
 
-  overlay.innerHTML = header + quickFix + menu + inputSection;
-  ensureUiRoot().appendChild(overlay);
+  return header + quickFix + menu + inputSection;
+}
 
-  // Position Logic
-  positionOverlay(currentAnchorRect, lockedPosition);
+// Re-position after async content might have loaded
+function scheduleMenuReposition(surf) {
+  const token = surf.beginRequest();
+  setTimeout(() => {
+    if (overlay && surf.isCurrent(token)) positionOverlay(currentAnchorRect, overlayLockedPosition);
+  }, 100);
+}
 
-  // Bind Events
-  bindMenuEvents(text, isInput);
+function renderMenuState(inner, data, surf) {
+  const { text, isInput } = data;
+  // Quick Fix Section (With Loading State): "Thinking..." -> Smart Fix
+  const quickFix = `
+    <div class="omni-ai-quick-fix-section">
+      <div class="omni-ai-suggestion-card" id="omniAiMagicFix">
+        <div class="omni-ai-suggestion-icon">
+           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
+        </div>
+        <div class="omni-ai-suggestion-info">
+            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("status_thinking")}</div>
+            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  inner.innerHTML = buildMenuMarkup(data, quickFix);
+  bindMenuEvents(inner, text, isInput);
 
-  // TRIGGER AUTOMATIC ACTION
-  if (isInput) {
-    // Existing Smart Fix Logic
+  // TRIGGER AUTOMATIC ACTION: Smart Fix
+  const token = surf.beginRequest();
+  sendMessageToBackground({
+    type: "QUICK_ACTION",
+    payload: { action: "grammar", text, preset: "chat" },
+  })
+    .then((response) => {
+      if (!surf.isCurrent(token)) return;
+      const card = inner.querySelector("#omniAiMagicFix");
+      if (response.success && card) {
+        // Pass activeInputElement if we tracked it
+        const targetEl = activeInputElement || document.activeElement;
+        updateSmartFixCard(card, text, response.data.response, isInput, targetEl);
+      } else if (card) {
+        // Show error or revert
+        card.innerHTML = `
+            <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
+            <div class="omni-ai-suggestion-info">
+                <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
+                <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_analysis_failed")}</div>
+            </div>
+         `;
+      }
+    })
+    .catch(() => {}); // silent fail
+
+  scheduleMenuReposition(surf);
+}
+
+function renderPageCardState(inner, data, surf) {
+  const { text, isInput, primaryLanguage, defaultLanguage } = data;
+  // Non-input: Translation Card ("Translating..." -> Translation Result)
+  const quickFix = `
+    <div class="omni-ai-quick-fix-section">
+      <div class="omni-ai-suggestion-card" id="omniAiTranslateCard">
+        <div class="omni-ai-suggestion-icon">
+           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
+        </div>
+        <div class="omni-ai-suggestion-info">
+            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_smart_translation")}...</div>
+            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  inner.innerHTML = buildMenuMarkup(data, quickFix);
+  bindMenuEvents(inner, text, isInput);
+
+  // TRIGGER AUTOMATIC ACTION: Smart Translate
+  const smartAction = "smart_translate";
+  // Includes primaryLanguage/defaultLanguage: smartTranslate()'s result
+  // depends on both (it toggles direction between them), so a stale cache
+  // entry from before a language-setting change would otherwise keep
+  // returning the old (now-wrong) translation for the same text.
+  const cacheKey = `${smartAction}|${text.trim()}|chat|${primaryLanguage}|${defaultLanguage}`;
+  const token = surf.beginRequest();
+
+  if (resultCache.has(cacheKey)) {
+    setTimeout(() => {
+      if (!surf.isCurrent(token)) return;
+      const card = inner.querySelector("#omniAiTranslateCard");
+      if (card) updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
+    }, 100);
+  } else {
     sendMessageToBackground({
       type: "QUICK_ACTION",
-      payload: { action: "grammar", text, preset: "chat" },
+      payload: { action: smartAction, text, preset: "chat" },
     })
       .then((response) => {
-        const card = overlay?.querySelector("#omniAiMagicFix");
-        if (response.success && card) {
-          // Pass activeInputElement if we tracked it
-          const targetEl = activeInputElement || document.activeElement;
-          updateSmartFixCard(card, text, response.data.response, isInput, targetEl);
-        } else if (card) {
-          // Show error or revert
+        if (response.success) resultCache.set(cacheKey, response.data.response);
+        if (!surf.isCurrent(token)) return;
+        const card = inner.querySelector("#omniAiTranslateCard");
+        if (!card) return;
+
+        if (response.success) {
+          updateTranslateCard(card, response.data.response, text, isInput);
+        } else {
+          // Error State logic (moved to helper or kept here)
           card.innerHTML = `
-              <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
-              <div class="omni-ai-suggestion-info">
-                  <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
-                  <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_analysis_failed")}</div>
-              </div>
-           `;
-        }
-      })
-      .catch(() => {}); // silent fail
-  } else {
-    // Non-Input: Trigger Translation (Smart)
-    const smartAction = "smart_translate";
-    // Includes primaryLanguage/defaultLanguage: smartTranslate()'s result
-    // depends on both (it toggles direction between them), so a stale cache
-    // entry from before a language-setting change would otherwise keep
-    // returning the old (now-wrong) translation for the same text.
-    const cacheKey = `${smartAction}|${text.trim()}|chat|${primaryLanguage}|${defaultLanguage}`;
-
-    if (resultCache.has(cacheKey)) {
-      setTimeout(() => {
-        const card = overlay?.querySelector("#omniAiTranslateCard");
-        if (card) updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
-      }, 100);
-    } else {
-      sendMessageToBackground({
-        type: "QUICK_ACTION",
-        payload: { action: smartAction, text, preset: "chat" },
-      })
-        .then((response) => {
-          const card = overlay?.querySelector("#omniAiTranslateCard");
-          if (!card) return;
-
-          if (response.success) {
-            resultCache.set(cacheKey, response.data.response);
-            updateTranslateCard(card, response.data.response, text, isInput);
-          } else {
-            // Error State logic (moved to helper or kept here)
-            card.innerHTML = `
                <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
                <div class="omni-ai-suggestion-info">
                    <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
                    <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_translation_failed")}</div>
                </div>
             `;
-          }
-          // Ensure position is updated after content change
-          setTimeout(() => positionOverlay(currentAnchorRect), 10);
-        })
-        .catch(() => {});
-    }
+        }
+        // Ensure position is updated after content change
+        setTimeout(() => positionOverlay(currentAnchorRect), 10);
+      })
+      .catch(() => {});
   }
 
-  isOverlayVisible = true;
-
-  // Re-position after async content might have loaded
-  setTimeout(() => {
-    if (overlay) positionOverlay(currentAnchorRect, lockedPosition);
-  }, 100);
+  scheduleMenuReposition(surf);
 }
 
-function bindMenuEvents(text, isInput) {
+function bindMenuEvents(root, text, isInput) {
   // Close
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  root.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
 
   // Menu Items
-  overlay.querySelectorAll(".omni-ai-menu-item").forEach((btn) => {
+  root.querySelectorAll(".omni-ai-menu-item").forEach((btn) => {
     btn.addEventListener("click", () => handleAction(btn.dataset.action, text, isInput));
   });
 
   // Inline Input
-  const input = overlay.querySelector("#omniAiInlineInput");
-  const inputBtn = overlay.querySelector("#omniAiInputBtn");
+  const input = root.querySelector("#omniAiInlineInput");
+  const inputBtn = root.querySelector("#omniAiInputBtn");
 
   const triggerAsk = () => {
     const query = input.value.trim();
@@ -1414,6 +1517,10 @@ function bindMenuEvents(text, isInput) {
 
 async function handleAction(action, text, isInput) {
   showLoadingInOverlay();
+  // Taken after the loading transition: any later state change (Back, close,
+  // another action) makes this response stale, and it is dropped.
+  const surf = getSurface();
+  const token = surf.beginRequest();
 
   let preset = "chat";
   let options = {};
@@ -1442,6 +1549,7 @@ async function handleAction(action, text, isInput) {
   // Skip cache for rephrase to always get fresh results
   const cacheKey = `${action}|${text.trim()}|${preset}${langCacheSuffix}`;
   if (action !== "rephrase" && resultCache.has(cacheKey)) {
+    if (!surf.isCurrent(token)) return;
     showResultOverlay(
       {
         action,
@@ -1469,6 +1577,7 @@ async function handleAction(action, text, isInput) {
         if (action !== "rephrase") {
           resultCache.set(cacheKey, response.data.response);
         }
+        if (!surf.isCurrent(token)) return;
         showResultOverlay(
           {
             action,
@@ -1478,15 +1587,19 @@ async function handleAction(action, text, isInput) {
           },
           isInput,
         );
-      } else {
+      } else if (surf.isCurrent(token)) {
         showErrorInOverlay(response.error);
       }
     })
-    .catch((err) => showErrorInOverlay(err.message));
+    .catch((err) => {
+      if (surf.isCurrent(token)) showErrorInOverlay(err.message);
+    });
 }
 
 async function handleAskAction(query, originalText, isInput) {
   showLoadingInOverlay();
+  const surf = getSurface();
+  const token = surf.beginRequest();
 
   const prompt = originalText ? `Context: "${originalText}"\n\nQuestion: ${query}` : query;
 
@@ -1496,6 +1609,7 @@ async function handleAskAction(query, originalText, isInput) {
       payload: { query: prompt },
     });
 
+    if (!surf.isCurrent(token)) return;
     if (response.success) {
       showResultOverlay(
         {
@@ -1511,7 +1625,7 @@ async function handleAskAction(query, originalText, isInput) {
       showErrorInOverlay(response.error);
     }
   } catch (err) {
-    showErrorInOverlay(err.message);
+    if (surf.isCurrent(token)) showErrorInOverlay(err.message);
   }
 }
 
@@ -1691,21 +1805,15 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
 // Helpers
 // ============================================
 
-function createOverlayElement() {
-  const el = document.createElement("div");
-  el.className = "omni-ai-overlay";
-  // Theme is inherited from the shadow host via :host-context(.omni-ai-light-mode)
-  // in lib/design-tokens.css, so no per-element class is needed.
-  return el;
-}
-
+// Closes the card through the surface: it leaves the DOM once its exit
+// animation finishes (onClose then clears the overlay mirror).
 function hideOverlay() {
-  if (overlay) {
-    overlay.remove();
-    overlay = null;
-    isOverlayVisible = false;
-    lastMenuContext = null; // Clear context on full close
-  }
+  if (!surface || !surface.card()) return Promise.resolve();
+  // Clear context on full close right away: a card reopened during the exit
+  // animation reuses the element and never reaches onClose.
+  lastMenuContext = null;
+  askBackContext = null;
+  return surface.close();
 }
 
 function sendMessageToBackground(message) {
@@ -1845,45 +1953,31 @@ function extractPageContent() {
 
 function showLoadingInOverlay() {
   // A flash action (triggerFlashAction()) calls handleAction() directly,
-  // without ever opening the menu overlay -- nothing to show in-place
-  // loading in yet. showResultOverlay() creates the overlay itself once the
-  // result arrives, so this is a safe no-op rather than a missed state.
-  if (!overlay) return;
+  // without ever opening the menu card -- nothing to show loading in yet.
+  // showResultOverlay() opens the card itself once the result arrives, so
+  // this is a safe no-op rather than a missed state.
+  if (!isCardOpen()) return;
+  // Loading swaps the content where the card already sits.
+  overlayLockedPosition = currentCardPosition();
+  surface.to("loading", {});
+}
 
-  // Try to find the content area to replace, or the grid if first time
-  let content = overlay.querySelector(".omni-ai-content-area");
-  const menuGrid = overlay.querySelector(".omni-ai-menu-grid");
-
-  // If we are coming from the menu, we want to replace the menu-grid
-  // with the content-area style for loading
-  if (!content && menuGrid) {
-    // Create new content area replacing grid
-    content = document.createElement("div");
-    content.className = "omni-ai-content-area";
-    menuGrid.replaceWith(content);
-  } else if (!content) {
-    // Fallback if structure is weird (shouldn't happen)
-    content = document.createElement("div");
-    content.className = "omni-ai-content-area";
-    overlay.appendChild(content);
-  }
-
-  // Hide other sections that shouldn't be visible during loading
-  const inputSection = overlay.querySelector(".omni-ai-input-wrapper");
-  const quickFix = overlay.querySelector(".omni-ai-quick-fix-section");
-  const footer = overlay.querySelector(".omni-ai-footer-actions");
-
-  if (inputSection) inputSection.style.display = "none";
-  if (quickFix) quickFix.style.display = "none";
-  if (footer) footer.style.display = "none";
-
-  // Inject Loading HTML
-  content.innerHTML = `
-    <div class="omni-ai-loading">
-      <div class="ds-spinner"></div>
-      <div class="omni-ai-shimmer-text">${i18n.getMessage("status_processing")}</div>
+function renderLoadingState(inner) {
+  inner.innerHTML = `
+    <div class="omni-ai-overlay-header">
+       <div class="omni-ai-brand">
+         ${ICONS.brand}
+         <span>${i18n.getMessage("extName")}</span>
+       </div>
+       <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+    </div>
+    <div class="omni-ai-content-area" style="display:block;">
+      <div class="omni-ai-loading">
+        <div class="ds-spinner"></div>
+        <div class="omni-ai-shimmer-text">${i18n.getMessage("status_processing")}</div>
+      </div>
     </div>`;
-  content.style.display = "block";
+  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
 }
 
 function renderToneSelector(activeTone) {
@@ -1903,34 +1997,27 @@ function renderToneSelector(activeTone) {
 }
 
 async function showResultOverlay(payload, isInput = false) {
-  const { result, action, originalText, preset, query } = payload;
   hideQuickActionButton();
+  const surf = getSurface();
+  const data = { ...payload, isInput };
 
-  // Capture current position to prevent jumping
-  let preservedPosition = null;
-  if (overlay && overlay.style.display !== "none") {
-    const computed = window.getComputedStyle(overlay);
-    const top = parseInt(computed.top, 10);
-    const left = parseInt(computed.left, 10);
-    if (!isNaN(top) && !isNaN(left)) {
-      preservedPosition = { top, left };
-    }
+  if (isCardOpen()) {
+    // Capture current position to prevent jumping
+    overlayLockedPosition = currentCardPosition();
+    if (!currentAnchorRect) currentAnchorRect = getSelectionRect();
+    return surf.to("result", data);
   }
 
-  if (!overlay) {
-    await ensureUiRootReady();
-    const el = document.createElement("div");
-    el.className = "omni-ai-overlay";
-    overlay = el;
-    ensureUiRoot().appendChild(overlay);
+  await ensureUiRootReady();
+  // No card yet (keyboard shortcut, context menu, flash action): position
+  // near the selection.
+  overlayLockedPosition = null;
+  currentAnchorRect = getSelectionRect() || currentAnchorRect;
+  return surf.open("result", data);
+}
 
-    // Try to position near selection
-    // Try to position near selection
-    // Try to position near selection
-    const rect = getSelectionRect() || currentAnchorRect;
-    currentAnchorRect = rect;
-    // Don't position yet, wait for content
-  }
+function renderResultState(inner, data, surf) {
+  const { result, action, originalText, preset, query, isInput } = data;
 
   // Actions that benefit from diff view
   const diffActions = ["grammar", "rephrase", "tone", "clarity", "improve"];
@@ -1950,7 +2037,7 @@ async function showResultOverlay(payload, isInput = false) {
     ? `<button class="ds-btn-primary" id="omniAiReplace">${i18n.getMessage("overlay_replace")}</button>`
     : ``;
 
-  overlay.innerHTML = `
+  inner.innerHTML = `
     <div class="omni-ai-overlay-header">
         <button class="ds-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
         <span style="font-weight:600;font-size:14px;margin-left:5px;flex:1;">${i18n.getMessage("overlay_result")}</span>
@@ -1967,42 +2054,15 @@ async function showResultOverlay(payload, isInput = false) {
     </div>
   `;
 
-  // Position Logic: run AFTER content update
-  setTimeout(() => {
-    // If we have a preserved position, use it to Lock the overlay in place
-    if (preservedPosition) {
-      positionOverlay(null, preservedPosition);
-    } else {
-      // Ensure we have an anchor if it was missing (e.g. shortcut first run)
-      if (!currentAnchorRect) {
-        currentAnchorRect = getSelectionRect();
-      }
-      if (currentAnchorRect && overlay) {
-        positionOverlay(currentAnchorRect);
-      }
-    }
-  }, 0);
-
   // Close
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
+  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
 
-  // Back Navigation
-  overlay.querySelector("#omniAiBack").addEventListener("click", () => {
-    if (lastMenuContext) {
-      showQuickActionMenu(
-        lastMenuContext.text,
-        lastMenuContext.anchorRect,
-        lastMenuContext.lockedPosition,
-        lastMenuContext.isInput,
-      );
-    } else {
-      hideOverlay();
-    }
-  });
+  // Back Navigation: the previous state, or surfaceBackFallback()
+  inner.querySelector("#omniAiBack").addEventListener("click", () => surf.back());
 
   // Tone Chip Click
   if (safeAction === "tone") {
-    const toneSelector = overlay.querySelector(".omni-ai-tone-selector");
+    const toneSelector = inner.querySelector(".omni-ai-tone-selector");
     if (toneSelector) {
       toneSelector.addEventListener("click", async (e) => {
         if (e.target.classList.contains("omni-ai-tone-chip")) {
@@ -2010,12 +2070,12 @@ async function showResultOverlay(payload, isInput = false) {
           if (newTone === (preset || "professional").toLowerCase()) return;
 
           // UI Update
-          const resultTextEl = overlay.querySelector(".omni-ai-result-text");
+          const resultTextEl = inner.querySelector(".omni-ai-result-text");
           resultTextEl.style.opacity = "0.5";
           resultTextEl.innerHTML = '<div class="ds-spinner" style="margin:20px auto;"></div>';
 
           // Optimistic Chip Update
-          overlay.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
+          inner.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
             const isActive = chip.dataset.tone === newTone;
             chip.style.background = isActive ? "rgba(139,92,246,0.15)" : "transparent";
             chip.style.color = isActive ? "var(--omni-accent)" : "var(--omni-text-secondary)";
@@ -2023,26 +2083,26 @@ async function showResultOverlay(payload, isInput = false) {
           });
 
           // Fetch
+          const token = surf.beginRequest();
           try {
             const response = await sendMessageToBackground({
               type: "QUICK_ACTION",
               payload: { action: "tone", text: originalText, preset: newTone },
             });
 
-            if (response.success && overlay) {
-              showResultOverlay(
-                {
-                  action: "tone",
-                  result: response.data.response,
-                  originalText,
-                  preset: newTone,
-                },
-                isInput,
+            if (response.success && surf.isCurrent(token)) {
+              // Re-render this result in place: a tone switch is not a new
+              // step, so it must not push the old tone onto the Back history.
+              renderResultInPlace(
+                inner,
+                { ...data, result: response.data.response, preset: newTone },
+                surf,
               );
               // Ensure position is updated after tone switch
               setTimeout(() => positionOverlay(currentAnchorRect), 50);
             }
           } catch (err) {
+            if (!surf.isCurrent(token)) return;
             resultTextEl.innerText = "Error: " + err.message;
             resultTextEl.style.opacity = "1";
           }
@@ -2052,7 +2112,7 @@ async function showResultOverlay(payload, isInput = false) {
   }
 
   // Copy
-  const copyBtn = overlay.querySelector("#omniAiCopy");
+  const copyBtn = inner.querySelector("#omniAiCopy");
   copyBtn.addEventListener("click", async () => {
     if (!(await copyTextToClipboard(result))) return;
     copyBtn.textContent = i18n.getMessage("msg_copied");
@@ -2060,12 +2120,19 @@ async function showResultOverlay(payload, isInput = false) {
   });
 
   // Replace (if exists)
-  const replaceBtn = overlay.querySelector("#omniAiReplace");
+  const replaceBtn = inner.querySelector("#omniAiReplace");
   if (replaceBtn) {
     replaceBtn.addEventListener("click", async () => {
       if (await replaceSelectedText(result)) hideOverlay();
     });
   }
+}
+
+function renderResultInPlace(inner, data, surf) {
+  if (!inner.isConnected) return;
+  inner.replaceChildren();
+  renderResultState(inner, data, surf);
+  positionOverlay(currentAnchorRect, currentCardPosition());
 }
 
 async function replaceSelectedText(newText, specificElement = null) {
@@ -2154,14 +2221,15 @@ async function showQuickAskOverlay(
 ) {
   await ensureUiRootReady();
 
-  if (!overlay) {
-    overlay = createOverlayElement();
-    ensureUiRoot().appendChild(overlay);
-  }
-
   // Save current anchor for re-positioning
   currentAnchorRect = lockedRect || getSelectionRect() || currentAnchorRect;
-  positionOverlay(currentAnchorRect);
+  overlayLockedPosition = null;
+  askBackContext = { originalText, lockedRect };
+  getSurface().open("ask", { originalText, autoQuery, isInput });
+}
+
+function renderAskState(inner, data, surf) {
+  const { originalText, autoQuery, isInput } = data;
 
   const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
 
@@ -2209,29 +2277,18 @@ async function showQuickAskOverlay(
   </div>
   `;
 
-  overlay.innerHTML = header + content;
+  inner.innerHTML = header + content;
 
   // Events
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
-  overlay.querySelector("#omniAiBack").addEventListener("click", () => {
-    if (lastMenuContext) {
-      showQuickActionMenu(
-        lastMenuContext.text,
-        lastMenuContext.anchorRect,
-        lastMenuContext.lockedPosition,
-        lastMenuContext.isInput,
-      );
-    } else if (originalText) {
-      showQuickActionMenu(originalText, null, lockedRect, false);
-    } else {
-      hideOverlay();
-    }
-  });
-  const input = overlay.querySelector("#omniAiQuickInput");
-  const inputBtn = overlay.querySelector("#omniAiInputBtn");
-  const copyBtn = overlay.querySelector("#omniAiQuickCopy");
-  const loading = overlay.querySelector("#omniAiLoading");
-  const resultDiv = overlay.querySelector("#omniAiQuickResult");
+  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
+  // Back: the previous state, or surfaceBackFallback() (the menu for the
+  // selected text, or close).
+  inner.querySelector("#omniAiBack").addEventListener("click", () => surf.back());
+  const input = inner.querySelector("#omniAiQuickInput");
+  const inputBtn = inner.querySelector("#omniAiInputBtn");
+  const copyBtn = inner.querySelector("#omniAiQuickCopy");
+  const loading = inner.querySelector("#omniAiLoading");
+  const resultDiv = inner.querySelector("#omniAiQuickResult");
   const resultText = resultDiv.querySelector(".omni-ai-result-text");
 
   if (!autoQuery) input.focus({ preventScroll: true });
@@ -2248,7 +2305,7 @@ async function showQuickAskOverlay(
     if (!query) return;
 
     // UI Loading
-    const inputWrapper = overlay.querySelector(".omni-ai-input-wrapper");
+    const inputWrapper = inner.querySelector(".omni-ai-input-wrapper");
     if (inputWrapper) inputWrapper.style.display = "none";
 
     copyBtn.style.display = "none";
@@ -2273,9 +2330,9 @@ async function showQuickAskOverlay(
     }
   });
 
-  if (autoQuery) {
-    handleAsk();
-  }
+  // Deferred: starting the next transition from inside this render would
+  // collide with the morph that is still rendering this state.
+  if (autoQuery) setTimeout(handleAsk, 0);
 
   // Optimize position after render to avoid cut-off
   setTimeout(() => positionOverlay(currentAnchorRect), 10);
@@ -2283,32 +2340,31 @@ async function showQuickAskOverlay(
 
 async function showErrorInOverlay(msg) {
   // A flash action (triggerFlashAction()) reaches this via handleAction()'s
-  // catch/error branch without ever opening the menu overlay first -- create
-  // one here too (mirroring showResultOverlay()'s own self-creation), or the
-  // error would render nowhere and leave the floating icon's spinner frozen.
+  // catch/error branch without ever opening the menu card first: the surface
+  // opens one, or the error would render nowhere and leave the floating
+  // icon's spinner frozen.
   hideQuickActionButton();
-  const isNewOverlay = !overlay;
-  if (isNewOverlay) {
-    await ensureUiRootReady();
-    const el = document.createElement("div");
-    el.className = "omni-ai-overlay";
-    overlay = el;
-    ensureUiRoot().appendChild(overlay);
-    currentAnchorRect = getSelectionRect() || currentAnchorRect;
+  const surf = getSurface();
+  if (isCardOpen()) {
+    overlayLockedPosition = currentCardPosition();
+    return surf.to("error", { msg });
   }
+  await ensureUiRootReady();
+  overlayLockedPosition = null;
+  currentAnchorRect = getSelectionRect() || currentAnchorRect;
+  return surf.open("error", { msg });
+}
 
-  overlay.innerHTML = `
+function renderErrorState(inner, data) {
+  inner.innerHTML = `
       <div class="omni-ai-overlay-header">
           <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
           <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
       </div>
       <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
-          ${msg}
+          ${data.msg}
       </div>`;
-  overlay.querySelector("#omniAiClose").addEventListener("click", hideOverlay);
-  // positionOverlay() measures the overlay's rendered height to clamp it to
-  // the viewport, so it must run after innerHTML is set, not before.
-  if (isNewOverlay) positionOverlay(currentAnchorRect);
+  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
 }
 
 // Run
