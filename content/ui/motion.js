@@ -175,10 +175,11 @@
   /**
    * Fade `inner` out, run `render`, animate `container` height from its old
    * to its new measured height, fade `inner` back in. A morph superseded by a
-   * newer animation on `inner` stops without calling `render`.
+   * newer animation on `inner` stops without calling `render`; a `render`
+   * returning false stops it right after.
    * @param {HTMLElement} container
    * @param {HTMLElement} inner
-   * @param {() => void} render
+   * @param {() => (void | false)} render
    * @returns {Promise<void>}
    */
   async function morph(container, inner, render) {
@@ -187,7 +188,10 @@
     const inMs = reduced ? TOKENS.reducedInMs : TOKENS.swapInMs;
     const oldHeight = container.offsetHeight;
     if (!(await fade(inner, 1, 0, outMs))) return;
-    render();
+    // `render` returns false when the transition was superseded (a close, a
+    // newer state) while the fade ran: stop, so the height morph never takes
+    // over the container's running animation (a closing card's exit).
+    if (render() === false) return;
     const newHeight = container.offsetHeight;
     const tasks = [];
     if (!reduced && oldHeight !== newHeight) {

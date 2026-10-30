@@ -236,6 +236,31 @@ describe("overlay surface", () => {
     expect(surface.card().querySelector(".omni-ai-surface-inner").childNodes).toHaveLength(1);
   });
 
+  test("a close wins over a morph that is still fading out", async () => {
+    manualExit = true;
+    let release;
+    const gate = new Promise((r) => {
+      release = r;
+    });
+    global.OMNI_MOTION.morph = jest.fn(async (container, inner, render) => {
+      await gate;
+      if (render() === false) return;
+    });
+    await surface.open("menu");
+    renderers.result.mockClear();
+    const morphing = surface.to("result", { text: "x" });
+    const closing = surface.close();
+    release();
+    await morphing;
+    // The superseded morph must not render into, or re-show, the closing card.
+    expect(renderers.result).not.toHaveBeenCalled();
+    exitResolvers[0](true);
+    await closing;
+    expect(surface.card()).toBeNull();
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(0);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   test("Escape inside the card closes it", async () => {
     await surface.open("menu");
     surface.card().dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
