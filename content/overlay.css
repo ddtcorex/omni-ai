@@ -485,8 +485,8 @@
   transform-origin: calc(100% - 12px) 50%;
 }
 
-/* The gradient quick button: hover changes nothing but the cursor, press
-   scales down. */
+/* The gradient quick button: hover only brightens it (a color change, never
+   a scale), press scales down. */
 .omni-ai-quick-btn {
   flex: none;
   width: 20px;
