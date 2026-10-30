@@ -59,10 +59,6 @@
     "message": "Mostra el menú d'accions ràpides",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Context",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Millora l'escriptura",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "Corregeix la gramàtica",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "Corregeix l'ortografia i la gramàtica",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Millora la claredat",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "A punt",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Processant...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Error",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "Resultat",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Pensant...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Enrere",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Crea una clau API nova"
   },
-  "overlay_suggested_fix": {
-    "message": "Correcció suggerida",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Accepta",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Descarta",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "No s'han trobat problemes",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "El text es veu molt bé!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Traducció intel·ligent",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Segur que vols esborrar aquesta conversa?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Mostra els canvis",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Torna-ho a provar",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Pregunta sobre aquest text…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Treballant…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

@@ -180,6 +180,99 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it('quick_rephrase sends PROCESSING_START with action "rephrase"', async () => {
+    await import("../../background/service-worker");
+    chromeMock.tabs.sendMessage.mockResolvedValue({ selection: "Original", isInput: true });
+
+    const commandListener = chromeMock.commands.onCommand.addListener.mock.calls[0][0];
+    await commandListener("quick_rephrase", { id: 123 });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      { type: "PROCESSING_START", action: "rephrase" },
+      expect.anything(),
+    );
+  });
+
+  it("RERUN_ACTION runs processSelectedText for the sender tab and replies success", async () => {
+    const AIService = await import("../../lib/ai-service");
+    AIService.improveText.mockResolvedValue("Improved");
+    await import("../../background/service-worker");
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+    const sendResponse = jest.fn();
+
+    const ret = messageListener(
+      { type: "RERUN_ACTION", action: "rephrase", text: "Original", isInput: true },
+      { tab: { id: 123 } },
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Replies synchronously, so no `return true` is needed.
+    expect(ret).not.toBe(true);
+    expect(sendResponse).toHaveBeenCalledWith({ success: true });
+    expect(AIService.improveText).toHaveBeenCalledWith("Original", "rephrase", "general");
+    expect(chromeMock.tabs.sendMessage).toHaveBeenCalledWith(
+      123,
+      expect.objectContaining({
+        type: "SHOW_RESULT",
+        payload: expect.objectContaining({ action: "rephrase", result: "Improved", isInput: true }),
+      }),
+      expect.anything(),
+    );
+  });
+
+  it.each([
+    ["a result", () => Promise.resolve("Improved")],
+    ["an error", () => Promise.reject(new Error("boom"))],
+  ])(
+    "RERUN_ACTION delivers %s to the frame that asked, even after the editor frame was cleared",
+    async (_label, impl) => {
+      const AIService = await import("../../lib/ai-service");
+      AIService.improveText.mockImplementation(impl);
+      await import("../../background/service-worker");
+      const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+      // The iframe editor's retry focused the shadow UI: the frame was cleared.
+      messageListener({ type: "EDITOR_FOCUSED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
+      messageListener({ type: "EDITOR_BLURRED" }, { tab: { id: 123 }, frameId: 7 }, jest.fn());
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      messageListener(
+        { type: "RERUN_ACTION", action: "rephrase", text: "Original", isInput: true },
+        { tab: { id: 123 }, frameId: 7 },
+        jest.fn(),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      const showResults = chromeMock.tabs.sendMessage.mock.calls.filter(
+        ([, message]) => message.type === "SHOW_RESULT",
+      );
+      expect(showResults).toHaveLength(1);
+      expect(showResults[0][0]).toBe(123);
+      expect(showResults[0][2]).toEqual({ frameId: 7 });
+    },
+  );
+
+  it.each([
+    ["a missing action", { text: "Original" }, { tab: { id: 123 } }],
+    ["an unknown action", { action: "bogus", text: "Original" }, { tab: { id: 123 } }],
+    ["empty text", { action: "rephrase", text: "   " }, { tab: { id: 123 } }],
+    ["a missing sender tab", { action: "rephrase", text: "Original" }, {}],
+  ])("RERUN_ACTION rejects %s without calling the AI", async (_label, fields, sender) => {
+    const AIService = await import("../../lib/ai-service");
+    await import("../../background/service-worker");
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+    const sendResponse = jest.fn();
+
+    messageListener({ type: "RERUN_ACTION", isInput: false, ...fields }, sender, sendResponse);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(sendResponse).toHaveBeenCalledWith({ success: false });
+    expect(AIService.improveText).not.toHaveBeenCalled();
+    expect(chromeMock.tabs.sendMessage).not.toHaveBeenCalled();
+  });
+
   it("restores the active editor frame after a service-worker restart", async () => {
     chromeMock.storage.session.get.mockResolvedValue({ omni_ai_active_frame_123: 7 });
     await import("../../background/service-worker");

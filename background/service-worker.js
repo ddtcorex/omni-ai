@@ -73,6 +73,14 @@ async function sendToActiveEditor(tabId, message) {
   return chrome.tabs.sendMessage(tabId, message, { frameId: 0 });
 }
 
+// Deliver to a known frame (the one that asked for a re-run), or else to
+// the active editor frame. A retry answers the card it came from, whatever
+// focus did in between.
+function sendToFrameOrActiveEditor(tabId, message, frameId) {
+  if (Number.isInteger(frameId)) return chrome.tabs.sendMessage(tabId, message, { frameId });
+  return sendToActiveEditor(tabId, message);
+}
+
 // ============================================
 // Installation & Setup
 // ============================================
@@ -121,6 +129,10 @@ chrome.sidePanel
   ?.setPanelBehavior({ openPanelOnActionClick: true })
   ?.catch((e) => console.warn("[Omni AI] setPanelBehavior failed:", e));
 
+// The actions the keyboard commands and context menu produce; RERUN_ACTION is
+// limited to them so a bad message never reaches the AI.
+const RERUN_ACTIONS = ["grammar", "rephrase", "summarize", "explain", "smart_translate", "emoji"];
+
 /**
  * Handle keyboard commands
  */
@@ -141,8 +153,15 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
 
   // Handle other commands via selected text
   try {
-    // Notify content script to show processing state (spin icon)
-    void sendToActiveEditor(tab.id, { type: "PROCESSING_START" }).catch(() => {});
+    let action;
+    if (command === "quick_fix_grammar") action = "grammar";
+    if (command === "quick_rephrase") action = "rephrase";
+    if (command === "quick_summarize") action = "summarize";
+    if (command === "quick_explain") action = "explain";
+    if (command === "quick_translate") action = "smart_translate";
+
+    // Open the card in its loading state, naming the action when known.
+    void sendToActiveEditor(tab.id, { type: "PROCESSING_START", action }).catch(() => {});
 
     const response = await sendToActiveEditor(tab.id, {
       type: "GET_SELECTION",
@@ -150,12 +169,6 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
 
     const selection = response?.selection;
     const isInput = response?.isInput || false;
-    let action;
-    if (command === "quick_fix_grammar") action = "grammar";
-    if (command === "quick_rephrase") action = "rephrase";
-    if (command === "quick_summarize") action = "summarize";
-    if (command === "quick_explain") action = "explain";
-    if (command === "quick_translate") action = "smart_translate";
 
     if (action) {
       if (!selection) {
@@ -318,6 +331,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then((key) => sendResponse({ success: true, apiKey: key }))
         .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
+
+    case "RERUN_ACTION":
+      // Replies synchronously (the run itself is fire-and-forget and reports
+      // through SHOW_RESULT), so no `return true` is needed here.
+      if (
+        sender.tab?.id !== undefined &&
+        RERUN_ACTIONS.includes(message.action) &&
+        typeof message.text === "string" &&
+        message.text.trim()
+      ) {
+        void processSelectedText(
+          sender.tab.id,
+          message.text,
+          message.action,
+          !!message.isInput,
+          sender.frameId,
+        );
+        sendResponse({ success: true });
+      } else {
+        sendResponse({ success: false });
+      }
+      break;
 
     case "VALIDATE_CONFIG":
       handleValidateConfig(message.payload)
@@ -567,8 +602,14 @@ async function handleValidateConfig(payload) {
 
 /**
  * Process selected text from context menu
+ * @param {number} tabId
+ * @param {string} text
+ * @param {string} action
+ * @param {boolean} [isInput]
+ * @param {number} [frameId] the frame to answer (a re-run); absent means
+ *   the active editor frame
  */
-async function processSelectedText(tabId, text, action, isInput = false) {
+async function processSelectedText(tabId, text, action, isInput = false, frameId = undefined) {
   try {
     let result;
 
@@ -624,15 +665,19 @@ async function processSelectedText(tabId, text, action, isInput = false) {
         result = await improveText(text, action, "general");
     }
 
-    await sendToActiveEditor(tabId, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        originalText: text,
-        result,
-        isInput,
+    await sendToFrameOrActiveEditor(
+      tabId,
+      {
+        type: "SHOW_RESULT",
+        payload: {
+          action,
+          originalText: text,
+          result,
+          isInput,
+        },
       },
-    });
+      frameId,
+    );
     // Save to history
     await addToHistory({
       action,
@@ -642,16 +687,20 @@ async function processSelectedText(tabId, text, action, isInput = false) {
       site: "context-menu",
     });
   } catch (error) {
-    await sendToActiveEditor(tabId, {
-      type: "SHOW_RESULT",
-      payload: {
-        action,
-        originalText: text,
-        result: `Error: ${error.message}`,
-        error: true,
-        isInput,
+    await sendToFrameOrActiveEditor(
+      tabId,
+      {
+        type: "SHOW_RESULT",
+        payload: {
+          action,
+          originalText: text,
+          result: `Error: ${error.message}`,
+          error: true,
+          isInput,
+        },
       },
-    });
+      frameId,
+    ).catch(() => {});
   }
 }
 

@@ -59,10 +59,6 @@
     "message": "ਤੇਜ਼ ਕਾਰਵਾਈਆਂ ਦਾ ਮੀਨੂ ਦਿਖਾਓ",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "ਸੰਦਰਭ",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "ਲਿਖਤ ਸੁਧਾਰੋ",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "ਵਿਆਕਰਨ ਠੀਕ ਕਰੋ",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "ਸਪੈਲਿੰਗ ਅਤੇ ਵਿਆਕਰਨ ਠੀਕ ਕਰਦਾ ਹੈ",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "ਸਪਸ਼ਟਤਾ ਸੁਧਾਰੋ",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "ਤਿਆਰ",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "ਪ੍ਰੋਸੈਸਿੰਗ...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "ਗਲਤੀ",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "ਨਤੀਜਾ",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "ਸੋਚ ਰਿਹਾ ਹੈ...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "ਪਿੱਛੇ",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "ਨਵੀਂ API ਕੁੰਜੀ ਬਣਾਓ"
   },
-  "overlay_suggested_fix": {
-    "message": "ਸੁਝਾਇਆ ਸੁਧਾਰ",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "ਸਵੀਕਾਰ ਕਰੋ",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "ਖਾਰਜ ਕਰੋ",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "ਕੋਈ ਸਮੱਸਿਆ ਨਹੀਂ ਮਿਲੀ",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "ਟੈਕਸਟ ਬਹੁਤ ਵਧੀਆ ਹੈ!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "ਸਮਾਰਟ ਅਨੁਵਾਦ",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "ਕੀ ਤੁਸੀਂ ਸੱਚਮੁੱਚ ਇਹ ਗੱਲਬਾਤ ਸਾਫ਼ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "ਬਦਲਾਅ ਵੇਖੋ",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "ਇਸ ਲਿਖਤ ਬਾਰੇ ਪੁੱਛੋ…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "ਕੰਮ ਜਾਰੀ ਹੈ…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }
