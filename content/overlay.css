@@ -443,14 +443,25 @@
   flex: 1;
 }
 
-/* State header: back, a small gradient mark, the title, close. */
-.omni-ai-title-mark {
+/* State header: back, the state's action icon, the title, close. */
+.omni-ai-title-icon {
   flex: none;
+  display: inline-grid;
+  place-items: center;
   width: 14px;
   height: 14px;
   margin: 0 3px 0 2px;
-  border-radius: 5px;
-  background: var(--omni-accent-gradient);
+  color: var(--omni-accent);
+}
+
+.omni-ai-title-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* The filled sparkle shares the button glyph class; here it takes the accent. */
+.omni-ai-title-icon .omni-ai-btn-icon-svg {
+  color: inherit;
 }
 
 .omni-ai-title {
