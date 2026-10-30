@@ -191,7 +191,14 @@
     // `render` returns false when the transition was superseded (a close, a
     // newer state) while the fade ran: stop, so the height morph never takes
     // over the container's running animation (a closing card's exit).
-    if (render() === false) return;
+    if (render() === false) {
+      // The fade out holds `inner` at opacity 0 (fill both): release it so a
+      // card that stays (close then quick reopen) is not left invisible.
+      const stale = running.get(inner);
+      if (stale) stale.cancel();
+      running.delete(inner);
+      return;
+    }
     const newHeight = container.offsetHeight;
     const tasks = [];
     if (!reduced && oldHeight !== newHeight) {

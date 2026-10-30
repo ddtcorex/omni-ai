@@ -69,6 +69,10 @@
       // close backs off and the same card is reused.
       closing = null;
       if (!card) buildCard();
+      // A morph stopped by the close may have left a fade on inner.
+      else if (typeof inner.getAnimations === "function") {
+        inner.getAnimations().forEach((anim) => anim.cancel());
+      }
       current = { state, data };
       renderInto(state, data);
       motion().enter(card);
@@ -123,7 +127,8 @@
           completed = await motion().exit(el);
         }
         // Superseded by a reopen (exit false, or a stale true): keep the card.
-        if (closing !== run || !completed) return;
+        if (closing !== run) return;
+        // Still cancelled after the retries: a close wins, remove regardless.
         el.removeEventListener("keydown", onKeydown);
         el.remove();
         card = null;
