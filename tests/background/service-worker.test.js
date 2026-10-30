@@ -223,6 +223,25 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  it.each([
+    ["a missing action", { text: "Original" }, { tab: { id: 123 } }],
+    ["an unknown action", { action: "bogus", text: "Original" }, { tab: { id: 123 } }],
+    ["empty text", { action: "rephrase", text: "   " }, { tab: { id: 123 } }],
+    ["a missing sender tab", { action: "rephrase", text: "Original" }, {}],
+  ])("RERUN_ACTION rejects %s without calling the AI", async (_label, fields, sender) => {
+    const AIService = await import("../../lib/ai-service");
+    await import("../../background/service-worker");
+    const messageListener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+    const sendResponse = jest.fn();
+
+    messageListener({ type: "RERUN_ACTION", isInput: false, ...fields }, sender, sendResponse);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(sendResponse).toHaveBeenCalledWith({ success: false });
+    expect(AIService.improveText).not.toHaveBeenCalled();
+    expect(chromeMock.tabs.sendMessage).not.toHaveBeenCalled();
+  });
+
   it("restores the active editor frame after a service-worker restart", async () => {
     chromeMock.storage.session.get.mockResolvedValue({ omni_ai_active_frame_123: 7 });
     await import("../../background/service-worker");
