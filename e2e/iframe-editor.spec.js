@@ -132,6 +132,51 @@ test("Replace swaps the selected word inside an editable iframe body", async () 
   }
 });
 
+// Counts the frame's Omni AI elements matching the selector.
+function countShadow(frame, selector) {
+  return frame.evaluate(
+    (q) =>
+      document.getElementById("omni-ai-shadow-host")?.shadowRoot?.querySelectorAll(q).length ?? 0,
+    selector,
+  );
+}
+
+test("after Replace in an iframe editor no toolbar remains, and a new selection brings it back", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "BETA");
+    const page = await context.newPage();
+    const { frame, frameEl } = await openEditorFrame(page, port);
+
+    await selectBeta(page, frame, frameEl);
+    await clickShadow(frame, ".omni-ai-quick-btn");
+    await clickShadow(frame, '.omni-ai-menu-item[data-action="rephrase"]');
+    await clickShadow(frame, "#omniAiReplace");
+
+    await expect
+      .poll(() => frame.evaluate(() => document.body.innerText.replace(/\s+/g, " ").trim()))
+      .toBe("Alpha BETA gamma delta epsilon. Second paragraph stays.");
+    // The card's exit finishes, then its close re-syncs the toolbar.
+    await expect.poll(() => countShadow(frame, ".omni-ai-overlay")).toBe(0);
+    expect(await frame.evaluate(() => window.getSelection().isCollapsed)).toBe(true);
+    // Any toolbar the close or the click's mouseup brings back is in by the
+    // time the next frame has painted twice.
+    await frame.evaluate(
+      () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+    );
+    expect(await countShadow(frame, ".omni-ai-quick-btn")).toBe(0);
+
+    // A real new selection still shows the toolbar.
+    await selectBeta(page, frame, frameEl);
+    await expect.poll(() => countShadow(frame, ".omni-ai-quick-btn")).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("a worker retry inside an iframe editor answers that frame, not the top one", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();

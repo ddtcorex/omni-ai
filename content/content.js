@@ -738,9 +738,13 @@ function setupSelectionListener() {
   };
 
   document.addEventListener("mouseup", (e) => {
-    if (overlay && !isEventInsideOmniUi(e)) {
-      hideOverlay();
-    }
+    // A click on the extension's own UI is not a page selection. Its
+    // deferred check would otherwise run after the click's handler: after
+    // Replace the card is closing and the editor has focus with a collapsed
+    // caret, so the full-text rule would bring back a toolbar for the whole
+    // field.
+    if (isEventInsideOmniUi(e)) return;
+    if (overlay) hideOverlay();
     handleSelectionChange({ x: e.clientX, y: e.clientY });
   });
 
