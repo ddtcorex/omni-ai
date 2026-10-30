@@ -800,7 +800,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--omni-accent);
+  color: var(--omni-accent-text);
 }
 
 .omni-ai-translate-body {

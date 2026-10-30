@@ -402,6 +402,21 @@ async function openCardOnBelowFoldText(page, port) {
   await page.mouse.down();
   await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
   await page.mouse.up();
+  // The toolbar is placed after the mouseup. Click only once it sits inside
+  // the viewport: Playwright scrolls an off-screen target into view, which
+  // would move the page under the selection this test measures against.
+  await page.waitForFunction(
+    () => {
+      const btn = document
+        .getElementById("omni-ai-shadow-host")
+        ?.shadowRoot?.querySelector(".omni-ai-quick-btn");
+      if (!btn) return false;
+      const r = btn.getBoundingClientRect();
+      return r.top >= 0 && r.bottom <= window.innerHeight && r.width > 0;
+    },
+    null,
+    { timeout: 8000 },
+  );
   await clickShadow(page, ".omni-ai-quick-btn");
   await page.waitForFunction(
     () =>
@@ -411,7 +426,27 @@ async function openCardOnBelowFoldText(page, port) {
     null,
     { timeout: 8000 },
   );
-  await page.waitForTimeout(800); // enter animation settles
+  // The translation has landed (the slot swaps its skeleton for text and the
+  // card grows) and the card's rect has stopped moving for several frames: the
+  // enter animation and the reposition that follows the content swap are done.
+  await page.waitForFunction(
+    () => {
+      const root = document.getElementById("omni-ai-shadow-host")?.shadowRoot;
+      const card = root?.querySelector(".omni-ai-overlay");
+      if (!card || root.querySelector("#omniAiTranslateCard .omni-ai-skeleton")) return false;
+      const r = card.getBoundingClientRect();
+      const key = `${r.top}|${r.bottom}|${r.left}`;
+      const w = /** @type {any} */ (window);
+      if (w.__omniRectKey === key) w.__omniRectStable = (w.__omniRectStable || 0) + 1;
+      else {
+        w.__omniRectKey = key;
+        w.__omniRectStable = 0;
+      }
+      return w.__omniRectStable >= 12;
+    },
+    null,
+    { timeout: 8000, polling: "raf" },
+  );
 }
 
 async function expectCardAboveSelection(page) {
@@ -805,6 +840,43 @@ for (const theme of ["light", "dark"]) {
         theme,
         JSON.stringify(ratios, (k, v) => (typeof v === "number" ? +v.toFixed(2) : v)),
       );
+    } finally {
+      await context.close();
+      server.close();
+    }
+  });
+}
+
+// The page card's small accent label (Smart Translation) is text, so it takes
+// the AA accent text token rather than the plain accent.
+for (const theme of ["light", "dark"]) {
+  test(`${theme} page card translation label reaches WCAG AA`, async () => {
+    const { server, port } = await serveFixtureHtml(BELOW_FOLD(""));
+    const { context, sw } = await launchWithExtension();
+    try {
+      await seedConfig(sw);
+      await sw.evaluate((t) => chrome.storage.sync.set({ omni_ai_theme: t }), theme);
+      await stubGemini(context, "TRANSLATED");
+      const page = await context.newPage();
+      await openCardOnBelowFoldText(page, port);
+      const s = await page.evaluate(() => {
+        const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+        return {
+          card: getComputedStyle(root.querySelector(".omni-ai-overlay")).backgroundColor,
+          label: getComputedStyle(root.querySelector(".omni-ai-suggestion-label")).color,
+        };
+      });
+      for (const pg of [
+        [255, 255, 255],
+        [22, 23, 28],
+      ]) {
+        // A dark card over a white page is the documented exception for
+        // anything below the secondary tier; the accent label stays AA there.
+        const bg = composite([{ rgb: pg, a: 1 }, parseRgba(s.card)]);
+        expect(contrast(parseRgba(s.label).rgb, bg), `${theme} on ${pg}`).toBeGreaterThanOrEqual(
+          4.5,
+        );
+      }
     } finally {
       await context.close();
       server.close();
