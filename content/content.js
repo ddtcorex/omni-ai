@@ -560,42 +560,54 @@ function setupMessageListener() {
       }
 
       case "PROCESSING_START": {
+        // A keyboard command is running in the worker: open the card in its
+        // loading state, named after the action when the worker sent one
+        // (an older worker sends none: generic "Working..." header).
+        const action = typeof message.action === "string" ? message.action : undefined;
         const text = getSelectedText();
-        if (text) {
-          // Force show button if not already visible
-          if (!quickActionBtn) {
-            const activeElement = document.activeElement;
-            const context = getContext(activeElement);
-            // Re-use logic from selection listener basically
-            const rect = context.getRect(activeElement);
-            const inputEl = context.id !== "static" ? activeElement : null;
-
-            presentQuickActionButton(rect, inputEl, text);
-          }
-          // Show loading spinner inside button
-          if (quickActionBtn) {
-            quickActionBtn.innerHTML = `<div class="ds-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
-            quickActionBtn.style.cursor = "wait";
-          }
-        }
+        const isInput = isTextInput(document.activeElement);
+        if (isInput) activeInputElement = document.activeElement;
+        if (text) currentAnchorRect = currentAnchorRect || getSelectionRect();
+        void showLoadingInOverlay({
+          ...(action ? { action } : {}),
+          originalText: text,
+          isInput,
+          source: "worker",
+        });
         sendResponse({ success: true });
         break;
       }
 
-      case "SHOW_RESULT":
-        if (message.payload.originalText) {
+      case "SHOW_RESULT": {
+        const payload = message.payload || {};
+        if (payload.originalText) {
           lastMenuContext = {
-            text: message.payload.originalText,
+            text: payload.originalText,
             anchorRect: currentAnchorRect || getSelectionRect(),
             lockedPosition: null,
-            isInput: message.payload.isInput,
+            isInput: payload.isInput,
           };
         }
-        // Marked so retry knows this result came from the worker's own run
-        // (keyboard command, context menu), not from a content-path request.
-        showResultOverlay({ ...message.payload, source: "worker" }, message.payload.isInput);
+        const raw = String(payload.result ?? "");
+        // The worker flags failures with `error: true`; an older worker only
+        // prefixed the text with "Error: ".
+        const failed =
+          payload.error === true || (payload.error === undefined && raw.startsWith("Error: "));
+        if (failed) {
+          void showErrorInOverlay(raw.replace(/^Error: /, ""), {
+            action: payload.action,
+            originalText: payload.originalText,
+            isInput: payload.isInput,
+            source: "worker",
+          });
+        } else {
+          // Marked so retry knows this result came from the worker's own run
+          // (keyboard command, context menu), not from a content-path request.
+          showResultOverlay({ ...payload, source: "worker" }, payload.isInput);
+        }
         sendResponse({ success: true });
         break;
+      }
 
       case "REPLACE_SELECTION":
         replaceSelectedText(message.payload.text);
@@ -1626,6 +1638,9 @@ async function handleAskAction(query, originalText, isInput, { replace = false }
 // Run the same thing again: retry on a result, Try again on an error. The
 // new loading state replaces the current one, so Back skips it.
 function rerun(data) {
+  if (data.source === "worker") {
+    return rerunViaWorker(data);
+  }
   if (data.action === "quick_ask") {
     return handleAskAction(data.query, data.originalText, data.isInput, { replace: true });
   }
@@ -1636,10 +1651,34 @@ function rerun(data) {
   });
 }
 
-// Only content-path results can re-run here; worker results get their own
-// re-run message (Task 8), until then they show no retry.
+// Worker results re-run through the worker so retry never switches prompts.
+async function rerunViaWorker(data) {
+  await showLoadingInOverlay(
+    {
+      action: data.action,
+      originalText: data.originalText,
+      isInput: data.isInput,
+      source: "worker",
+    },
+    { replace: true },
+  );
+  chrome.runtime
+    .sendMessage({
+      type: "RERUN_ACTION",
+      action: data.action,
+      text: data.originalText,
+      isInput: Boolean(data.isInput),
+    })
+    .catch((error) => {
+      void showErrorInOverlay(String(error?.message || error), data);
+    });
+}
+
+// A worker result can only re-run when it carries the text to run on (the
+// no-selection error has none).
 function canRerun(data) {
-  return Boolean(data?.action) && data.source !== "worker";
+  if (!data?.action) return false;
+  return data.source !== "worker" || Boolean(data.originalText);
 }
 
 // ============================================
