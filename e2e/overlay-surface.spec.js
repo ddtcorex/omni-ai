@@ -745,7 +745,7 @@ test("dark menu pills use the prototype glass values and pass AA contrast", asyn
         page: getComputedStyle(document.body).backgroundColor,
       };
     });
-    expect(s.cardBg).toBe("rgba(30, 30, 40, 0.84)");
+    expect(s.cardBg).toBe("rgba(30, 30, 40, 0.92)");
     expect(s.cardBorder).toBe("rgba(255, 255, 255, 0.08)");
     expect(s.secondary.bg).toBe("rgba(255, 255, 255, 0.07)");
     expect(s.secondary.color).toBe("rgb(194, 197, 210)");
@@ -770,9 +770,8 @@ test("dark menu pills use the prototype glass values and pass AA contrast", asyn
 // WCAG AA (4.5:1) for the small overlay text and the white-on-gradient
 // buttons, in both themes. Translucent glass is composited over a white page
 // and a near-black page, the two extremes a host page can put behind it.
-// The dark theme's tertiary text (placeholder, Show changes) is only held to
-// AA on a dark page: a dark card over a white page is the one combination
-// where the tertiary tier cannot stay visibly below the secondary tier.
+// Every use of the tertiary text token (placeholder, Show changes, the close
+// and back glyphs) is checked on both the card and the Ask box.
 for (const theme of ["light", "dark"]) {
   test(`${theme} overlay text and gradient buttons reach WCAG AA`, async () => {
     const { server, port } = await serveFixtureHtml(FIXTURE);
@@ -804,6 +803,16 @@ for (const theme of ["light", "dark"]) {
             placeholder: cs(".omni-ai-input", "::placeholder")?.color,
             send: stops("#omniAiInputBtn"),
             toggleText: cs(".omni-ai-toggle")?.color,
+            closeText: cs("#omniAiClose")?.color,
+            backText: cs("#omniAiBack")?.color,
+            tertiary: (() => {
+              const probe = document.createElement("span");
+              probe.style.color = "var(--omni-glass-text-tertiary)";
+              root.querySelector(".omni-ai-overlay").appendChild(probe);
+              const c = getComputedStyle(probe).color;
+              probe.remove();
+              return c;
+            })(),
             replace: stops(".omni-ai-btn.is-primary"),
           };
         });
@@ -824,11 +833,12 @@ for (const theme of ["light", "dark"]) {
         const card = composite([{ rgb: pg, a: 1 }, parseRgba(menu.card)]);
         const onCard = (c) => composite([{ rgb: card, a: 1 }, parseRgba(c)]);
         check(`secondary pill on ${pn}`, parseRgba(menu.pillText).rgb, onCard(menu.pillBg));
-        if (theme === "light" || pn === "dark") {
-          check(`placeholder on ${pn}`, parseRgba(menu.placeholder).rgb, onCard(menu.askBg));
-          const rc = composite([{ rgb: pg, a: 1 }, parseRgba(result.card)]);
-          check(`Show changes on ${pn}`, parseRgba(result.toggleText).rgb, rc);
-        }
+        check(`placeholder on ${pn}`, parseRgba(menu.placeholder).rgb, onCard(menu.askBg));
+        const rc = composite([{ rgb: pg, a: 1 }, parseRgba(result.card)]);
+        check(`Show changes on ${pn}`, parseRgba(result.toggleText).rgb, rc);
+        check(`close glyph on ${pn}`, parseRgba(result.closeText).rgb, rc);
+        check(`back glyph on ${pn}`, parseRgba(result.backText).rgb, rc);
+        check(`tertiary token on ${pn}`, parseRgba(result.tertiary).rgb, rc);
       }
       expect(menu.send.length).toBe(2);
       expect(result.replace.length).toBe(2);
@@ -864,8 +874,13 @@ for (const theme of ["light", "dark"]) {
         return {
           card: getComputedStyle(root.querySelector(".omni-ai-overlay")).backgroundColor,
           label: getComputedStyle(root.querySelector(".omni-ai-suggestion-label")).color,
+          icon: root
+            .querySelector(".omni-ai-translate-head .omni-ai-title-icon")
+            ?.getAttribute("data-icon"),
         };
       });
+      // The page card header carries the Smart Translate icon, like the menu.
+      expect(s.icon).toBe("translateSmart");
       for (const pg of [
         [255, 255, 255],
         [22, 23, 28],

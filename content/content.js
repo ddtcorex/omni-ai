@@ -1372,12 +1372,13 @@ const HEADER_ICON_KEYS = {
   explain: "explain",
   reply: "reply",
   emoji: "emoji",
-  smart_translate: "translate",
+  smart_translate: "translateSmart",
   translate_primary: "translate",
   translate_default: "translate",
   quick_ask: "ask",
   ask: "ask",
   translate: "translate",
+  translateSmart: "translateSmart",
   error: "warn",
 };
 
@@ -1511,7 +1512,7 @@ function renderPageCardState(inner, data, surf) {
   inner.innerHTML = `
     <div class="omni-ai-translate" id="omniAiTranslateCard">
       <div class="omni-ai-translate-head">
-        ${headerIconMarkup("translate")}
+        ${headerIconMarkup("translateSmart")}
         <span class="omni-ai-suggestion-label">${escapeHtml(i18n.getMessage("overlay_smart_translation"))}</span>
         <span class="omni-ai-spacer"></span>
         <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${escapeHtml(i18n.getMessage("overlay_copy"))}" disabled>${ICONS.copy}</button>
