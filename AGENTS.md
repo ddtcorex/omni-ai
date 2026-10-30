@@ -99,17 +99,17 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type                     | Direction           | Purpose                                                                                                                                                            |
-| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                                                                                          |
-| `PROCESSING_START`       | bg → content        | Open the card in its loading state `{ action? }`; the action names the header, absent means the generic "Working…" header                                          |
-| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`; `error: true` (or an `"Error: "` prefix) opens the error state                           |
-| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                                                                                                  |
-| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                                                                                          |
-| `SHOW_QUICK_ACTION_MENU` | bg → content        | Open the quick-action menu at the current selection (Alt+O), same menu the floating icon's click opens; no-ops if there's no selection                             |
-| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                                                                                    |
-| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`)                                                                     |
-| `RERUN_ACTION`           | content → bg        | Retry of a worker-run result `{ action, text, isInput }`; the worker re-runs it, replies `{ success }` synchronously, then sends `SHOW_RESULT` to the sender frame |
+| Type                     | Direction           | Purpose                                                                                                                                                                                                                         |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                                                                                                                                                       |
+| `PROCESSING_START`       | bg → content        | Open the card in its loading state `{ action? }`; the action names the header, absent means the generic "Working…" header                                                                                                       |
+| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`; `error: true` (or an `"Error: "` prefix) opens the error state; dropped when it answers a keyboard command or retry whose card was closed or moved on |
+| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                                                                                                                                                               |
+| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                                                                                                                                                       |
+| `SHOW_QUICK_ACTION_MENU` | bg → content        | Open the quick-action menu at the current selection (Alt+O), same menu the floating icon's click opens; no-ops if there's no selection                                                                                          |
+| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                                                                                                                                                 |
+| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`)                                                                                                                                  |
+| `RERUN_ACTION`           | content → bg        | Retry of a worker-run result `{ action, text, isInput }`; the worker re-runs it, replies `{ success }` synchronously, then sends `SHOW_RESULT` to the sender frame                                                              |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
