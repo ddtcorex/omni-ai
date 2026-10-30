@@ -137,5 +137,97 @@
     return buttonRight + gap + rowWidth > viewportWidth ? "left" : "right";
   }
 
-  root.OMNI_POSITIONING = { clampToViewport, getRectEndPoint, placeCard, revealSide };
+  /**
+   * Where the floating toolbar may sit for a rich-text selection, best first,
+   * viewport-relative. The first is right of the selection's end, vertically
+   * centred on its last line, or left of its start on the first line when the
+   * right side runs past the viewport. The rest are fallbacks for when a host
+   * element covers it: above that line, then the other side. A selection
+   * toolbar an editor anchors to the selection never sits on the selection's
+   * own line, so the first spot is usually clear.
+   *
+   * @param {DOMRectList | DOMRect[]} rects Range.getClientRects()
+   * @param {number} size the toolbar's (square) size at rest
+   * @param {number} viewportWidth
+   * @param {number} [gap]
+   * @returns {{top: number, left: number, side: string}[]} side is "right", "left" or "above"
+   */
+  function toolbarCandidates(rects, size, viewportWidth, gap = 4) {
+    // A selection that ends at the start of a block adds an empty rect there.
+    const lines = Array.from(rects || []).filter((r) => r.width > 0 && r.height > 0);
+    if (lines.length === 0) return [];
+    const first = lines[0];
+    const last = lines[lines.length - 1];
+    const centred = (line) => line.top + line.height / 2 - size / 2;
+    const right = { top: centred(last), left: last.right + gap, side: "right" };
+    const left = { top: centred(first), left: first.left - gap - size, side: "left" };
+    const fitsRight = right.left + size <= viewportWidth;
+    const fitsLeft = left.left >= 0;
+    if (fitsRight) {
+      const above = { top: last.top - gap - size, left: last.right - size, side: "above" };
+      return fitsLeft ? [right, above, left] : [right, above];
+    }
+    const above = { top: first.top - gap - size, left: first.left, side: "above" };
+    return fitsLeft ? [left, above] : [right, above];
+  }
+
+  /**
+   * A grid of points over a rect, inset from its edges, for hit-testing.
+   *
+   * @param {{left: number, top: number, width: number, height: number}} rect
+   * @param {number} cols
+   * @param {number} rows
+   * @param {number} [inset]
+   * @returns {{x: number, y: number}[]}
+   */
+  function samplePoints(rect, cols, rows, inset = 2) {
+    const axis = (start, length, count) => {
+      if (count <= 1) return [start + length / 2];
+      const step = (length - 2 * inset) / (count - 1);
+      return Array.from({ length: count }, (_, i) => start + inset + step * i);
+    };
+    const xs = axis(rect.left, rect.width, cols);
+    const ys = axis(rect.top, rect.height, rows);
+    return ys.flatMap((y) => xs.map((x) => ({ x, y })));
+  }
+
+  /**
+   * Move a card clear of a host element covering it (an editor's own
+   * selection toolbar in the parent document), keeping it off the selection.
+   * Tries the card's current side first: below starts under the lower of the
+   * cover and the anchor, above ends over the higher of the two. All values
+   * are viewport-relative. Null when neither side has room for the card.
+   *
+   * @param {{top: number, height: number}} card
+   * @param {"below" | "above"} placement
+   * @param {{top: number, bottom: number}} cover
+   * @param {{top: number, bottom: number}} anchor toolbar or selection
+   * @param {number} viewportHeight
+   * @param {number} [gap]
+   * @param {number} [margin]
+   * @returns {{placement: "below", top: number} | {placement: "above", bottom: number} | null}
+   */
+  function clearOfCover(card, placement, cover, anchor, viewportHeight, gap = 8, margin = 10) {
+    const belowTop = Math.max(cover.bottom, anchor.bottom) + gap;
+    const below =
+      belowTop + card.height <= viewportHeight - margin
+        ? { placement: /** @type {"below"} */ ("below"), top: belowTop }
+        : null;
+    const aboveBottom = Math.min(cover.top, anchor.top) - gap;
+    const above =
+      aboveBottom - card.height >= margin
+        ? { placement: /** @type {"above"} */ ("above"), bottom: aboveBottom }
+        : null;
+    return placement === "above" ? above || below : below || above;
+  }
+
+  root.OMNI_POSITIONING = {
+    clampToViewport,
+    getRectEndPoint,
+    placeCard,
+    revealSide,
+    toolbarCandidates,
+    samplePoints,
+    clearOfCover,
+  };
 })(typeof self !== "undefined" ? self : this);

@@ -803,9 +803,22 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
   const rect = context.getRect(activeElement);
   const inputEl = context.id !== "static" ? activeElement : null;
 
-  // Use mouse position for any text selection (all contexts)
+  // A rich text selection places the toolbar at its end (see
+  // toolbarCandidates); any other selection anchors at the mouse.
+  let selectionRects = null;
+  if (context.id === "richText" && result.isSelection && lastRange) {
+    try {
+      selectionRects = lastRange.getClientRects();
+    } catch {}
+  }
   const useMousePos = mousePos && result.isSelection;
-  presentQuickActionButton(rect, inputEl, result.text, useMousePos ? mousePos : null);
+  presentQuickActionButton(
+    rect,
+    inputEl,
+    result.text,
+    useMousePos ? mousePos : null,
+    selectionRects,
+  );
 }
 
 // The toolbar belongs to the selection (spec "Floating toolbar"): it stays
@@ -867,6 +880,7 @@ function presentQuickActionButton(
   inputElement = null,
   initialText = null,
   mousePosition = null,
+  selectionRects = null,
 ) {
   if (!isContextValid()) return;
   if (!floatingButtonEnabled) return;
@@ -894,7 +908,7 @@ function presentQuickActionButton(
     if (context.id === "standard") useInputPositioning = true;
   }
 
-  createQuickBtn(rect, useInputPositioning, mousePosition);
+  createQuickBtn(rect, useInputPositioning, mousePosition, selectionRects);
   quickToolbarText = initialText;
   quickToolbarInput = inputElement;
   setupQuickBtnEvents(initialText, inputElement);
@@ -906,7 +920,7 @@ const TOOLBAR_SIZE = 24;
 // Border plus padding between the pill's edge and the quick button.
 const TOOLBAR_INSET = 2;
 
-async function createQuickBtn(rect, isInput, mousePosition = null) {
+async function createQuickBtn(rect, isInput, mousePosition = null, selectionRects = null) {
   const toolbar = document.createElement("div");
   toolbar.className = "omni-ai-toolbar";
   const button = document.createElement("button");
@@ -921,9 +935,46 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
 
   const uiReady = ensureUiRootReady();
 
-  // Position: use mouse position if provided (for text selection)
+  const positioning = /** @type {any} */ (self).OMNI_POSITIONING;
+  const clamp = (spotTop, spotLeft) =>
+    positioning.clampToViewport(
+      spotTop,
+      spotLeft,
+      TOOLBAR_SIZE,
+      TOOLBAR_SIZE,
+      window.scrollX,
+      window.scrollY,
+      window.innerWidth,
+      window.innerHeight,
+    );
+  const spots =
+    selectionRects && positioning
+      ? positioning
+          .toolbarCandidates(selectionRects, TOOLBAR_SIZE, window.innerWidth)
+          .map((c) => clamp(c.top + window.scrollY, c.left + window.scrollX))
+      : [];
+
+  // Position: at the end of a rich text selection, else at the mouse for a
+  // text selection, else at the field or selection rect.
   let top, left;
-  if (mousePosition) {
+  if (spots.length > 0) {
+    // The first spot no host element covers (an editor's own toolbar drawn
+    // over this frame), or the preferred one when every spot is covered.
+    const clear = spots.find(
+      (spot) =>
+        !hostCover(
+          {
+            left: spot.left - window.scrollX,
+            top: spot.top - window.scrollY,
+            width: TOOLBAR_SIZE,
+            height: TOOLBAR_SIZE,
+          },
+          3,
+          3,
+        ),
+    );
+    ({ top, left } = clear || spots[0]);
+  } else if (mousePosition) {
     // Position near mouse cursor with small offset
     top = mousePosition.y + window.scrollY + 8;
     left = mousePosition.x + window.scrollX + 8;
@@ -1826,6 +1877,71 @@ function getSelectionRect() {
 // Gap between the anchor (toolbar or selection) and the card.
 const CARD_GAP = 8;
 
+// This frame's content box in its parent's viewport, when the parent is
+// same-origin (an iframe-mode editor such as TinyMCE classic); null at the
+// top level or for a cross-origin parent.
+function frameInParent() {
+  try {
+    const frameEl = window.frameElement;
+    const doc = frameEl?.ownerDocument;
+    if (!frameEl || !doc?.elementFromPoint) return null;
+    const box = frameEl.getBoundingClientRect();
+    const style = doc.defaultView?.getComputedStyle(frameEl);
+    return {
+      frameEl,
+      doc,
+      x: box.left + frameEl.clientLeft + (parseFloat(style?.paddingLeft || "") || 0),
+      y: box.top + frameEl.clientTop + (parseFloat(style?.paddingTop || "") || 0),
+    };
+  } catch {
+    return null;
+  }
+}
+
+// What the parent document draws over a rect of this frame (viewport
+// coordinates of this frame): the union of the parent elements on top at a
+// grid of points over it, mapped back into this frame, or null when nothing
+// covers it. An editor's own selection toolbar lives there, out of reach of
+// any z-index inside the frame. Generic: anything that is not the frame
+// (or one of its ancestors, hit where the frame is clipped) counts.
+function hostCover(rect, cols, rows) {
+  const frame = frameInParent();
+  if (!frame) return null;
+  const positioning = /** @type {any} */ (self).OMNI_POSITIONING;
+  let cover = null;
+  try {
+    for (const point of positioning.samplePoints(rect, cols, rows)) {
+      const el = frame.doc.elementFromPoint(frame.x + point.x, frame.y + point.y);
+      if (!el || el === frame.frameEl || el.contains(frame.frameEl)) continue;
+      const r = el.getBoundingClientRect();
+      const local = {
+        top: r.top - frame.y,
+        bottom: r.bottom - frame.y,
+        left: r.left - frame.x,
+        right: r.right - frame.x,
+      };
+      cover = cover
+        ? {
+            top: Math.min(cover.top, local.top),
+            bottom: Math.max(cover.bottom, local.bottom),
+            left: Math.min(cover.left, local.left),
+            right: Math.max(cover.right, local.right),
+          }
+        : local;
+    }
+  } catch {
+    return null;
+  }
+  return cover;
+}
+
+// Points over the card worth keeping reachable: its header row, densely,
+// and the rest of it more loosely.
+function cardCover(rect) {
+  const header = { left: rect.left, top: rect.top, width: rect.width, height: 24 };
+  return hostCover(header, 5, 3) || hostCover(rect, 3, 3);
+}
+
 // Viewport-relative edges of the card's containing block. The shadow host is
 // position: static, so the containing block is the nearest positioned or
 // transformed ancestor (often <body>), or the initial containing block.
@@ -1891,6 +2007,33 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     overlay.dataset.placement = "below";
   };
 
+  // Inside an iframe editor, a parent-document element over the card (the
+  // editor's own selection toolbar) would swallow clicks on it: move the
+  // card under it, or above the selection when there is no room. Runs on
+  // every placement, so a state change that resizes the card re-checks.
+  // Leaves the card where it is when neither side has room.
+  const stepClearOfHost = (anchor) => {
+    if (overlay.dataset.placement === "center") return;
+    const base = anchor || cardAnchorRect();
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const rect = overlay.getBoundingClientRect();
+      const cover = cardCover(rect);
+      if (!cover) return;
+      const moved = /** @type {any} */ (self).OMNI_POSITIONING.clearOfCover(
+        { top: rect.top, height: rect.height },
+        overlay.dataset.placement === "above" ? "above" : "below",
+        cover,
+        base ? { top: base.top, bottom: base.bottom } : { top: rect.top, bottom: rect.top },
+        viewportHeight,
+        CARD_GAP,
+      );
+      if (!moved) return;
+      const leftCss = parseFloat(overlay.style.left) || 0;
+      if (moved.placement === "above") applyAbove(leftCss, cb.bottom - moved.bottom);
+      else applyBelow(moved.top - cb.top, leftCss);
+    }
+  };
+
   if (lockedPosition) {
     if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
       applyAbove(lockedPosition.left, lockedPosition.bottom);
@@ -1918,8 +2061,9 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
         overlay.dataset.placement = "center";
       }
     }
-    overlay.style.visibility = "visible";
     overlay.style.transform = "none";
+    stepClearOfHost(anchorRect);
+    overlay.style.visibility = "visible";
     return;
   }
 
@@ -1938,6 +2082,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
       applyBelow(placed.top - scrollY - cb.top, leftCss);
     }
     overlay.style.transform = "none";
+    stepClearOfHost(anchorRect);
   } else {
     // Centred in the viewport, in pixels rather than a translate(-50%) so the
     // enter animation's transform cannot move it and a later state can lock
