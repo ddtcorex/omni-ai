@@ -408,6 +408,31 @@ let surface = null;
 let overlayLockedPosition = null;
 // Back target for a Quick Ask card opened without a menu behind it.
 let askBackContext = null;
+// The worker run the card is waiting on (a keyboard command or a worker
+// retry): `{ action, token }`, with the surface token taken once its loading
+// state started (null until then). Its SHOW_RESULT, arriving after the card
+// left that state (closed, Back, another action), is stale and dropped. A
+// context-menu result has no pending run of its action and always opens.
+let pendingWorkerRun = null;
+
+function beginWorkerRun(action, loadingStarted) {
+  const run = { action, token: null };
+  pendingWorkerRun = run;
+  Promise.resolve(loadingStarted).then(() => {
+    if (pendingWorkerRun === run) run.token = getSurface().beginRequest();
+  });
+  return run;
+}
+
+// Consumes the pending run the result answers: true when that run's card
+// moved on and the result must be dropped.
+function isStaleWorkerResult(action) {
+  const run = pendingWorkerRun;
+  if (!run || run.action !== action) return false;
+  pendingWorkerRun = null;
+  if (run.token === null) return false;
+  return !getSurface().isCurrent(run.token);
+}
 
 function getSurface() {
   if (!surface) {
@@ -573,18 +598,24 @@ function setupMessageListener() {
         const isInput = isTextInput(document.activeElement);
         if (isInput) activeInputElement = document.activeElement;
         if (text) currentAnchorRect = currentAnchorRect || getSelectionRect();
-        void showLoadingInOverlay({
+        const loading = showLoadingInOverlay({
           ...(action ? { action } : {}),
           originalText: text,
           isInput,
           source: "worker",
         });
+        // Without an action the worker sends no result to wait for.
+        if (action) beginWorkerRun(action, loading);
         sendResponse({ success: true });
         break;
       }
 
       case "SHOW_RESULT": {
         const payload = message.payload || {};
+        if (isStaleWorkerResult(payload.action)) {
+          sendResponse({ success: true, dropped: true });
+          break;
+        }
         if (payload.originalText) {
           lastMenuContext = {
             text: payload.originalText,
@@ -1696,7 +1727,7 @@ function rerun(data) {
 
 // Worker results re-run through the worker so retry never switches prompts.
 async function rerunViaWorker(data) {
-  await showLoadingInOverlay(
+  const loading = showLoadingInOverlay(
     {
       action: data.action,
       originalText: data.originalText,
@@ -1705,7 +1736,14 @@ async function rerunViaWorker(data) {
     },
     { replace: true },
   );
+  const run = beginWorkerRun(data.action, loading);
+  await loading;
   const failMsg = i18n.getMessage("overlay_error");
+  // No result will ever arrive for a refused or failed request.
+  const giveUp = (msg) => {
+    if (pendingWorkerRun === run) pendingWorkerRun = null;
+    void showErrorInOverlay(msg, data);
+  };
   try {
     const reply = await chrome.runtime.sendMessage({
       type: "RERUN_ACTION",
@@ -1713,10 +1751,9 @@ async function rerunViaWorker(data) {
       text: data.originalText,
       isInput: Boolean(data.isInput),
     });
-    // The worker refused the request: no result will ever arrive.
-    if (!reply?.success) void showErrorInOverlay(failMsg, data);
+    if (!reply?.success) giveUp(failMsg);
   } catch (error) {
-    void showErrorInOverlay(String(error?.message || failMsg), data);
+    giveUp(String(error?.message || failMsg));
   }
 }
 
