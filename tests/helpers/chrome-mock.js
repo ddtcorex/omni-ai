@@ -20,8 +20,8 @@
  *
  * Events are the one deliberate departure: they track the listeners registered
  * through them, so `hasListener` / `hasListeners` answer truthfully and
- * `callListeners` (the idiom docs/superpowers/plans/2026-09-07-sidebar-chat-streaming.md
- * teaches for driving `chrome.runtime.onConnect`) works without reaching into
+ * `callListeners` (a direct way to drive `chrome.runtime.onConnect` from a
+ * test) works without reaching into
  * `addListener.mock.calls`. jest-chrome's argument-count validation on
  * `addListener` is intentionally not reproduced; no test here depends on it.
  *

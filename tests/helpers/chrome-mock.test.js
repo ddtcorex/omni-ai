@@ -70,7 +70,7 @@ describe("chrome-mock helper", () => {
       expect(typeof event.addListener.mockImplementation).toBe("function");
       expect(typeof event.removeListener).toBe("function");
       expect(typeof event.hasListener).toBe("function");
-      // callListeners is how the repo's own plan docs drive onConnect; it must
+      // callListeners drives an event such as onConnect from a test; it must
       // exist so that idiom does not throw.
       expect(typeof event.callListeners).toBe("function");
     }
