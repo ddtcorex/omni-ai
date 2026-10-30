@@ -95,10 +95,6 @@
     "message": "文法修正",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "修正拼字與文法",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "提高清晰度",
     "description": "Clarity action"

@@ -95,10 +95,6 @@
     "message": "Perbaiki Tata Bahasa",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Memperbaiki ejaan dan tata bahasa",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Tingkatkan Kejelasan",
     "description": "Clarity action"

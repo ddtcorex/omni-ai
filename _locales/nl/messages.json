@@ -95,10 +95,6 @@
     "message": "Grammatica corrigeren",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Corrigeert spelling en grammatica",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Helderheid verbeteren",
     "description": "Clarity action"

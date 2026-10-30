@@ -95,10 +95,6 @@
     "message": "ବ୍ୟାକରଣ ସୁଧାରନ୍ତୁ",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "ବନାନ ଓ ବ୍ୟାକରଣ ସୁଧାରେ",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "ସ୍ପଷ୍ଟତା ବଢ଼ାନ୍ତୁ",
     "description": "Clarity action"

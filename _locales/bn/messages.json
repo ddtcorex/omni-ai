@@ -95,10 +95,6 @@
     "message": "ব্যাকরণ ঠিক করুন",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "বানান ও ব্যাকরণ সংশোধন করে",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "স্পষ্টতা বাড়ান",
     "description": "Clarity action"

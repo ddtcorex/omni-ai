@@ -95,10 +95,6 @@
     "message": "Виправити граматику",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Виправляє орфографію та граматику",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Покращити ясність",
     "description": "Clarity action"

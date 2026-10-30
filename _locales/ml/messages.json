@@ -95,10 +95,6 @@
     "message": "വ്യാകരണം ശരിയാക്കുക",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "അക്ഷരത്തെറ്റുകളും വ്യാകരണവും ശരിയാക്കുന്നു",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "വ്യക്തത മെച്ചപ്പെടുത്തുക",
     "description": "Clarity action"

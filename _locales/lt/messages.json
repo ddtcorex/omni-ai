@@ -95,10 +95,6 @@
     "message": "Ištaisyti gramatiką",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Ištaiso rašybą ir gramatiką",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Pagerinti aiškumą",
     "description": "Clarity action"

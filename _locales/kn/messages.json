@@ -95,10 +95,6 @@
     "message": "ವ್ಯಾಕರಣ ಸರಿಪಡಿಸಿ",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "ಕಾಗುಣಿತ ಮತ್ತು ವ್ಯಾಕರಣವನ್ನು ಸರಿಪಡಿಸುತ್ತದೆ",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "ಸ್ಪಷ್ಟತೆ ಸುಧಾರಿಸಿ",
     "description": "Clarity action"

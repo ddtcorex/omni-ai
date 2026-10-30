@@ -95,10 +95,6 @@
     "message": "Dilbilgisini Düzelt",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Yazım ve dilbilgisi hatalarını düzeltir",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Anlaşılırlığı Artır",
     "description": "Clarity action"

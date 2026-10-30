@@ -95,10 +95,6 @@
     "message": "Rett grammatikk",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Retter opp skrivefeil og grammatikk",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Forbedre klarhet",
     "description": "Clarity action"

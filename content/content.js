@@ -412,6 +412,7 @@ function getSurface() {
         lastMenuContext = null;
         askBackContext = null;
         overlayLockedPosition = null;
+        resetQuickButtonIcon();
       },
     });
   }
@@ -1010,9 +1011,7 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
     const isInput = !!inputElement;
     if (isInput) activeInputElement = inputElement;
     const currentText = resolveQuickBtnText(text, inputElement);
-    const btnRect = quickActionBtn.getBoundingClientRect();
-
-    showQuickActionMenu(currentText, btnRect, null, isInput);
+    showQuickActionMenu(currentText, cardAnchorRect(), null, isInput);
   });
 
   quickActionBtn.addEventListener("mouseenter", () => {
@@ -1026,14 +1025,45 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
   quickActionBtn.addEventListener("mouseleave", scheduleHideFlashActions);
 }
 
+// Top edge of the selected text (the whole selection, not just its last
+// line), viewport-relative, or null when it cannot be measured (editors
+// expose no range rects).
+function selectionTop() {
+  const sel = window.getSelection();
+  const ranges = [];
+  if (sel && sel.rangeCount > 0) ranges.push(sel.getRangeAt(0));
+  if (lastRange) ranges.push(lastRange);
+  for (const range of ranges) {
+    try {
+      const rect = range.getBoundingClientRect();
+      if (rect && (rect.width || rect.height)) return rect.top;
+    } catch {}
+  }
+  return null;
+}
+
 // Where a card with no explicit anchor opens: under the floating toolbar when
-// it is visible, otherwise at the selection (context menu, keyboard commands).
+// it is visible, otherwise at the selection (context menu, keyboard
+// commands). The anchor's top also covers the selection, so a card that opens
+// above never slides over the selected text.
 function cardAnchorRect() {
+  let base = null;
   if (quickActionBtn && quickActionBtn.isConnected) {
     const rect = quickActionBtn.getBoundingClientRect();
-    if (rect.width > 0 || rect.height > 0) return rect;
+    if (rect.width > 0 || rect.height > 0) base = rect;
   }
-  return getSelectionRect();
+  if (!base) base = getSelectionRect();
+  if (!base) return null;
+  const selTop = selectionTop() ?? getSelectionRect()?.top ?? null;
+  const top = selTop === null ? base.top : Math.min(base.top, selTop);
+  return {
+    top,
+    left: base.left,
+    bottom: base.bottom,
+    right: base.right,
+    width: base.width,
+    height: base.bottom - top,
+  };
 }
 
 // The toolbar now stays while a card is open, so a spinner a flash action or
@@ -1513,6 +1543,10 @@ async function handleAction(action, text, isInput) {
     })
     .catch((err) => {
       if (surf.isCurrent(token)) showErrorInOverlay(err.message);
+    })
+    .finally(() => {
+      // A dropped (stale) response must not leave a spinner on the toolbar.
+      if (!surf.isCurrent(token)) resetQuickButtonIcon();
     });
 }
 
@@ -1604,12 +1638,36 @@ function getSelectionRect() {
 // Gap between the anchor (toolbar or selection) and the card.
 const CARD_GAP = 8;
 
+// Viewport-relative edges of the card's containing block. The shadow host is
+// position: static, so the containing block is the nearest positioned or
+// transformed ancestor (often <body>), or the initial containing block.
+// Reading it with a probe keeps top/bottom correct whichever one it is
+// (positioned or transformed body, quirks mode, scrolled page).
+function containingBlockEdges() {
+  const parent = overlay && overlay.parentNode;
+  if (parent) {
+    const probe = document.createElement("div");
+    probe.style.cssText =
+      "position:absolute;top:0;left:0;bottom:0;width:0;visibility:hidden;pointer-events:none;";
+    parent.appendChild(probe);
+    const rect = probe.getBoundingClientRect();
+    probe.remove();
+    return { top: rect.top, left: rect.left, bottom: rect.bottom };
+  }
+  return {
+    top: -window.scrollY,
+    left: -window.scrollX,
+    bottom: document.documentElement.clientHeight - window.scrollY,
+  };
+}
+
 // Place the card. Opens just under the anchor, left-aligned with it; when
 // there is no room below it opens above, and then the bottom edge is the
 // pinned one (CSS `bottom`) so height changes grow upward and the card never
-// slides over the selection. `lockedPosition` keeps an open card where it
-// already sits: {top, left} for a below card, {top, left, bottom,
-// placement: "above"} for an above card.
+// slides over the selection. `anchorRect.top` should already include the
+// selection (see cardAnchorRect). `lockedPosition` keeps an open card where
+// it already sits, in the card's own CSS coordinates: {top, left} for a below
+// card, {top, left, bottom, placement: "above"} for an above card.
 function positionOverlay(anchorRect = null, lockedPosition = null) {
   if (!overlay) return;
 
@@ -1623,38 +1681,34 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
   const viewportHeight = window.innerHeight;
   const scrollX = window.scrollX;
   const scrollY = window.scrollY;
-  // `bottom` resolves against the initial containing block, whose height is
-  // the viewport height without a horizontal scrollbar.
-  const containerHeight = document.documentElement.clientHeight || viewportHeight;
+  const cb = containingBlockEdges();
 
-  const pinAbove = (left, bottom) => {
-    const bottomEdge = containerHeight - bottom; // document-relative
-    const room = bottomEdge - scrollY - 10;
+  const applyAbove = (leftCss, bottomCss) => {
+    // Viewport y of the card's bottom edge is cb.bottom - bottomCss.
+    const room = cb.bottom - bottomCss - 10;
     overlay.style.maxHeight = `${Math.max(120, Math.min(viewportHeight - 20, room))}px`;
     overlay.style.top = "auto";
-    overlay.style.bottom = `${Math.round(bottom)}px`;
-    overlay.style.left = `${Math.round(left)}px`;
+    overlay.style.bottom = `${Math.round(bottomCss)}px`;
+    overlay.style.left = `${Math.round(leftCss)}px`;
     overlay.style.transformOrigin = "bottom left";
     overlay.dataset.placement = "above";
   };
 
-  const pinBelow = (top, left) => {
+  const applyBelow = (topCss, leftCss) => {
     overlay.style.bottom = "auto";
-    overlay.style.top = `${Math.round(top)}px`;
-    overlay.style.left = `${Math.round(left)}px`;
+    overlay.style.top = `${Math.round(topCss)}px`;
+    overlay.style.left = `${Math.round(leftCss)}px`;
     overlay.style.transformOrigin = "top left";
     overlay.dataset.placement = "below";
   };
 
   if (lockedPosition) {
     if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
-      pinAbove(lockedPosition.left, lockedPosition.bottom);
+      applyAbove(lockedPosition.left, lockedPosition.bottom);
     } else {
-      let { top, left } = lockedPosition;
       const overlayHeight = overlay.offsetHeight || 400;
-      const minTop = scrollY + 10;
-      const maxTop = viewportHeight + scrollY - overlayHeight - 10;
-      const available = viewportHeight + scrollY - 10 - top;
+      let top = lockedPosition.top + cb.top; // viewport y
+      const available = viewportHeight - 10 - top;
 
       if (overlayHeight > available && available >= 200) {
         // Keep the top edge still and scroll inside the card.
@@ -1662,10 +1716,12 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
       } else {
         overlay.style.maxHeight = `${viewportHeight - 20}px`;
         // Not enough room even to scroll: shift up.
-        if (top > maxTop) top = Math.max(minTop, maxTop);
+        if (top + overlayHeight > viewportHeight - 10) {
+          top = Math.max(10, viewportHeight - 10 - overlayHeight);
+        }
       }
-      if (top < minTop) top = minTop;
-      pinBelow(top, left);
+      if (top < 10) top = 10;
+      applyBelow(top - cb.top, lockedPosition.left);
     }
     overlay.style.visibility = "visible";
     overlay.style.transform = "none";
@@ -1680,10 +1736,11 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
       CARD_GAP,
     );
     overlay.style.maxHeight = `${placed.maxHeight}px`;
+    const leftCss = placed.left - scrollX - cb.left;
     if (placed.placement === "above") {
-      pinAbove(placed.left, containerHeight - (anchorRect.top + scrollY - CARD_GAP));
+      applyAbove(leftCss, cb.bottom - (anchorRect.top - CARD_GAP));
     } else {
-      pinBelow(placed.top, placed.left);
+      applyBelow(placed.top - scrollY - cb.top, leftCss);
     }
     overlay.style.transform = "none";
   } else {
@@ -1956,7 +2013,10 @@ function renderResultState(inner, data, surf) {
   inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
 
   // Back Navigation: the previous state, or surfaceBackFallback()
-  inner.querySelector("#omniAiBack").addEventListener("click", () => surf.back());
+  inner.querySelector("#omniAiBack").addEventListener("click", () => {
+    resetQuickButtonIcon();
+    surf.back();
+  });
 
   // Tone Chip Click
   if (safeAction === "tone") {
@@ -2181,7 +2241,10 @@ function renderAskState(inner, data, surf) {
   inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
   // Back: the previous state, or surfaceBackFallback() (the menu for the
   // selected text, or close).
-  inner.querySelector("#omniAiBack").addEventListener("click", () => surf.back());
+  inner.querySelector("#omniAiBack").addEventListener("click", () => {
+    resetQuickButtonIcon();
+    surf.back();
+  });
   const input = inner.querySelector("#omniAiQuickInput");
   const inputBtn = inner.querySelector("#omniAiInputBtn");
   const copyBtn = inner.querySelector("#omniAiQuickCopy");

@@ -95,10 +95,6 @@
     "message": "แก้ไวยากรณ์",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "แก้ไขการสะกดและไวยากรณ์",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "เพิ่มความชัดเจน",
     "description": "Clarity action"

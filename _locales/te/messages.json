@@ -95,10 +95,6 @@
     "message": "వ్యాకరణం సరిచేయండి",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "అక్షర దోషాలు మరియు వ్యాకరణాన్ని సరిచేస్తుంది",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "స్పష్టతను మెరుగుపరచండి",
     "description": "Clarity action"

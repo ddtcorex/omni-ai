@@ -95,10 +95,6 @@
     "message": "ਵਿਆਕਰਨ ਠੀਕ ਕਰੋ",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "ਸਪੈਲਿੰਗ ਅਤੇ ਵਿਆਕਰਨ ਠੀਕ ਕਰਦਾ ਹੈ",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "ਸਪਸ਼ਟਤਾ ਸੁਧਾਰੋ",
     "description": "Clarity action"

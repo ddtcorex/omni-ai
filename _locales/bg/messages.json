@@ -95,10 +95,6 @@
     "message": "Поправи граматиката",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Коригира правописа и граматиката",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Подобри яснотата",
     "description": "Clarity action"
