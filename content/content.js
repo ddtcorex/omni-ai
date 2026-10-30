@@ -24,7 +24,16 @@ const ICONS = {
   emoji: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>`,
   grammar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
   btnSparkle: `<svg viewBox="0 0 24 24" fill="none" class="omni-ai-btn-icon-svg" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>`,
+  back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
+  retry: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>`,
+  copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+  warn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
 };
+
+// Untrusted text (AI output, page selections, provider error messages) only
+// ever reaches markup through this (content/ui/render-helpers.js).
+const escapeHtml = (text) => /** @type {any} */ (self).OMNI_RENDER.escapeHtml(text);
 
 // ============================================
 // Localization Manager
@@ -522,151 +531,6 @@ function getContext(element) {
 // Initialization
 // ============================================
 
-// ============================================
-// Diff Logic
-// ============================================
-
-function computeDiff(original, corrected) {
-  if (!original || !corrected) return corrected || "";
-
-  // Tokenize with newline preservation
-  const tokenize = (str) =>
-    str
-      .replace(/\n/g, " __NEWLINE__ ")
-      .trim()
-      .split(/\s+/)
-      .filter((w) => w.length > 0);
-
-  const words1 = tokenize(original);
-  const words2 = tokenize(corrected);
-
-  // Check for distinct word count difference (heuristic for major change)
-  if (Math.abs(words1.length - words2.length) > Math.max(words1.length, words2.length) * 0.8) {
-    return `<span class="omni-ai-diff-ins">${corrected}</span>`;
-  }
-
-  // Check for identical tokens but different text (Whitespace/Formatting only)
-  // Reconstruct tokens to compare, as split() swallows delimiters
-  const tokens1 = words1.join(" ");
-  const tokens2 = words2.join(" ");
-  if (tokens1 === tokens2 && original.trim() !== corrected.trim()) {
-    // It's a whitespace/formatting change. Highlight strictly to show 'change' happened.
-    // Alternatively, we could show the cleaned text with a note.
-    // Highlighting the whole thing indicates "Replacement".
-    return `<span class="omni-ai-diff-ins">${corrected}</span>`;
-  }
-
-  let html = "";
-  let i = 0,
-    j = 0;
-
-  while (i < words1.length || j < words2.length) {
-    if (i < words1.length && j < words2.length && words1[i] === words2[j]) {
-      html += words1[i] + " ";
-      i++;
-      j++;
-    } else {
-      // Look ahead to find synchronization point
-      // Search for words1[i] in words2 (deletion check)
-      // Search for words2[j] in words1 (insertion check)
-
-      // Simple heuristic: check next 3 words
-      let foundMatch = false;
-
-      // Check for insertion (can we find words1[i] later in words2?)
-      for (let k2 = j + 1; k2 < Math.min(j + 5, words2.length); k2++) {
-        if (i < words1.length && words1[i] === words2[k2]) {
-          // Found words1[i] at words2[k2].
-          // It means words2[j...k2-1] are insertions.
-          while (j < k2) {
-            html += `<span class="omni-ai-diff-ins">${words2[j]}</span> `;
-            j++;
-          }
-          foundMatch = true;
-          break;
-        }
-      }
-
-      if (!foundMatch) {
-        // Check for deletion (can we find words2[j] later in words1?)
-        for (let k1 = i + 1; k1 < Math.min(i + 5, words1.length); k1++) {
-          if (j < words2.length && words1[k1] === words2[j]) {
-            // Found words2[j] at words1[k1].
-            // It means words1[i...k1-1] are deletions.
-            while (i < k1) {
-              html += `<span class="omni-ai-diff-del">${words1[i]}</span> `;
-              i++;
-            }
-            foundMatch = true;
-            break;
-          }
-        }
-      }
-
-      if (!foundMatch) {
-        // Treat as replacement (delete current, insert current)
-        if (i < words1.length) {
-          html += `<span class="omni-ai-diff-del">${words1[i]}</span> `;
-          i++;
-        }
-        if (j < words2.length) {
-          html += `<span class="omni-ai-diff-ins">${words2[j]}</span> `;
-          j++;
-        }
-      }
-    }
-  }
-  return html.replace(/__NEWLINE__\s?/g, "\n").trim();
-}
-
-function updateTranslateCard(card, result, text, isInput) {
-  card.innerHTML = `
-      <div class="omni-ai-suggestion-info">
-          <div class="omni-ai-suggestion-label" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>${i18n.getMessage("overlay_smart_translation")}</span>
-            <button class="ds-icon-btn" id="omniAiCopyTrans" title="${i18n.getMessage("overlay_copy")}" style="width:20px;height:20px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-          </div>
-          <div class="omni-ai-suggestion-content" style="margin-top:4px; line-height:1.4; color:var(--omni-text-primary); font-weight:500; white-space: pre-wrap;">${result}</div>
-      </div>
-  `;
-
-  // Bind Copy
-  const copyBtn = card.querySelector("#omniAiCopyTrans");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      if (!(await copyTextToClipboard(result))) return;
-      // Visual feedback
-      copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--omni-success)" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-      setTimeout(() => {
-        copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-      }, 1500);
-    });
-  }
-
-  // Clicking the card opens full view
-  card.style.cursor = "pointer";
-  card.addEventListener("click", (e) => {
-    // Only if not clicking copy btn
-    if (!e.target.closest("#omniAiCopyTrans")) {
-      showResultOverlay(
-        {
-          action: "translate_primary",
-          result: result,
-          originalText: text,
-          preset: "chat",
-        },
-        isInput,
-      );
-    }
-  });
-
-  // Ensure position is updated after content change
-  setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 10);
-}
-
 function init() {
   ensureUiRootReady().catch(() => {});
   setupFloatingButtonPreference();
@@ -722,7 +586,9 @@ function setupMessageListener() {
             isInput: message.payload.isInput,
           };
         }
-        showResultOverlay(message.payload, message.payload.isInput);
+        // Marked so retry knows this result came from the worker's own run
+        // (keyboard command, context menu), not from a content-path request.
+        showResultOverlay({ ...message.payload, source: "worker" }, message.payload.isInput);
         sendResponse({ success: true });
         break;
 
@@ -736,7 +602,7 @@ function setupMessageListener() {
         const selection = getSelectedText();
         const isInput = isTextInput(document.activeElement);
         if (isInput) activeInputElement = document.activeElement;
-        showQuickAskOverlay("", rect, selection, null, isInput);
+        showQuickAskOverlay(rect, selection, isInput);
         sendResponse({ success: true });
         break;
       }
@@ -1192,7 +1058,7 @@ async function showFlashActions(text, inputElement) {
   row.innerHTML = selectedActions
     .map(
       (action) => `
-      <button class="omni-ai-flash-btn" data-flash-action="${action}" title="${i18n.getMessage(FLASH_ACTION_LABEL_KEYS[action] || action)}">
+      <button class="omni-ai-flash-btn" data-flash-action="${escapeHtml(action)}" title="${escapeHtml(i18n.getMessage(FLASH_ACTION_LABEL_KEYS[action] || action))}">
         ${FLASH_ACTION_ICONS[action] || ICONS.magic}
       </button>`,
     )
@@ -1231,6 +1097,11 @@ function triggerFlashAction(action, text, inputElement) {
   // fallback needs this tracked explicitly -- otherwise Replace silently
   // targets the wrong element (or nothing) for input/textarea fields.
   if (isInput) activeInputElement = inputElement;
+  // Back from this result goes where the quick button would have gone: the
+  // menu in editors, the translation-first card on page text.
+  if (!lastMenuContext) {
+    lastMenuContext = { text, anchorRect: cardAnchorRect(), lockedPosition: null, isInput };
+  }
   hideFlashActions();
   if (quickActionBtn) {
     quickActionBtn.innerHTML = `<div class="ds-spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;box-shadow:none;margin:0;"></div>`;
@@ -1317,8 +1188,92 @@ async function showQuickActionMenu(
   });
 }
 
-function buildMenuMarkup(data, quickFix) {
+// Labels for the card header (loading and result): the action's own name.
+const ACTION_LABEL_KEYS = { ...FLASH_ACTION_LABEL_KEYS, quick_ask: "quick_ask_title" };
+// "Show changes" is offered only for same-language rewrites of the selection.
+const DIFF_ACTIONS = ["rephrase", "grammar", "tone", "emoji"];
+const TONES = ["professional", "casual", "friendly", "direct", "confident"];
+
+function actionTitle(action) {
+  const key = ACTION_LABEL_KEYS[action];
+  return key ? i18n.getMessage(key) : i18n.getMessage("overlay_result");
+}
+
+// Header shared by the loading, result, error and ask states: back, a small
+// gradient mark, the title, close.
+function cardHeader(title, { back = true } = {}) {
+  return `
+    <div class="omni-ai-overlay-header">
+      ${back ? `<button class="omni-ai-icon-btn" id="omniAiBack" title="${escapeHtml(i18n.getMessage("btn_back"))}">${ICONS.back}</button>` : ""}
+      <span class="omni-ai-title-mark"></span>
+      <span class="omni-ai-title">${escapeHtml(title)}</span>
+      <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+    </div>`;
+}
+
+function bindCardHeader(inner, surf) {
+  inner.querySelector("#omniAiClose")?.addEventListener("click", () => hideOverlay());
+  inner.querySelector("#omniAiBack")?.addEventListener("click", () => {
+    resetQuickButtonIcon();
+    surf.back();
+  });
+}
+
+// Three shimmer lines; .omni-ai-loading stays as the loading hook.
+const SKELETON = `
+  <div class="omni-ai-loading omni-ai-skeleton" aria-busy="true">
+    <div class="omni-ai-skeleton-line"></div>
+    <div class="omni-ai-skeleton-line"></div>
+    <div class="omni-ai-skeleton-line"></div>
+  </div>`;
+
+function askBoxMarkup(placeholder) {
+  return `
+    <div class="omni-ai-input-wrapper">
+       <div class="omni-ai-ask">
+         <textarea class="omni-ai-input" rows="1" placeholder="${escapeHtml(placeholder)}" id="omniAiInlineInput"></textarea>
+         <button class="omni-ai-send-btn" id="omniAiInputBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+         </button>
+       </div>
+    </div>`;
+}
+
+// Enter or the send button submits the trimmed question.
+function bindAskBox(root, onAsk) {
+  const input = /** @type {HTMLTextAreaElement} */ (root.querySelector("#omniAiInlineInput"));
+  const send = () => {
+    const query = input.value.trim();
+    if (query) onAsk(query);
+  };
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+  root.querySelector("#omniAiInputBtn")?.addEventListener("click", send);
+  return input;
+}
+
+// Pills with icon and label on one line that wrap naturally (spec "Action
+// menu"); the page card's reading actions and the tone row reuse them.
+function pillMarkup(action, icon, label, primary = false) {
+  return `
+       <button class="omni-ai-menu-item${primary ? " is-primary" : ""}" data-action="${action}">
+         <span class="omni-ai-menu-icon">${icon}</span><span class="omni-ai-menu-label">${escapeHtml(label)}</span>
+       </button>`;
+}
+
+function translatePills(data) {
   const { pFlag, dFlag, pCode, dCode } = data;
+  return [
+    pillMarkup("translate_primary", escapeHtml(pFlag), i18n.getMessage("ui_to", [pCode])),
+    pillMarkup("translate_default", escapeHtml(dFlag), i18n.getMessage("ui_to", [dCode])),
+  ];
+}
+
+function buildMenuMarkup(data) {
   const header = `
     <div class="omni-ai-overlay-header">
        <div class="omni-ai-brand">
@@ -1329,39 +1284,22 @@ function buildMenuMarkup(data, quickFix) {
     </div>
   `;
 
-  // Pills with icon and label on one line that wrap naturally (spec "Action
-  // menu"): the four rewrite actions first and emphasized, then the rest.
-  const pill = (action, icon, label, primary = false) => `
-       <button class="omni-ai-menu-item${primary ? " is-primary" : ""}" data-action="${action}">
-         <span class="omni-ai-menu-icon">${icon}</span><span class="omni-ai-menu-label">${label}</span>
-       </button>`;
+  // The four rewrite actions first and emphasized, then the rest.
   const menu = `
     <div class="omni-ai-menu-grid">${[
-      pill("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase"), true),
-      pill("grammar", ICONS.grammar, i18n.getMessage("action_grammar"), true),
-      pill("tone", ICONS.tone, i18n.getMessage("action_tone"), true),
-      pill("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
-      pill("explain", ICONS.explain, i18n.getMessage("action_explain")),
-      pill("reply", ICONS.reply, i18n.getMessage("action_reply")),
-      pill("emoji", ICONS.emoji, i18n.getMessage("action_emojify")),
-      pill("translate_primary", pFlag, i18n.getMessage("ui_to", [pCode])),
-      pill("translate_default", dFlag, i18n.getMessage("ui_to", [dCode])),
+      pillMarkup("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase"), true),
+      pillMarkup("grammar", ICONS.grammar, i18n.getMessage("action_grammar"), true),
+      pillMarkup("tone", ICONS.tone, i18n.getMessage("action_tone"), true),
+      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
+      pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain")),
+      pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
+      pillMarkup("emoji", ICONS.emoji, i18n.getMessage("action_emojify")),
+      ...translatePills(data),
     ].join("")}
     </div>
   `;
 
-  const inputSection = `
-    <div class="omni-ai-input-wrapper">
-       <div class="omni-ai-ask">
-         <textarea class="omni-ai-input" rows="1" placeholder="${i18n.getMessage("popup_quickAsk")}" id="omniAiInlineInput"></textarea>
-         <button class="omni-ai-send-btn" id="omniAiInputBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-         </button>
-       </div>
-    </div>
-  `;
-
-  return header + quickFix + menu + inputSection;
+  return header + menu + askBoxMarkup(i18n.getMessage("popup_quickAsk"));
 }
 
 // Re-position after async content might have loaded
@@ -1376,32 +1314,45 @@ function renderMenuState(inner, data, surf) {
   const { text, isInput } = data;
   // Editors get the plain menu: no background AI call runs until the user
   // picks an action.
-  inner.innerHTML = buildMenuMarkup(data, "");
+  inner.innerHTML = buildMenuMarkup(data);
   bindMenuEvents(inner, text, isInput);
   /** @type {any} */ (self).OMNI_MOTION?.stagger(inner.querySelectorAll(".omni-ai-menu-item"));
   scheduleMenuReposition(surf);
 }
 
+// Page text that is not editable (spec "Page text that is not editable"): a
+// translation section on top that translates on its own, in a slot reserved
+// by a skeleton so the reading actions below never move when it lands.
 function renderPageCardState(inner, data, surf) {
-  const { text, isInput, primaryLanguage, defaultLanguage } = data;
-  // Non-input: Translation Card ("Translating..." -> Translation Result)
-  const quickFix = `
-    <div class="omni-ai-quick-fix-section">
-      <div class="omni-ai-suggestion-card" id="omniAiTranslateCard">
-        <div class="omni-ai-suggestion-icon">
-           <div class="ds-spinner" style="width:14px;height:14px;border-width:2px;"></div>
-        </div>
-        <div class="omni-ai-suggestion-info">
-            <div class="omni-ai-suggestion-label" style="opacity:0.7">${i18n.getMessage("overlay_smart_translation")}...</div>
-            <div class="omni-ai-suggestion-content" style="opacity:0.5">${i18n.getMessage("status_processing")}</div>
-        </div>
+  const { text, isInput } = data;
+  inner.innerHTML = `
+    <div class="omni-ai-translate" id="omniAiTranslateCard">
+      <div class="omni-ai-translate-head">
+        <span class="omni-ai-suggestion-label">${escapeHtml(i18n.getMessage("overlay_smart_translation"))}</span>
+        <span class="omni-ai-spacer"></span>
+        <button class="omni-ai-icon-btn" id="omniAiCopyTrans" title="${escapeHtml(i18n.getMessage("overlay_copy"))}" disabled>${ICONS.copy}</button>
+        <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
       </div>
+      <div class="omni-ai-translate-body">${SKELETON}</div>
     </div>
-  `;
-  inner.innerHTML = buildMenuMarkup(data, quickFix);
+    <div class="omni-ai-menu-grid">${[
+      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
+      pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain"), true),
+      ...translatePills(data),
+      pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
+    ].join("")}
+    </div>
+    ${askBoxMarkup(i18n.getMessage("overlay_ask_about_text"))}`;
   bindMenuEvents(inner, text, isInput);
+  /** @type {any} */ (self).OMNI_MOTION?.stagger(inner.querySelectorAll(".omni-ai-menu-item"));
+  startPageTranslation(inner, data, surf, false);
+  scheduleMenuReposition(surf);
+}
 
-  // TRIGGER AUTOMATIC ACTION: Smart Translate
+// The automatic Smart Translate of the page card. `bypassCache` is the
+// slot's own Try again after a failure.
+function startPageTranslation(inner, data, surf, bypassCache) {
+  const { text, primaryLanguage, defaultLanguage } = data;
   const smartAction = "smart_translate";
   // Includes primaryLanguage/defaultLanguage: smartTranslate()'s result
   // depends on both (it toggles direction between them), so a stale cache
@@ -1409,96 +1360,162 @@ function renderPageCardState(inner, data, surf) {
   // returning the old (now-wrong) translation for the same text.
   const cacheKey = `${smartAction}|${text.trim()}|chat|${primaryLanguage}|${defaultLanguage}`;
   const token = surf.beginRequest();
+  const body = /** @type {HTMLElement} */ (inner.querySelector(".omni-ai-translate-body"));
+  const copyBtn = /** @type {HTMLButtonElement} */ (inner.querySelector("#omniAiCopyTrans"));
 
-  if (resultCache.has(cacheKey)) {
-    setTimeout(() => {
-      if (!surf.isCurrent(token)) return;
-      const card = inner.querySelector("#omniAiTranslateCard");
-      if (card) updateTranslateCard(card, resultCache.get(cacheKey), text, isInput);
-    }, 100);
-  } else {
-    sendMessageToBackground({
-      type: "QUICK_ACTION",
-      payload: { action: smartAction, text, preset: "chat" },
-    })
-      .then((response) => {
-        if (response.success) resultCache.set(cacheKey, response.data.response);
-        if (!surf.isCurrent(token)) return;
-        const card = inner.querySelector("#omniAiTranslateCard");
-        if (!card) return;
+  const showTranslation = (translated) => {
+    const content = document.createElement("div");
+    content.className = "omni-ai-suggestion-content";
+    content.textContent = translated;
+    body.replaceChildren(content);
+    copyBtn.disabled = false;
+    copyBtn.onclick = async (e) => {
+      e.stopPropagation();
+      if (await copyTextToClipboard(translated)) flashCopied(copyBtn, ICONS.check, ICONS.copy);
+    };
+  };
 
-        if (response.success) {
-          updateTranslateCard(card, response.data.response, text, isInput);
-        } else {
-          // Error State logic (moved to helper or kept here)
-          card.innerHTML = `
-               <div class="omni-ai-suggestion-icon" style="color:var(--omni-error);background:rgba(239,68,68,0.1)">!</div>
-               <div class="omni-ai-suggestion-info">
-                   <div class="omni-ai-suggestion-label" style="color:var(--omni-error)">${i18n.getMessage("overlay_error")}</div>
-                   <div class="omni-ai-suggestion-content">${i18n.getMessage("overlay_translation_failed")}</div>
-               </div>
-            `;
-        }
-        // Ensure position is updated after content change
-        setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 10);
-      })
-      .catch(() => {});
+  const showFailure = () => {
+    body.innerHTML = `
+      <div class="omni-ai-error" role="alert">
+        ${ICONS.warn}
+        <span class="omni-ai-error-text">${escapeHtml(i18n.getMessage("overlay_translation_failed"))}</span>
+        <button class="omni-ai-btn" id="omniAiRetryTrans">${ICONS.retry}<span>${escapeHtml(i18n.getMessage("overlay_try_again"))}</span></button>
+      </div>`;
+    body.querySelector("#omniAiRetryTrans").addEventListener("click", (e) => {
+      e.stopPropagation();
+      swapSlot(body, () => {
+        body.innerHTML = SKELETON;
+      });
+      startPageTranslation(inner, data, surf, true);
+    });
+  };
+
+  // From the cache the text is there on the first frame, no skeleton.
+  if (!bypassCache && resultCache.has(cacheKey)) {
+    showTranslation(resultCache.get(cacheKey));
+    return;
   }
 
-  scheduleMenuReposition(surf);
+  const land = (render) => {
+    if (!surf.isCurrent(token) || !body.isConnected) return;
+    swapSlot(body, render);
+  };
+  sendMessageToBackground({
+    type: "QUICK_ACTION",
+    payload: { action: smartAction, text, preset: "chat" },
+  })
+    .then((response) => {
+      if (response?.success) {
+        resultCache.set(cacheKey, response.data.response);
+        land(() => showTranslation(response.data.response));
+      } else {
+        land(showFailure);
+      }
+    })
+    .catch(() => land(showFailure));
+}
+
+// Swap a slot's content with a short blur swap. When the card's height
+// changes, it follows on the spring once, from the old height to the new.
+function swapSlot(el, render) {
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
+  return motion.swap(el, () => {
+    const card = overlay;
+    const before = card ? card.offsetHeight : 0;
+    render();
+    if (card && card.isConnected) {
+      animateCardHeight(card, before, card.offsetHeight);
+      positionOverlay(currentAnchorRect, currentCardPosition());
+    }
+  });
+}
+
+// Height follow for an in-place change (not a state change, which the
+// surface morphs). Played directly, not through OMNI_MOTION's per-element
+// slot, so it never cancels the card's enter or exit animation.
+function animateCardHeight(card, from, to) {
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
+  if (from === to || !from || motion.prefersReducedMotion()) return;
+  const supportsSpring =
+    typeof CSS !== "undefined" && CSS.supports("animation-timing-function", "linear(0, 1)");
+  card.animate([{ height: `${from}px` }, { height: `${to}px` }], {
+    duration: motion.TOKENS.morphMs,
+    easing: supportsSpring ? motion.TOKENS.spring : motion.TOKENS.easeOut,
+  });
+}
+
+// Copy feedback: a short blur swap to a check, then back.
+const copyResetTimers = new WeakMap();
+function flashCopied(btn, copiedHtml, restoreHtml) {
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
+  clearTimeout(copyResetTimers.get(btn));
+  motion.swap(btn, () => {
+    btn.innerHTML = copiedHtml;
+    btn.classList.add("is-copied");
+  });
+  copyResetTimers.set(
+    btn,
+    setTimeout(() => {
+      if (!btn.isConnected) return;
+      motion.swap(btn, () => {
+        btn.innerHTML = restoreHtml;
+        btn.classList.remove("is-copied");
+      });
+    }, 1400),
+  );
 }
 
 function bindMenuEvents(root, text, isInput) {
-  // Close
   root.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
-
-  // Menu Items
-  root.querySelectorAll(".omni-ai-menu-item").forEach((btn) => {
+  root.querySelectorAll(".omni-ai-menu-item[data-action]").forEach((btn) => {
     btn.addEventListener("click", () => handleAction(btn.dataset.action, text, isInput));
   });
+  bindAskBox(root, (query) => handleAskAction(query, text, isInput));
+}
 
-  // Inline Input
-  const input = root.querySelector("#omniAiInlineInput");
-  const inputBtn = root.querySelector("#omniAiInputBtn");
-
-  const triggerAsk = () => {
-    const query = input.value.trim();
-    if (query.length > 0) {
-      handleAskAction(query, text, isInput);
-    }
-  };
-
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      triggerAsk();
-    }
-  });
-
-  if (inputBtn) {
-    inputBtn.addEventListener("click", triggerAsk);
+// The tone saved in Settings when it is one of the five, else professional.
+async function defaultTone() {
+  try {
+    const { getCurrentPreset } = await import(chrome.runtime.getURL("lib/storage.js"));
+    const currentPreset = String((await getCurrentPreset()) || "").toLowerCase();
+    return TONES.includes(currentPreset) ? currentPreset : "professional";
+  } catch {
+    return "professional";
   }
 }
 
-async function handleAction(action, text, isInput) {
-  showLoadingInOverlay();
-  // Taken after the loading transition: any later state change (Back, close,
-  // another action) makes this response stale, and it is dropped.
-  const surf = getSurface();
-  const token = surf.beginRequest();
-
+/**
+ * Run an action on the content-script path and show its loading, result or
+ * error in the card.
+ * @param {string} action
+ * @param {string} text
+ * @param {boolean} isInput
+ * @param {{bypassCache?: boolean, replace?: boolean, tone?: string}} [opts]
+ *   bypassCache: skip the cache read and overwrite the entry (retry);
+ *   replace: the loading state replaces the current one for Back (retry,
+ *   tone re-run); tone: the tone to run instead of the saved one.
+ */
+async function handleAction(
+  action,
+  text,
+  isInput,
+  { bypassCache = false, replace = false, tone } = {},
+) {
   let preset = "chat";
   let options = {};
   if (action === "tone") {
-    const { getCurrentPreset } = await import(chrome.runtime.getURL("lib/storage.js"));
-    const currentPreset = await getCurrentPreset();
-    const validTones = ["professional", "casual", "friendly", "direct", "confident"];
-    if (currentPreset && validTones.includes(currentPreset.toLowerCase())) {
-      preset = currentPreset;
-    } else {
-      preset = "professional";
-    }
+    preset = tone && TONES.includes(tone) ? tone : await defaultTone();
+    options = { tone: preset };
   }
+  const retryData = { action, originalText: text, isInput, preset };
+
+  await showLoadingInOverlay(retryData, { replace });
+  // Taken after the loading transition started: any later state change
+  // (Back, close, another action, a tone re-run) makes this response stale,
+  // and it is dropped.
+  const surf = getSurface();
+  const token = surf.beginRequest();
 
   // translate_primary/translate_default/smart_translate results depend on
   // the user's Primary/Translation Language settings too, not just the text
@@ -1511,25 +1528,16 @@ async function handleAction(action, text, isInput) {
     langCacheSuffix = `|${primaryLanguage}|${defaultLanguage}`;
   }
 
-  // Skip cache for rephrase to always get fresh results
+  // Rephrase is never cached, so it always gets fresh results.
+  const cacheable = action !== "rephrase";
   const cacheKey = `${action}|${text.trim()}|${preset}${langCacheSuffix}`;
-  if (action !== "rephrase" && resultCache.has(cacheKey)) {
-    if (!surf.isCurrent(token)) return;
-    showResultOverlay(
-      {
-        action,
-        result: resultCache.get(cacheKey),
-        originalText: text,
-        preset,
-      },
-      isInput,
-    );
+  if (!bypassCache && cacheable && resultCache.has(cacheKey)) {
+    if (!surf.isCurrent(token)) {
+      resetQuickButtonIcon();
+      return;
+    }
+    showResultOverlay({ ...retryData, result: resultCache.get(cacheKey) }, isInput);
     return;
-  }
-
-  // For tone action, pass the tone as options.tone
-  if (action === "tone") {
-    options = { tone: preset };
   }
 
   sendMessageToBackground({
@@ -1538,26 +1546,15 @@ async function handleAction(action, text, isInput) {
   })
     .then((response) => {
       if (response.success) {
-        // Skip caching for rephrase
-        if (action !== "rephrase") {
-          resultCache.set(cacheKey, response.data.response);
-        }
+        if (cacheable) resultCache.set(cacheKey, response.data.response);
         if (!surf.isCurrent(token)) return;
-        showResultOverlay(
-          {
-            action,
-            result: response.data.response,
-            originalText: text,
-            preset,
-          },
-          isInput,
-        );
+        showResultOverlay({ ...retryData, result: response.data.response }, isInput);
       } else if (surf.isCurrent(token)) {
-        showErrorInOverlay(response.error);
+        showErrorInOverlay(response.error, retryData);
       }
     })
     .catch((err) => {
-      if (surf.isCurrent(token)) showErrorInOverlay(err.message);
+      if (surf.isCurrent(token)) showErrorInOverlay(err.message, retryData);
     })
     .finally(() => {
       // A dropped (stale) response must not leave a spinner on the toolbar.
@@ -1565,8 +1562,15 @@ async function handleAction(action, text, isInput) {
     });
 }
 
-async function handleAskAction(query, originalText, isInput) {
-  showLoadingInOverlay();
+/**
+ * @param {string} query
+ * @param {string | null} originalText
+ * @param {boolean} isInput
+ * @param {{replace?: boolean}} [opts]
+ */
+async function handleAskAction(query, originalText, isInput, { replace = false } = {}) {
+  const retryData = { action: "quick_ask", query, originalText, isInput, preset: "chat" };
+  await showLoadingInOverlay(retryData, { replace });
   const surf = getSurface();
   const token = surf.beginRequest();
 
@@ -1580,22 +1584,32 @@ async function handleAskAction(query, originalText, isInput) {
 
     if (!surf.isCurrent(token)) return;
     if (response.success) {
-      showResultOverlay(
-        {
-          action: "quick_ask",
-          result: response.data.response,
-          originalText: originalText,
-          preset: "chat",
-          query: query,
-        },
-        isInput, // Use the passed isInput value
-      );
+      showResultOverlay({ ...retryData, result: response.data.response }, isInput);
     } else {
-      showErrorInOverlay(response.error);
+      showErrorInOverlay(response.error, retryData);
     }
   } catch (err) {
-    if (surf.isCurrent(token)) showErrorInOverlay(err.message);
+    if (surf.isCurrent(token)) showErrorInOverlay(err.message, retryData);
   }
+}
+
+// Run the same thing again: retry on a result, Try again on an error. The
+// new loading state replaces the current one, so Back skips it.
+function rerun(data) {
+  if (data.action === "quick_ask") {
+    return handleAskAction(data.query, data.originalText, data.isInput, { replace: true });
+  }
+  return handleAction(data.action, data.originalText, data.isInput, {
+    bypassCache: true,
+    replace: true,
+    tone: data.action === "tone" ? data.preset : undefined,
+  });
+}
+
+// Only content-path results can re-run here; worker results get their own
+// re-run message (Task 8), until then they show no retry.
+function canRerun(data) {
+  return Boolean(data?.action) && data.source !== "worker";
 }
 
 // ============================================
@@ -1921,49 +1935,59 @@ function extractPageContent() {
   }
 }
 
-function showLoadingInOverlay() {
-  // A flash action (triggerFlashAction()) calls handleAction() directly,
-  // without ever opening the menu card -- nothing to show loading in yet.
-  // showResultOverlay() opens the card itself once the result arrives, so
-  // this is a safe no-op rather than a missed state.
-  if (!isCardOpen()) return;
-  // Loading swaps the content where the card already sits.
-  overlayLockedPosition = currentCardPosition();
-  surface.to("loading", {});
+// Move the card to its loading state, or open it there (a quick action from
+// the toolbar opens the card straight into loading). Resolves once the
+// transition has started, so a request token taken right after is current.
+async function showLoadingInOverlay(data, { replace = false } = {}) {
+  const surf = getSurface();
+  if (isCardOpen()) {
+    // Loading swaps the content where the card already sits.
+    overlayLockedPosition = currentCardPosition();
+    surf.to("loading", data, { replace });
+    return;
+  }
+  await ensureUiRootReady();
+  overlayLockedPosition = null;
+  currentAnchorRect = cardAnchorRect() || currentAnchorRect;
+  surf.open("loading", data);
 }
 
-function renderLoadingState(inner) {
+function tonesMarkup(active) {
+  return `<div class="omni-ai-tones">${TONES.map(
+    (tone) =>
+      `<button class="omni-ai-menu-item omni-ai-tone-pill${tone === active ? " is-active" : ""}" data-tone="${tone}">${escapeHtml(i18n.getMessage("tone_" + tone))}</button>`,
+  ).join("")}</div>`;
+}
+
+// Picking another tone re-runs in place: the loading state replaces the
+// current result (Back still goes to the menu) and takes a fresh token, so
+// the slower of two quick picks never wins.
+function bindTones(inner, data) {
+  inner.querySelectorAll(".omni-ai-tone-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      const tone = /** @type {HTMLElement} */ (pill).dataset.tone;
+      if (pill.classList.contains("is-active")) return;
+      handleAction("tone", data.originalText, data.isInput, { tone, replace: true });
+    });
+  });
+}
+
+function queryMarkup(query) {
+  return query ? `<div class="omni-ai-result-query">${escapeHtml(query)}</div>` : "";
+}
+
+function renderLoadingState(inner, data, surf) {
+  const { action, query, preset } = data || {};
+  const title = action
+    ? i18n.getMessage("overlay_loading_action", [actionTitle(action)])
+    : i18n.getMessage("status_working");
   inner.innerHTML = `
-    <div class="omni-ai-overlay-header">
-       <div class="omni-ai-brand">
-         ${ICONS.brand}
-         <span>${i18n.getMessage("extName")}</span>
-       </div>
-       <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
-    </div>
-    <div class="omni-ai-content-area" style="display:block;">
-      <div class="omni-ai-loading">
-        <div class="ds-spinner"></div>
-        <div class="omni-ai-shimmer-text">${i18n.getMessage("status_processing")}</div>
-      </div>
-    </div>`;
-  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
-}
-
-function renderToneSelector(activeTone) {
-  const tones = ["Professional", "Casual", "Friendly", "Direct", "Confident"];
-  const chips = tones
-    .map((tone) => {
-      const isActive = tone.toLowerCase() === activeTone.toLowerCase();
-      const style = isActive
-        ? "background:rgba(139,92,246,0.15); color:var(--omni-accent); border:1px solid rgba(139,92,246,0.3);"
-        : "background:transparent; color:var(--omni-text-secondary); border:1px solid var(--omni-border);";
-      const label = i18n.getMessage("tone_" + tone.toLowerCase()) || tone;
-      return `<button class="omni-ai-tone-chip" data-tone="${tone.toLowerCase()}" style="padding:3px 10px; border-radius:100px; font-size:11px; cursor:pointer; font-weight:500; white-space:nowrap; transition:background-color 0.15s, color 0.15s; ${style}">${label}</button>`;
-    })
-    .join("");
-
-  return `<div class="omni-ai-tone-selector" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--omni-border);">${chips}</div>`;
+    ${cardHeader(title)}
+    ${action === "tone" ? tonesMarkup(preset) : ""}
+    ${action === "quick_ask" ? queryMarkup(query) : ""}
+    <div class="omni-ai-content-area">${SKELETON}</div>`;
+  bindCardHeader(inner, surf);
+  if (action === "tone") bindTones(inner, data);
 }
 
 async function showResultOverlay(payload, isInput = false) {
@@ -1979,133 +2003,78 @@ async function showResultOverlay(payload, isInput = false) {
   }
 
   await ensureUiRootReady();
-  // No card yet (keyboard shortcut, context menu, flash action): position
-  // near the selection.
+  // No card yet (keyboard shortcut, context menu): position near the
+  // selection.
   overlayLockedPosition = null;
   currentAnchorRect = cardAnchorRect() || currentAnchorRect;
   return surf.open("result", data);
 }
 
 function renderResultState(inner, data, surf) {
-  const { result, action, originalText, preset, query, isInput } = data;
-
-  // Actions that benefit from diff view
-  const diffActions = ["grammar", "rephrase", "tone", "clarity", "improve"];
-  let contentHtml = result;
-
-  const safeAction = (action || "").toLowerCase().trim();
-
-  if (diffActions.includes(safeAction) && originalText) {
-    contentHtml = computeDiff(originalText, result);
-  }
-
-  // Header with Back Button logic
-  const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
-
-  // Footer buttons logic
-  const replaceBtnHtml = isInput
-    ? `<button class="ds-btn-primary" id="omniAiReplace">${i18n.getMessage("overlay_replace")}</button>`
-    : ``;
+  const { action, originalText, preset, query, isInput } = data;
+  const result = String(data.result ?? "");
+  const canDiff = DIFF_ACTIONS.includes(action) && Boolean(originalText);
 
   inner.innerHTML = `
-    <div class="omni-ai-overlay-header">
-        <button class="ds-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-        <span style="font-weight:600;font-size:14px;margin-left:5px;flex:1;">${i18n.getMessage("overlay_result")}</span>
-        <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
-    </div>
-    <div class="omni-ai-content-area">
-        ${action === "quick_ask" && query ? `<div class="ds-card ds-card--accent" style="margin-top:0;"><div class="omni-ai-context-label">${i18n.getMessage("quick_ask_title")}</div><div class="omni-ai-context-content" style="-webkit-line-clamp: 3;">${query}</div></div>` : ""}
-        ${safeAction === "tone" ? renderToneSelector(preset || "professional") : ""}
-        <div class="omni-ai-result-text">${contentHtml}</div>
-    </div>
+    ${cardHeader(actionTitle(action))}
+    ${action === "tone" ? tonesMarkup(preset || "professional") : ""}
+    ${action === "quick_ask" ? queryMarkup(query) : ""}
+    <div class="omni-ai-content-area"><div class="omni-ai-result-text"></div></div>
     <div class="omni-ai-footer-actions">
-        <button class="ds-btn-secondary" id="omniAiCopy">${i18n.getMessage("overlay_copy")}</button>
-        ${replaceBtnHtml}
-    </div>
-  `;
+      ${canRerun(data) ? `<button class="omni-ai-icon-btn" id="omniAiRetry" title="${escapeHtml(i18n.getMessage("overlay_try_again"))}">${ICONS.retry}</button>` : ""}
+      ${
+        canDiff
+          ? `<button class="omni-ai-toggle" id="omniAiShowChanges" role="switch" aria-checked="false"><span class="omni-ai-switch"></span><span>${escapeHtml(i18n.getMessage("overlay_show_changes"))}</span></button>`
+          : ""
+      }
+      <span class="omni-ai-spacer"></span>
+      <button class="omni-ai-btn" id="omniAiCopy">${escapeHtml(i18n.getMessage("overlay_copy"))}</button>
+      ${isInput ? `<button class="omni-ai-btn is-primary" id="omniAiReplace">${escapeHtml(i18n.getMessage("overlay_replace"))}</button>` : ""}
+    </div>`;
 
-  // Close
-  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
+  // The clean new text, as text: AI output never becomes markup.
+  const textEl = /** @type {HTMLElement} */ (inner.querySelector(".omni-ai-result-text"));
+  textEl.textContent = result;
 
-  // Back Navigation: the previous state, or surfaceBackFallback()
-  inner.querySelector("#omniAiBack").addEventListener("click", () => {
-    resetQuickButtonIcon();
-    surf.back();
-  });
+  bindCardHeader(inner, surf);
+  if (action === "tone") bindTones(inner, data);
 
-  // Tone Chip Click
-  if (safeAction === "tone") {
-    const toneSelector = inner.querySelector(".omni-ai-tone-selector");
-    if (toneSelector) {
-      toneSelector.addEventListener("click", async (e) => {
-        if (e.target.classList.contains("omni-ai-tone-chip")) {
-          const newTone = e.target.dataset.tone;
-          if (newTone === (preset || "professional").toLowerCase()) return;
+  inner.querySelector("#omniAiRetry")?.addEventListener("click", () => rerun(data));
 
-          // UI Update
-          const resultTextEl = inner.querySelector(".omni-ai-result-text");
-          resultTextEl.style.opacity = "0.5";
-          resultTextEl.innerHTML = '<div class="ds-spinner" style="margin:20px auto;"></div>';
-
-          // Optimistic Chip Update
-          inner.querySelectorAll(".omni-ai-tone-chip").forEach((chip) => {
-            const isActive = chip.dataset.tone === newTone;
-            chip.style.background = isActive ? "rgba(139,92,246,0.15)" : "transparent";
-            chip.style.color = isActive ? "var(--omni-accent)" : "var(--omni-text-secondary)";
-            chip.style.borderColor = isActive ? "rgba(139,92,246,0.3)" : "var(--omni-border)";
-          });
-
-          // Fetch
-          const token = surf.beginRequest();
-          try {
-            const response = await sendMessageToBackground({
-              type: "QUICK_ACTION",
-              payload: { action: "tone", text: originalText, preset: newTone },
-            });
-
-            if (response.success && surf.isCurrent(token)) {
-              // Re-render this result in place: a tone switch is not a new
-              // step, so it must not push the old tone onto the Back history.
-              renderResultInPlace(
-                inner,
-                { ...data, result: response.data.response, preset: newTone },
-                surf,
-              );
-              // Ensure position is updated after tone switch
-              setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 50);
-            }
-          } catch (err) {
-            if (!surf.isCurrent(token)) return;
-            resultTextEl.innerText = "Error: " + err.message;
-            resultTextEl.style.opacity = "1";
-          }
+  const toggle = inner.querySelector("#omniAiShowChanges");
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const on = toggle.getAttribute("aria-checked") !== "true";
+      toggle.setAttribute("aria-checked", String(on));
+      toggle.classList.toggle("is-on", on);
+      swapSlot(textEl, () => {
+        if (on) {
+          // Both sides are escaped by diffHtml.
+          textEl.innerHTML = /** @type {any} */ (self).OMNI_RENDER.diffHtml(originalText, result);
+        } else {
+          textEl.textContent = result;
         }
       });
-    }
+    });
   }
 
-  // Copy
   const copyBtn = inner.querySelector("#omniAiCopy");
+  const copyLabel = escapeHtml(i18n.getMessage("overlay_copy"));
   copyBtn.addEventListener("click", async () => {
     if (!(await copyTextToClipboard(result))) return;
-    copyBtn.textContent = i18n.getMessage("msg_copied");
-    setTimeout(() => (copyBtn.textContent = i18n.getMessage("overlay_copy")), 1500);
+    flashCopied(
+      copyBtn,
+      `${ICONS.check}<span>${escapeHtml(i18n.getMessage("msg_copied"))}</span>`,
+      copyLabel,
+    );
   });
 
-  // Replace (if exists)
   const replaceBtn = inner.querySelector("#omniAiReplace");
   if (replaceBtn) {
     replaceBtn.addEventListener("click", async () => {
       if (await replaceSelectedText(result)) hideOverlay();
     });
   }
-}
-
-function renderResultInPlace(inner, data, surf) {
-  if (!inner.isConnected) return;
-  inner.replaceChildren();
-  renderResultState(inner, data, surf);
-  positionOverlay(currentAnchorRect, currentCardPosition());
 }
 
 async function replaceSelectedText(newText, specificElement = null) {
@@ -2185,162 +2154,73 @@ async function replaceSelectedText(newText, specificElement = null) {
   return replacement.ok;
 }
 
-async function showQuickAskOverlay(
-  _initialValue = "",
-  lockedRect = null,
-  originalText = null,
-  autoQuery = null,
-  isInput = false,
-) {
+async function showQuickAskOverlay(lockedRect = null, originalText = null, isInput = false) {
   await ensureUiRootReady();
 
   // Save current anchor for re-positioning
   currentAnchorRect = lockedRect || cardAnchorRect() || currentAnchorRect;
   overlayLockedPosition = null;
   askBackContext = { originalText, lockedRect };
-  getSurface().open("ask", { originalText, autoQuery, isInput });
+  getSurface().open("ask", { originalText, isInput });
 }
 
+// The Ask state (spec "Result surface"): only the Ask box, focused, with a
+// one-line faded context of the selection when there is one.
 function renderAskState(inner, data, surf) {
-  const { originalText, autoQuery, isInput } = data;
-
-  const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
-
-  const header = `
-  <div class="omni-ai-overlay-header">
-     <button class="ds-icon-btn" id="omniAiBack" title="${i18n.getMessage("btn_back")}">${backIcon}</button>
-     <div class="omni-ai-brand" style="flex:1; margin-left: 8px;">${i18n.getMessage("quick_ask_title")}</div>
-     <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
-  </div>`;
-
-  let contextBlock = "";
-  if (originalText) {
-    const truncated =
-      originalText.length > 120 ? originalText.substring(0, 117) + "..." : originalText;
-    contextBlock = `
-    <div class="ds-card ds-card--accent">
-      <div class="omni-ai-context-label">${i18n.getMessage("popup_context")}</div>
-      <div class="omni-ai-context-content">${truncated}</div>
-    </div>`;
-  }
-
-  const content = `
-  <div class="omni-ai-content-area">
-      ${contextBlock}
-      <div class="omni-ai-input-wrapper" style="padding:0;">
-        <div style="position:relative; width:100%;">
-          <textarea class="omni-ai-input" id="omniAiQuickInput" placeholder="${i18n.getMessage("popup_quickAsk")}" style="min-height:100px; margin-bottom: 0; padding-right: 42px; display: block;"></textarea>
-          <button id="omniAiInputBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:var(--omni-accent-gradient); color:white; cursor:pointer; width:30px; height:30px; border-radius:var(--omni-radius-sm); display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          </button>
-        </div>
-      </div>
-      
-      <div id="omniAiLoading" class="omni-ai-loading" style="display:none; padding: 20px 0;">
-         <div class="ds-spinner"></div>
-         <div class="omni-ai-shimmer-text">${i18n.getMessage("status_thinking")}</div>
-      </div>
-      
-      <div id="omniAiQuickResult" style="display:none;">
-        <div class="omni-ai-result-text"></div>
-      </div>
-  </div>
-  <div class="omni-ai-footer-actions">
-      <button class="ds-btn-secondary" id="omniAiQuickCopy" style="display:none;">${i18n.getMessage("overlay_copy")}</button>
-  </div>
-  `;
-
-  inner.innerHTML = header + content;
-
-  // Events
-  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
-  // Back: the previous state, or surfaceBackFallback() (the menu for the
-  // selected text, or close).
-  inner.querySelector("#omniAiBack").addEventListener("click", () => {
-    resetQuickButtonIcon();
-    surf.back();
-  });
-  const input = inner.querySelector("#omniAiQuickInput");
-  const inputBtn = inner.querySelector("#omniAiInputBtn");
-  const copyBtn = inner.querySelector("#omniAiQuickCopy");
-  const loading = inner.querySelector("#omniAiLoading");
-  const resultDiv = inner.querySelector("#omniAiQuickResult");
-  const resultText = resultDiv.querySelector(".omni-ai-result-text");
-
-  if (!autoQuery) input.focus({ preventScroll: true });
-
-  // Copy Logic
-  copyBtn.addEventListener("click", async () => {
-    if (!(await copyTextToClipboard(resultText.innerText))) return;
-    copyBtn.textContent = i18n.getMessage("msg_copied");
-    setTimeout(() => (copyBtn.textContent = i18n.getMessage("overlay_copy")), 1500);
-  });
-
-  const handleAsk = async () => {
-    const query = input.value.trim();
-    if (!query) return;
-
-    // UI Loading
-    const inputWrapper = inner.querySelector(".omni-ai-input-wrapper");
-    if (inputWrapper) inputWrapper.style.display = "none";
-
-    copyBtn.style.display = "none";
-    loading.style.display = "flex";
-
-    try {
-      handleAskAction(query, originalText, isInput);
-    } catch (e) {
-      loading.style.display = "none";
-      resultDiv.style.display = "block";
-      resultText.innerText = "Error: " + e.message;
-    }
-  };
-
-  if (inputBtn) {
-    inputBtn.addEventListener("click", handleAsk);
-  }
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleAsk();
-    }
-  });
-
-  // Deferred: starting the next transition from inside this render would
-  // collide with the morph that is still rendering this state.
-  if (autoQuery) setTimeout(handleAsk, 0);
-
-  // Optimize position after render to avoid cut-off
-  setTimeout(() => positionOverlay(currentAnchorRect, currentCardPosition()), 10);
+  const { originalText, isInput } = data;
+  const placeholder =
+    originalText && !isInput
+      ? i18n.getMessage("overlay_ask_about_text")
+      : i18n.getMessage("popup_quickAsk");
+  const context = originalText
+    ? `<div class="omni-ai-ask-context">${escapeHtml(String(originalText).replace(/\s+/g, " ").trim())}</div>`
+    : "";
+  inner.innerHTML = `
+    ${cardHeader(i18n.getMessage("quick_ask_title"))}
+    ${context}
+    ${askBoxMarkup(placeholder)}`;
+  bindCardHeader(inner, surf);
+  const input = bindAskBox(inner, (query) => handleAskAction(query, originalText, isInput));
+  input.focus({ preventScroll: true });
 }
 
-async function showErrorInOverlay(msg) {
-  // A flash action (triggerFlashAction()) reaches this via handleAction()'s
-  // catch/error branch without ever opening the menu card first: the surface
+async function showErrorInOverlay(msg, retryData = {}) {
+  // A quick action's request can fail before any card is open: the surface
   // opens one, or the error would render nowhere and leave the floating
   // icon's spinner frozen.
   resetQuickButtonIcon();
   const surf = getSurface();
+  const data = { ...retryData, msg };
   if (isCardOpen()) {
     overlayLockedPosition = currentCardPosition();
-    return surf.to("error", { msg });
+    return surf.to("error", data);
   }
   await ensureUiRootReady();
   overlayLockedPosition = null;
   currentAnchorRect = cardAnchorRect() || currentAnchorRect;
-  return surf.open("error", { msg });
+  return surf.open("error", data);
 }
 
-function renderErrorState(inner, data) {
+function renderErrorState(inner, data, surf) {
+  const title = data.action ? actionTitle(data.action) : i18n.getMessage("overlay_error");
   inner.innerHTML = `
-      <div class="omni-ai-overlay-header">
-          <div class="omni-ai-brand" style="color:var(--omni-error);">${i18n.getMessage("overlay_error")}</div>
-          <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
+    ${cardHeader(title)}
+    <div class="omni-ai-content-area">
+      <div class="omni-ai-error" role="alert">
+        ${ICONS.warn}
+        <span class="omni-ai-error-text">${escapeHtml(data.msg || i18n.getMessage("overlay_error"))}</span>
       </div>
-      <div class="omni-ai-content-area" style="color:var(--omni-text-secondary);">
-          ${data.msg}
-      </div>`;
-  inner.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
+    </div>
+    ${
+      canRerun(data)
+        ? `<div class="omni-ai-footer-actions">
+            <span class="omni-ai-spacer"></span>
+            <button class="omni-ai-btn" id="omniAiRetry">${ICONS.retry}<span>${escapeHtml(i18n.getMessage("overlay_try_again"))}</span></button>
+          </div>`
+        : ""
+    }`;
+  bindCardHeader(inner, surf);
+  inner.querySelector("#omniAiRetry")?.addEventListener("click", () => rerun(data));
 }
 
 // Run

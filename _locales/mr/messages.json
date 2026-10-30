@@ -59,10 +59,6 @@
     "message": "झटपट क्रिया मेनू दाखवा",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "संदर्भ",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "लेखन सुधारा",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "तयार",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "प्रक्रिया सुरू आहे...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "त्रुटी",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "निकाल",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "विचार करत आहे...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "मागे",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "तुम्हाला नक्की हे संभाषण साफ करायचे आहे का?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "बदल दाखवा",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "पुन्हा प्रयत्न करा",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "या मजकुराबद्दल विचारा…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "काम सुरू आहे…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

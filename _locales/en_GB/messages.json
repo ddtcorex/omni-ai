@@ -59,10 +59,6 @@
     "message": "Show Quick Actions Menu",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Context",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Improve Writing",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "Ready",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Processing...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Error",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "Result",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Thinking...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Back",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Are you sure you want to clear this conversation?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Show changes",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Try again",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Ask about this text…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Working…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

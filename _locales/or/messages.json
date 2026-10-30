@@ -59,10 +59,6 @@
     "message": "ଦ୍ରୁତ କାର୍ଯ୍ୟ ମେନୁ ଦେଖାନ୍ତୁ",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "ପ୍ରସଙ୍ଗ",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "ଲେଖା ଉନ୍ନତ କରନ୍ତୁ",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "ପ୍ରସ୍ତୁତ",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "ପ୍ରକ୍ରିୟାକରଣ ଚାଲିଛି...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "ତ୍ରୁଟି",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "ଫଳାଫଳ",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "ଭାବୁଛି...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "ପଛକୁ",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "ଆପଣ ନିଶ୍ଚିତ କି ଏହି ଆଲୋଚନା ହଟାଇବାକୁ ଚାହାନ୍ତି?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "ପରିବର୍ତ୍ତନ ଦେଖାନ୍ତୁ",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "ଏହି ଲେଖା ବିଷୟରେ ପଚାରନ୍ତୁ…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "କାମ ଚାଲିଛି…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

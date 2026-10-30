@@ -55,8 +55,14 @@
       mount().appendChild(card);
     }
 
+    // Opening is a fresh entry point (the toolbar, a keyboard command): on a
+    // card that is already open it morphs in place and starts a new history,
+    // so no stale entry (one a backFallback left behind) comes back on Back.
     async function open(state, data = {}) {
-      if (card && !closing) return to(state, data);
+      if (card && !closing) {
+        history = [];
+        return to(state, data, { replace: true });
+      }
       token += 1;
       history = [];
       // A close animation is running: enter() below supersedes it, so the
@@ -68,10 +74,17 @@
       motion().enter(card);
     }
 
-    async function to(state, data = {}) {
+    /**
+     * Move to a state. `replace` swaps the current state out without keeping
+     * it for Back (a retry or a tone re-run replaces its result).
+     * @param {string} state
+     * @param {object} [data]
+     * @param {{replace?: boolean}} [opts]
+     */
+    async function to(state, data = {}, opts = {}) {
       if (!card || closing) return open(state, data);
       token += 1;
-      if (current && current.state !== "loading") history.push(current);
+      if (!opts.replace && current && current.state !== "loading") history.push(current);
       current = { state, data };
       await motion().morph(card, inner, () => {
         // A newer transition replaced this one while it was fading out.

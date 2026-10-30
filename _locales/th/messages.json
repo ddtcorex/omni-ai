@@ -59,10 +59,6 @@
     "message": "แสดงเมนูการทำงานด่วน",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "บริบท",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "ปรับปรุงงานเขียน",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "พร้อม",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "กำลังประมวลผล...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "ข้อผิดพลาด",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "ผลลัพธ์",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "กำลังคิด...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "ย้อนกลับ",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างบทสนทนานี้?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "แสดงการเปลี่ยนแปลง",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "ลองอีกครั้ง",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "ถามเกี่ยวกับข้อความนี้…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "กำลังดำเนินการ…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

@@ -51,6 +51,14 @@ describe("lib/design-tokens.css", () => {
     "--omni-pill-bg",
     "--omni-pill-top",
     "--omni-pill-hover",
+    "--omni-separator",
+    "--omni-skeleton-base",
+    "--omni-skeleton-shine",
+    "--omni-error-text",
+    "--omni-error-surface",
+    "--omni-diff-del",
+    "--omni-diff-ins",
+    "--omni-diff-ins-bg",
   ])("overrides %s in both light-mode blocks", (token) => {
     for (const selector of [
       /:root\.omni-ai-light-mode\s*\{([^}]*)\}/,

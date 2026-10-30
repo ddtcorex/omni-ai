@@ -611,3 +611,542 @@ test("German labels are never truncated in the menu", async () => {
     server.close();
   }
 });
+
+// ---------------------------------------------------------------------------
+// Loading, result, retry, tone, copy, error, ask and page card states.
+// ---------------------------------------------------------------------------
+
+// Gemini stub with a call counter, an optional delay and a reply per call.
+function stubGeminiCounted(context, { delayMs = 0, reply = () => "OK", status = 200 } = {}) {
+  const state = { hits: 0, bodies: [] };
+  const handler = async (route) => {
+    state.hits += 1;
+    const n = state.hits;
+    state.bodies.push(route.request().postData() || "");
+    if (delayMs) await new Promise((r) => setTimeout(r, delayMs));
+    const code = typeof status === "function" ? status(n) : status;
+    await route.fulfill({
+      status: code,
+      contentType: "application/json",
+      body:
+        code === 200
+          ? JSON.stringify({ candidates: [{ content: { parts: [{ text: reply(n) }] } }] })
+          : JSON.stringify({ error: { message: "<b>bad</b> key" } }),
+    });
+  };
+  return context.route("**/generativelanguage.googleapis.com/**", handler).then(() => state);
+}
+
+function waitShadow(page, selector, timeout = 8000) {
+  return page.waitForFunction(
+    (q) => document.getElementById("omni-ai-shadow-host")?.shadowRoot?.querySelector(q),
+    selector,
+    { timeout },
+  );
+}
+
+function waitResultText(page, needle, timeout = 8000) {
+  return page.waitForFunction(
+    (n) =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        ?.shadowRoot?.querySelector(".omni-ai-result-text")
+        ?.textContent.includes(n),
+    needle,
+    { timeout },
+  );
+}
+
+function shadowText(page, selector) {
+  return page.evaluate(
+    (q) =>
+      document.getElementById("omni-ai-shadow-host")?.shadowRoot?.querySelector(q)?.textContent ??
+      null,
+    selector,
+  );
+}
+
+const PAGE_FIXTURE = `<!doctype html><html><body>
+  <p id="target" style="margin:120px 40px">The quick brown fox jumps over the lazy dog.</p>
+</body></html>`;
+
+async function openPageCard(page, port) {
+  await page.goto(`http://127.0.0.1:${port}/`);
+  const box = await page.locator("#target").boundingBox();
+  await page.mouse.move(box.x + 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+  await page.mouse.up();
+  await clickShadow(page, ".omni-ai-quick-btn");
+  await waitShadow(page, "#omniAiTranslateCard");
+}
+
+async function sendToTab(sw, port, message) {
+  await sw.evaluate(
+    async ({ port, message }) => {
+      const tabs = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      let lastError;
+      for (let i = 0; i < 20; i++) {
+        try {
+          await chrome.tabs.sendMessage(tabs[0].id, message, { frameId: 0 });
+          return;
+        } catch (err) {
+          lastError = err;
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+      throw lastError;
+    },
+    { port, message },
+  );
+}
+
+test("loading shows a skeleton and the action name", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 1500, reply: () => "DONE" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitShadow(page, ".omni-ai-skeleton");
+    expect(await shadowCount(page, ".omni-ai-skeleton .omni-ai-skeleton-line")).toBe(3);
+    expect(await shadowText(page, ".omni-ai-overlay-header")).toContain("Rephrase");
+    expect(await shadowCount(page, ".omni-ai-overlay .ds-spinner")).toBe(0);
+    await waitResultText(page, "DONE");
+    expect(await shadowCount(page, ".omni-ai-skeleton")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("result shows clean text; Show changes reveals the diff", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: () => "planet" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "planet");
+    expect(await shadowText(page, ".omni-ai-result-text")).toBe("planet");
+    expect(await shadowCount(page, ".omni-ai-diff-del")).toBe(0);
+
+    await clickShadow(page, "#omniAiShowChanges");
+    await waitShadow(page, ".omni-ai-result-text .omni-ai-diff-del");
+    expect(await shadowText(page, ".omni-ai-diff-del")).toBe("world");
+    expect(await shadowText(page, ".omni-ai-diff-ins")).toBe("planet");
+    expect(
+      await page.evaluate(() =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector("#omniAiShowChanges")
+          .getAttribute("aria-checked"),
+      ),
+    ).toBe("true");
+
+    // Toggling off goes back to the clean text.
+    await clickShadow(page, "#omniAiShowChanges");
+    await expect.poll(() => shadowCount(page, ".omni-ai-diff-del")).toBe(0);
+    expect(await shadowText(page, ".omni-ai-result-text")).toBe("planet");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Show changes is absent for summarize and translations", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: (n) => `REPLY-${n}` });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="summarize"]');
+    await waitResultText(page, "REPLY-1");
+    expect(await shadowCount(page, "#omniAiShowChanges")).toBe(0);
+
+    await clickShadow(page, "#omniAiBack");
+    await clickShadow(page, '.omni-ai-menu-item[data-action="translate_primary"]');
+    await waitResultText(page, "REPLY-2");
+    expect(await shadowCount(page, "#omniAiShowChanges")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("AI output with markup renders as text", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: () => `<img src=x onerror="window.__pwned=1">` });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "<img");
+    expect(await shadowCount(page, ".omni-ai-result-text img")).toBe(0);
+    // With the diff shown too.
+    await clickShadow(page, "#omniAiShowChanges");
+    await waitShadow(page, ".omni-ai-result-text .omni-ai-diff-ins");
+    expect(await shadowCount(page, ".omni-ai-result-text img")).toBe(0);
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.__pwned)).toBeUndefined();
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("retry calls the AI again even for a cached action", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const stub = await stubGeminiCounted(context, { reply: (n) => `GRAMMAR-${n}` });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="grammar"]');
+    await waitResultText(page, "GRAMMAR-1");
+    expect(stub.hits).toBe(1);
+
+    await clickShadow(page, "#omniAiRetry");
+    await waitResultText(page, "GRAMMAR-2");
+    expect(stub.hits).toBe(2);
+
+    // The retried result replaced the old one: Back goes to the menu.
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, ".omni-ai-menu-grid");
+    // And the fresh result replaced the cache entry.
+    await clickShadow(page, '.omni-ai-menu-item[data-action="grammar"]');
+    await waitResultText(page, "GRAMMAR-2");
+    expect(stub.hits).toBe(2);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a late response after Back is dropped", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 1500, reply: () => "LATE" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await page.waitForTimeout(200);
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, ".omni-ai-menu-grid");
+    await page.waitForTimeout(2500);
+    expect(await shadowCount(page, ".omni-ai-menu-grid")).toBe(1);
+    expect(await shadowCount(page, ".omni-ai-result-text")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a late response after the card closed does not reopen it", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const stub = await stubGeminiCounted(context, { delayMs: 1500, reply: () => "LATE" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitShadow(page, ".omni-ai-skeleton");
+    await clickShadow(page, "#omniAiClose");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    await expect.poll(() => stub.hits, { timeout: 3000 }).toBe(1);
+    await page.waitForTimeout(2500);
+    expect(await shadowCount(page, ".omni-ai-overlay")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Change tone shows the five tones and re-runs in place", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const stub = await stubGeminiCounted(context, { reply: (n) => `TONE-${n}` });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    const card = await shadowQuery(page, ".omni-ai-overlay");
+    await clickShadow(page, '.omni-ai-menu-item[data-action="tone"]');
+    await waitResultText(page, "TONE-1");
+
+    const tones = () =>
+      page.evaluate(() =>
+        Array.from(
+          document
+            .getElementById("omni-ai-shadow-host")
+            .shadowRoot.querySelectorAll(".omni-ai-tone-pill"),
+        ).map((el) => ({ tone: el.dataset.tone, active: el.classList.contains("is-active") })),
+      );
+    expect((await tones()).map((t) => t.tone)).toEqual([
+      "professional",
+      "casual",
+      "friendly",
+      "direct",
+      "confident",
+    ]);
+    expect((await tones()).filter((t) => t.active).map((t) => t.tone)).toEqual(["professional"]);
+
+    await clickShadow(page, '.omni-ai-tone-pill[data-tone="casual"]');
+    await waitResultText(page, "TONE-2");
+    expect(stub.hits).toBe(2);
+    expect(stub.bodies[1].toLowerCase()).toContain("casual");
+    expect((await tones()).filter((t) => t.active).map((t) => t.tone)).toEqual(["casual"]);
+    expect(await card.evaluate((el) => el.isConnected)).toBe(true);
+    expect(await shadowCount(page, ".omni-ai-overlay")).toBe(1);
+
+    // The tone re-run replaced the result: Back goes straight to the menu.
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, ".omni-ai-menu-grid");
+    expect(await shadowCount(page, ".omni-ai-result-text")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("two quick tone clicks show the last one", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // The first tone re-run is slow, the second fast: the slow one must not win.
+    await stubGeminiCounted(context, {
+      delayMs: 0,
+      reply: (n) => `TONE-${n}`,
+    });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="tone"]');
+    await waitResultText(page, "TONE-1");
+    await context.unrouteAll({ behavior: "ignoreErrors" });
+    let hits = 0;
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      hits += 1;
+      const n = hits;
+      const body = route.request().postData() || "";
+      await new Promise((r) => setTimeout(r, n === 1 ? 1500 : 100));
+      const text = body.toLowerCase().includes("friendly") ? "FRIENDLY" : "CASUAL";
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text }] } }] }),
+      });
+    });
+    await clickShadow(page, '.omni-ai-tone-pill[data-tone="casual"]');
+    await page.waitForTimeout(150);
+    await clickShadow(page, '.omni-ai-tone-pill[data-tone="friendly"]');
+    await waitResultText(page, "FRIENDLY");
+    await page.waitForTimeout(2000);
+    expect(await shadowText(page, ".omni-ai-result-text")).toBe("FRIENDLY");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Copy swaps to the copied label and back", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+      origin: `http://127.0.0.1:${port}`,
+    });
+    await stubGeminiCounted(context, { reply: () => "COPY-ME" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "COPY-ME");
+    expect(await shadowText(page, "#omniAiCopy")).toContain("Copy");
+    await clickShadow(page, "#omniAiCopy");
+    await expect.poll(() => shadowText(page, "#omniAiCopy"), { timeout: 2000 }).toContain("Copied");
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("COPY-ME");
+    await expect
+      .poll(() => shadowText(page, "#omniAiCopy"), { timeout: 4000 })
+      .not.toContain("Copied");
+    expect(await shadowText(page, "#omniAiCopy")).toContain("Copy");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("an AI failure shows the error inside the card with Try again", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    let fail = true;
+    const stub = await stubGeminiCounted(context, {
+      reply: () => "RECOVERED",
+      status: () => (fail ? 400 : 200),
+    });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    const card = await shadowQuery(page, ".omni-ai-overlay");
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitShadow(page, ".omni-ai-overlay .omni-ai-error", 15000);
+    expect(await card.evaluate((el) => el.isConnected)).toBe(true);
+    // The provider's message is shown as text, never as markup.
+    expect(await shadowText(page, ".omni-ai-error")).toContain("<b>bad</b> key");
+    expect(await shadowCount(page, ".omni-ai-error b")).toBe(0);
+    expect(await shadowText(page, "#omniAiRetry")).toContain("Try again");
+
+    fail = false;
+    const before = stub.hits;
+    await clickShadow(page, "#omniAiRetry");
+    await waitResultText(page, "RECOVERED");
+    expect(stub.hits).toBe(before + 1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("page text: the translation slot is reserved and the action pills do not move when it lands", async () => {
+  const { server, port } = await serveFixtureHtml(PAGE_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 1500, reply: () => "Con cáo nâu nhanh nhẹn." });
+    const page = await context.newPage();
+    await openPageCard(page, port);
+    await waitShadow(page, "#omniAiTranslateCard .omni-ai-skeleton");
+    await page.waitForTimeout(700); // enter animation settles
+    const pillY = () =>
+      page.evaluate(
+        () =>
+          document
+            .getElementById("omni-ai-shadow-host")
+            .shadowRoot.querySelector(".omni-ai-menu-item[data-action]")
+            .getBoundingClientRect().y,
+      );
+    const before = await pillY();
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector("#omniAiTranslateCard .omni-ai-suggestion-content")
+          ?.textContent.includes("Con cáo"),
+      null,
+      { timeout: 8000 },
+    );
+    await page.waitForTimeout(600);
+    expect(Math.abs((await pillY()) - before)).toBeLessThanOrEqual(0.5);
+
+    // Reading actions only, in order, then the reading Ask box.
+    const actions = await page.evaluate(() =>
+      Array.from(
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelectorAll(".omni-ai-menu-item[data-action]"),
+      ).map((el) => el.dataset.action),
+    );
+    expect(actions).toEqual([
+      "summarize",
+      "explain",
+      "translate_primary",
+      "translate_default",
+      "reply",
+    ]);
+    expect(
+      await page.evaluate(() =>
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector("#omniAiInlineInput")
+          .getAttribute("placeholder"),
+      ),
+    ).toBe("Ask about this text…");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("page text: results have Copy and no Replace", async () => {
+  const { server, port } = await serveFixtureHtml(PAGE_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: (n) => `PAGE-${n}` });
+    const page = await context.newPage();
+    await openPageCard(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="summarize"]');
+    await page.waitForFunction(
+      () =>
+        /PAGE-\d/.test(
+          document
+            .getElementById("omni-ai-shadow-host")
+            ?.shadowRoot?.querySelector(".omni-ai-result-text")?.textContent || "",
+        ),
+      null,
+      { timeout: 8000 },
+    );
+    expect(await shadowCount(page, "#omniAiCopy")).toBe(1);
+    expect(await shadowCount(page, "#omniAiRetry")).toBe(1);
+    expect(await shadowCount(page, "#omniAiReplace")).toBe(0);
+    // Back returns to the translation-first card.
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, "#omniAiTranslateCard");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Quick Ask with no selection opens the ask state with the input focused", async () => {
+  const { server, port } = await serveFixtureHtml(PAGE_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 800, reply: () => "<script>ANSWER</script>" });
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await sendToTab(sw, port, { type: "SHOW_QUICK_ASK_OVERLAY" });
+    await waitShadow(page, "#omniAiInlineInput");
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => document.getElementById("omni-ai-shadow-host").shadowRoot.activeElement?.id,
+        ),
+      )
+      .toBe("omniAiInlineInput");
+    expect(await shadowCount(page, ".omni-ai-menu-grid")).toBe(0);
+    expect(await shadowCount(page, ".omni-ai-ask-context")).toBe(0);
+
+    await page.keyboard.type("What is <b>this</b>?");
+    await page.keyboard.press("Enter");
+    // The loading header names Quick Ask, not the brand.
+    await waitShadow(page, ".omni-ai-skeleton");
+    expect(await shadowText(page, ".omni-ai-overlay-header")).toContain("Quick Ask");
+    await waitResultText(page, "ANSWER");
+    expect(await shadowCount(page, ".omni-ai-result-text script")).toBe(0);
+    expect(await shadowText(page, ".omni-ai-result-query")).toContain("What is <b>this</b>?");
+    expect(await shadowCount(page, ".omni-ai-result-query b")).toBe(0);
+
+    // Back from a Quick Ask result returns to the ask state.
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, "#omniAiInlineInput");
+    expect(await shadowCount(page, ".omni-ai-result-text")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

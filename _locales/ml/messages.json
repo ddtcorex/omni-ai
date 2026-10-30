@@ -59,10 +59,6 @@
     "message": "ദ്രുത പ്രവർത്തന മെനു കാണിക്കുക",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "സന്ദർഭം",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "എഴുത്ത് മെച്ചപ്പെടുത്തുക",
     "description": "Improve writing section title"
@@ -134,10 +130,6 @@
   "status_ready": {
     "message": "തയ്യാർ",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "പ്രോസസ്സ് ചെയ്യുന്നു...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "പിശക്",
@@ -336,10 +328,6 @@
   "overlay_result": {
     "message": "ഫലം",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "ചിന്തിക്കുന്നു...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "പിന്നോട്ട്",
@@ -690,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "ഈ സംഭാഷണം മായ്ച്ചുകളയണമെന്ന് ഉറപ്പാണോ?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "മാറ്റങ്ങൾ കാണിക്കുക",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "വീണ്ടും ശ്രമിക്കുക",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "ഈ വാചകത്തെക്കുറിച്ച് ചോദിക്കൂ…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "പ്രവർത്തിക്കുന്നു…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

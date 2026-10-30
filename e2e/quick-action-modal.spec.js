@@ -376,8 +376,10 @@ test("Alt+O opens the quick-action menu directly, without clicking the floating 
       if (lastError) throw lastError;
     }, port);
 
-    // The menu should open directly -- no floating icon ever appears.
-    await expect(page.locator('[data-action="rephrase"]')).toBeVisible({ timeout: 5000 });
+    // The menu should open directly -- no floating icon ever appears. On
+    // page text that is the translation-first card with its reading actions.
+    await expect(page.locator('[data-action="summarize"]')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator("#omniAiTranslateCard")).toBeVisible();
     await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(0);
   } finally {
     await context.close();

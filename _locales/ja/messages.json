@@ -15,10 +15,6 @@
     "message": "Omni AIに何でも聞いてください...",
     "description": "クイック質問のプレースホルダー"
   },
-  "popup_context": {
-    "message": "文脈",
-    "description": "文脈セクションのタイトル"
-  },
   "popup_improveWriting": {
     "message": "文章を改善",
     "description": "文章改善セクションのタイトル"
@@ -90,10 +86,6 @@
   "status_ready": {
     "message": "準備完了",
     "description": "ステータス：準備完了"
-  },
-  "status_processing": {
-    "message": "処理中...",
-    "description": "ステータス：処理中"
   },
   "status_error": {
     "message": "エラー",
@@ -247,10 +239,6 @@
   "overlay_result": {
     "message": "結果",
     "description": "結果のタイトル"
-  },
-  "status_thinking": {
-    "message": "思考中...",
-    "description": "思考中ステータス"
   },
   "btn_back": {
     "message": "戻る",
@@ -676,5 +664,30 @@
   "sidebar_chat_confirmClear": {
     "message": "この会話を消去してもよろしいですか？",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "変更を表示",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "再試行",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "このテキストについて質問…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "処理中…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

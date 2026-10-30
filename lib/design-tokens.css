@@ -79,6 +79,16 @@
   --omni-pill-top: rgba(255, 255, 255, 0.12);
   --omni-pill-hover: rgba(139, 92, 246, 0.25);
   --omni-accent-glow: 0 2px 8px rgba(139, 92, 246, 0.4);
+
+  /* Overlay result surface: hairlines, loading skeleton, error and diff. */
+  --omni-separator: rgba(255, 255, 255, 0.08);
+  --omni-skeleton-base: #2a2a36;
+  --omni-skeleton-shine: #3a3a4a;
+  --omni-error-text: #f87171;
+  --omni-error-surface: rgba(248, 113, 113, 0.12);
+  --omni-diff-del: #fdba74;
+  --omni-diff-ins: #4ade80;
+  --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
 }
 
 /* Light-mode overrides: plain-document surfaces (settings.html, sidepanel.html) */
@@ -111,6 +121,14 @@
   --omni-pill-bg: rgba(236, 236, 245, 0.95);
   --omni-pill-top: #ffffff;
   --omni-pill-hover: rgba(139, 92, 246, 0.12);
+  --omni-separator: rgba(20, 20, 40, 0.07);
+  --omni-skeleton-base: #e6e6f0;
+  --omni-skeleton-shine: #f8f8fc;
+  --omni-error-text: #dc2626;
+  --omni-error-surface: rgba(220, 38, 38, 0.08);
+  --omni-diff-del: #c2410c;
+  --omni-diff-ins: #16a34a;
+  --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
 }
 
 /* Light-mode overrides: the Shadow-DOM overlay surface. :host() matches only
@@ -153,4 +171,12 @@
   --omni-pill-bg: rgba(236, 236, 245, 0.95);
   --omni-pill-top: #ffffff;
   --omni-pill-hover: rgba(139, 92, 246, 0.12);
+  --omni-separator: rgba(20, 20, 40, 0.07);
+  --omni-skeleton-base: #e6e6f0;
+  --omni-skeleton-shine: #f8f8fc;
+  --omni-error-text: #dc2626;
+  --omni-error-surface: rgba(220, 38, 38, 0.08);
+  --omni-diff-del: #c2410c;
+  --omni-diff-ins: #16a34a;
+  --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
 }
