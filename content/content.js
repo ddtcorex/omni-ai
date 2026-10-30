@@ -449,7 +449,12 @@ function surfaceBackFallback() {
       lastMenuContext.isInput,
     );
   } else if (surface?.state() === "ask" && askBackContext?.originalText) {
-    showQuickActionMenu(askBackContext.originalText, null, askBackContext.lockedRect, false);
+    showQuickActionMenu(
+      askBackContext.originalText,
+      null,
+      askBackContext.lockedRect,
+      askBackContext.isInput,
+    );
   } else {
     hideOverlay();
   }
@@ -1472,6 +1477,31 @@ function bindMenuEvents(root, text, isInput) {
     btn.addEventListener("click", () => handleAction(btn.dataset.action, text, isInput));
   });
   bindAskBox(root, (query) => handleAskAction(query, text, isInput));
+  bindRovingFocus(root);
+}
+
+// Roving focus over the action pills (`[data-action]`, not the tone pills):
+// one tab stop, arrows move by DOM order, Home/End jump. Enter and Space
+// activate through the native button click.
+function bindRovingFocus(root) {
+  const pills = Array.from(root.querySelectorAll(".omni-ai-menu-item[data-action]"));
+  if (pills.length === 0) return;
+  const setStop = (active) => pills.forEach((p) => (p.tabIndex = p === active ? 0 : -1));
+  setStop(pills[0]);
+  pills.forEach((pill) => pill.addEventListener("focus", () => setStop(pill)));
+  root.addEventListener("keydown", (event) => {
+    const index = pills.indexOf(/** @type {any} */ (event.target));
+    if (index === -1) return;
+    let next = -1;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % pills.length;
+    else if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+      next = (index - 1 + pills.length) % pills.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = pills.length - 1;
+    if (next === -1) return;
+    event.preventDefault();
+    pills[next].focus({ preventScroll: true });
+  });
 }
 
 // The tone saved in Settings when it is one of the five, else professional.
@@ -2160,7 +2190,7 @@ async function showQuickAskOverlay(lockedRect = null, originalText = null, isInp
   // Save current anchor for re-positioning
   currentAnchorRect = lockedRect || cardAnchorRect() || currentAnchorRect;
   overlayLockedPosition = null;
-  askBackContext = { originalText, lockedRect };
+  askBackContext = { originalText, lockedRect, isInput };
   getSurface().open("ask", { originalText, isInput });
 }
 
