@@ -95,10 +95,6 @@
     "message": "Fixa grammatiken",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Rättar stavfel och grammatik",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Förbättra tydligheten",
     "description": "Clarity action"

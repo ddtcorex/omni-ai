@@ -95,10 +95,6 @@
     "message": "व्याकरण ठीक करें",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "वर्तनी और व्याकरण सुधारता है",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "स्पष्टता बढ़ाएँ",
     "description": "Clarity action"

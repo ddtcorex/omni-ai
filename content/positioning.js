@@ -85,6 +85,8 @@
    * the returned top/left are document-relative. For "above", `top` is where
    * the card's top edge sits at the given height, so its bottom edge is
    * `anchor.top - gap` (the edge the caller should pin, see content.js).
+   * content.js passes an anchor whose `top` is the higher of the toolbar and
+   * the selection, so an above card never covers the selected text.
    *
    * @param {{top: number, left: number, bottom: number}} anchor
    * @param {{width: number, height: number}} card

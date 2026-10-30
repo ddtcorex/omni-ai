@@ -95,10 +95,6 @@
     "message": "Ispravi gramatiku",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Ispravlja pravopis i gramatiku",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Poboljšaj jasnoću",
     "description": "Clarity action"

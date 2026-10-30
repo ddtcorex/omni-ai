@@ -51,10 +51,6 @@
     "message": "Grammatik prüfen",
     "description": "Grammatik-Aktion"
   },
-  "desc_grammar": {
-    "message": "Korrigiert Rechtschreibung und Grammatik",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Klarheit verbessern",
     "description": "Klarheits-Aktion"

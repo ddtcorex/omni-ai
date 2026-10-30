@@ -95,10 +95,6 @@
     "message": "گرامر درست کریں",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "ہجے اور گرامر درست کرتا ہے",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "وضاحت بہتر بنائیں",
     "description": "Clarity action"

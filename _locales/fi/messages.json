@@ -95,10 +95,6 @@
     "message": "Korjaa kielioppi",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Korjaa oikeinkirjoituksen ja kieliopin",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Paranna selkeyttä",
     "description": "Clarity action"

@@ -95,10 +95,6 @@
     "message": "இலக்கணத்தைச் சரிசெய்",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "எழுத்துப்பிழை மற்றும் இலக்கணத்தைச் சரிசெய்கிறது",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "தெளிவை மேம்படுத்து",
     "description": "Clarity action"

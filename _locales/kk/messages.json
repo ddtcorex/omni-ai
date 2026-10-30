@@ -95,10 +95,6 @@
     "message": "Грамматиканы түзеу",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Емле мен грамматиканы түзейді",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Айқындықты жақсарту",
     "description": "Clarity action"

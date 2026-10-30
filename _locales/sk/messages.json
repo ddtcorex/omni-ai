@@ -95,10 +95,6 @@
     "message": "Opraviť gramatiku",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Opraví pravopis a gramatiku",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Zlepšiť zrozumiteľnosť",
     "description": "Clarity action"

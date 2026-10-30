@@ -95,10 +95,6 @@
     "message": "Nyelvhelyesség javítása",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Kijavítja a helyesírást és a nyelvtant",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Világosabb megfogalmazás",
     "description": "Clarity action"

@@ -95,10 +95,6 @@
     "message": "Διόρθωση γραμματικής",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Διορθώνει ορθογραφία και γραμματική",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Βελτίωση σαφήνειας",
     "description": "Clarity action"

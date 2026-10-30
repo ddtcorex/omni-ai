@@ -95,10 +95,6 @@
     "message": "વ્યાકરણ સુધારો",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "જોડણી અને વ્યાકરણ સુધારે છે",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "સ્પષ્ટતા સુધારો",
     "description": "Clarity action"

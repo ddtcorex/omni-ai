@@ -95,10 +95,6 @@
     "message": "Popravi slovnico",
     "description": "Grammar action"
   },
-  "desc_grammar": {
-    "message": "Popravi črkovanje in slovnico",
-    "description": "Description for grammar action"
-  },
   "action_clarity": {
     "message": "Izboljšaj jasnost",
     "description": "Clarity action"
