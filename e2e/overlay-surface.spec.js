@@ -227,7 +227,11 @@ test("the floating icon stays visible while the card is open", async () => {
 });
 
 test("a card opened above the selection grows upward", async () => {
-  const BOTTOM_FIXTURE = `<!doctype html><html><body style="margin:0;height:3000px">
+  // Not scrollable on purpose: the toolbar sits flush with the viewport bottom,
+  // and Playwright answers a click on a barely clipped target by scrolling the
+  // page (scrollY 698 in the flaky runs), which moves the document-positioned
+  // toolbar and the card with it.
+  const BOTTOM_FIXTURE = `<!doctype html><html><body style="margin:0">
     <textarea id="target" rows="3" cols="40" style="position:fixed;bottom:10px;left:40px">Hello world, this is a test.</textarea>
   </body></html>`;
   const { server, port } = await serveFixtureHtml(BOTTOM_FIXTURE);
@@ -238,6 +242,7 @@ test("a card opened above the selection grows upward", async () => {
     const page = await context.newPage();
     // A real selection ends at the mouse, so the toolbar lands near it.
     await openEditorMenu(page, port, { clientX: 300, clientY: 690 });
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
     await page.waitForTimeout(900);
 
     const cardBottom = () =>
