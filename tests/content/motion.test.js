@@ -326,6 +326,13 @@ describe("motion helpers", () => {
       expect(calls).toHaveLength(1);
     });
 
+    test("a stopped morph cancels its fade out so inner is not left hidden", async () => {
+      const container = document.createElement("div");
+      const inner = document.createElement("div");
+      await motion.morph(container, inner, () => false);
+      expect(calls[0].cancel).toHaveBeenCalled();
+    });
+
     test("exit resolves true when it completes", async () => {
       await expect(motion.exit(document.createElement("div"))).resolves.toBe(true);
     });

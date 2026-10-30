@@ -261,6 +261,35 @@ describe("overlay surface", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  test("a close that keeps being cancelled still removes the card", async () => {
+    global.OMNI_MOTION.exit = jest.fn(() => Promise.resolve(false));
+    await surface.open("menu");
+    await surface.close();
+    expect(surface.card()).toBeNull();
+    expect(mount.querySelectorAll(".omni-ai-overlay")).toHaveLength(0);
+    expect(onClose).toHaveBeenCalledTimes(1);
+    // Later transitions work again.
+    await surface.open("menu");
+    expect(surface.isOpen()).toBe(true);
+  });
+
+  test("reopening a card mid close drops animations a stale morph left on inner", async () => {
+    manualExit = true;
+    const cancel = jest.fn();
+    const proto = HTMLElement.prototype;
+    proto.getAnimations = () => [{ cancel }];
+    try {
+      await surface.open("menu");
+      const closing = surface.close();
+      const reopened = surface.open("ask");
+      exitResolvers[0](false);
+      await Promise.all([closing, reopened]);
+      expect(cancel).toHaveBeenCalled();
+    } finally {
+      delete proto.getAnimations;
+    }
+  });
+
   test("Escape inside the card closes it", async () => {
     await surface.open("menu");
     surface.card().dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
