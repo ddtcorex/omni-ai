@@ -131,3 +131,83 @@ test("Replace swaps the selected word inside an editable iframe body", async () 
     server.close();
   }
 });
+
+test("a worker retry inside an iframe editor answers that frame, not the top one", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGemini(context, "RETRIED");
+    const page = await context.newPage();
+    const { frame, frameEl } = await openEditorFrame(page, port);
+
+    // Focusing the editor records its frame as the active editor frame.
+    await selectBeta(page, frame, frameEl);
+    const frameId = await sw.evaluate(async (p) => {
+      const [tab] = await chrome.tabs.query({ url: `http://127.0.0.1:${p}/*` });
+      const key = `omni_ai_active_frame_${tab.id}`;
+      for (let i = 0; i < 50; i++) {
+        const stored = (await chrome.storage.session.get(key))[key];
+        if (Number.isInteger(stored) && stored !== 0) return stored;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return null;
+    }, port);
+    expect(frameId).not.toBeNull();
+
+    // A worker error lands in the iframe card, as a keyboard command's would.
+    await sw.evaluate(
+      async ({ p, frameId }) => {
+        const [tab] = await chrome.tabs.query({ url: `http://127.0.0.1:${p}/*` });
+        await chrome.tabs.sendMessage(
+          tab.id,
+          {
+            type: "SHOW_RESULT",
+            payload: {
+              action: "rephrase",
+              originalText: "beta",
+              result: "Error: boom",
+              error: true,
+              isInput: true,
+            },
+          },
+          { frameId },
+        );
+      },
+      { p: port, frameId },
+    );
+
+    // A real click focuses the retry button inside the frame's shadow UI.
+    await clickShadow(frame, "#omniAiRetry");
+
+    await expect
+      .poll(() =>
+        frame.evaluate(
+          () =>
+            document
+              .getElementById("omni-ai-shadow-host")
+              ?.shadowRoot?.querySelector(".omni-ai-result-text")?.textContent ?? null,
+        ),
+      )
+      .toBe("RETRIED");
+    // Focus inside the extension's own UI is not an editor blur: keyboard
+    // commands still route to the iframe editor afterwards.
+    const storedFrame = await sw.evaluate(async (p) => {
+      const [tab] = await chrome.tabs.query({ url: `http://127.0.0.1:${p}/*` });
+      const key = `omni_ai_active_frame_${tab.id}`;
+      return (await chrome.storage.session.get(key))[key] ?? null;
+    }, port);
+    expect(storedFrame).toBe(frameId);
+    expect(
+      await page.evaluate(
+        () =>
+          document
+            .getElementById("omni-ai-shadow-host")
+            ?.shadowRoot?.querySelectorAll(".omni-ai-overlay").length ?? 0,
+      ),
+    ).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

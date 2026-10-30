@@ -737,7 +737,11 @@ function setupSelectionListener() {
     }, 100);
   });
 
-  document.addEventListener("focusin", () => {
+  document.addEventListener("focusin", (e) => {
+    // Focus moving into the extension's own UI (a card button, the Ask box)
+    // is not the editor losing focus: reporting it would clear the active
+    // editor frame and send the next result to the top frame.
+    if (isEventInsideOmniUi(e)) return;
     const activeElement = document.activeElement;
     reportEditorFocus(activeElement, getContext(activeElement));
   });
