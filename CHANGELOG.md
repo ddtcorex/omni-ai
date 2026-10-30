@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Refined glass look for the overlay.** The selection toolbar, action menu and result card share one translucent glass style (new `--omni-glass-*` and `--omni-pill-*` tokens, light and dark), and there is now one card that morphs between menu, loading, result and error instead of separate popups.
+- **Motion with reduced-motion support.** Enter, exit, swap and height morph use new `--omni-motion-*` tokens; with `prefers-reduced-motion` only opacity animates.
+- **Editors no longer run a background grammar check.** Opening the menu on a textarea or rich text editor saves one AI call.
+- **The page text card translates automatically** and offers the reading actions beside it.
+- **Results show clean text with a Show changes switch** for rephrase, grammar, tone and emoji.
+
+### Added
+
+- **Try again on results.** It bypasses the cache and also works for keyboard-shortcut and context-menu results (new `RERUN_ACTION` message).
+- **Keyboard navigation in the action menu.**
+
+### Security
+
+- **AI output is always rendered as text.** It used to be inserted into the overlay as HTML.
+
 ### Fixed
 
 - **Iframe-mode rich text editors (TinyMCE classic, CKEditor 4, ...) no longer save Omni AI's UI, and Replace now replaces the selection there.** These editors make their iframe's own `<body>` contenteditable and save its HTML, and the content script mounted its shadow UI host on that same `<body>`. The host was therefore saved with the content (an empty `div#omni-ai-shadow-host` with a long inline style), and once the overlay had focus the host itself became the replace target, so the result was appended at the end of the editor while the selected text stayed. The host now mounts on `<html>` whenever `<body>` is editable, re-checked on every use because editors often turn the body editable after the content script has loaded. Covered by `e2e/iframe-editor.spec.js` and checked by hand against TinyMCE 7.0.1.
