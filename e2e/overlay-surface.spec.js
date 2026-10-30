@@ -1088,13 +1088,8 @@ test("page text: the translation slot is reserved and the action pills do not mo
           .shadowRoot.querySelectorAll(".omni-ai-menu-item[data-action]"),
       ).map((el) => el.dataset.action),
     );
-    expect(actions).toEqual([
-      "summarize",
-      "explain",
-      "translate_primary",
-      "translate_default",
-      "reply",
-    ]);
+    // No translate pills: the translation is already on top of the card.
+    expect(actions).toEqual(["summarize", "explain", "reply"]);
     expect(
       await page.evaluate(() =>
         document
