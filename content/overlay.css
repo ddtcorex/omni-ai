@@ -250,7 +250,7 @@
   place-items: center;
   border: none;
   border-radius: 7px;
-  background: var(--omni-accent-gradient);
+  background: var(--omni-button-gradient);
   color: #fff;
   box-shadow: var(--omni-accent-glow);
   cursor: pointer;
@@ -332,7 +332,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--omni-accent-gradient);
+  background: var(--omni-button-gradient);
   border: none;
   border-radius: 50%;
   box-shadow: var(--omni-accent-glow);
@@ -607,7 +607,7 @@
 }
 
 .omni-ai-menu-item.omni-ai-tone-pill.is-active {
-  background: var(--omni-accent-gradient);
+  background: var(--omni-button-gradient);
   color: #fff;
   box-shadow: none;
   cursor: default;
@@ -659,7 +659,7 @@
 }
 
 .omni-ai-btn.is-primary {
-  background: var(--omni-accent-gradient);
+  background: var(--omni-button-gradient);
   color: #fff;
   font-weight: 500;
   box-shadow: var(--omni-accent-glow);
@@ -667,7 +667,7 @@
 
 .omni-ai-btn.is-primary:hover,
 .omni-ai-btn.is-primary:focus-visible {
-  background: var(--omni-accent-gradient);
+  background: var(--omni-button-gradient);
   filter: brightness(1.08);
 }
 
@@ -722,7 +722,7 @@
 }
 
 .omni-ai-toggle.is-on {
-  color: var(--omni-accent);
+  color: var(--omni-accent-text);
 }
 
 .omni-ai-toggle.is-on .omni-ai-switch {
