@@ -1407,3 +1407,91 @@ test("Back from an ask opened in an editor returns to the editor menu", async ()
     server.close();
   }
 });
+
+// The toolbar belongs to the selection: it stays while the card is open, and
+// once the card closes it follows the selection again.
+
+test("Replace removes the toolbar, and the spot where it was leaves the field alone", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: () => "PLANET" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    const spot = await (await shadowQuery(page, ".omni-ai-quick-btn")).asElement().boundingBox();
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "PLANET");
+    // Keyboard activation: no mouseup follows, so nothing but Replace itself
+    // can deal with the toolbar.
+    await page.evaluate(() =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector("#omniAiReplace")
+        .focus(),
+    );
+    await page.keyboard.press("Enter");
+    const replaced = "Hello PLANET, this is a test.";
+    await expect.poll(() => page.locator("#target").inputValue()).toBe(replaced);
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    await expect.poll(() => shadowCount(page, ".omni-ai-quick-btn"), { timeout: 2000 }).toBe(0);
+
+    // A leftover toolbar would open a card for the old text here.
+    await page.mouse.click(spot.x + spot.width / 2, spot.y + spot.height / 2);
+    await page.waitForTimeout(600);
+    expect(await shadowCount(page, ".omni-ai-overlay")).toBe(0);
+    expect(await page.locator("#target").inputValue()).toBe(replaced);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("closing the card keeps the toolbar of a selection that did not change", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    const before = await shadowQuery(page, ".omni-ai-quick-btn");
+    await page.keyboard.press("Escape");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    await page.waitForTimeout(300);
+    expect(await shadowCount(page, ".omni-ai-quick-btn")).toBe(1);
+    expect(await before.evaluate((el) => el.isConnected)).toBe(true);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a keyboard selection change while the card is open closes it and the toolbar follows", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const stub = await stubGeminiCounted(context, { reply: () => "DONE" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    // Focus is still in the textarea: Shift+ArrowRight extends "world" to "world,".
+    await page.keyboard.press("Shift+ArrowRight");
+    expect(
+      await page.evaluate(() => {
+        const el = /** @type {HTMLTextAreaElement} */ (document.getElementById("target"));
+        return el.value.substring(el.selectionStart, el.selectionEnd);
+      }),
+    ).toBe("world,");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    await expect.poll(() => shadowCount(page, ".omni-ai-quick-btn"), { timeout: 2000 }).toBe(1);
+
+    // The toolbar now carries the new selection, not the old one.
+    await clickShadow(page, ".omni-ai-quick-btn");
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "DONE");
+    expect(stub.bodies.at(-1)).toContain("world,");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
