@@ -578,20 +578,34 @@ test("German labels are never truncated in the menu", async () => {
     await openEditorMenu(page, port);
     await page.waitForTimeout(600);
 
-    const items = await page.evaluate(() =>
-      Array.from(
-        document
-          .getElementById("omni-ai-shadow-host")
-          .shadowRoot.querySelectorAll("button.omni-ai-menu-item[data-action]"),
-      ).map((el) => ({
-        text: el.textContent.trim(),
-        scrollWidth: el.scrollWidth,
-        clientWidth: el.clientWidth,
-      })),
-    );
+    // A pill is nowrap with no max-width, so its own scrollWidth never
+    // exceeds its clientWidth; the real failure is a pill wider than the
+    // card, clipped by the card's overflow. Measure each pill against the
+    // pill container's content box and the card's inner width.
+    const { items, cardInner, contentRight } = await page.evaluate(() => {
+      const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+      const card = root.querySelector(".omni-ai-overlay");
+      const grid = root.querySelector(".omni-ai-menu-grid");
+      const gridRect = grid.getBoundingClientRect();
+      const gridStyle = getComputedStyle(grid);
+      return {
+        cardInner: card.clientWidth,
+        contentRight: gridRect.right - parseFloat(gridStyle.paddingRight),
+        items: Array.from(root.querySelectorAll("button.omni-ai-menu-item[data-action]")).map(
+          (el) => ({
+            text: el.textContent.trim(),
+            right: el.getBoundingClientRect().right,
+            offsetWidth: el.offsetWidth,
+          }),
+        ),
+      };
+    });
     expect(items.map((i) => i.text)).toContain("Grammatik prüfen");
     expect(items.map((i) => i.text)).toContain("Emojis hinzufügen");
-    for (const item of items) expect(item.scrollWidth).toBeLessThanOrEqual(item.clientWidth);
+    for (const item of items) {
+      expect(item.right).toBeLessThanOrEqual(contentRight + 0.5);
+      expect(item.offsetWidth).toBeLessThanOrEqual(cardInner);
+    }
   } finally {
     await context.close();
     server.close();
