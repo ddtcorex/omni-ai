@@ -428,9 +428,9 @@ test("the auto Smart Translation card re-calls the AI after a language-setting c
     await expect(translateCard).toContainText("FIRST-TRANSLATION-EN", { timeout: 5000 });
 
     // Close the menu, change the language settings, then re-select the
-    // EXACT same text again. handleSelectionChange() no-ops while
-    // isOverlayVisible is true, so the overlay must actually be dismissed
-    // (there's no Escape-key handler) before a fresh selection registers.
+    // EXACT same text again. handleSelectionChange() no-ops while the card
+    // is open (isCardOpen()), so it must actually be dismissed before a
+    // fresh selection registers.
     await page.locator("#omniAiClose").click();
     await sw.evaluate(async () => {
       await chrome.storage.sync.set({ primaryLanguage: "en", defaultLanguage: "vi" });

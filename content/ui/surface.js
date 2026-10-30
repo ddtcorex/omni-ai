@@ -32,6 +32,8 @@
 
     function renderInto(state, data) {
       const render = renderers[state];
+      // Renderers start from an empty inner, never from the previous state.
+      inner.replaceChildren();
       if (typeof render === "function") render(inner, data, surface);
       place(card);
     }
@@ -78,6 +80,8 @@
     }
 
     async function back() {
+      // No card, or it is fading out: a late Back click must not revive it.
+      if (!card || closing) return;
       token += 1;
       if (history.length === 0) {
         if (typeof backFallback === "function") backFallback();

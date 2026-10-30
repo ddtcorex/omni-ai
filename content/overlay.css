@@ -76,6 +76,15 @@
   overscroll-behavior: contain;
 }
 
+/* The surface's content wrapper (content/ui/surface.js): carries the card's
+   flex column so header, content and footer lay out as direct children did. */
+.omni-ai-surface-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* Header */
 .omni-ai-overlay-header {
   display: flex;

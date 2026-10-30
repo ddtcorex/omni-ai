@@ -166,6 +166,44 @@ describe("overlay surface", () => {
     expect(surface.isOpen()).toBe(true);
   });
 
+  test("back during a close animation does nothing", async () => {
+    manualExit = true;
+    await surface.open("menu", { m: 1 });
+    await surface.to("result");
+    const closing = surface.close();
+    const morphCalls = global.OMNI_MOTION.morph.mock.calls.length;
+    await surface.back();
+    expect(global.OMNI_MOTION.morph.mock.calls.length).toBe(morphCalls);
+    expect(backFallback).not.toHaveBeenCalled();
+    expect(surface.card().textContent).toBe("result");
+    exitResolvers[0](true);
+    await closing;
+    expect(surface.card()).toBeNull();
+  });
+
+  test("back with no card does nothing", async () => {
+    await surface.back();
+    expect(backFallback).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  test("renderers always receive an empty inner", async () => {
+    const seen = [];
+    renderers.result = jest.fn((inner) => {
+      seen.push(inner.childNodes.length);
+      inner.appendChild(document.createElement("span"));
+    });
+    renderers.menu = jest.fn((inner) => {
+      seen.push(inner.childNodes.length);
+      inner.appendChild(document.createElement("b"));
+    });
+    await surface.open("menu");
+    await surface.to("result");
+    await surface.back();
+    expect(seen).toEqual([0, 0, 0]);
+    expect(surface.card().querySelector(".omni-ai-surface-inner").childNodes).toHaveLength(1);
+  });
+
   test("Escape inside the card closes it", async () => {
     await surface.open("menu");
     surface.card().dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
