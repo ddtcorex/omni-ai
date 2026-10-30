@@ -101,10 +101,14 @@
     return anim;
   }
 
-  function settled(anim) {
+  /**
+   * Resolve true when `anim` finished and is still the current animation on
+   * `el`; false when it was cancelled or superseded by a newer one.
+   */
+  function completed(el, anim) {
     return Promise.resolve(anim.finished).then(
-      () => undefined,
-      () => undefined,
+      () => running.get(el) === anim,
+      () => false,
     );
   }
 
@@ -134,9 +138,11 @@
   }
 
   /**
-   * Ease out to scale 0.96 and opacity 0. Resolves once the animation ends.
+   * Ease out to scale 0.96 and opacity 0. Resolves once the animation ends:
+   * true when it completed (safe to remove the element), false when a newer
+   * animation on the same element superseded it.
    * @param {Element} el
-   * @returns {Promise<void>}
+   * @returns {Promise<boolean>}
    */
   function exit(el) {
     const reduced = prefersReducedMotion();
@@ -154,22 +160,22 @@
         fill: "forwards",
       },
     );
-    return settled(anim);
+    return completed(el, anim);
   }
 
   function fade(el, from, to, duration) {
-    return settled(
-      play(el, [{ opacity: from }, { opacity: to }], {
-        duration,
-        easing: TOKENS.easeOut,
-        fill: "both",
-      }),
-    );
+    const anim = play(el, [{ opacity: from }, { opacity: to }], {
+      duration,
+      easing: TOKENS.easeOut,
+      fill: "both",
+    });
+    return completed(el, anim);
   }
 
   /**
    * Fade `inner` out, run `render`, animate `container` height from its old
-   * to its new measured height, fade `inner` back in.
+   * to its new measured height, fade `inner` back in. A morph superseded by a
+   * newer animation on `inner` stops without calling `render`.
    * @param {HTMLElement} container
    * @param {HTMLElement} inner
    * @param {() => void} render
@@ -180,13 +186,14 @@
     const outMs = reduced ? TOKENS.reducedOutMs : TOKENS.swapOutMs;
     const inMs = reduced ? TOKENS.reducedInMs : TOKENS.swapInMs;
     const oldHeight = container.offsetHeight;
-    await fade(inner, 1, 0, outMs);
+    if (!(await fade(inner, 1, 0, outMs))) return;
     render();
     const newHeight = container.offsetHeight;
     const tasks = [];
     if (!reduced && oldHeight !== newHeight) {
       tasks.push(
-        settled(
+        completed(
+          container,
           play(container, [{ height: `${oldHeight}px` }, { height: `${newHeight}px` }], {
             duration: TOKENS.morphMs,
             easing: springEasing(),
@@ -199,7 +206,8 @@
   }
 
   /**
-   * Small blur swap (Copy -> Copied): fade out, render, fade in.
+   * Small blur swap (Copy -> Copied): fade out, render, fade in. A swap
+   * superseded by a newer animation on `el` stops without rendering.
    * @param {HTMLElement} el
    * @param {() => void} render
    * @returns {Promise<void>}
@@ -207,35 +215,33 @@
   async function swap(el, render) {
     const reduced = prefersReducedMotion();
     const blur = (px) => (reduced ? {} : { filter: `blur(${px}px)` });
-    await settled(
-      play(
-        el,
-        [
-          { opacity: 1, ...blur(0) },
-          { opacity: 0, ...blur(3) },
-        ],
-        {
-          duration: reduced ? TOKENS.reducedOutMs : TOKENS.swapOutMs,
-          easing: TOKENS.easeOut,
-          fill: "both",
-        },
-      ),
+    const out = play(
+      el,
+      [
+        { opacity: 1, ...blur(0) },
+        { opacity: 0, ...blur(3) },
+      ],
+      {
+        duration: reduced ? TOKENS.reducedOutMs : TOKENS.swapOutMs,
+        easing: TOKENS.easeOut,
+        fill: "both",
+      },
     );
+    if (!(await completed(el, out))) return;
     render();
-    await settled(
-      play(
-        el,
-        [
-          { opacity: 0, ...blur(3) },
-          { opacity: 1, ...blur(0) },
-        ],
-        {
-          duration: reduced ? TOKENS.reducedInMs : TOKENS.swapInMs,
-          easing: TOKENS.easeOut,
-          fill: "both",
-        },
-      ),
+    play(
+      el,
+      [
+        { opacity: 0, ...blur(3) },
+        { opacity: 1, ...blur(0) },
+      ],
+      {
+        duration: reduced ? TOKENS.reducedInMs : TOKENS.swapInMs,
+        easing: TOKENS.easeOut,
+        fill: "both",
+      },
     );
+    await completed(el, running.get(el));
   }
 
   /**
@@ -264,8 +270,21 @@
   }
 
   function animateWidth(el, from, to) {
+    if (prefersReducedMotion()) {
+      // Reduced motion is opacity only: set the end state, fade instead.
+      el.style.width = to === 0 ? "0px" : "";
+      return play(
+        el,
+        to === 0 ? [{ opacity: 1 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 1 }],
+        {
+          duration: to === 0 ? TOKENS.reducedOutMs : TOKENS.reducedInMs,
+          easing: TOKENS.easeOut,
+          fill: "both",
+        },
+      );
+    }
     return play(el, [{ width: `${from}px` }, { width: `${to}px` }], {
-      duration: prefersReducedMotion() ? TOKENS.reducedInMs : TOKENS.morphMs,
+      duration: TOKENS.morphMs,
       easing: springEasing(),
       fill: "both",
     });
@@ -281,9 +300,19 @@
     return animateWidth(el, el.scrollWidth, 0);
   }
 
+  /**
+   * Re-read the --omni-motion-* tokens from `el` (for example the shadow
+   * host, where the custom properties live) into TOKENS, in place.
+   * @param {Element} el
+   */
+  function refreshTokens(el) {
+    Object.assign(TOKENS, readTokens(el));
+  }
+
   root.OMNI_MOTION = {
     TOKENS,
     readTokens,
+    refreshTokens,
     prefersReducedMotion,
     enter,
     exit,

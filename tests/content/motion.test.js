@@ -105,12 +105,12 @@ describe("motion helpers", () => {
     expect(calls[0].cancel).toHaveBeenCalled();
   });
 
-  test("exit still resolves when its animation is cancelled", async () => {
+  test("exit resolves false when its animation is cancelled", async () => {
     Element.prototype.animate = jest.fn(() => ({
       finished: Promise.reject(new Error("AbortError")),
       cancel: jest.fn(),
     }));
-    await expect(motion.exit(document.createElement("div"))).resolves.toBeUndefined();
+    await expect(motion.exit(document.createElement("div"))).resolves.toBe(false);
   });
 
   test("a second enter on the same element cancels the first", () => {
@@ -186,5 +186,112 @@ describe("motion helpers", () => {
     expect(tokens.easeOut).toBe("ease-out");
     expect(tokens.morphMs).toBe(380);
     el.remove();
+  });
+
+  describe("reduced motion", () => {
+    beforeEach(() => {
+      reduced = true;
+    });
+
+    test("revealWidth and collapseWidth never animate width", () => {
+      const el = document.createElement("div");
+      Object.defineProperty(el, "scrollWidth", { value: 44 });
+      motion.revealWidth(el);
+      motion.collapseWidth(el);
+      expect(calls.length).toBeGreaterThan(0);
+      calls.forEach((c) => {
+        c.keyframes.forEach((kf) => {
+          expect(kf).not.toHaveProperty("width");
+          expect(kf).not.toHaveProperty("transform");
+        });
+      });
+      expect(el.style.width).toBe("0px");
+      motion.revealWidth(el);
+      expect(el.style.width).toBe("");
+    });
+
+    test("morph does not animate height", async () => {
+      const container = document.createElement("div");
+      const inner = document.createElement("div");
+      const heights = [100, 180];
+      Object.defineProperty(container, "offsetHeight", { get: () => heights.shift() });
+      await motion.morph(container, inner, jest.fn());
+      expect(calls.some((c) => c.el === container)).toBe(false);
+      calls.forEach((c) => c.keyframes.forEach((kf) => expect(kf).not.toHaveProperty("height")));
+    });
+
+    test("stagger uses opacity only, without transform or delay", () => {
+      motion.stagger([document.createElement("i"), document.createElement("i")]);
+      calls.forEach((c) => {
+        c.keyframes.forEach((kf) => expect(kf).not.toHaveProperty("transform"));
+        expect(c.options.delay).toBe(0);
+      });
+    });
+  });
+
+  describe("supersession", () => {
+    function cancellable() {
+      Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+        let reject;
+        const finished = new Promise((_, r) => {
+          reject = r;
+        });
+        const anim = {
+          finished,
+          keyframes,
+          options,
+          el: this,
+          cancel: jest.fn(() => reject(new Error("AbortError"))),
+        };
+        calls.push(anim);
+        return anim;
+      });
+    }
+
+    test("a superseded swap does not render", async () => {
+      cancellable();
+      const el = document.createElement("div");
+      const render = jest.fn();
+      const p = motion.swap(el, render);
+      motion.enter(el);
+      await p;
+      expect(render).not.toHaveBeenCalled();
+      expect(calls).toHaveLength(2);
+    });
+
+    test("a superseded morph does not render or fade in", async () => {
+      cancellable();
+      const container = document.createElement("div");
+      const inner = document.createElement("div");
+      const render = jest.fn();
+      const p = motion.morph(container, inner, render);
+      motion.enter(inner);
+      await p;
+      expect(render).not.toHaveBeenCalled();
+      expect(calls).toHaveLength(2);
+    });
+
+    test("exit resolves true when it completes", async () => {
+      await expect(motion.exit(document.createElement("div"))).resolves.toBe(true);
+    });
+
+    test("exit resolves false when a newer enter cancels it", async () => {
+      cancellable();
+      const el = document.createElement("div");
+      const p = motion.exit(el);
+      motion.enter(el);
+      await expect(p).resolves.toBe(false);
+    });
+  });
+
+  test("refreshTokens re-reads tokens from the element into TOKENS in place", () => {
+    const host = document.createElement("div");
+    document.body.appendChild(host);
+    host.style.setProperty("--omni-motion-enter", "600ms");
+    const ref = motion.TOKENS;
+    motion.refreshTokens(host);
+    expect(motion.TOKENS).toBe(ref);
+    expect(ref.enterMs).toBe(600);
+    host.remove();
   });
 });
