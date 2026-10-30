@@ -532,6 +532,54 @@ test("the toolbar is 24px tall and the ✦ button 20px", async () => {
   }
 });
 
+test("the ✦ button draws a filled white four-point sparkle", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, []);
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
+    await page.waitForTimeout(600); // let the entrance spring settle
+
+    const icon = await page.locator(".omni-ai-quick-btn svg").evaluate((svg) => {
+      const path = svg.querySelectorAll("path");
+      const cs = getComputedStyle(path[0]);
+      const box = svg.getBoundingClientRect();
+      return {
+        paths: path.length,
+        fill: cs.fill,
+        stroke: cs.stroke,
+        width: box.width,
+        height: box.height,
+        // A four-point sparkle has four tips: the path's extreme points sit
+        // on the middle of each edge of its box.
+        tips: (() => {
+          const b = path[0].getBBox();
+          const len = path[0].getTotalLength();
+          const pts = Array.from({ length: 200 }, (_, i) =>
+            path[0].getPointAtLength((len * i) / 200),
+          );
+          const near = (x, y) => pts.some((p) => Math.hypot(p.x - x, p.y - y) < b.width * 0.06);
+          const cx = b.x + b.width / 2;
+          const cy = b.y + b.height / 2;
+          return [near(cx, b.y), near(b.x + b.width, cy), near(cx, b.y + b.height), near(b.x, cy)];
+        })(),
+      };
+    });
+    expect(icon.paths).toBe(1);
+    expect(icon.fill).toBe("rgb(255, 255, 255)");
+    expect(icon.stroke).toBe("none");
+    expect(icon.tips).toEqual([true, true, true, true]);
+    expect(icon.width).toBeGreaterThanOrEqual(9);
+    expect(icon.width).toBeLessThanOrEqual(12);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("quick action icons render at 14px", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
