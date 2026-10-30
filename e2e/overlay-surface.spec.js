@@ -713,7 +713,7 @@ test("dark menu pills use the prototype glass values and pass AA contrast", asyn
     expect(s.cardBg).toBe("rgba(30, 30, 40, 0.84)");
     expect(s.cardBorder).toBe("rgba(255, 255, 255, 0.08)");
     expect(s.secondary.bg).toBe("rgba(255, 255, 255, 0.07)");
-    expect(s.secondary.color).toBe("rgb(179, 182, 196)");
+    expect(s.secondary.color).toBe("rgb(194, 197, 210)");
     expect(s.primary.bg).toBe("rgba(255, 255, 255, 0.12)");
     expect(s.primary.color).toBe("rgb(241, 242, 246)");
     expect(s.primary.ring).toContain("rgba(255, 255, 255, 0.06) 0px 0px 0px 1px");
@@ -731,6 +731,86 @@ test("dark menu pills use the prototype glass values and pass AA contrast", asyn
     server.close();
   }
 });
+
+// WCAG AA (4.5:1) for the small overlay text and the white-on-gradient
+// buttons, in both themes. Translucent glass is composited over a white page
+// and a near-black page, the two extremes a host page can put behind it.
+// The dark theme's tertiary text (placeholder, Show changes) is only held to
+// AA on a dark page: a dark card over a white page is the one combination
+// where the tertiary tier cannot stay visibly below the secondary tier.
+for (const theme of ["light", "dark"]) {
+  test(`${theme} overlay text and gradient buttons reach WCAG AA`, async () => {
+    const { server, port } = await serveFixtureHtml(FIXTURE);
+    const { context, sw } = await launchWithExtension();
+    try {
+      await seedConfig(sw);
+      await sw.evaluate((t) => chrome.storage.sync.set({ omni_ai_theme: t }), theme);
+      await stubGemini(context, "WORLD-IMPROVED");
+      const page = await context.newPage();
+      await openEditorMenu(page, port);
+      await page.waitForTimeout(600); // let the pill stagger settle
+
+      const grab = () =>
+        page.evaluate(() => {
+          const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+          const cs = (sel, pseudo) => {
+            const el = root.querySelector(sel);
+            return el ? getComputedStyle(el, pseudo) : null;
+          };
+          const stops = (sel) => {
+            const el = cs(sel);
+            return el ? el.backgroundImage.match(/rgba?\([^)]+\)/g) : null;
+          };
+          return {
+            card: cs(".omni-ai-overlay")?.backgroundColor,
+            pillBg: cs('.omni-ai-menu-item[data-action="explain"]')?.backgroundColor,
+            pillText: cs('.omni-ai-menu-item[data-action="explain"]')?.color,
+            askBg: cs(".omni-ai-ask")?.backgroundColor,
+            placeholder: cs(".omni-ai-input", "::placeholder")?.color,
+            send: stops("#omniAiInputBtn"),
+            toggleText: cs(".omni-ai-toggle")?.color,
+            replace: stops(".omni-ai-btn.is-primary"),
+          };
+        });
+      const menu = await grab();
+      await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+      await waitResultText(page, "IMPROVED");
+      await waitShadow(page, ".omni-ai-toggle");
+      const result = await grab();
+
+      const WHITE = [255, 255, 255];
+      const pages = { white: [255, 255, 255], dark: [22, 23, 28] };
+      const ratios = {};
+      const check = (name, fg, bg) => {
+        ratios[name] = contrast(fg, bg);
+        expect(ratios[name], name).toBeGreaterThanOrEqual(4.5);
+      };
+      for (const [pn, pg] of Object.entries(pages)) {
+        const card = composite([{ rgb: pg, a: 1 }, parseRgba(menu.card)]);
+        const onCard = (c) => composite([{ rgb: card, a: 1 }, parseRgba(c)]);
+        check(`secondary pill on ${pn}`, parseRgba(menu.pillText).rgb, onCard(menu.pillBg));
+        if (theme === "light" || pn === "dark") {
+          check(`placeholder on ${pn}`, parseRgba(menu.placeholder).rgb, onCard(menu.askBg));
+          const rc = composite([{ rgb: pg, a: 1 }, parseRgba(result.card)]);
+          check(`Show changes on ${pn}`, parseRgba(result.toggleText).rgb, rc);
+        }
+      }
+      expect(menu.send.length).toBe(2);
+      expect(result.replace.length).toBe(2);
+      menu.send.forEach((c, i) => check(`send gradient stop ${i}`, WHITE, parseRgba(c).rgb));
+      result.replace.forEach((c, i) =>
+        check(`Replace gradient stop ${i}`, WHITE, parseRgba(c).rgb),
+      );
+      console.log(
+        theme,
+        JSON.stringify(ratios, (k, v) => (typeof v === "number" ? +v.toFixed(2) : v)),
+      );
+    } finally {
+      await context.close();
+      server.close();
+    }
+  });
+}
 
 test("German labels are never truncated in the menu", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
