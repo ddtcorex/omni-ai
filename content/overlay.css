@@ -98,23 +98,6 @@
   box-sizing: border-box;
 }
 
-.omni-ai-brand {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  font-size: var(--omni-font-sm);
-  color: var(--omni-text-secondary);
-  letter-spacing: -0.01em;
-}
-
-.omni-ai-brand svg,
-.omni-ai-logo-img {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-}
-
 .omni-ai-close-btn {
   width: 24px;
   height: 24px;
@@ -149,6 +132,11 @@
   flex-wrap: wrap;
   gap: 4px;
   padding: 4px 6px 6px;
+}
+
+/* The editor menu opens straight on the pills, with no header above. */
+.omni-ai-menu-grid:first-child {
+  padding-top: 6px;
 }
 
 .omni-ai-menu-item {

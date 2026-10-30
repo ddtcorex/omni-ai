@@ -119,6 +119,34 @@ test("menu, loading and result reuse one overlay element", async () => {
   }
 });
 
+test("the editor menu has no header and closes on a click outside", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+
+    // Only the action pills and the Ask box, as in the prototype.
+    const children = await page.evaluate(() =>
+      Array.from(
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector(".omni-ai-surface-inner").children,
+      ).map((el) => el.className),
+    );
+    expect(children).toEqual(["omni-ai-menu-grid", "omni-ai-input-wrapper"]);
+    expect(await shadowCount(page, ".omni-ai-overlay-header")).toBe(0);
+    expect(await shadowCount(page, "#omniAiClose")).toBe(0);
+
+    await page.mouse.click(600, 500);
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("closing waits for the exit animation", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
@@ -134,7 +162,8 @@ test("closing waits for the exit animation", async () => {
     const connectedRightAfterClick = await page.evaluate(() => {
       const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
       const el = root.querySelector(".omni-ai-overlay");
-      /** @type {HTMLElement} */ (root.querySelector("#omniAiClose")).click();
+      // The editor menu has no header: Escape closes it.
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
       return el.isConnected;
     });
     expect(connectedRightAfterClick).toBe(true);
