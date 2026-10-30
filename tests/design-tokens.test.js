@@ -21,6 +21,10 @@ describe("lib/design-tokens.css", () => {
     "--omni-spacing-2xl",
     "--omni-font-family",
     "--omni-transition-fast",
+    "--omni-motion-enter",
+    "--omni-motion-exit",
+    "--omni-motion-spring",
+    "--omni-motion-ease-out",
   ];
 
   test.each(CRITICAL_TOKENS)("defines %s", (token) => {
