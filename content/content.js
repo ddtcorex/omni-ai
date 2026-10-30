@@ -259,8 +259,22 @@ function applyUiHostStyles(host) {
   host.style.setProperty("font-size", "0", "important");
 }
 
+// An iframe-mode rich text editor (TinyMCE classic, CKEditor 4, ...) makes
+// this frame's own <body> contenteditable and saves body.innerHTML. A host
+// mounted there is saved along with the content, and once the overlay has
+// focus the host itself becomes the replace target, so the result lands at
+// the end of the editor instead of over the selection. Mount on <html> then.
+// Re-checked on every call: editors often turn the body editable only after
+// this content script has already mounted the host.
+function getUiMountPoint() {
+  const body = document.body;
+  return body && !body.isContentEditable ? body : document.documentElement;
+}
+
 function ensureUiRoot() {
+  const mountPoint = getUiMountPoint();
   if (omniUiRoot && omniUiHost?.isConnected) {
+    if (omniUiHost.parentNode !== mountPoint) mountPoint.appendChild(omniUiHost);
     return omniUiRoot;
   }
 
@@ -268,9 +282,8 @@ function ensureUiRoot() {
   if (!host) {
     host = document.createElement("div");
     host.id = OMNI_UI_HOST_ID;
-    const mountPoint = document.body || document.documentElement;
-    mountPoint.appendChild(host);
   }
+  if (host.parentNode !== mountPoint) mountPoint.appendChild(host);
 
   applyUiHostStyles(host);
   omniUiHost = host;
