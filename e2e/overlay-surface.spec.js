@@ -119,6 +119,52 @@ test("menu, loading and result reuse one overlay element", async () => {
   }
 });
 
+test("the send button is a filled arrow like the sparkle and has an accessible name", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+
+    const s = await page.evaluate(() => {
+      const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+      const btn = root.querySelector("#omniAiInputBtn");
+      const svg = btn.querySelector("svg");
+      const paths = svg.querySelectorAll("path");
+      const sparkle = root.querySelector(".omni-ai-quick-btn svg");
+      return {
+        cls: btn.className,
+        name: btn.getAttribute("aria-label"),
+        pathCount: paths.length,
+        childCount: svg.children.length,
+        fill: svg.getAttribute("fill"),
+        stroke: svg.getAttribute("stroke"),
+        hidden: svg.getAttribute("aria-hidden"),
+        sparkleFill: sparkle && sparkle.getAttribute("fill"),
+        sparkleStroke: sparkle && sparkle.getAttribute("stroke"),
+        csFill: getComputedStyle(svg.firstElementChild).fill,
+        csStroke: getComputedStyle(svg.firstElementChild).stroke,
+        btnColor: getComputedStyle(btn).color,
+      };
+    });
+    expect(s.cls).toContain("omni-ai-send-btn");
+    expect(s.fill).toBe("currentColor");
+    expect(s.stroke).toBe("none");
+    expect(s.fill).toBe(s.sparkleFill);
+    expect(s.stroke).toBe(s.sparkleStroke);
+    expect(s.hidden).toBe("true");
+    expect(s.pathCount).toBe(1);
+    expect(s.childCount).toBe(1);
+    expect(s.csFill).toBe(s.btnColor);
+    expect(s.csStroke).toBe("none");
+    expect(s.name).toBe("Send");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
 test("the editor menu has no header and closes on a click outside", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
