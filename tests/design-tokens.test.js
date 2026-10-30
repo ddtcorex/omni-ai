@@ -25,10 +25,41 @@ describe("lib/design-tokens.css", () => {
     "--omni-motion-exit",
     "--omni-motion-spring",
     "--omni-motion-ease-out",
+    "--omni-glass-surface",
+    "--omni-glass-border",
+    "--omni-glass-ring",
+    "--omni-glass-shadow",
+    "--omni-glass-filter",
+    "--omni-pill-bg",
+    "--omni-pill-top",
+    "--omni-pill-hover",
+    "--omni-motion-press",
   ];
 
   test.each(CRITICAL_TOKENS)("defines %s", (token) => {
     expect(css).toMatch(new RegExp(`${token}\\s*:`));
+  });
+
+  // The refined glass look differs per theme: each themed glass token needs a
+  // light value in both light-mode blocks, or the overlay stays dark there.
+  test.each([
+    "--omni-glass-surface",
+    "--omni-glass-border",
+    "--omni-glass-ring",
+    "--omni-glass-shadow",
+    "--omni-glass-toolbar-shadow",
+    "--omni-pill-bg",
+    "--omni-pill-top",
+    "--omni-pill-hover",
+  ])("overrides %s in both light-mode blocks", (token) => {
+    for (const selector of [
+      /:root\.omni-ai-light-mode\s*\{([^}]*)\}/,
+      /:host\(\.omni-ai-light-mode\)\s*\{([^}]*)\}/,
+    ]) {
+      const block = css.match(selector);
+      expect(block).not.toBeNull();
+      expect(block[1]).toMatch(new RegExp(`${token}\\s*:`));
+    }
   });
 
   test("defines light-mode overrides for both plain-document and shadow-DOM contexts", () => {

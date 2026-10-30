@@ -517,3 +517,83 @@ test("a long page selection whose start is scrolled away still opens the card ab
     server.close();
   }
 });
+
+test("menu actions wrap as pills, primary four first", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.waitForTimeout(600); // let the pill stagger settle
+
+    const items = await page.evaluate(() =>
+      Array.from(
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelectorAll("button.omni-ai-menu-item[data-action]"),
+      ).map((el) => ({
+        action: el.dataset.action,
+        primary: el.classList.contains("is-primary"),
+        whiteSpace: getComputedStyle(el).whiteSpace,
+      })),
+    );
+    expect(items.map((i) => i.action)).toEqual([
+      "rephrase",
+      "grammar",
+      "tone",
+      "summarize",
+      "explain",
+      "reply",
+      "emoji",
+      "translate_primary",
+      "translate_default",
+    ]);
+    expect(items.filter((i) => i.primary).map((i) => i.action)).toEqual([
+      "rephrase",
+      "grammar",
+      "tone",
+      "summarize",
+    ]);
+    for (const item of items) expect(item.whiteSpace).toBe("nowrap");
+    // The Ask box follows the pills.
+    expect(await shadowCount(page, "#omniAiInlineInput")).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("German labels are never truncated in the menu", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // The overlay's own i18n follows the Primary Language setting (see
+    // quick-action-modal.spec.js "overlay language updates live").
+    await sw.evaluate(async () => {
+      await chrome.storage.sync.set({ primaryLanguage: "de", defaultLanguage: "en" });
+    });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.waitForTimeout(600);
+
+    const items = await page.evaluate(() =>
+      Array.from(
+        document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelectorAll("button.omni-ai-menu-item[data-action]"),
+      ).map((el) => ({
+        text: el.textContent.trim(),
+        scrollWidth: el.scrollWidth,
+        clientWidth: el.clientWidth,
+      })),
+    );
+    expect(items.map((i) => i.text)).toContain("Grammatik prüfen");
+    expect(items.map((i) => i.text)).toContain("Emojis hinzufügen");
+    for (const item of items) expect(item.scrollWidth).toBeLessThanOrEqual(item.clientWidth);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

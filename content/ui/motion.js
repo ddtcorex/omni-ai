@@ -269,7 +269,29 @@
     });
   }
 
-  function animateWidth(el, from, to) {
+  // Pin animations are tracked apart from `running`, so moving a pin never
+  // cancels its own enter or exit animation.
+  const pinned = new WeakMap();
+
+  /**
+   * Translate `pin` in step with a width change of `from` -> `to`, so the
+   * far edge of a row that grows towards the pin's start stays where it is
+   * (a toolbar pill whose actions reveal to the left of its fixed button).
+   * The caller moves the pin's `left` by the full width up front.
+   */
+  function shiftPin(pin, from, to, options) {
+    const prev = pinned.get(pin);
+    if (prev) prev.cancel();
+    const full = Math.max(from, to);
+    const anim = pin.animate(
+      [{ translate: `${full - from}px 0px` }, { translate: `${full - to}px 0px` }],
+      options,
+    );
+    pinned.set(pin, anim);
+    return anim;
+  }
+
+  function animateWidth(el, from, to, opts) {
     if (prefersReducedMotion()) {
       // Reduced motion is opacity only: set the end state, fade instead.
       el.style.width = to === 0 ? "0px" : "";
@@ -283,21 +305,38 @@
         },
       );
     }
-    return play(el, [{ width: `${from}px` }, { width: `${to}px` }], {
-      duration: TOKENS.morphMs,
-      easing: springEasing(),
-      fill: "both",
-    });
+    // Collapsing eases out like every exit: a spring overshoot past 0 would
+    // clamp the width while a pin kept moving.
+    const easing = to === 0 ? TOKENS.easeOut : springEasing();
+    const options = { duration: TOKENS.morphMs, easing, fill: "both" };
+    if (opts && opts.pin) shiftPin(opts.pin, from, to, options);
+    return play(el, [{ width: `${from}px` }, { width: `${to}px` }], options);
   }
 
-  /** Animate width from 0 to the natural width. */
-  function revealWidth(el) {
-    return animateWidth(el, 0, el.scrollWidth);
+  /**
+   * Animate width from 0 to the natural width. `opts.pin` (optional) is
+   * translated in step, see shiftPin.
+   * @param {HTMLElement} el
+   * @param {{pin?: HTMLElement}} [opts]
+   */
+  function revealWidth(el, opts) {
+    return animateWidth(el, 0, el.scrollWidth, opts);
   }
 
-  /** Animate width from the natural width to 0. */
-  function collapseWidth(el) {
-    return animateWidth(el, el.scrollWidth, 0);
+  /**
+   * Animate width from the natural width to 0.
+   * @param {HTMLElement} el
+   * @param {{pin?: HTMLElement}} [opts]
+   */
+  function collapseWidth(el, opts) {
+    return animateWidth(el, el.scrollWidth, 0, opts);
+  }
+
+  /** Cancel the pin animation revealWidth/collapseWidth started on `pin`. */
+  function releasePin(pin) {
+    const anim = pinned.get(pin);
+    if (anim) anim.cancel();
+    pinned.delete(pin);
   }
 
   /**
@@ -321,5 +360,6 @@
     stagger,
     revealWidth,
     collapseWidth,
+    releasePin,
   };
 })(typeof self !== "undefined" ? self : this);

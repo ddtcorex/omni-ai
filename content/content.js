@@ -230,7 +230,13 @@ const LANGUAGE_FLAGS = {
   ur: "🇵🇰",
   vi: "🇻🇳",
 };
+// The toolbar pill holds the quick button and the flash-actions row; the row
+// is empty and zero wide until the hover reveal fills it.
+let quickToolbar = null;
 let flashActionsRow = null;
+// Bumped by every reveal and collapse, so a late settings read or a finished
+// collapse never acts on a newer reveal.
+let flashRevealGen = 0;
 let flashHoverTimer = null;
 let flashHideTimer = null;
 
@@ -465,10 +471,7 @@ function isEventInsideOmniUi(event) {
     return true;
   }
 
-  if (
-    quickActionBtn &&
-    (path.includes(quickActionBtn) || (target && quickActionBtn.contains(target)))
-  ) {
+  if (quickToolbar && (path.includes(quickToolbar) || (target && quickToolbar.contains(target)))) {
     return true;
   }
 
@@ -935,11 +938,24 @@ function presentQuickActionButton(
   setupQuickBtnEvents(initialText, inputElement);
 }
 
+// Toolbar pill: 24px tall with the 20px quick button inside (spec "Floating
+// toolbar"); at rest it is a 24px circle around the button.
+const TOOLBAR_SIZE = 24;
+// Border plus padding between the pill's edge and the quick button.
+const TOOLBAR_INSET = 2;
+
 async function createQuickBtn(rect, isInput, mousePosition = null) {
+  const toolbar = document.createElement("div");
+  toolbar.className = "omni-ai-toolbar";
   const button = document.createElement("button");
-  quickActionBtn = button;
   button.className = "omni-ai-quick-btn";
   button.innerHTML = ICONS.btnSparkle;
+  const row = document.createElement("div");
+  row.className = "omni-ai-flash-actions";
+  toolbar.append(button, row);
+  quickToolbar = toolbar;
+  quickActionBtn = button;
+  flashActionsRow = row;
 
   const uiReady = ensureUiRootReady();
 
@@ -951,8 +967,8 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
     left = mousePosition.x + window.scrollX + 8;
   } else if (isInput && rect) {
     // Input elements: bottom-right corner (inside the input)
-    top = rect.bottom + window.scrollY - 26;
-    left = rect.right + window.scrollX - 26;
+    top = rect.bottom + window.scrollY - TOOLBAR_SIZE - 4;
+    left = rect.right + window.scrollX - TOOLBAR_SIZE - 4;
   } else if (rect) {
     // Fallback to selection rect
     top = rect.bottom + window.scrollY + 5;
@@ -962,13 +978,12 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
     return;
   }
 
-  const BUTTON_SIZE = 22;
   if (typeof self !== "undefined" && /** @type {any} */ (self).OMNI_POSITIONING) {
     const clamped = /** @type {any} */ (self).OMNI_POSITIONING.clampToViewport(
       top,
       left,
-      BUTTON_SIZE,
-      BUTTON_SIZE,
+      TOOLBAR_SIZE,
+      TOOLBAR_SIZE,
       window.scrollX,
       window.scrollY,
       window.innerWidth,
@@ -978,12 +993,14 @@ async function createQuickBtn(rect, isInput, mousePosition = null) {
     left = clamped.left;
   }
 
-  button.style.top = `${top}px`;
-  button.style.left = `${left}px`;
+  toolbar.style.top = `${top}px`;
+  toolbar.style.left = `${left}px`;
+  toolbar.dataset.restLeft = String(left);
 
   await uiReady;
-  if (quickActionBtn !== button) return;
-  ensureUiRoot().appendChild(button);
+  if (quickToolbar !== toolbar) return;
+  ensureUiRoot().appendChild(toolbar);
+  /** @type {any} */ (self).OMNI_MOTION?.enter(toolbar, { from: 0.85 });
 }
 
 function resolveQuickBtnText(text, inputElement) {
@@ -997,12 +1014,16 @@ function resolveQuickBtnText(text, inputElement) {
 }
 
 function setupQuickBtnEvents(text = null, inputElement = null) {
-  quickActionBtn.addEventListener("mousedown", (e) => {
+  // Guard the whole pill (button and flash row): without both, a mouseup
+  // bubbles to document's selection-change listener (handleSelectionChange()),
+  // which recreates the toolbar at the click's mouse position -- looking like
+  // it "jumped".
+  quickToolbar.addEventListener("mousedown", (e) => {
     e.stopPropagation();
     e.preventDefault();
   });
 
-  quickActionBtn.addEventListener("mouseup", (e) => e.stopPropagation());
+  quickToolbar.addEventListener("mouseup", (e) => e.stopPropagation());
 
   quickActionBtn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -1022,7 +1043,8 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
     }, FLASH_ACTIONS_HOVER_DELAY);
   });
 
-  quickActionBtn.addEventListener("mouseleave", scheduleHideFlashActions);
+  quickToolbar.addEventListener("mouseenter", () => clearTimeout(flashHideTimer));
+  quickToolbar.addEventListener("mouseleave", scheduleHideFlashActions);
 }
 
 // Top edge of the selected text (the whole selection, not just its last
@@ -1048,9 +1070,21 @@ function selectionTop() {
 // above never slides over the selected text.
 function cardAnchorRect() {
   let base = null;
-  if (quickActionBtn && quickActionBtn.isConnected) {
-    const rect = quickActionBtn.getBoundingClientRect();
-    if (rect.width > 0 || rect.height > 0) base = rect;
+  if (quickToolbar && quickToolbar.isConnected) {
+    // The pill's height, the quick button's horizontal edges: the button
+    // never moves, while the pill's left edge does when actions reveal left.
+    const pill = quickToolbar.getBoundingClientRect();
+    const btn = quickActionBtn.getBoundingClientRect();
+    if (pill.width > 0 || pill.height > 0) {
+      const left = btn.left - TOOLBAR_INSET;
+      base = {
+        top: pill.top,
+        bottom: pill.bottom,
+        left,
+        right: left + TOOLBAR_SIZE,
+        width: TOOLBAR_SIZE,
+      };
+    }
   }
   if (!base) base = getSelectionRect();
   if (!base) return null;
@@ -1080,11 +1114,12 @@ function resetQuickButtonIcon() {
 
 function hideQuickActionButton() {
   clearTimeout(flashHoverTimer);
-  hideFlashActions();
-  if (quickActionBtn) {
-    quickActionBtn.remove();
-    quickActionBtn = null;
-  }
+  clearTimeout(flashHideTimer);
+  flashRevealGen += 1;
+  if (quickToolbar) quickToolbar.remove();
+  quickToolbar = null;
+  quickActionBtn = null;
+  flashActionsRow = null;
 }
 
 function scheduleHideFlashActions() {
@@ -1093,22 +1128,46 @@ function scheduleHideFlashActions() {
   flashHideTimer = setTimeout(hideFlashActions, FLASH_ACTIONS_HIDE_GRACE);
 }
 
+// Collapse the flash row back into the pill, then empty it. A reveal to the
+// left moved the pill's left edge; it goes back once the row is closed.
 function hideFlashActions() {
   clearTimeout(flashHideTimer);
-  if (flashActionsRow) {
-    flashActionsRow.remove();
-    flashActionsRow = null;
-  }
+  const toolbar = quickToolbar;
+  const row = flashActionsRow;
+  // Bumped first, so a reveal still waiting on its settings read is dropped
+  // when the pointer has already left.
+  const gen = ++flashRevealGen;
+  if (!toolbar || !row || !toolbar.classList.contains("is-revealed")) return;
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
+  const left = toolbar.classList.contains("reveal-left");
+  const reduced = motion.prefersReducedMotion();
+  toolbar.classList.remove("is-revealed");
+  const finish = () => {
+    if (gen !== flashRevealGen) return;
+    row.replaceChildren();
+    toolbar.classList.remove("reveal-left");
+    toolbar.style.left = `${toolbar.dataset.restLeft}px`;
+    motion.releasePin(toolbar);
+  };
+  const anim = motion.collapseWidth(row, left ? { pin: toolbar } : undefined);
+  // Reduced motion sets the width to 0 at once; the left edge must follow
+  // in the same frame or the button jumps.
+  if (reduced && left) toolbar.style.left = `${toolbar.dataset.restLeft}px`;
+  Promise.resolve(anim.finished).then(finish, () => {});
 }
 
 /**
- * Build and position the flash-actions row beside the floating icon, reading
- * the user's selection from Settings > Flash Actions. No-ops if there's no
- * text (mirrors PROCESSING_START's guard) or the icon disappeared while the
- * hover delay/settings read was in flight.
+ * Fill the toolbar's flash row with the user's selection from Settings >
+ * Flash Actions and widen the pill to show it, on the side that fits (the
+ * quick button never moves). No-ops if there's no text (mirrors
+ * PROCESSING_START's guard) or the toolbar disappeared while the hover
+ * delay/settings read was in flight.
  */
 async function showFlashActions(text, inputElement) {
-  if (!text || !quickActionBtn) return;
+  if (!text || !quickToolbar || quickToolbar.classList.contains("is-revealed")) return;
+  const toolbar = quickToolbar;
+  const row = flashActionsRow;
+  const gen = ++flashRevealGen;
 
   let selectedActions = DEFAULT_FLASH_ACTIONS;
   if (isContextValid()) {
@@ -1120,7 +1179,9 @@ async function showFlashActions(text, inputElement) {
       selectedActions = DEFAULT_FLASH_ACTIONS;
     }
   }
-  if (!quickActionBtn || !selectedActions.length) return;
+  await ensureUiRootReady();
+  if (gen !== flashRevealGen || quickToolbar !== toolbar || !toolbar.isConnected) return;
+  if (!selectedActions.length) return;
 
   selectedActions = selectedActions
     .slice()
@@ -1128,10 +1189,6 @@ async function showFlashActions(text, inputElement) {
       (a, b) => FLASH_ACTION_CANONICAL_ORDER.indexOf(a) - FLASH_ACTION_CANONICAL_ORDER.indexOf(b),
     );
 
-  hideFlashActions();
-
-  const row = document.createElement("div");
-  row.className = "omni-ai-flash-actions";
   row.innerHTML = selectedActions
     .map(
       (action) => `
@@ -1140,18 +1197,6 @@ async function showFlashActions(text, inputElement) {
       </button>`,
     )
     .join("");
-
-  // Match quickActionBtn's own mousedown/mouseup guards exactly: without
-  // both, a flash button's mouseup bubbles to document's selection-change
-  // listener (handleSelectionChange()), which recreates the floating icon
-  // at the click's mouse position -- looking like the icon "jumped".
-  row.addEventListener("mousedown", (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  });
-  row.addEventListener("mouseup", (e) => e.stopPropagation());
-  row.addEventListener("mouseenter", () => clearTimeout(flashHideTimer));
-  row.addEventListener("mouseleave", scheduleHideFlashActions);
   row.querySelectorAll("[data-flash-action]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -1160,42 +1205,22 @@ async function showFlashActions(text, inputElement) {
     });
   });
 
-  const ICON_SIZE = 22;
-  const GAP = 6;
-  const rowWidth = selectedActions.length * ICON_SIZE + (selectedActions.length - 1) * GAP;
-  const btnRect = quickActionBtn.getBoundingClientRect();
-  // Align centers, not tops: the icon's own rendered height doesn't always
-  // exactly equal its authored size (e.g. residual scale from its entrance
-  // animation), so matching tops alone can leave the row's true center a
-  // couple px off from the icon's -- aligning centers is robust to that.
-  let top = btnRect.top + btnRect.height / 2 - ICON_SIZE / 2 + window.scrollY;
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
   const positioning = /** @type {any} */ (self).OMNI_POSITIONING;
+  const restLeft = Number(toolbar.dataset.restLeft);
+  row.style.width = "";
+  const rowWidth = row.scrollWidth;
+  const btnRect = quickActionBtn.getBoundingClientRect();
   const side = positioning.revealSide(btnRect.right, rowWidth, window.innerWidth);
-  // The toolbar never moves: the row reveals to its left when it does not
-  // fit to its right.
-  let left =
-    side === "right"
-      ? btnRect.right + window.scrollX + GAP
-      : btnRect.left + window.scrollX - rowWidth - GAP;
-  if (left < window.scrollX) left = window.scrollX;
-  top = positioning.clampToViewport(
-    top,
-    left,
-    rowWidth,
-    ICON_SIZE,
-    window.scrollX,
-    window.scrollY,
-    window.innerWidth,
-    window.innerHeight,
-  ).top;
-
-  row.style.top = `${top}px`;
-  row.style.left = `${left}px`;
-
-  await ensureUiRootReady();
-  if (!quickActionBtn) return;
-  ensureUiRoot().appendChild(row);
-  flashActionsRow = row;
+  // The quick button never moves: a row that does not fit to its right
+  // reveals to its left, the pill's left edge moves out by the row width and
+  // a pin translate keeps the button in place while the width grows.
+  const toLeft = side === "left";
+  toolbar.classList.toggle("reveal-left", toLeft);
+  toolbar.classList.add("is-revealed");
+  toolbar.style.left = `${toLeft ? restLeft - rowWidth : restLeft}px`;
+  motion.revealWidth(row, toLeft ? { pin: toolbar } : undefined);
+  motion.stagger(row.querySelectorAll(".omni-ai-flash-btn"));
 }
 
 function triggerFlashAction(action, text, inputElement) {
@@ -1304,48 +1329,33 @@ function buildMenuMarkup(data, quickFix) {
     </div>
   `;
 
+  // Pills with icon and label on one line that wrap naturally (spec "Action
+  // menu"): the four rewrite actions first and emphasized, then the rest.
+  const pill = (action, icon, label, primary = false) => `
+       <button class="omni-ai-menu-item${primary ? " is-primary" : ""}" data-action="${action}">
+         <span class="omni-ai-menu-icon">${icon}</span><span class="omni-ai-menu-label">${label}</span>
+       </button>`;
   const menu = `
-    <div class="omni-ai-menu-grid">
-       <button class="omni-ai-menu-item" data-action="translate_primary">
-         <span class="omni-ai-menu-icon">${pFlag}</span> ${i18n.getMessage("ui_to", [pCode])}
-       </button>
-       <button class="omni-ai-menu-item" data-action="translate_default">
-         <span class="omni-ai-menu-icon">${dFlag}</span> ${i18n.getMessage("ui_to", [dCode])}
-       </button>
-
-       <button class="omni-ai-menu-item" data-action="grammar">
-         <span class="omni-ai-menu-icon">${ICONS.grammar}</span> ${i18n.getMessage("action_grammar")}
-       </button>
-       <button class="omni-ai-menu-item" data-action="rephrase">
-         <span class="omni-ai-menu-icon">${ICONS.rephrase}</span> ${i18n.getMessage("action_rephrase")}
-       </button>
-
-       <button class="omni-ai-menu-item" data-action="reply">
-         <span class="omni-ai-menu-icon">${ICONS.reply}</span> ${i18n.getMessage("action_reply")}
-       </button>
-       <button class="omni-ai-menu-item" data-action="emoji">
-         <span class="omni-ai-menu-icon">${ICONS.emoji}</span> ${i18n.getMessage("action_emojify")}
-       </button>
-
-       <button class="omni-ai-menu-item" data-action="tone">
-         <span class="omni-ai-menu-icon">${ICONS.tone}</span> ${i18n.getMessage("action_tone")}
-       </button>
-       <button class="omni-ai-menu-item" data-action="summarize">
-         <span class="omni-ai-menu-icon">${ICONS.summarize}</span> ${i18n.getMessage("action_summarize")}
-       </button>
-       
-       <button class="omni-ai-menu-item omni-ai-menu-full" data-action="explain">
-         <span class="omni-ai-menu-icon" style="margin-right: 6px;">${ICONS.explain}</span> ${i18n.getMessage("action_explain")}
-       </button>
+    <div class="omni-ai-menu-grid">${[
+      pill("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase"), true),
+      pill("grammar", ICONS.grammar, i18n.getMessage("action_grammar"), true),
+      pill("tone", ICONS.tone, i18n.getMessage("action_tone"), true),
+      pill("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
+      pill("explain", ICONS.explain, i18n.getMessage("action_explain")),
+      pill("reply", ICONS.reply, i18n.getMessage("action_reply")),
+      pill("emoji", ICONS.emoji, i18n.getMessage("action_emojify")),
+      pill("translate_primary", pFlag, i18n.getMessage("ui_to", [pCode])),
+      pill("translate_default", dFlag, i18n.getMessage("ui_to", [dCode])),
+    ].join("")}
     </div>
   `;
 
   const inputSection = `
-    <div class="omni-ai-input-wrapper" style="padding: 0 12px 12px;">
-       <div style="position:relative; width:100%;">
-         <textarea class="omni-ai-input" placeholder="${i18n.getMessage("popup_quickAsk")}" id="omniAiInlineInput" style="padding-right: 42px; display: block; margin: 0;"></textarea>
-         <button id="omniAiInputBtn" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:var(--omni-accent-gradient); color:white; cursor:pointer; width:28px; height:28px; border-radius:var(--omni-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    <div class="omni-ai-input-wrapper">
+       <div class="omni-ai-ask">
+         <textarea class="omni-ai-input" rows="1" placeholder="${i18n.getMessage("popup_quickAsk")}" id="omniAiInlineInput"></textarea>
+         <button class="omni-ai-send-btn" id="omniAiInputBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
          </button>
        </div>
     </div>
@@ -1368,6 +1378,7 @@ function renderMenuState(inner, data, surf) {
   // picks an action.
   inner.innerHTML = buildMenuMarkup(data, "");
   bindMenuEvents(inner, text, isInput);
+  /** @type {any} */ (self).OMNI_MOTION?.stagger(inner.querySelectorAll(".omni-ai-menu-item"));
   scheduleMenuReposition(surf);
 }
 
@@ -1948,7 +1959,7 @@ function renderToneSelector(activeTone) {
         ? "background:rgba(139,92,246,0.15); color:var(--omni-accent); border:1px solid rgba(139,92,246,0.3);"
         : "background:transparent; color:var(--omni-text-secondary); border:1px solid var(--omni-border);";
       const label = i18n.getMessage("tone_" + tone.toLowerCase()) || tone;
-      return `<button class="omni-ai-tone-chip" data-tone="${tone.toLowerCase()}" style="padding:3px 10px; border-radius:100px; font-size:11px; cursor:pointer; font-weight:500; white-space:nowrap; transition:all 0.2s; ${style}">${label}</button>`;
+      return `<button class="omni-ai-tone-chip" data-tone="${tone.toLowerCase()}" style="padding:3px 10px; border-radius:100px; font-size:11px; cursor:pointer; font-weight:500; white-space:nowrap; transition:background-color 0.15s, color 0.15s; ${style}">${label}</button>`;
     })
     .join("");
 
@@ -2219,7 +2230,7 @@ function renderAskState(inner, data, surf) {
       <div class="omni-ai-input-wrapper" style="padding:0;">
         <div style="position:relative; width:100%;">
           <textarea class="omni-ai-input" id="omniAiQuickInput" placeholder="${i18n.getMessage("popup_quickAsk")}" style="min-height:100px; margin-bottom: 0; padding-right: 42px; display: block;"></textarea>
-          <button id="omniAiInputBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:var(--omni-accent-gradient); color:white; cursor:pointer; width:30px; height:30px; border-radius:var(--omni-radius-sm); display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
+          <button id="omniAiInputBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:var(--omni-accent-gradient); color:white; cursor:pointer; width:30px; height:30px; border-radius:var(--omni-radius-sm); display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px; transform: translateX(1px);"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           </button>
         </div>
