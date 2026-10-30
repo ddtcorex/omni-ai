@@ -88,7 +88,7 @@
      glass. --omni-accent-gradient stays as is for settings and side panel;
      white on its ends is only 4.23:1 (violet) and 2.43:1 (cyan). */
   --omni-button-gradient: linear-gradient(135deg, #7c5af0 0%, #0a7f9c 100%);
-  --omni-accent-text: #a78bfa;
+  --omni-accent-text: #b9a5fb;
 
   /* Overlay result surface: hairlines, loading skeleton, error and diff. */
   --omni-separator: rgba(255, 255, 255, 0.08);
@@ -131,7 +131,7 @@
   --omni-pill-bg: rgba(236, 236, 245, 0.95);
   --omni-pill-top: #ffffff;
   --omni-pill-hover: rgba(139, 92, 246, 0.12);
-  --omni-accent-text: #7a4fe8;
+  --omni-accent-text: #6638d6;
   --omni-glass-text: #1f2430;
   --omni-glass-text-secondary: #4b4f63;
   --omni-glass-text-tertiary: #565a70;
@@ -185,7 +185,7 @@
   --omni-pill-bg: rgba(236, 236, 245, 0.95);
   --omni-pill-top: #ffffff;
   --omni-pill-hover: rgba(139, 92, 246, 0.12);
-  --omni-accent-text: #7a4fe8;
+  --omni-accent-text: #6638d6;
   --omni-glass-text: #1f2430;
   --omni-glass-text-secondary: #4b4f63;
   --omni-glass-text-tertiary: #565a70;
