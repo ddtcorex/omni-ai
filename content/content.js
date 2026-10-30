@@ -7,7 +7,6 @@
 // Icons (Feather Icons / Custom)
 // ============================================
 const ICONS = {
-  brand: `<img src="${chrome.runtime.getURL("assets/icons/icon-48.png")}" class="omni-ai-logo-img" alt="Omni AI" />`,
   close: `<svg viewBox="0 0 24 24" fill="none" class="omni-ai-icon-svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
   magic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>`,
   rephrase: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
@@ -1422,17 +1421,9 @@ function translatePills(data) {
   ];
 }
 
+// The editor menu has no header (spec prototype): only the action pills and
+// the Ask box. Escape or a click outside closes it.
 function buildMenuMarkup(data) {
-  const header = `
-    <div class="omni-ai-overlay-header">
-       <div class="omni-ai-brand">
-         ${ICONS.brand}
-         <span>${i18n.getMessage("extName")}</span>
-       </div>
-       <button class="omni-ai-close-btn" id="omniAiClose">${ICONS.close}</button>
-    </div>
-  `;
-
   // The four rewrite actions first and emphasized, then the rest.
   const menu = `
     <div class="omni-ai-menu-grid">${[
@@ -1448,7 +1439,7 @@ function buildMenuMarkup(data) {
     </div>
   `;
 
-  return header + menu + askBoxMarkup(i18n.getMessage("popup_quickAsk"));
+  return menu + askBoxMarkup(i18n.getMessage("popup_quickAsk"));
 }
 
 // Re-position after async content might have loaded
@@ -1616,7 +1607,7 @@ function flashCopied(btn, copiedHtml, restoreHtml) {
 }
 
 function bindMenuEvents(root, text, isInput) {
-  root.querySelector("#omniAiClose").addEventListener("click", () => hideOverlay());
+  root.querySelector("#omniAiClose")?.addEventListener("click", () => hideOverlay());
   root.querySelectorAll(".omni-ai-menu-item[data-action]").forEach((btn) => {
     btn.addEventListener("click", () => handleAction(btn.dataset.action, text, isInput));
   });
