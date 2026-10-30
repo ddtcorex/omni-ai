@@ -1462,7 +1462,9 @@ function renderMenuState(inner, data, surf) {
 
 // Page text that is not editable (spec "Page text that is not editable"): a
 // translation section on top that translates on its own, in a slot reserved
-// by a skeleton so the reading actions below never move when it lands.
+// by a skeleton so the reading actions below never move when it lands. The
+// reading actions are Summarize, Explain and Reply only: the translation is
+// already on top, so the card carries no translate pills.
 function renderPageCardState(inner, data, surf) {
   const { text, isInput } = data;
   inner.innerHTML = `
@@ -1478,7 +1480,6 @@ function renderPageCardState(inner, data, surf) {
     <div class="omni-ai-menu-grid">${[
       pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
       pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain"), true),
-      ...translatePills(data),
       pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
     ].join("")}
     </div>
