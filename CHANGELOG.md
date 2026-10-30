@@ -13,11 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Motion with reduced-motion support.** Enter, exit, swap and height morph use new `--omni-motion-*` tokens; with `prefers-reduced-motion` only opacity animates.
 - **Editors no longer run a background grammar check.** Opening the menu on a textarea or rich text editor saves one AI call.
 - **The page text card translates automatically** and offers the reading actions beside it.
-- **Results show clean text with a Show changes switch** for rephrase, grammar, tone and emoji.
+- **Results show clean text** instead of an inline diff.
 
 ### Added
 
-- **Try again on results.** It bypasses the cache and also works for keyboard-shortcut and context-menu results (new `RERUN_ACTION` message).
+- **Show changes switch on results** for rephrase, grammar, tone and emoji: it reveals the diff against the selected text.
+- **Try again on results.** For actions run from the menu or the toolbar it bypasses the result cache; keyboard-shortcut and context-menu results re-run through the service worker, which keeps no cache (new `RERUN_ACTION` message).
 - **Keyboard navigation in the action menu.**
 
 ### Security
