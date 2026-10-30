@@ -28,12 +28,12 @@
    via content.js ensureUiStyles()). No local --ai-* / --omni-* definitions here. */
 
 /* Defensive reset against host-page styles */
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-toolbar),
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-toolbar) * {
+:where(.omni-ai-overlay, .omni-ai-toolbar),
+:where(.omni-ai-overlay, .omni-ai-toolbar) * {
   box-sizing: border-box;
 }
 
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-toolbar) {
+:where(.omni-ai-overlay, .omni-ai-toolbar) {
   font-family: var(--omni-font-family);
   font-style: normal;
   letter-spacing: normal;
