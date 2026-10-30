@@ -1150,3 +1150,229 @@ test("Quick Ask with no selection opens the ask state with the input focused", a
     server.close();
   }
 });
+
+// Task 7: keyboard navigation, reduced motion and interaction races.
+
+function shadowActiveAction(page) {
+  return page.evaluate(
+    () =>
+      document.getElementById("omni-ai-shadow-host").shadowRoot.activeElement?.dataset?.action ||
+      null,
+  );
+}
+
+test("arrow keys move focus between menu pills and Enter runs the focused action", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const stub = await stubGeminiCounted(context, { reply: () => "DONE" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    const actions = await page.evaluate(() =>
+      [
+        ...document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelectorAll(".omni-ai-menu-item[data-action]"),
+      ].map((el) => el.dataset.action),
+    );
+    expect(actions.length).toBeGreaterThan(2);
+    // Focus the first pill, then walk the DOM order.
+    await page.evaluate(() =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector(".omni-ai-menu-item[data-action]")
+        .focus(),
+    );
+    expect(await shadowActiveAction(page)).toBe(actions[0]);
+    await page.keyboard.press("ArrowRight");
+    expect(await shadowActiveAction(page)).toBe(actions[1]);
+    await page.keyboard.press("ArrowDown");
+    expect(await shadowActiveAction(page)).toBe(actions[2]);
+    await page.keyboard.press("ArrowLeft");
+    expect(await shadowActiveAction(page)).toBe(actions[1]);
+    await page.keyboard.press("End");
+    expect(await shadowActiveAction(page)).toBe(actions[actions.length - 1]);
+    await page.keyboard.press("ArrowRight");
+    expect(await shadowActiveAction(page)).toBe(actions[0]);
+    await page.keyboard.press("Home");
+    expect(await shadowActiveAction(page)).toBe(actions[0]);
+    await page.keyboard.press("ArrowLeft");
+    expect(await shadowActiveAction(page)).toBe(actions[actions.length - 1]);
+
+    await page.keyboard.press("Home");
+    await page.keyboard.press("Enter");
+    await waitResultText(page, "DONE");
+    await expect.poll(() => stub.hits).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Escape closes the card from any state", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: () => "RESULT" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    const focusPill = () =>
+      page.evaluate(() => {
+        const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+        (
+          root.querySelector(".omni-ai-menu-item[data-action]") || root.querySelector("button")
+        ).focus();
+      });
+    // Menu.
+    await focusPill();
+    await page.keyboard.press("Escape");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    // Result.
+    await openEditorMenu(page, port);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "RESULT");
+    await page.evaluate(() =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector("#omniAiCopy")
+        .focus(),
+    );
+    await page.keyboard.press("Escape");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("under reduced motion the card still opens and closes, with no transform animation", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => {
+      const el = /** @type {HTMLTextAreaElement} */ (document.getElementById("target"));
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await page.locator("#target").dispatchEvent("mouseup");
+    await waitShadow(page, ".omni-ai-quick-btn");
+    // Sample every running animation on the card while it opens and closes.
+    const sampler = page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+          const props = new Set();
+          let seen = 0;
+          const start = performance.now();
+          const tick = () => {
+            const card = root.querySelector(".omni-ai-overlay");
+            if (card) {
+              card.getAnimations().forEach((a) => {
+                seen += 1;
+                a.effect.getKeyframes().forEach((k) => Object.keys(k).forEach((n) => props.add(n)));
+              });
+            }
+            if (performance.now() - start < 1500) requestAnimationFrame(tick);
+            else resolve({ props: [...props], seen });
+          };
+          tick();
+        }),
+    );
+    await clickShadow(page, ".omni-ai-quick-btn");
+    await waitShadow(page, ".omni-ai-menu-grid");
+    await page.keyboard.press("Escape").catch(() => {});
+    await clickShadow(page, "#omniAiClose").catch(() => {});
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 2000 }).toBe(0);
+    const { props, seen } = await sampler;
+    expect(seen).toBeGreaterThan(0);
+    expect(props).toContain("opacity");
+    expect(props).not.toContain("transform");
+    expect(props).not.toContain("filter");
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("double clicking the toolbar icon leaves exactly one card", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => {
+      const el = /** @type {HTMLTextAreaElement} */ (document.getElementById("target"));
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await page.locator("#target").dispatchEvent("mouseup");
+    await waitShadow(page, ".omni-ai-quick-btn");
+    const btn = (await shadowQuery(page, ".omni-ai-quick-btn")).asElement();
+    await btn.dblclick();
+    await page.waitForTimeout(900);
+    expect(await shadowCount(page, ".omni-ai-overlay")).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("closing with Escape right after a state change wins over the morph", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const stub = await stubGeminiCounted(context, { delayMs: 800, reply: () => "LATE" });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.evaluate(() =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector('.omni-ai-menu-item[data-action="rephrase"]')
+        .focus(),
+    );
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(50);
+    await page.keyboard.press("Escape");
+    await expect.poll(() => shadowCount(page, ".omni-ai-overlay"), { timeout: 600 }).toBe(0);
+    await expect.poll(() => stub.hits, { timeout: 3000 }).toBe(1);
+    await page.waitForTimeout(1500);
+    expect(await shadowCount(page, ".omni-ai-overlay")).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("Back from an ask opened in an editor returns to the editor menu", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { reply: () => "ANSWER" });
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.evaluate(() => {
+      const el = /** @type {HTMLTextAreaElement} */ (document.getElementById("target"));
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await sendToTab(sw, port, { type: "SHOW_QUICK_ASK_OVERLAY" });
+    await waitShadow(page, "#omniAiInlineInput");
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, ".omni-ai-menu-grid");
+    // The editor menu, not the page card: no translation slot, Replace-capable actions.
+    expect(await shadowCount(page, "#omniAiTranslateCard")).toBe(0);
+    expect(await shadowCount(page, '.omni-ai-menu-item[data-action="rephrase"]')).toBe(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
