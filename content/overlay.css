@@ -28,12 +28,12 @@
    via content.js ensureUiStyles()). No local --ai-* / --omni-* definitions here. */
 
 /* Defensive reset against host-page styles */
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn, .omni-ai-flash-btn),
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn, .omni-ai-flash-btn) * {
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-toolbar),
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-toolbar) * {
   box-sizing: border-box;
 }
 
-:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-quick-btn) {
+:where(.omni-ai-overlay, .omni-ai-toast, .omni-ai-toolbar) {
   font-family: var(--omni-font-family);
   font-style: normal;
   letter-spacing: normal;
@@ -42,7 +42,7 @@
   line-height: 1.4;
 }
 
-:where(.omni-ai-quick-btn) {
+:where(.omni-ai-quick-btn, .omni-ai-flash-btn) {
   all: revert;
 }
 
@@ -52,26 +52,28 @@
   color: inherit;
 }
 
-/* Overlay Container */
+/* Overlay Container: the refined glass card (spec "Visual direction"). The
+   entrance is OMNI_MOTION.enter (content/ui/motion.js), not a CSS keyframe. */
 .omni-ai-overlay {
   position: absolute;
   z-index: 2147483647;
   width: 320px;
-  background: var(--omni-glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--omni-border);
+  background: var(--omni-glass-surface);
+  backdrop-filter: var(--omni-glass-filter);
+  -webkit-backdrop-filter: var(--omni-glass-filter);
+  border: 1px solid var(--omni-glass-border);
   border-radius: var(--omni-radius-lg);
-  box-shadow: var(--omni-shadow-lg);
+  box-shadow:
+    var(--omni-glass-shadow),
+    0 0 0 1px var(--omni-glass-ring);
   font-family: var(--omni-font-family);
-  font-size: var(--omni-font-md);
+  font-size: 12.5px;
   color: var(--omni-text-primary);
   display: flex;
   flex-direction: column;
   overflow-y: auto; /* Allow scrolling if content exceeds max-height */
   max-height: 90vh; /* Prevent overlay from exceeding viewport height */
-  animation: omniAiScaleIn 0.2s cubic-bezier(0.2, 0, 0.13, 1.5);
-  transform-origin: top right;
+  transform-origin: 14px 0;
   box-sizing: border-box;
   overscroll-behavior: contain;
 }
@@ -85,16 +87,14 @@
   min-width: 0;
 }
 
-/* Header */
+/* Header: compact, no bar of its own; the glass card is the background. */
 .omni-ai-overlay-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px; /* Use flex alignment and fixed height */
-  height: 44px;
-  min-height: 44px;
-  border-bottom: 1px solid var(--omni-border);
-  background: var(--omni-glass-heavy);
+  gap: 4px;
+  padding: 6px 6px 2px 10px;
+  min-height: 34px;
   box-sizing: border-box;
 }
 
@@ -103,39 +103,42 @@
   align-items: center;
   gap: 6px;
   font-weight: 600;
-  font-size: 14px;
-  color: var(--omni-text-primary);
+  font-size: var(--omni-font-sm);
+  color: var(--omni-text-secondary);
   letter-spacing: -0.01em;
 }
 
+.omni-ai-brand svg,
 .omni-ai-logo-img {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   object-fit: contain;
 }
 
 .omni-ai-close-btn {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: none;
-  border-radius: var(--omni-radius-sm);
-  color: var(--omni-text-secondary);
+  border-radius: 7px;
+  color: var(--omni-text-tertiary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background-color var(--omni-transition-fast),
+    color var(--omni-transition-fast);
   padding: 0;
 }
 
 .omni-ai-close-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
 }
 
 .omni-ai-close-btn:hover {
-  background: var(--omni-bg-hover);
+  background: var(--omni-pill-bg);
   color: var(--omni-text-primary);
 }
 
@@ -157,7 +160,9 @@
   border-radius: var(--omni-radius-md);
   padding: 8px 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background-color var(--omni-transition-fast),
+    border-color var(--omni-transition-fast);
 }
 
 .omni-ai-suggestion-card:hover {
@@ -227,42 +232,65 @@
   background: var(--omni-text-secondary);
 }
 
-/* Menu Grid */
+/* Menu: action pills with icon and label on one line that wrap naturally
+   (spec "Action menu"). The class keeps its old grid name as a stable hook. */
 .omni-ai-menu-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 6px 6px;
 }
 
 .omni-ai-menu-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 6px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--omni-radius-md);
-  color: var(--omni-text-primary);
+  gap: 5px;
+  padding: 5px 10px 5px 8px;
+  margin: 0;
+  background: var(--omni-pill-bg);
+  border: none;
+  border-radius: var(--omni-radius-full);
+  color: var(--omni-text-secondary);
   font-family: inherit;
   font-size: var(--omni-font-sm);
+  line-height: 16px;
+  white-space: nowrap;
   text-align: left;
   cursor: pointer;
-  transition: all 0.15s;
+  transition:
+    background-color var(--omni-transition-fast),
+    color var(--omni-transition-fast),
+    transform 250ms var(--omni-motion-spring);
 }
 
-.omni-ai-menu-item:hover {
-  background: var(--omni-bg-hover);
-  border-color: var(--omni-border-hover);
+.omni-ai-menu-item.is-primary {
+  background: var(--omni-pill-top);
+  color: var(--omni-text-primary);
+  font-weight: 500;
+  box-shadow: 0 0 0 1px var(--omni-glass-ring);
+}
+
+.omni-ai-menu-item:hover,
+.omni-ai-menu-item:focus-visible {
+  background: var(--omni-pill-hover);
+  color: var(--omni-text-primary);
+  outline: none;
+}
+
+.omni-ai-menu-item:active {
+  transform: scale(var(--omni-motion-press));
 }
 
 .omni-ai-menu-icon {
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1;
   width: 14px;
+  height: 14px;
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--omni-text-secondary);
+  color: var(--omni-text-tertiary);
 }
 
 .omni-ai-menu-icon svg {
@@ -270,24 +298,80 @@
   height: 14px;
 }
 
+.omni-ai-menu-item.is-primary .omni-ai-menu-icon,
 .omni-ai-menu-item:hover .omni-ai-menu-icon {
-  color: var(--omni-text-primary);
+  color: var(--omni-accent);
 }
 
-.omni-ai-menu-full {
-  grid-column: span 2;
-  background: var(--omni-glass-heavy);
-  border: 1px solid var(--omni-border);
-  justify-content: center;
-  font-weight: 500;
-}
-
-/* Input Section */
+/* Ask box: one rounded field with the gradient send button inside. */
 .omni-ai-input-wrapper {
-  padding: 0 12px 12px;
+  padding: 0 6px 6px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.omni-ai-ask {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 3px 3px 10px;
+  border-radius: 10px;
+  background: var(--omni-pill-bg);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow var(--omni-transition-fast);
+}
+
+.omni-ai-ask:focus-within {
+  box-shadow: inset 0 0 0 1px var(--omni-accent);
+}
+
+.omni-ai-ask .omni-ai-input {
+  flex: 1;
+  min-height: 24px;
+  max-height: 100px;
+  padding: 4px 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 12.5px;
+  line-height: 16px;
+}
+
+.omni-ai-ask .omni-ai-input:focus {
+  background: transparent;
+}
+
+.omni-ai-input::placeholder {
+  color: var(--omni-text-tertiary);
+}
+
+.omni-ai-send-btn {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 7px;
+  background: var(--omni-accent-gradient);
+  color: #fff;
+  box-shadow: var(--omni-accent-glow);
+  cursor: pointer;
+  transition: transform 250ms var(--omni-motion-spring);
+}
+
+.omni-ai-send-btn:active {
+  transform: scale(var(--omni-motion-press));
+}
+
+.omni-ai-send-btn svg {
+  width: 12px;
+  height: 12px;
+  transform: translateX(-1px);
 }
 
 .omni-ai-input {
@@ -305,7 +389,9 @@
   resize: none;
   outline: none;
   cursor: text;
-  transition: all 0.2s;
+  transition:
+    border-color var(--omni-transition-fast),
+    background-color var(--omni-transition-fast);
   box-sizing: border-box;
 }
 
@@ -370,83 +456,144 @@
 
 /* .omni-ai-btn-primary / .omni-ai-btn-secondary are now .ds-btn-primary / .ds-btn-secondary from lib/design-system.css */
 
-/* Floating Button (Compact) */
-.omni-ai-quick-btn {
+/* Floating toolbar: one glass pill holding the quick button and the flash
+   row (spec "Floating toolbar"). 24px tall: 1px border, 1px padding, 20px
+   button. The entrance is OMNI_MOTION.enter from scale 0.85. */
+.omni-ai-toolbar {
   position: absolute;
   z-index: 2147483647;
-  width: 22px;
-  height: 22px;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 1px;
+  border-radius: var(--omni-radius-full);
+  background: var(--omni-glass-surface);
+  backdrop-filter: var(--omni-glass-filter);
+  -webkit-backdrop-filter: var(--omni-glass-filter);
+  border: 1px solid var(--omni-glass-border);
+  box-shadow:
+    var(--omni-glass-toolbar-shadow),
+    0 0 0 1px var(--omni-glass-ring);
+  transform-origin: 12px 50%;
+  box-sizing: border-box;
+}
+
+/* Actions that do not fit to the right reveal on the left; the quick button
+   stays where it is (content.js showFlashActions). */
+.omni-ai-toolbar.reveal-left {
+  flex-direction: row-reverse;
+  transform-origin: calc(100% - 12px) 50%;
+}
+
+/* The gradient quick button: hover changes nothing but the cursor, press
+   scales down. */
+.omni-ai-quick-btn {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--omni-accent-gradient);
   border: none;
   border-radius: 50%;
-  box-shadow: 0 3px 10px rgba(139, 92, 246, 0.35);
+  box-shadow: var(--omni-accent-glow);
+  color: #fff;
   cursor: pointer;
   transition:
-    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    opacity 0.2s ease;
-  animation: omniAiScaleIn 0.3s;
-  padding: 0;
-  opacity: 0.75;
+    transform 250ms var(--omni-motion-spring),
+    filter var(--omni-transition-fast);
 }
 
 .omni-ai-quick-btn:hover {
-  transform: scale(1.15);
-  opacity: 1;
+  filter: brightness(1.08);
+}
+
+.omni-ai-quick-btn:active {
+  transform: scale(var(--omni-motion-press));
 }
 
 .omni-ai-btn-icon-svg {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   color: white;
 }
 
-/* Flash Actions: hover-reveal shortcuts beside the floating quick-action icon
-   (see triggerFlashAction() / showFlashActions() in content.js) */
+/* Flash Actions: the hover-reveal shortcuts inside the toolbar pill (see
+   triggerFlashAction() / showFlashActions() in content.js). Zero wide at
+   rest; OMNI_MOTION.revealWidth grows it to its natural width. */
 .omni-ai-flash-actions {
-  position: absolute;
-  z-index: 2147483647;
   display: flex;
   align-items: center;
-  gap: 6px;
-  animation: omniAiScaleIn 0.15s;
+  gap: 1px;
+  height: 20px;
+  overflow: hidden;
+  flex: none;
+}
+
+.omni-ai-toolbar:not(.is-revealed) .omni-ai-flash-actions {
+  width: 0;
+}
+
+/* The 1px gap next to the quick button is a margin, not padding: the row
+   must be able to reach a true 0 width or the button would shift. */
+.omni-ai-flash-btn:first-child {
+  margin-left: 1px;
+}
+
+.omni-ai-toolbar.reveal-left .omni-ai-flash-actions {
+  flex-direction: row-reverse;
+}
+
+.omni-ai-toolbar.reveal-left .omni-ai-flash-btn:first-child {
+  margin-left: 0;
+  margin-right: 1px;
 }
 
 .omni-ai-flash-btn {
+  flex: none;
   width: 22px;
-  height: 22px;
+  height: 20px;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid var(--omni-border);
-  border-radius: 50%;
-  background: var(--omni-glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--omni-shadow-sm);
-  color: var(--omni-text-primary);
+  border: none;
+  border-radius: var(--omni-radius-full);
+  background: transparent;
+  color: var(--omni-text-secondary);
   cursor: pointer;
   transition:
-    transform 0.15s ease,
-    background 0.15s ease,
-    color 0.15s ease;
+    background-color var(--omni-transition-fast),
+    color var(--omni-transition-fast),
+    transform 250ms var(--omni-motion-spring);
 }
 
 .omni-ai-flash-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 .omni-ai-flash-btn:hover {
-  /* Matches .omni-ai-quick-btn's own hover scale exactly, so the hovered
-     flash button enlarges consistently with the floating icon instead of
-     looking like a mismatched size next to it. */
-  transform: scale(1.15);
-  background: var(--omni-accent-gradient);
-  color: #fff;
+  background: var(--omni-pill-hover);
+  color: var(--omni-text-primary);
+}
+
+.omni-ai-flash-btn:active {
+  transform: scale(var(--omni-motion-press));
+}
+
+/* Reduced motion: opacity only, so no press scale either. */
+@media (prefers-reduced-motion: reduce) {
+  .omni-ai-quick-btn:active,
+  .omni-ai-flash-btn:active,
+  .omni-ai-menu-item:active,
+  .omni-ai-send-btn:active {
+    transform: none;
+  }
 }
 
 /* Loading: Processing Content */
@@ -485,18 +632,6 @@
   }
   50% {
     opacity: 1;
-  }
-}
-
-/* Animations */
-@keyframes omniAiScaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 

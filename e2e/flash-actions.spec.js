@@ -158,29 +158,34 @@ test("clicking a flash action does not reposition or recreate the floating icon"
 
     const quickBtn = page.locator(".omni-ai-quick-btn");
     await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
-    // Read the inline top/left content.js actually assigns, not the rendered
-    // bounding box -- :hover's CSS transform:scale() legitimately changes the
-    // box's rendered size/position and would make this assertion flaky for
-    // reasons unrelated to the bug (a stale hover transition mid-flight).
-    const originalPosition = await quickBtn.evaluate((el) => ({
-      top: el.style.top,
-      left: el.style.left,
-    }));
-
     await quickBtn.hover();
     const flashBtn = page.locator('[data-flash-action="rephrase"]');
     await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    // Let the entrance and the width reveal settle. Hover never scales, so
+    // the rendered box is a stable measure. The fixture's selection ends near
+    // the right edge, so this also covers the reveal to the left, where the
+    // pill's own left edge moves but the quick button must not.
+    await page.waitForTimeout(500);
+    await expect(page.locator(".omni-ai-toolbar")).toHaveClass(/reveal-left/);
+    await quickBtn.evaluate((el) => {
+      el.dataset.e2eMark = "original";
+    });
+    const before = await quickBtn.boundingBox();
+
     await flashBtn.click();
 
     // handleSelectionChange() re-checks the selection 10ms after any mouseup
     // that reaches document; give that a wide berth, still well before the
     // deliberately-delayed (300ms) AI response arrives and removes the icon.
+    // It also spans most of the row's collapse, during which the button must
+    // stay put too.
     await page.waitForTimeout(150);
 
     await expect(quickBtn).toHaveCount(1);
-    expect(await quickBtn.evaluate((el) => ({ top: el.style.top, left: el.style.left }))).toEqual(
-      originalPosition,
-    );
+    expect(await quickBtn.evaluate((el) => el.dataset.e2eMark)).toBe("original");
+    const after = await quickBtn.boundingBox();
+    expect(Math.abs(after.x - before.x)).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(0.5);
   } finally {
     await context.close();
     server.close();
@@ -442,12 +447,14 @@ test("the flash row is vertically centered on the floating icon, not just top-al
 
     const quickBtn = page.locator(".omni-ai-quick-btn");
     await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
-    const iconBox = await quickBtn.boundingBox();
-    const iconCenter = iconBox.y + iconBox.height / 2;
-
     await quickBtn.hover();
     const flashBtn = page.locator('[data-flash-action="rephrase"]');
     await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await page.waitForTimeout(500); // let the entrance and reveal settle
+
+    // Both now live in the one toolbar pill, so measure them together.
+    const iconBox = await quickBtn.boundingBox();
+    const iconCenter = iconBox.y + iconBox.height / 2;
 
     const flashBox = await flashBtn.boundingBox();
     const flashCenter = flashBox.y + flashBox.height / 2;
@@ -463,7 +470,7 @@ test("the flash row is vertically centered on the floating icon, not just top-al
   }
 });
 
-test("a hovered flash button scales up by the same factor as the floating icon", async () => {
+test("a hovered flash button changes background, not scale", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
   try {
@@ -479,13 +486,76 @@ test("a hovered flash button scales up by the same factor as the floating icon",
 
     const flashBtn = page.locator('[data-flash-action="rephrase"]');
     await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await page.waitForTimeout(500); // let the width reveal settle
+    const restBg = await flashBtn.evaluate((el) => getComputedStyle(el).backgroundColor);
     await flashBtn.hover();
-    await page.waitForTimeout(200); // let the hover-in transition finish
+    await page.waitForTimeout(250); // let the hover transition finish
 
-    const hoveredBox = await flashBtn.boundingBox();
-    // 22px base * 1.15, matching .omni-ai-quick-btn:hover's own scale factor.
-    expect(hoveredBox.width).toBeCloseTo(25.3, 0);
-    expect(hoveredBox.height).toBeCloseTo(25.3, 0);
+    const hovered = await flashBtn.evaluate((el) => ({
+      transform: getComputedStyle(el).transform,
+      bg: getComputedStyle(el).backgroundColor,
+    }));
+    // Hover changes color and background only, never scale (spec "Motion").
+    expect(hovered.transform).toBe("none");
+    expect(hovered.bg).not.toBe(restBg);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("the toolbar is 24px tall and the ✦ button 20px", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase", "grammar"]);
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const toolbar = page.locator(".omni-ai-toolbar");
+    await expect(toolbar).toHaveCount(1, { timeout: 5000 });
+    // The quick button lives inside the one toolbar pill, with the flash row.
+    await expect(page.locator(".omni-ai-toolbar .omni-ai-quick-btn")).toHaveCount(1);
+    await expect(page.locator(".omni-ai-toolbar .omni-ai-flash-actions")).toHaveCount(1);
+    await page.waitForTimeout(600); // let the entrance spring settle
+
+    const tbBox = await toolbar.boundingBox();
+    const btnBox = await page.locator(".omni-ai-quick-btn").boundingBox();
+    expect(Math.abs(tbBox.height - 24)).toBeLessThanOrEqual(1);
+    expect(Math.abs(btnBox.height - 20)).toBeLessThanOrEqual(1);
+    expect(Math.abs(btnBox.width - 20)).toBeLessThanOrEqual(1);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("quick action icons render at 14px", async () => {
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw, ["rephrase", "grammar"]);
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await dragSelectTarget(page);
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.hover();
+    const flashBtn = page.locator('[data-flash-action="grammar"]');
+    await expect(flashBtn).toBeVisible({ timeout: 2000 });
+    await page.waitForTimeout(600); // let the reveal and icon stagger settle
+
+    const btnBox = await flashBtn.boundingBox();
+    expect(Math.abs(btnBox.width - 22)).toBeLessThanOrEqual(1);
+    for (const action of ["rephrase", "grammar"]) {
+      const icon = await page.locator(`[data-flash-action="${action}"] svg`).boundingBox();
+      expect(Math.abs(icon.width - 14)).toBeLessThanOrEqual(1);
+      expect(Math.abs(icon.height - 14)).toBeLessThanOrEqual(1);
+    }
   } finally {
     await context.close();
     server.close();

@@ -174,6 +174,44 @@ describe("motion helpers", () => {
     expect(calls[0].cancel).toHaveBeenCalled();
   });
 
+  test("revealWidth with a pin shifts the pin so the row's far edge stays put", () => {
+    const el = document.createElement("div");
+    const pin = document.createElement("div");
+    Object.defineProperty(el, "scrollWidth", { value: 44 });
+    motion.revealWidth(el, { pin });
+    const pinCall = calls.find((c) => c.el === pin);
+    expect(pinCall.keyframes.map((k) => k.translate)).toEqual(["44px 0px", "0px 0px"]);
+    const widthCall = calls.find((c) => c.el === el);
+    // Same timing, so the pin and the width move as one.
+    expect(pinCall.options.duration).toBe(widthCall.options.duration);
+    expect(pinCall.options.easing).toBe(widthCall.options.easing);
+
+    motion.collapseWidth(el, { pin });
+    const pinCalls = calls.filter((c) => c.el === pin);
+    expect(pinCalls[1].keyframes.map((k) => k.translate)).toEqual(["0px 0px", "44px 0px"]);
+    // Retargets: the earlier pin animation is cancelled.
+    expect(pinCalls[0].cancel).toHaveBeenCalled();
+  });
+
+  test("revealWidth springs, collapseWidth eases out without overshoot", () => {
+    const el = document.createElement("div");
+    Object.defineProperty(el, "scrollWidth", { value: 44 });
+    motion.revealWidth(el);
+    motion.collapseWidth(el);
+    expect(calls[0].options.easing).toMatch(/^linear\(/);
+    // An overshoot past 0 would clamp the width while a pin kept moving.
+    expect(calls[1].options.easing).toBe(motion.TOKENS.easeOut);
+  });
+
+  test("a pin animation never cancels another animation on the pin", () => {
+    const el = document.createElement("div");
+    const pin = document.createElement("div");
+    Object.defineProperty(el, "scrollWidth", { value: 44 });
+    motion.enter(pin);
+    motion.revealWidth(el, { pin });
+    expect(calls[0].cancel).not.toHaveBeenCalled();
+  });
+
   test("reads overrides from --omni-motion-* custom properties", () => {
     const el = document.createElement("div");
     document.body.appendChild(el);
@@ -208,6 +246,15 @@ describe("motion helpers", () => {
       expect(el.style.width).toBe("0px");
       motion.revealWidth(el);
       expect(el.style.width).toBe("");
+    });
+
+    test("revealWidth with a pin never translates the pin", () => {
+      const el = document.createElement("div");
+      const pin = document.createElement("div");
+      Object.defineProperty(el, "scrollWidth", { value: 44 });
+      motion.revealWidth(el, { pin });
+      motion.collapseWidth(el, { pin });
+      expect(calls.some((c) => c.el === pin)).toBe(false);
     });
 
     test("morph does not animate height", async () => {

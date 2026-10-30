@@ -66,6 +66,19 @@
   --omni-motion-exit: 160ms;
   --omni-motion-spring: linear(0, 0.25 7%, 0.62 15%, 0.9 24%, 1.03 33%, 1.04 41%, 1.01 55%, 1);
   --omni-motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --omni-motion-press: 0.96;
+
+  /* Refined glass (overlay toolbar, card and pills): dark (default) */
+  --omni-glass-surface: rgba(30, 30, 40, 0.84);
+  --omni-glass-border: rgba(255, 255, 255, 0.08);
+  --omni-glass-ring: rgba(255, 255, 255, 0.06);
+  --omni-glass-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+  --omni-glass-toolbar-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  --omni-glass-filter: blur(16px) saturate(1.6);
+  --omni-pill-bg: rgba(255, 255, 255, 0.07);
+  --omni-pill-top: rgba(255, 255, 255, 0.12);
+  --omni-pill-hover: rgba(139, 92, 246, 0.25);
+  --omni-accent-glow: 0 2px 8px rgba(139, 92, 246, 0.4);
 }
 
 /* Light-mode overrides: plain-document surfaces (settings.html, sidepanel.html) */
@@ -89,6 +102,15 @@
 
   --omni-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
   --omni-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  --omni-glass-surface: rgba(255, 255, 255, 0.84);
+  --omni-glass-border: rgba(255, 255, 255, 0.9);
+  --omni-glass-ring: rgba(20, 20, 40, 0.07);
+  --omni-glass-shadow: 0 16px 44px rgba(40, 30, 90, 0.17);
+  --omni-glass-toolbar-shadow: 0 6px 20px rgba(40, 30, 90, 0.14);
+  --omni-pill-bg: rgba(236, 236, 245, 0.95);
+  --omni-pill-top: #ffffff;
+  --omni-pill-hover: rgba(139, 92, 246, 0.12);
 }
 
 /* Light-mode overrides: the Shadow-DOM overlay surface. :host() matches only
@@ -122,4 +144,13 @@
 
   --omni-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
   --omni-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  --omni-glass-surface: rgba(255, 255, 255, 0.84);
+  --omni-glass-border: rgba(255, 255, 255, 0.9);
+  --omni-glass-ring: rgba(20, 20, 40, 0.07);
+  --omni-glass-shadow: 0 16px 44px rgba(40, 30, 90, 0.17);
+  --omni-glass-toolbar-shadow: 0 6px 20px rgba(40, 30, 90, 0.14);
+  --omni-pill-bg: rgba(236, 236, 245, 0.95);
+  --omni-pill-top: #ffffff;
+  --omni-pill-hover: rgba(139, 92, 246, 0.12);
 }
