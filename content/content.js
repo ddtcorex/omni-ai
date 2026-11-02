@@ -574,6 +574,52 @@ function getContext(element) {
 }
 
 // ============================================
+// Orphaned script teardown
+// ============================================
+
+// An extension reload leaves this script running in tabs that were already
+// open, with an invalid extension context, next to the script that replaces
+// it. Such an orphan takes its UI down and stops listening the first time a
+// listener or a UI entry point notices (spec follow-up C).
+let orphaned = false;
+const documentListeners = [];
+
+// addEventListener on this frame's document, remembered for the teardown.
+function listen(type, handler, options) {
+  document.addEventListener(type, handler, options);
+  documentListeners.push(() => document.removeEventListener(type, handler, options));
+}
+
+// True when this script outlived its extension; the first call tears down.
+function retireIfOrphaned() {
+  if (orphaned) return true;
+  if (isContextValid()) return false;
+  orphaned = true;
+  documentListeners.splice(0).forEach((remove) => remove());
+  clearTimeout(flashHoverTimer);
+  clearTimeout(flashHideTimer);
+  surface?.destroy();
+  overlay = null;
+  hideQuickActionButton();
+  removeOwnUiHost();
+  return true;
+}
+
+// The host is found by id, so the script that replaced this one may have
+// mounted into it too: remove it only when nothing but this script's
+// stylesheet is left inside.
+function removeOwnUiHost() {
+  const host = omniUiHost;
+  if (!host) return;
+  const others = Array.from(host.shadowRoot?.children || []).filter(
+    (el) => !el.matches("style[data-omni-ai-shadow-style='true']"),
+  );
+  if (others.length === 0) host.remove();
+  omniUiHost = null;
+  omniUiRoot = null;
+}
+
+// ============================================
 // Initialization
 // ============================================
 
@@ -719,6 +765,7 @@ function setupMessageListener() {
 function setupSelectionListener() {
   const handleSelectionChange = (mousePos = null) => {
     setTimeout(() => {
+      if (retireIfOrphaned()) return;
       // If overlay is already open, don't show specific button logic or hide it?
       // Usually checking !isCardOpen() is correct (a closing card is not open).
       if (isCardOpen()) return;
@@ -745,7 +792,8 @@ function setupSelectionListener() {
     }, 10);
   };
 
-  document.addEventListener("mouseup", (e) => {
+  listen("mouseup", (e) => {
+    if (retireIfOrphaned()) return;
     // A click on the extension's own UI is not a page selection. Its
     // deferred check would otherwise run after the click's handler: after
     // Replace the card is closing and the editor has focus with a collapsed
@@ -756,7 +804,8 @@ function setupSelectionListener() {
     handleSelectionChange({ x: e.clientX, y: e.clientY });
   });
 
-  document.addEventListener("keyup", (e) => {
+  listen("keyup", (e) => {
+    if (retireIfOrphaned()) return;
     // Handle Ctrl+A (Select All) and Shift+Arrows (Selection)
     if (
       ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") ||
@@ -774,7 +823,8 @@ function setupSelectionListener() {
   });
 
   // Handle paste events
-  document.addEventListener("paste", () => {
+  listen("paste", () => {
+    if (retireIfOrphaned()) return;
     // Rely on generic detection shortly after paste
 
     // Slight delay to allow paste to complete
@@ -783,7 +833,8 @@ function setupSelectionListener() {
     }, 100);
   });
 
-  document.addEventListener("focusin", (e) => {
+  listen("focusin", (e) => {
+    if (retireIfOrphaned()) return;
     // Focus moving into the extension's own UI (a card button, the Ask box)
     // is not the editor losing focus: reporting it would clear the active
     // editor frame and send the next result to the top frame.
@@ -892,7 +943,7 @@ function presentQuickActionButton(
   mousePosition = null,
   selectionRects = null,
 ) {
-  if (!isContextValid()) return;
+  if (retireIfOrphaned()) return;
   if (!floatingButtonEnabled) return;
   if (quickActionBtn) hideQuickActionButton();
 
@@ -931,6 +982,7 @@ const TOOLBAR_SIZE = 24;
 const TOOLBAR_INSET = 2;
 
 async function createQuickBtn(rect, isInput, mousePosition = null, selectionRects = null) {
+  if (retireIfOrphaned()) return;
   const toolbar = document.createElement("div");
   toolbar.className = "omni-ai-toolbar";
   const button = document.createElement("button");
@@ -1199,6 +1251,7 @@ function hideFlashActions() {
  * delay/settings read was in flight.
  */
 async function showFlashActions(text, inputElement) {
+  if (retireIfOrphaned()) return;
   if (!text || !quickToolbar || quickToolbar.classList.contains("is-revealed")) return;
   const toolbar = quickToolbar;
   const row = flashActionsRow;
@@ -1289,6 +1342,8 @@ async function showQuickActionMenu(
   lockedPosition = null,
   isInput = false,
 ) {
+  // An orphaned script (its extension reloaded) shows nothing.
+  if (retireIfOrphaned()) return;
   // Save current anchor for re-positioning later
   const menuAnchorRect = anchorRect || cardAnchorRect();
   currentAnchorRect = menuAnchorRect;
@@ -2341,6 +2396,7 @@ function extractPageContent() {
 // the toolbar opens the card straight into loading). Resolves once the
 // transition has started, so a request token taken right after is current.
 async function showLoadingInOverlay(data, { replace = false } = {}) {
+  if (retireIfOrphaned()) return;
   const surf = getSurface();
   if (isCardOpen()) {
     // Loading swaps the content where the card already sits.
@@ -2393,6 +2449,7 @@ function renderLoadingState(inner, data, surf) {
 }
 
 async function showResultOverlay(payload, isInput = false) {
+  if (retireIfOrphaned()) return;
   resetQuickButtonIcon();
   const surf = getSurface();
   const data = { ...payload, isInput };
@@ -2623,6 +2680,7 @@ function selectionGone(context, element, textState, originalText) {
 }
 
 async function showQuickAskOverlay(lockedRect = null, originalText = null, isInput = false) {
+  if (retireIfOrphaned()) return;
   await ensureUiRootReady();
 
   // Save current anchor for re-positioning
@@ -2653,6 +2711,7 @@ function renderAskState(inner, data, surf) {
 }
 
 async function showErrorInOverlay(msg, retryData = {}) {
+  if (retireIfOrphaned()) return;
   // A quick action's request can fail before any card is open: the surface
   // opens one, or the error would render nowhere and leave the floating
   // icon's spinner frozen.
