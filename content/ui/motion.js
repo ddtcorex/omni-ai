@@ -182,6 +182,8 @@
    */
   function settleHeight(el) {
     const shown = el.offsetHeight;
+    // Its content must be measured at the width it really has now.
+    unpinWidth(el);
     const anims = typeof el.getAnimations === "function" ? el.getAnimations() : [];
     anims.forEach((anim) => {
       const effect = /** @type {KeyframeEffect | null} */ (anim.effect);
@@ -244,15 +246,29 @@
     ];
   }
 
-  // Hold `pin` (the card's content) at its current, final width while the
-  // card's width animates, so its text wraps once instead of on every frame.
-  // Returns the release.
-  function pinWidth(pin) {
+  // The content pinned while a size animation of its container runs, per
+  // container: { pin, prev }. One at a time, released synchronously when the
+  // animation is stopped (settleHeight) or replaced, never by a late tick.
+  const widthPins = new WeakMap();
+
+  function unpinWidth(container) {
+    const entry = widthPins.get(container);
+    if (!entry) return;
+    entry.pin.style.width = entry.prev;
+    widthPins.delete(container);
+  }
+
+  // Hold `pin` (the card's content) at its current, final width while
+  // `container`'s width animates, so its text wraps once instead of on every
+  // frame. Returns the release, a no-op once a newer pin took over.
+  function pinWidth(container, pin) {
+    unpinWidth(container);
     if (!pin) return () => {};
-    const prev = pin.style.width;
+    const entry = { pin, prev: pin.style.width };
+    widthPins.set(container, entry);
     pin.style.width = `${pin.offsetWidth}px`;
     return () => {
-      pin.style.width = prev;
+      if (widthPins.get(container) === entry) unpinWidth(container);
     };
   }
 
@@ -273,7 +289,7 @@
     const widthChanges = Boolean(fromWidth && toWidth && fromWidth !== toWidth);
     if ((from === to && !widthChanges) || !from || prefersReducedMotion()) return null;
     const clipped = clipFittingScrollers(el);
-    const unpin = widthChanges ? pinWidth(pin) : () => {};
+    const unpin = widthChanges ? pinWidth(el, pin) : () => {};
     const anim = el.animate(sizeFrames(from, to, fromWidth, toWidth), {
       duration: TOKENS.morphMs,
       easing: springEasing(),
@@ -325,7 +341,7 @@
     const tasks = [];
     if (!reduced && (oldHeight !== newHeight || widthChanges)) {
       const clipped = clipFittingScrollers(container);
-      const unpin = widthChanges ? pinWidth(inner) : () => {};
+      const unpin = widthChanges ? pinWidth(container, inner) : () => {};
       const release = (result) => {
         releaseClips(container, clipped);
         unpin();

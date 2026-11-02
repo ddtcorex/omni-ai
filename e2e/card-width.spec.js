@@ -163,7 +163,7 @@ async function withPage(fixture, reply, body, { status, reducedMotion } = {}) {
     const page = await context.newPage();
     await page.setViewportSize({ width: 1400, height: 900 });
     if (reducedMotion) await page.emulateMedia({ reducedMotion: "reduce" });
-    await body(page, port);
+    await body(page, port, sw);
   } finally {
     await context.close();
     server.close();
@@ -377,4 +377,98 @@ test("under reduced motion the width snaps", async () => {
     },
     { reducedMotion: true },
   );
+});
+
+// The page card widens when its translation lands; a reading action picked
+// while that size follow still runs must not leave the content pinned at a
+// stale width (clipped text, Close cut off).
+test("a cached reading action right after a wide translation lands ends at the card's own width", async () => {
+  await withPage(FIXTURE, LONG, async (page, port, sw) => {
+    // Translations are long (the card widens), the summary is short: its
+    // card must come back to 320px, which a stale pin would break.
+    await page.context().unroute("**/generativelanguage.googleapis.com/**");
+    await page.context().route("**/generativelanguage.googleapis.com/**", (route) => {
+      const prompt = route.request().postData() || "";
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          candidates: [{ content: { parts: [{ text: /summar/i.test(prompt) ? SHORT : LONG }] } }],
+        }),
+      });
+    });
+    await page.goto(`http://127.0.0.1:${port}/`);
+    const openPageCard = async () => {
+      const box = await page.locator("#page").boundingBox();
+      await page.mouse.move(box.x + 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 6 });
+      await page.mouse.up();
+      await clickShadow(page, ".omni-ai-quick-btn");
+    };
+    // First pass: Summarize lands in the cache.
+    await openPageCard();
+    await waitShadow(page, ".omni-ai-suggestion-content");
+    await clickShadow(page, '.omni-ai-menu-item[data-action="summarize"]');
+    await waitShadow(page, ".omni-ai-result-text");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(
+      () =>
+        !document
+          .getElementById("omni-ai-shadow-host")
+          ?.shadowRoot?.querySelector(".omni-ai-overlay"),
+    );
+    // A language change keeps the translation out of the cache, so it lands
+    // again with a size follow; Summarize stays cached and renders at once.
+    await sw.evaluate(() => chrome.storage.sync.set({ primaryLanguage: "fr" }));
+    await openPageCard();
+    // Pick Summarize the frame the translation's size follow starts.
+    await page.waitForFunction(
+      () => {
+        const root = document.getElementById("omni-ai-shadow-host")?.shadowRoot;
+        const card = root?.querySelector(".omni-ai-overlay");
+        const ready =
+          card &&
+          root.querySelector(".omni-ai-suggestion-content") &&
+          card
+            .getAnimations()
+            .some((a) =>
+              /** @type {KeyframeEffect} */ (a.effect).getKeyframes().some((k) => "width" in k),
+            );
+        if (ready) root.querySelector('.omni-ai-menu-item[data-action="summarize"]').click();
+        return ready;
+      },
+      null,
+      { timeout: 8000, polling: "raf" },
+    );
+    await waitShadow(page, ".omni-ai-result-text");
+    await page.waitForFunction(
+      () => {
+        const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+        const card = root.querySelector(".omni-ai-overlay");
+        const inner = root.querySelector(".omni-ai-surface-inner");
+        return (
+          [...card.getAnimations(), ...inner.getAnimations()].every(
+            (a) => a.playState !== "running",
+          ) && Boolean(root.querySelector(".omni-ai-result-text"))
+        );
+      },
+      null,
+      { timeout: 8000, polling: "raf" },
+    );
+    const m = await page.evaluate(() => {
+      const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+      const card = root.querySelector(".omni-ai-overlay");
+      const inner = root.querySelector(".omni-ai-surface-inner");
+      return {
+        pinned: inner.style.width,
+        inner: inner.offsetWidth,
+        card: card.clientWidth,
+        width: card.offsetWidth,
+      };
+    });
+    expect(m.pinned).toBe("");
+    expect(m.width).toBe(320);
+    expect(m.inner).toBe(m.card);
+  });
 });

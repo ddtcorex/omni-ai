@@ -212,6 +212,63 @@ describe("motion helpers", () => {
     expect(inner.style.width).toBe("");
   });
 
+  // A second morph (or a swap's size follow) can start while the first's
+  // width animation still runs. Its cancel settles a tick later, so the first
+  // pin must be released when settleHeight stops it, not on that late tick,
+  // or the next render measures under the old pin and the late release
+  // restores the old pinned width for good.
+  test("a morph that supersedes a width morph renders unpinned and ends unpinned", async () => {
+    const container = document.createElement("div");
+    const inner = document.createElement("div");
+    container.appendChild(inner);
+    let width = 320;
+    Object.defineProperty(container, "offsetHeight", { get: () => 200 });
+    Object.defineProperty(container, "offsetWidth", { get: () => width });
+    Object.defineProperty(inner, "offsetWidth", { get: () => width - 2 });
+    const running = [];
+    Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+      let reject;
+      let resolve;
+      const finished = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+      finished.catch(() => {});
+      const anim = {
+        finished,
+        keyframes,
+        options,
+        el: this,
+        effect: { getKeyframes: () => keyframes },
+        cancel: jest.fn(() => reject(new Error("cancelled"))),
+        finish: () => resolve(),
+      };
+      calls.push(anim);
+      if (this === container) running.push(anim);
+      else resolve();
+      return anim;
+    });
+    container.getAnimations = () => running.filter((a) => !a.cancel.mock.calls.length);
+
+    const first = motion.morph(container, inner, () => {
+      width = 560;
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(inner.style.width).toBe("558px");
+
+    let widthAtRender = null;
+    const second = motion.morph(container, inner, () => {
+      widthAtRender = inner.style.width;
+      width = 320;
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(widthAtRender).toBe("");
+    running.forEach((a) => a.finish());
+    await Promise.all([first, second]);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(inner.style.width).toBe("");
+  });
+
   test("morph animates width alone when only the width changes", async () => {
     const container = document.createElement("div");
     const inner = document.createElement("div");
