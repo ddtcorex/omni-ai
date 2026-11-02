@@ -15,10 +15,6 @@
     "message": "Chiedi qualsiasi cosa a Omni AI...",
     "description": "Testo d'aiuto per domanda rapida"
   },
-  "popup_context": {
-    "message": "Contesto",
-    "description": "Titolo della sezione contesto"
-  },
   "popup_improveWriting": {
     "message": "Migliora Scrittura",
     "description": "Titolo della sezione miglioramento scrittura"
@@ -50,10 +46,6 @@
   "action_grammar": {
     "message": "Correggi Grammatica",
     "description": "Azione grammatica"
-  },
-  "desc_grammar": {
-    "message": "Corregge ortografia e grammatica",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Migliora Chiarezza",
@@ -94,10 +86,6 @@
   "status_ready": {
     "message": "Pronto",
     "description": "Stato pronto"
-  },
-  "status_processing": {
-    "message": "Elaborando...",
-    "description": "Stato elaborazione"
   },
   "status_error": {
     "message": "Errore",
@@ -251,10 +239,6 @@
   "overlay_result": {
     "message": "Risultato",
     "description": "Titolo risultato"
-  },
-  "status_thinking": {
-    "message": "Riflettendo...",
-    "description": "Stato riflessione"
   },
   "btn_back": {
     "message": "Indietro",
@@ -495,26 +479,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Crea una nuova chiave API"
   },
-  "overlay_suggested_fix": {
-    "message": "Correzione suggerita",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Accetta",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Ignora",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Nessun problema trovato",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Il testo sembra perfetto!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Traduzione Intelligente",
     "description": "Smart translation label"
@@ -700,5 +664,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Vuoi davvero cancellare questa conversazione?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Mostra modifiche",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Riprova",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Chiedi di questo testo…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Elaborazione…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

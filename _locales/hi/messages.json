@@ -59,10 +59,6 @@
     "message": "त्वरित क्रियाएँ मेन्यू दिखाएँ",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "संदर्भ",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "लेखन सुधारें",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "व्याकरण ठीक करें",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "वर्तनी और व्याकरण सुधारता है",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "स्पष्टता बढ़ाएँ",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "तैयार",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "प्रोसेस हो रहा है...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "त्रुटि",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "परिणाम",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "सोच रहा है...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "वापस",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "नई API कुंजी बनाएँ"
   },
-  "overlay_suggested_fix": {
-    "message": "सुझाया गया सुधार",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "स्वीकारें",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "खारिज करें",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "कोई समस्या नहीं मिली",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "टेक्स्ट बढ़िया है!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "स्मार्ट अनुवाद",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "क्या आप वाकई यह बातचीत साफ़ करना चाहते हैं?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "बदलाव दिखाएँ",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "फिर से कोशिश करें",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "इस टेक्स्ट के बारे में पूछें…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "काम जारी है…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

@@ -59,10 +59,6 @@
     "message": "הצג את תפריט הפעולות המהירות",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "הקשר",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "שיפור כתיבה",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "תיקון דקדוק",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "מתקן איות ודקדוק",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "שיפור בהירות",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "מוכן",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "מעבד...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "שגיאה",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "תוצאה",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "חושב...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "חזרה",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "צור מפתח API חדש"
   },
-  "overlay_suggested_fix": {
-    "message": "תיקון מוצע",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "אשר",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "התעלם",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "לא נמצאו בעיות",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "הטקסט נראה מצוין!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "תרגום חכם",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "האם למחוק את השיחה הזו?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "הצג שינויים",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "נסה שוב",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "שאל על הטקסט הזה…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "בעבודה…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

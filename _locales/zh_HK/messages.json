@@ -59,10 +59,6 @@
     "message": "顯示快捷操作選單",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "上下文",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "寫作增強",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "語法修正",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "糾正拼寫及語法",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "提升清晰度",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "就緒",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "處理中...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "錯誤",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "結果",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "思考中...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "返回",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "建立新的 API 密鑰"
   },
-  "overlay_suggested_fix": {
-    "message": "建議修改",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "接受",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "忽略",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "未發現問題",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "文字看起來很好！",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "智能翻譯",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "確定要清除此對話嗎？",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "顯示變更",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "重試",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "詢問這段文字…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "處理中…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

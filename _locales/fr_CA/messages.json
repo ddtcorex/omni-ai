@@ -59,10 +59,6 @@
     "message": "Afficher le menu des actions rapides",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Contexte",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Améliorer l'écriture",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "Corriger la grammaire",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "Corrige l'orthographe et la grammaire",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Améliorer la clarté",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "Prêt",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Traitement...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Erreur",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "Résultat",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Réflexion...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Retour",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Créez une nouvelle clé API"
   },
-  "overlay_suggested_fix": {
-    "message": "Correction suggérée",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Accepter",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Ignorer",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Aucun problème trouvé",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Le texte semble parfait !",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Traduction Intelligente",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Voulez-vous vraiment effacer cette conversation ?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Afficher les modifications",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Réessayer",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Posez une question sur ce texte…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Traitement…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

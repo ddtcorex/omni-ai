@@ -59,10 +59,6 @@
     "message": "Vis hurtighandlingsmenyen",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Kontekst",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Forbedre tekst",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "Rett grammatikk",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "Retter opp skrivefeil og grammatikk",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Forbedre klarhet",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "Klar",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Behandler...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Feil",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "Resultat",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Tenker...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Tilbake",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Opprett ny API-nøkkel"
   },
-  "overlay_suggested_fix": {
-    "message": "Foreslått rettelse",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Godta",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Avvis",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Ingen problemer funnet",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Teksten ser bra ut!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Smart oversettelse",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Er du sikker på at du vil tømme denne samtalen?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Vis endringer",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Prøv igjen",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Spør om denne teksten…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Arbeider…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

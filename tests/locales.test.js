@@ -99,7 +99,11 @@ describe("messages that take a substitution", () => {
     // reordered by a translator, which breaks verb-final languages. Any message
     // that is concatenated with a dynamic value belongs in this list.
     // Sorted, so this does not depend on where the keys sit in the file.
-    expect([...parameterised].sort()).toEqual(["error_apiKeyNotConfiguredFor", "ui_to"]);
+    expect([...parameterised].sort()).toEqual([
+      "error_apiKeyNotConfiguredFor",
+      "overlay_loading_action",
+      "ui_to",
+    ]);
   });
 
   test.each(parameterised)("en declares a placeholder definition for %s", (key) => {

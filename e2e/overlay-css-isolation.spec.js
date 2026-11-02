@@ -74,9 +74,9 @@ test("wraps a long unbroken token in the result card instead of overflowing it",
   }
 });
 
-test("wraps a long unbroken token in the auto grammar-check suggestion card", async () => {
+test("wraps a long unbroken token in the page-text translation card", async () => {
   const FIXTURE = `<!doctype html><html><body>
-    <input id="target" type="text" value="Hello world, this is a test." />
+    <p id="target">Hello world, this is a test.</p>
   </body></html>`;
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
@@ -87,25 +87,23 @@ test("wraps a long unbroken token in the auto grammar-check suggestion card", as
     const page = await context.newPage();
     await page.goto(`http://127.0.0.1:${port}/`);
 
-    await page.evaluate(() => {
-      const el = document.getElementById("target");
-      el.focus();
-      el.setSelectionRange(0, 5);
-    });
-    await page.locator("#target").dispatchEvent("mouseup");
+    const box = await page.locator("#target").boundingBox();
+    await page.mouse.move(box.x + 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
+    await page.mouse.up();
     await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
     await page.locator(".omni-ai-quick-btn").click();
 
-    // The grammar smart-fix check auto-fires when the menu opens on an
-    // input; wait for it to populate .omni-ai-suggestion-content.
-    const suggestionContent = page.locator(".omni-ai-suggestion-content");
-    await expect(suggestionContent).toBeVisible({ timeout: 5000 });
+    // The smart translation auto-fires when the card opens on page text;
+    // wait for it to populate .omni-ai-suggestion-content.
+    const suggestionContent = page.locator("#omniAiTranslateCard .omni-ai-suggestion-content");
     await expect(suggestionContent).toContainText("example.com", { timeout: 5000 });
 
     const overflow = await page.evaluate(() => {
       const el = document
         .getElementById("omni-ai-shadow-host")
-        .shadowRoot.querySelector(".omni-ai-suggestion-content");
+        .shadowRoot.querySelector("#omniAiTranslateCard .omni-ai-suggestion-content");
       return el.scrollWidth - el.clientWidth;
     });
     expect(overflow).toBeLessThanOrEqual(1);

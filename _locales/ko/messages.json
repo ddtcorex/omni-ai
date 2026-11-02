@@ -15,10 +15,6 @@
     "message": "Omni AI에게 무엇이든 물어보세요...",
     "description": "빠른 질문 플레이스홀더"
   },
-  "popup_context": {
-    "message": "컨텍스트",
-    "description": "컨텍스트 섹션 제목"
-  },
   "popup_improveWriting": {
     "message": "글쓰기 향상",
     "description": "글쓰기 향상 섹션 제목"
@@ -50,10 +46,6 @@
   "action_grammar": {
     "message": "문법 교정",
     "description": "문법 작업"
-  },
-  "desc_grammar": {
-    "message": "맞춤법 및 문법을 수정합니다",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "명확하게 다듬기",
@@ -94,10 +86,6 @@
   "status_ready": {
     "message": "준비됨",
     "description": "준비 완료 상태"
-  },
-  "status_processing": {
-    "message": "처리 중...",
-    "description": "처리 중 상태"
   },
   "status_error": {
     "message": "오류",
@@ -251,10 +239,6 @@
   "overlay_result": {
     "message": "결과",
     "description": "결과 제목"
-  },
-  "status_thinking": {
-    "message": "생각 중...",
-    "description": "생각 중 상태"
   },
   "btn_back": {
     "message": "뒤로",
@@ -495,26 +479,6 @@
   "settings_tooltip_openai_s3": {
     "message": "새 API 키를 생성합니다"
   },
-  "overlay_suggested_fix": {
-    "message": "수정 제안",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "수락",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "무시",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "문제가 발견되지 않았습니다",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "텍스트가 좋아 보입니다!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "스마트 번역",
     "description": "Smart translation label"
@@ -700,5 +664,30 @@
   "sidebar_chat_confirmClear": {
     "message": "이 대화를 지우시겠습니까?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "변경 사항 보기",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "다시 시도",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "이 텍스트에 대해 질문하기…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "작업 중…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

@@ -59,10 +59,6 @@
     "message": "Покажи менюто с бързи действия",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Контекст",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Подобри текста",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "Поправи граматиката",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "Коригира правописа и граматиката",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Подобри яснотата",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "Готово",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Обработва се...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Грешка",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "Резултат",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Мисля...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Назад",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Създай нов API ключ"
   },
-  "overlay_suggested_fix": {
-    "message": "Предложена поправка",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Приеми",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Отхвърли",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Няма открити проблеми",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Текстът изглежда чудесно!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Умен превод",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Наистина ли искаш да изчистиш този разговор?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Покажи промените",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Опитай отново",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Попитай за този текст…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Обработка…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

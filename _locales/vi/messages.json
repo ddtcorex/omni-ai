@@ -23,10 +23,6 @@
     "message": "Hiện Menu Thao Tác Nhanh",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Ngữ cảnh",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Cải thiện văn bản",
     "description": "Improve writing section title"
@@ -58,10 +54,6 @@
   "action_grammar": {
     "message": "Sửa ngữ pháp",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "Sửa chính tả và ngữ pháp",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Rõ ràng hơn",
@@ -102,10 +94,6 @@
   "status_ready": {
     "message": "Sẵn sàng",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Đang xử lý...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Lỗi",
@@ -304,10 +292,6 @@
   "overlay_result": {
     "message": "Kết quả",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Đang suy nghĩ...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Quay lại",
@@ -548,26 +532,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Tạo Khóa API mới"
   },
-  "overlay_suggested_fix": {
-    "message": "Đề xuất sửa lỗi",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Chấp nhận",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Bỏ qua",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Không tìm thấy lỗi",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Văn bản trông tuyệt vời!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Dịch Thông Minh",
     "description": "Smart translation label"
@@ -700,5 +664,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này không?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Hiện thay đổi",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Thử lại",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Hỏi về đoạn văn này…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Đang xử lý…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

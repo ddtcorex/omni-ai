@@ -15,10 +15,6 @@
     "message": "向 Omni AI 提问任何事...",
     "description": "快速提问占位符"
   },
-  "popup_context": {
-    "message": "上下文",
-    "description": "上下文部分标题"
-  },
   "popup_improveWriting": {
     "message": "写作增强",
     "description": "写作增强部分标题"
@@ -50,10 +46,6 @@
   "action_grammar": {
     "message": "语法修正",
     "description": "语法操作"
-  },
-  "desc_grammar": {
-    "message": "纠正拼写和语法",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "提高清晰度",
@@ -94,10 +86,6 @@
   "status_ready": {
     "message": "就绪",
     "description": "就绪状态"
-  },
-  "status_processing": {
-    "message": "处理中...",
-    "description": "处理中状态"
   },
   "status_error": {
     "message": "错误",
@@ -251,10 +239,6 @@
   "overlay_result": {
     "message": "结果",
     "description": "结果标题"
-  },
-  "status_thinking": {
-    "message": "思考中...",
-    "description": "思考状态"
   },
   "btn_back": {
     "message": "返回",
@@ -495,26 +479,6 @@
   "settings_tooltip_openai_s3": {
     "message": "创建新的 API 密钥"
   },
-  "overlay_suggested_fix": {
-    "message": "建议修改",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "接受",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "忽略",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "未发现问题",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "文本看起来很棒！",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "智能翻译",
     "description": "Smart translation label"
@@ -700,5 +664,30 @@
   "sidebar_chat_confirmClear": {
     "message": "确定要清空此对话吗？",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "显示更改",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "重试",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "询问这段文字…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "处理中…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

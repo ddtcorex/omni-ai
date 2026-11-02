@@ -59,10 +59,6 @@
     "message": "Rodyti spartaus veiksmų meniu",
     "description": "quick_menu command description: opens the quick-action menu at the current selection without clicking the floating icon"
   },
-  "popup_context": {
-    "message": "Kontekstas",
-    "description": "Context section title"
-  },
   "popup_improveWriting": {
     "message": "Pagerinti tekstą",
     "description": "Improve writing section title"
@@ -94,10 +90,6 @@
   "action_grammar": {
     "message": "Ištaisyti gramatiką",
     "description": "Grammar action"
-  },
-  "desc_grammar": {
-    "message": "Ištaiso rašybą ir gramatiką",
-    "description": "Description for grammar action"
   },
   "action_clarity": {
     "message": "Pagerinti aiškumą",
@@ -138,10 +130,6 @@
   "status_ready": {
     "message": "Paruošta",
     "description": "Status ready"
-  },
-  "status_processing": {
-    "message": "Apdorojama...",
-    "description": "Status processing"
   },
   "status_error": {
     "message": "Klaida",
@@ -340,10 +328,6 @@
   "overlay_result": {
     "message": "Rezultatas",
     "description": "Result title"
-  },
-  "status_thinking": {
-    "message": "Mąstoma...",
-    "description": "Thinking status"
   },
   "btn_back": {
     "message": "Atgal",
@@ -587,26 +571,6 @@
   "settings_tooltip_openai_s3": {
     "message": "Sukurkite naują API raktą"
   },
-  "overlay_suggested_fix": {
-    "message": "Siūlomas pataisymas",
-    "description": "Suggested fix label"
-  },
-  "overlay_accept": {
-    "message": "Priimti",
-    "description": "Accept button"
-  },
-  "overlay_dismiss": {
-    "message": "Atmesti",
-    "description": "Dismiss button"
-  },
-  "overlay_no_issues": {
-    "message": "Problemų nerasta",
-    "description": "No issues message"
-  },
-  "overlay_no_issues_content": {
-    "message": "Tekstas atrodo puikiai!",
-    "description": "No issues check details"
-  },
   "overlay_smart_translation": {
     "message": "Išmanusis vertimas",
     "description": "Smart translation label"
@@ -714,5 +678,30 @@
   "sidebar_chat_confirmClear": {
     "message": "Ar tikrai norite išvalyti šį pokalbį?",
     "description": "Clear chat session confirmation"
+  },
+  "overlay_show_changes": {
+    "message": "Rodyti pakeitimus",
+    "description": "Switch on an overlay result that shows the word diff against the selected text"
+  },
+  "overlay_try_again": {
+    "message": "Bandyti dar kartą",
+    "description": "Button that runs the same AI action again (overlay result and error states)"
+  },
+  "overlay_ask_about_text": {
+    "message": "Klauskite apie šį tekstą…",
+    "description": "Ask box placeholder on the card for selected page text that is not editable"
+  },
+  "overlay_loading_action": {
+    "message": "$ACTION$…",
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    },
+    "description": "Overlay loading header; $ACTION$ is the running action's label (for example 'Rephrase'), shown while the AI works"
+  },
+  "status_working": {
+    "message": "Apdorojama…",
+    "description": "Generic overlay loading header when the running action is not known"
   }
 }

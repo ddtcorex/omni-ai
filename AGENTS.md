@@ -55,8 +55,11 @@ omni-ai/
 |   `-- service-worker.js    # Message router, context menus, commands, side panel registration, history writes
 |-- content/
 |   |-- editor-adapters.js   # Classic-script registry for standard/rich-text/static editors
-|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint (classic script, tested via tests/content/positioning.test.js)
-|   |-- content.js           # ~2000 lines: selection tracking, floating button, menus,
+|   |-- positioning.js       # Pure helpers: clampToViewport, getRectEndPoint, placeCard, revealSide, toolbarCandidates, lastLineStart, samplePoints, clearOfCover (classic script, tested via tests/content/positioning.test.js)
+|   |-- ui/motion.js         # OMNI_MOTION: spring/morph/swap helpers on the Web Animations API (classic script, tested via tests/content/motion.test.js)
+|   |-- ui/surface.js        # OMNI_SURFACE: the single morphing card (`.omni-ai-overlay` + `.omni-ai-surface-inner`) and its menu/pageCard/ask/loading/result/error state machine (tests/content/surface.test.js)
+|   |-- ui/render-helpers.js # OMNI_RENDER: escapeHtml + diffHtml; every AI/page/error string reaches overlay markup through it (tests/content/render-helpers.test.js)
+|   |-- content.js           # ~2300 lines: selection tracking, floating button, menus,
 |   |                        #   overlay cards, text replacement, Shadow DOM host
 |   `-- overlay.css          # Styles injected INTO the shadow root via fetch()
 |-- sidepanel/                # Page Tools (Summarize / Smart Translate / Explain the
@@ -96,16 +99,17 @@ omni-ai/
 
 Content script ⇄ service worker (`chrome.tabs.sendMessage` / content `runtime.onMessage`):
 
-| Type                     | Direction           | Purpose                                                                                                                                |
-| ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                                                              |
-| `PROCESSING_START`       | bg → content        | Show spinner state before an async action                                                                                              |
-| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`                                                               |
-| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                                                                      |
-| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                                                              |
-| `SHOW_QUICK_ACTION_MENU` | bg → content        | Open the quick-action menu at the current selection (Alt+O), same menu the floating icon's click opens; no-ops if there's no selection |
-| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                                                        |
-| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`)                                         |
+| Type                     | Direction           | Purpose                                                                                                                                                                                                                         |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET_SELECTION`          | bg → content        | Return `{ selection, isInput }` for the current selection                                                                                                                                                                       |
+| `PROCESSING_START`       | bg → content        | Open the card in its loading state `{ action? }`; the action names the header, absent means the generic "Working…" header                                                                                                       |
+| `SHOW_RESULT`            | bg → content        | Render result card `{ action, result, error?, originalText?, isInput? }`; `error: true` (or an `"Error: "` prefix) opens the error state; dropped when it answers a keyboard command or retry whose card was closed or moved on |
+| `REPLACE_SELECTION`      | bg → content        | Swap selection with the AI result                                                                                                                                                                                               |
+| `SHOW_QUICK_ASK_OVERLAY` | bg → content        | Open Quick Ask overlay (keyboard command)                                                                                                                                                                                       |
+| `SHOW_QUICK_ACTION_MENU` | bg → content        | Open the quick-action menu at the current selection (Alt+O), same menu the floating icon's click opens; no-ops if there's no selection                                                                                          |
+| `THEME_CHANGED`          | bg → all tabs       | Re-read theme after `omni_ai_theme` sync change                                                                                                                                                                                 |
+| `GET_PAGE_CONTENT`       | sidepanel → content | Page content for the side panel's Page Tools actions (`sidepanel.js` `getActivePageContent()`)                                                                                                                                  |
+| `RERUN_ACTION`           | content → bg        | Retry of a worker-run result `{ action, text, isInput }`; the worker re-runs it, replies `{ success }` synchronously, then sends `SHOW_RESULT` to the sender frame                                                              |
 
 Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MUST return `true` for async!):
 
@@ -152,7 +156,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 
 1. Add the action function/prompt in `lib/ai-service.js` (system prompts live in `getSystemPrompt()`).
 2. Route it in `handleQuickAction()` in `background/service-worker.js`.
-3. Add the button + icon to `showQuickActionMenu()` in `content/content.js`.
+3. Add the button + icon to `buildMenuMarkup()` in `content/content.js` (called by `renderMenuState()`; `showQuickActionMenu()` only opens the surface).
 4. Add display-name mapping and i18n keys in `_locales/*/messages.json`.
 
 ### Adding a Translation Language
