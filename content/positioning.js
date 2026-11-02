@@ -77,11 +77,19 @@
     return { top: last.bottom, left: last.right };
   }
 
+  // The least room above the anchor worth opening into when the card does
+  // not fit there whole; less than this, the card overlaps the anchor.
+  const MIN_ROOM_ABOVE = 160;
+
   /**
    * Place a card next to an anchor (the toolbar or the selection). Opens
    * below the anchor, left-aligned with it, and flips above when it does not
-   * fit below and there is more room above. The card is kept inside the
-   * viewport horizontally. `anchor` is viewport-relative (a client rect);
+   * fit below, there is more room above, and that room fits the card or is
+   * at least MIN_ROOM_ABOVE (the body scrolls inside it). Otherwise it stays
+   * below, shifted up over the anchor when it has no room there: the card
+   * always stays inside the viewport, overlapping the selection if it must.
+   * `maxHeight` is the room between the card's pinned edge and the
+   * viewport's edge. The card is kept inside the viewport horizontally. `anchor` is viewport-relative (a client rect);
    * the returned top/left are document-relative. For "above", `top` is where
    * the card's top edge sits at the given height, so its bottom edge is
    * `anchor.top - gap` (the edge the caller should pin, see content.js).
@@ -94,10 +102,6 @@
    * @param {number} [gap]
    * @returns {{top: number, left: number, placement: "below" | "above", maxHeight: number}}
    */
-  // The least room above the anchor worth opening into when the card does
-  // not fit there whole; less than this, the card overlaps the anchor.
-  const MIN_ROOM_ABOVE = 160;
-
   function placeCard(anchor, card, viewport, gap = 8) {
     const margin = 10;
     const maxHeight = viewport.height - 20;

@@ -1770,6 +1770,8 @@ function fitCardWidth(card, state) {
   const selector = TEXT_BODY_SELECTOR[state];
   const text = selector ? card.querySelector(selector) : null;
   card.style.width = "";
+  // Measured free of the previous placement's cap (positionOverlay sets it).
+  card.style.maxWidth = "none";
   if (!text || !positioning?.cardWidth) return;
   const width = positioning.cardWidth(text.scrollHeight, viewportWidth());
   if (width !== positioning.CARD_BASE_WIDTH) card.style.width = `${width}px`;
@@ -2170,6 +2172,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
   overlay.style.display = "flex";
   overlay.style.visibility = "hidden";
   overlay.style.maxHeight = "none";
+  overlay.style.maxWidth = "none";
   overlay.style.position = "";
 
   const viewWidth = viewportWidth();
@@ -2222,7 +2225,11 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
       if (!moved) return;
       const leftCss = parseFloat(overlay.style.left) || 0;
       if (moved.placement === "above") applyAbove(leftCss, cb.bottom - moved.bottom);
-      else applyBelow(moved.top - cb.top, leftCss);
+      else {
+        applyBelow(moved.top - cb.top, leftCss);
+        // Moved below the host's bar: its room ends at the window's bottom.
+        overlay.style.maxHeight = `${Math.max(0, Math.min(viewportHeight - 20, viewportHeight - 10 - moved.top))}px`;
+      }
     }
   };
 
@@ -2234,6 +2241,15 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     return viewportLeft - originX;
   };
 
+  // Caps the width at the room to the window's right margin, so the width
+  // spring's overshoot of a widening card is clamped there. Its final width
+  // already fits: the left edge was moved for it.
+  const capWidthToWindow = () => {
+    const leftCss = parseFloat(overlay.style.left) || 0;
+    const originX = overlay.style.position === "fixed" ? 0 : cb.left;
+    overlay.style.maxWidth = `${Math.max(0, viewWidth - 10 - (leftCss + originX))}px`;
+  };
+
   if (lockedPosition) {
     if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
       applyAbove(fitLeft(lockedPosition.left, cb.left), lockedPosition.bottom);
@@ -2243,16 +2259,10 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
       const overlayHeight = overlay.offsetHeight || 400;
       let top = lockedPosition.top + origin; // viewport y
       const available = viewportHeight - 10 - top;
-
-      if (overlayHeight > available && available >= 200) {
-        // Keep the top edge still and scroll inside the card.
-        overlay.style.maxHeight = `${available}px`;
-      } else {
-        overlay.style.maxHeight = `${viewportHeight - 20}px`;
-        // Not enough room even to scroll: shift up.
-        if (top + overlayHeight > viewportHeight - 10) {
-          top = Math.max(10, viewportHeight - 10 - overlayHeight);
-        }
+      // The top edge stays and the body scrolls when at least 200px are left
+      // below it; with less, the card moves up just enough to fit.
+      if (overlayHeight > available && available < 200) {
+        top = Math.max(10, viewportHeight - 10 - overlayHeight);
       }
       if (top < 10) top = 10;
       // Capped at the room down to the window's edge, so a spring overshoot
@@ -2266,6 +2276,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     }
     overlay.style.transform = "none";
     stepClearOfHost(anchorRect);
+    capWidthToWindow();
     overlay.style.visibility = "visible";
     return;
   }
@@ -2303,6 +2314,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     overlay.dataset.placement = "center";
   }
 
+  capWidthToWindow();
   overlay.style.visibility = "visible";
 }
 

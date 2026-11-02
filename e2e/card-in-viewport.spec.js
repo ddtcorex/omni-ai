@@ -259,3 +259,27 @@ for (const viewport of VIEWPORTS) {
     });
   });
 }
+
+// Text against the right edge: the card is clamped left so its final width
+// fits, and the width spring's overshoot must not cross the right margin.
+const PAGE_RIGHT = `<!doctype html><html><body style="margin:0">
+  <div id="long" style="position:absolute;top:200px;right:20px;width:300px;font:14px/20px sans-serif">${PARAGRAPH}</div>
+</body></html>`;
+
+for (const viewport of VIEWPORTS) {
+  test(`${viewport.width}x${viewport.height}: a page card widening at the right edge stays inside the window on every frame`, async () => {
+    await withPage(PAGE_RIGHT, viewport, async (page) => {
+      const box = await page.locator("#long").boundingBox();
+      await page.mouse.move(box.x + 2, box.y + 5);
+      await page.mouse.down();
+      await page.mouse.move(box.x + box.width - 5, box.y + 45, { steps: 8 });
+      await page.mouse.up();
+      await startSampling(page);
+      await clickQuickButton(page);
+      await waitTranslationSettled(page);
+      const frames = await stopSampling(page);
+      expect(Math.max(...frames.map((f) => f.right - f.left))).toBeGreaterThan(320);
+      expectEveryFrameInside(frames, 0);
+    });
+  });
+}
