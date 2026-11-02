@@ -394,6 +394,35 @@ const BELOW_FOLD = (
   <p id="line" style="position:absolute;top:1650px;left:40px;margin:0">Some plain page text near the bottom to select.</p>
 </body></html>`;
 
+// Click the quick button with the real mouse where it sits, once its enter
+// animation is over. Playwright's element click scrolls a target "into view"
+// whenever it judges it not in view or retries one that is still moving
+// (the toolbar springs in): near the viewport edge that scrolled the page
+// under the selection these tests measure (scrollY 1000 -> 1669 in the
+// flaky runs). A user's click never scrolls the page.
+async function clickToolbarInPlace(page) {
+  await page.waitForFunction(
+    () => {
+      const root = document.getElementById("omni-ai-shadow-host")?.shadowRoot;
+      const toolbar = root?.querySelector(".omni-ai-toolbar");
+      const btn = root?.querySelector(".omni-ai-quick-btn");
+      if (!toolbar || !btn || toolbar.getAnimations().length > 0) return false;
+      const r = btn.getBoundingClientRect();
+      return r.width > 0 && r.top >= 0 && r.bottom <= window.innerHeight;
+    },
+    null,
+    { timeout: 8000 },
+  );
+  const center = await page.evaluate(() => {
+    const r = document
+      .getElementById("omni-ai-shadow-host")
+      .shadowRoot.querySelector(".omni-ai-quick-btn")
+      .getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  });
+  await page.mouse.click(center.x, center.y);
+}
+
 async function openCardOnBelowFoldText(page, port) {
   await page.goto(`http://127.0.0.1:${port}/`);
   await page.evaluate(() => window.scrollTo(0, 1000));
@@ -402,22 +431,7 @@ async function openCardOnBelowFoldText(page, port) {
   await page.mouse.down();
   await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 8 });
   await page.mouse.up();
-  // The toolbar is placed after the mouseup. Click only once it sits inside
-  // the viewport: Playwright scrolls an off-screen target into view, which
-  // would move the page under the selection this test measures against.
-  await page.waitForFunction(
-    () => {
-      const btn = document
-        .getElementById("omni-ai-shadow-host")
-        ?.shadowRoot?.querySelector(".omni-ai-quick-btn");
-      if (!btn) return false;
-      const r = btn.getBoundingClientRect();
-      return r.top >= 0 && r.bottom <= window.innerHeight && r.width > 0;
-    },
-    null,
-    { timeout: 8000 },
-  );
-  await clickShadow(page, ".omni-ai-quick-btn");
+  await clickToolbarInPlace(page);
   await page.waitForFunction(
     () =>
       document
@@ -590,7 +604,7 @@ test("a field taller than the viewport with its top scrolled away still opens th
       el.setSelectionRange(6, 11);
     });
     await page.locator("#target").dispatchEvent("mouseup", { clientX: 300, clientY: 690 });
-    await clickShadow(page, ".omni-ai-quick-btn");
+    await clickToolbarInPlace(page);
     await page.waitForFunction(
       () =>
         document
@@ -627,7 +641,7 @@ test("a long page selection whose start is scrolled away still opens the card ab
       window.scrollTo(0, 700);
     });
     await page.locator("#long").dispatchEvent("mouseup", { clientX: 300, clientY: 690 });
-    await clickShadow(page, ".omni-ai-quick-btn");
+    await clickToolbarInPlace(page);
     await page.waitForFunction(
       () =>
         document
