@@ -142,6 +142,55 @@ describe("motion helpers", () => {
     expect(calls.filter((c) => c.el === inner)).toHaveLength(2);
   });
 
+  // A fast or cached result renders while the previous state's height morph
+  // still runs: placement must measure the real new height, and the new
+  // morph must start from the height the card shows at that moment.
+  test("morph stops a running height animation before render and starts from the shown height", async () => {
+    const container = document.createElement("div");
+    const inner = document.createElement("div");
+    container.appendChild(inner);
+    const order = [];
+    const heightAnim = {
+      effect: { getKeyframes: () => [{ height: "166px" }, { height: "96px" }] },
+      cancel: jest.fn(() => order.push("cancel height")),
+    };
+    const enterAnim = {
+      effect: { getKeyframes: () => [{ opacity: 0 }, { opacity: 1 }] },
+      cancel: jest.fn(),
+    };
+    container.getAnimations = () => [heightAnim, enterAnim];
+    // 166 before the fade out starts, 120 mid-flight once it ran, 372 rendered.
+    let rendered = false;
+    Object.defineProperty(container, "offsetHeight", {
+      get: () => (rendered ? 372 : calls.some((c) => c.el === inner) ? 120 : 166),
+    });
+    await motion.morph(container, inner, () => {
+      order.push("render");
+      rendered = true;
+    });
+    expect(order).toEqual(["cancel height", "render"]);
+    expect(enterAnim.cancel).not.toHaveBeenCalled();
+    const heightCall = calls.find((c) => c.el === container);
+    expect(heightCall.keyframes.map((k) => k.height)).toEqual(["120px", "372px"]);
+  });
+
+  test("settleHeight returns the shown height, then stops only height animations", () => {
+    const el = document.createElement("div");
+    let shown = 118;
+    Object.defineProperty(el, "offsetHeight", { get: () => shown });
+    const heightAnim = {
+      effect: { getKeyframes: () => [{ height: "100px" }, { height: "140px" }] },
+      cancel: jest.fn(() => {
+        shown = 140;
+      }),
+    };
+    const fadeAnim = { effect: { getKeyframes: () => [{ opacity: 0 }] }, cancel: jest.fn() };
+    el.getAnimations = () => [heightAnim, fadeAnim];
+    expect(motion.settleHeight(el)).toBe(118);
+    expect(heightAnim.cancel).toHaveBeenCalled();
+    expect(fadeAnim.cancel).not.toHaveBeenCalled();
+  });
+
   test("swap renders between a fade out and a fade in", async () => {
     const el = document.createElement("div");
     const render = jest.fn(() => {

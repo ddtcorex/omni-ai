@@ -1606,7 +1606,9 @@ function swapSlot(el, render) {
   const motion = /** @type {any} */ (self).OMNI_MOTION;
   return motion.swap(el, () => {
     const card = overlay;
-    const before = card ? card.offsetHeight : 0;
+    // The shown height, with any height follow still running stopped, so
+    // placement below measures the new content at its real height.
+    const before = card ? motion.settleHeight(card) : 0;
     render();
     if (card && card.isConnected) {
       animateCardHeight(card, before, card.offsetHeight);

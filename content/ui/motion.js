@@ -173,6 +173,29 @@
   }
 
   /**
+   * The height `el` shows right now, then stop every height animation on it
+   * (a morph or a height follow still in flight), so the next measurement
+   * reads the real height of what is rendered. Other animations (the card's
+   * enter, a fade) keep running.
+   * @param {HTMLElement} el
+   * @returns {number}
+   */
+  function settleHeight(el) {
+    const shown = el.offsetHeight;
+    const anims = typeof el.getAnimations === "function" ? el.getAnimations() : [];
+    anims.forEach((anim) => {
+      const effect = /** @type {KeyframeEffect | null} */ (anim.effect);
+      const frames =
+        effect && typeof effect.getKeyframes === "function" ? effect.getKeyframes() : [];
+      if (frames.some((frame) => "height" in frame)) {
+        anim.cancel();
+        if (running.get(el) === anim) running.delete(el);
+      }
+    });
+    return shown;
+  }
+
+  /**
    * Fade `inner` out, run `render`, animate `container` height from its old
    * to its new measured height, fade `inner` back in. A morph superseded by a
    * newer animation on `inner` stops without calling `render`; a `render`
@@ -186,8 +209,11 @@
     const reduced = prefersReducedMotion();
     const outMs = reduced ? TOKENS.reducedOutMs : TOKENS.swapOutMs;
     const inMs = reduced ? TOKENS.reducedInMs : TOKENS.swapInMs;
-    const oldHeight = container.offsetHeight;
     if (!(await fade(inner, 1, 0, outMs))) return;
+    // Read after the fade: a previous morph may still be changing the height
+    // (a fast or cached result), and placement in `render` must measure the
+    // new content at its real height, not at that animation's frame.
+    const oldHeight = settleHeight(container);
     // `render` returns false when the transition was superseded (a close, a
     // newer state) while the fade ran: stop, so the height morph never takes
     // over the container's running animation (a closing card's exit).
@@ -363,6 +389,7 @@
     TOKENS,
     readTokens,
     refreshTokens,
+    settleHeight,
     prefersReducedMotion,
     enter,
     exit,
