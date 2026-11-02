@@ -891,11 +891,14 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
   );
 }
 
-// Forget the captured rich text range once the editor's own selection no
-// longer matches it. Only a selection inside that editor counts: a click on
-// the card (focus and selection in the extension's UI) or anywhere else
-// keeps it, so Replace after Back, retry or a tone switch still writes over
-// the selection the result was made for.
+// Forget the captured rich text range once the editor's own selection
+// moved off it: collapsed to a caret, or selecting other text. Only a
+// selection inside that editor counts: a click on the card (focus and
+// selection in the extension's UI) or anywhere else keeps it, so Replace
+// after Back, retry or a tone switch still writes over the selection the
+// result was made for. Editors that re-set the same selection with other
+// boundary nodes (ProseMirror, Lexical, Slate) keep it too: ranges are
+// compared by their text positions in the editor, not by node.
 function dropStaleRange() {
   if (!lastRange) return;
   const adapters = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS;
@@ -907,15 +910,32 @@ function dropStaleRange() {
   if (!sel || sel.rangeCount === 0) return;
   const live = sel.getRangeAt(0);
   if (!host.contains(live.startContainer)) return;
-  const same =
-    !live.collapsed &&
-    live.startContainer === lastRange.startContainer &&
-    live.startOffset === lastRange.startOffset &&
-    live.endContainer === lastRange.endContainer &&
-    live.endOffset === lastRange.endOffset;
-  if (same) return;
+  if (!live.collapsed) {
+    const was = textSpan(host, lastRange);
+    const now = textSpan(host, live);
+    if (was && now && was.start === now.start && was.end === now.end) {
+      // The same text: follow the editor's own nodes, which it may replace.
+      lastRange = live.cloneRange();
+      return;
+    }
+  }
   lastRange = null;
   lastRangeHadText = false;
+}
+
+// A range's start and end as character offsets into the editor's text, or
+// null when it is not inside the editor any more.
+function textSpan(host, range) {
+  if (!host.contains(range.startContainer) || !host.contains(range.endContainer)) return null;
+  try {
+    const before = document.createRange();
+    before.selectNodeContents(host);
+    before.setEnd(range.startContainer, range.startOffset);
+    const start = before.toString().length;
+    return { start, end: start + range.toString().length };
+  } catch {
+    return null;
+  }
 }
 
 // The toolbar belongs to the selection (spec "Floating toolbar"): it stays
@@ -2718,9 +2738,10 @@ async function replaceSelectedText(newText, specificElement = null, originalText
 // field still holds that text (it was edited while the card was open, or the
 // selection the result was for was typed over), compared without whitespace
 // since editors lay lines and spaces out their own way. Without the text to
-// compare (a REPLACE_SELECTION message), a rich text selection that collapsed
-// after it was captured is the only sign. A replace of a live selection is
-// never refused.
+// compare (a REPLACE_SELECTION message carries none), a captured rich text
+// range that collapsed before selectionchange dropped it is the only sign.
+// A selection replace is never refused here: the editor adapter writes over
+// the saved or live selection, or fails, and never widens to the whole field.
 function selectionGone(context, element, fullText, originalText) {
   if (!fullText) return false;
   if (originalText) {

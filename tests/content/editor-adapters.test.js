@@ -162,6 +162,30 @@ describe("editor adapter registry", () => {
     }
   });
 
+  // A selection replace never widens to the whole editor: with no saved
+  // range it writes over the live selection, and with neither it fails.
+  test("a selection replace with no saved range writes over the live selection", async () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "Hello world";
+    document.body.appendChild(editor);
+    selectWord(editor, 6, 11);
+    const result = await registry.replaceViaAdapters(editor, { lastRange: null }, "Omni");
+    expect(result.ok).toBe(true);
+    expect(editor.textContent).toBe("Hello Omni");
+  });
+
+  test("a selection replace with no saved range and no selection fails and changes nothing", async () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "Hello world";
+    document.body.appendChild(editor);
+    window.getSelection().removeAllRanges();
+    const result = await registry.replaceViaAdapters(editor, { lastRange: null }, "Omni");
+    expect(result.ok).toBe(false);
+    expect(editor.textContent).toBe("Hello world");
+  });
+
   test("finds an editable host through an open shadow root", () => {
     const editor = document.createElement("div");
     editor.setAttribute("contenteditable", "true");

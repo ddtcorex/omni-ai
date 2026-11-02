@@ -42,16 +42,26 @@
     return !!(host && range && host.contains(range.commonAncestorContainer));
   }
 
+  // The range a replace writes over, selected in the editor: the whole
+  // editor only for an explicit whole-field replace; otherwise the saved
+  // selection, or the editor's live selection when the saved one is gone.
+  // Null when there is no selection to write over: a selection replace never
+  // widens to the whole editor.
   function restoreRange(host, savedRange, fullText) {
     const documentRef = host.ownerDocument;
     const selection = selectionFor(host);
-    let range = savedRange && savedRange.cloneRange?.();
+    let range = null;
 
-    if (!rangeBelongsTo(host, range)) {
+    if (fullText) {
       range = documentRef.createRange();
       range.selectNodeContents(host);
+    } else if (rangeBelongsTo(host, savedRange) && !savedRange.collapsed) {
+      range = savedRange.cloneRange();
+    } else if (selection?.rangeCount) {
+      const live = selection.getRangeAt(0);
+      if (!live.collapsed && rangeBelongsTo(host, live)) range = live.cloneRange();
     }
-    if (fullText) range.selectNodeContents(host);
+    if (!range) return null;
 
     selection?.removeAllRanges();
     selection?.addRange(range);
@@ -124,8 +134,14 @@
       const host = getEditableHost(element);
       if (!host) return false;
 
-      host.focus();
+      // Read the live selection before focusing: focus can move it.
       const range = restoreRange(host, state?.lastRange, state?.fullText);
+      if (!range) return false;
+      host.focus();
+      // Focusing may reset the caret: select the range again.
+      const selection = selectionFor(host);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
 
       // Whether the native edit touched the editor at all. Its text alone
       // cannot tell: a result equal to the selection leaves it unchanged.
@@ -158,7 +174,6 @@
       const caret = host.ownerDocument.createRange();
       if (last) caret.setStartAfter(last);
       caret.collapse(true);
-      const selection = selectionFor(host);
       selection?.removeAllRanges();
       selection?.addRange(caret);
       const fallbackEdited = observer.takeRecords().length > 0;

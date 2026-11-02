@@ -648,3 +648,39 @@ for (const key of ["End", "Home", "ArrowRight"]) {
     });
   });
 }
+
+// Editors (ProseMirror, Lexical, Slate) re-set the DOM selection to an
+// equivalent range with other boundary nodes. That is the same selection:
+// Replace writes over it, never over the whole editor.
+test("Replace after the editor re-set an equivalent selection writes over that selection only", async () => {
+  const html = `<!doctype html><html><body><div id="ce" contenteditable="true" style="width:400px"><p>Hello <b>world</b>, this is a test.</p></div></body></html>`;
+  await withPage(html, "WORLD", async (page) => {
+    await page.evaluate(() => {
+      const el = document.getElementById("ce");
+      el.focus();
+      const text = el.querySelector("b").firstChild;
+      const range = document.createRange();
+      range.setStart(text, 0);
+      range.setEnd(text, 5);
+      getSelection().removeAllRanges();
+      getSelection().addRange(range);
+    });
+    await page.locator("#ce").dispatchEvent("mouseup");
+    await waitToolbar(page);
+    // Same text selected, element boundaries instead of text boundaries.
+    await page.evaluate(() => {
+      const b = document.querySelector("b");
+      getSelection().setBaseAndExtent(b, 0, b, 1);
+    });
+    await page.evaluate(
+      () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+    );
+    expect(await page.evaluate(() => getSelection().toString())).toBe("world");
+    await clickShadow(page, ".omni-ai-quick-btn");
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitForResult(page, "WORLD");
+    await clickShadow(page, "#omniAiReplace");
+    await expect.poll(() => fieldText(page, "ce")).toBe("Hello WORLD, this is a test.");
+    await expect.poll(() => cardCount(page)).toBe(0);
+  });
+});
