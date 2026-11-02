@@ -180,3 +180,41 @@ test("the panel does not overflow at 280px with long labels", async () => {
     await context.close();
   }
 });
+
+test("tools read as pills, loading shimmers and results wear the glass", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    await page.locator("#tabTools").click();
+
+    const btn = page.locator("#summarizeBtn");
+    await expect(btn).toHaveClass(/ds-pill/);
+    const radius = await btn.evaluate((el) => getComputedStyle(el).borderRadius);
+    expect(radius).not.toBe("0px");
+
+    await page.evaluate(() => {
+      document.getElementById("loadingSpinner").classList.remove("hidden");
+    });
+    // #loadingSpinner is the .ds-shimmer element itself, so its lines are
+    // its own children, not grandchildren.
+    await expect(page.locator("#loadingSpinner.ds-shimmer span")).toHaveCount(3);
+
+    await page.evaluate(() => {
+      document.getElementById("resultArea").classList.remove("hidden");
+    });
+    const filter = await page
+      .locator("#resultArea")
+      .evaluate((el) => getComputedStyle(el).backdropFilter);
+    expect(filter).not.toBe("none");
+
+    await page.setViewportSize({ width: 280, height: 700 });
+    const overflows = await page.evaluate(() =>
+      Array.from(document.querySelectorAll(".action-buttons .ds-pill")).some(
+        (el) => el.scrollWidth > el.clientWidth + 1,
+      ),
+    );
+    expect(overflows).toBe(false);
+  } finally {
+    await context.close();
+  }
+});

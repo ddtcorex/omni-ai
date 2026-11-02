@@ -84,7 +84,7 @@ body {
 .page-tools-title {
   font-size: 12px;
   font-weight: 600;
-  color: var(--omni-text-secondary);
+  color: var(--omni-glass-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--omni-spacing-sm);
@@ -96,26 +96,68 @@ body {
   gap: var(--omni-spacing-sm);
 }
 
-/* .action-btn is now .ds-btn-primary from lib/design-system.css */
+/* The three tools keep ds-btn-primary (an e2e pin and the shared action
+   class), but they read as pill rows: gradient is reserved for the single
+   primary action of a view, which here is the send button. This selector
+   outranks .ds-btn-primary from lib/design-system.css. */
+.action-buttons .ds-btn-primary {
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--omni-spacing-sm);
+  padding: var(--omni-spacing-sm) var(--omni-spacing-md);
+  background: var(--omni-pill-bg);
+  color: var(--omni-glass-text);
+  border-radius: var(--omni-radius-full);
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.action-buttons .ds-btn-primary:hover {
+  background: var(--omni-pill-hover);
+  filter: none;
+}
+
+.action-buttons .ds-btn-primary:active {
+  transform: scale(var(--omni-motion-press));
+}
+
 .action-icon {
-  font-size: 16px;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--omni-radius-sm);
+  background: var(--omni-tint-soft);
+  color: var(--omni-accent);
+  flex: none;
+}
+
+.action-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .status-line {
   font-size: 12px;
-  color: var(--omni-text-secondary);
+  color: var(--omni-glass-text-secondary);
   text-align: center;
   margin-top: var(--omni-spacing-xs);
 }
 
 .status-line.error {
-  color: var(--omni-error);
+  background: var(--omni-error-surface);
+  color: var(--omni-error-text);
+  border-radius: var(--omni-radius-sm);
+  padding: var(--omni-spacing-sm);
+  text-align: left;
 }
 
 .status-line.hidden,
 .result-area.hidden,
 .ds-card.hidden,
-.ds-spinner.hidden {
+.ds-spinner.hidden,
+.ds-shimmer.hidden {
   display: none;
 }
 
@@ -130,7 +172,7 @@ body {
 .result-label {
   font-size: 11px;
   font-weight: 600;
-  color: var(--omni-text-secondary);
+  color: var(--omni-glass-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--omni-spacing-xs);
@@ -138,7 +180,7 @@ body {
 
 .result-source {
   font-size: 11px;
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-tertiary);
   margin-bottom: var(--omni-spacing-xs);
 }
 
@@ -148,6 +190,8 @@ body {
 
 .result-text {
   font-size: 13px;
+  line-height: 1.55;
+  color: var(--omni-glass-text);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
