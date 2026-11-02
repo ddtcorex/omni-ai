@@ -26,6 +26,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "exclude_matches": ["https://challenges.cloudflare.com/*"],
       "js": [
         "content/editor-adapters.js",
         "content/positioning.js",
