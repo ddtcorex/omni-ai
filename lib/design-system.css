@@ -35,7 +35,10 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: var(--omni-accent-gradient);
+  /* AA with white text. --omni-accent-gradient is only 4.23:1 on its violet
+     end and 2.43:1 on its cyan end, so the primary button uses the deeper
+     gradient the overlay adopted on 2026-10-30. */
+  background: var(--omni-button-gradient);
   color: white;
   border: none;
   font-weight: 500;
@@ -50,8 +53,12 @@
 }
 
 .ds-btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+/* Press feedback matches the overlay: scale on :active, never on hover. */
+.ds-btn-primary:active {
+  transform: scale(var(--omni-motion-press));
 }
 
 .ds-btn-primary:disabled {
@@ -74,12 +81,11 @@
 }
 
 .ds-btn-primary--lg:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+  box-shadow: var(--omni-accent-glow);
 }
 
 .ds-btn-primary--lg:active {
-  transform: translateY(0);
+  transform: scale(var(--omni-motion-press));
 }
 
 .ds-btn-secondary {
@@ -121,6 +127,17 @@
 @media (prefers-reduced-motion: reduce) {
   .ds-spinner {
     animation-duration: 1.5s;
+  }
+
+  /* Slow the shimmer rather than stopping it: loading must stay perceivable. */
+  .ds-shimmer span {
+    animation-duration: 3s;
+  }
+
+  .ds-pill:active,
+  .ds-btn-primary:active,
+  .ds-btn-primary--lg:active {
+    transform: none;
   }
 }
 
@@ -169,4 +186,132 @@
 
 .ds-card--processing {
   border-color: var(--omni-accent);
+}
+
+/* ============================================
+   Page surfaces (settings.html, sidepanel.html)
+   The overlay's material, expressed as classes both plain documents can use.
+   ============================================ */
+
+.ds-surface {
+  background: var(--omni-glass-surface);
+  backdrop-filter: var(--omni-glass-filter);
+  -webkit-backdrop-filter: var(--omni-glass-filter);
+  border: 1px solid var(--omni-glass-border);
+  border-radius: var(--omni-radius-lg);
+  box-shadow:
+    var(--omni-glass-shadow),
+    0 0 0 1px var(--omni-glass-ring);
+  color: var(--omni-glass-text);
+}
+
+.ds-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--omni-spacing-sm);
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--omni-radius-full);
+  background: var(--omni-pill-bg);
+  color: var(--omni-glass-text-secondary);
+  font-family: var(--omni-font-family);
+  font-size: var(--omni-font-sm);
+  line-height: 16px;
+  cursor: pointer;
+  transition:
+    background-color var(--omni-transition-fast),
+    color var(--omni-transition-fast);
+}
+
+.ds-pill:hover,
+.ds-pill:focus-visible {
+  background: var(--omni-pill-hover);
+  color: var(--omni-glass-text);
+  outline: none;
+}
+
+.ds-pill:active {
+  transform: scale(var(--omni-motion-press));
+}
+
+.ds-field {
+  background: var(--omni-pill-bg);
+  border: 1px solid transparent;
+  border-radius: var(--omni-radius-md);
+  color: var(--omni-glass-text);
+  font-family: var(--omni-font-family);
+  padding: 8px 10px;
+  transition:
+    box-shadow var(--omni-transition-fast),
+    background-color var(--omni-transition-fast),
+    border-color var(--omni-transition-fast);
+}
+
+.ds-field:focus,
+.ds-field:focus-visible {
+  outline: none;
+  border-color: var(--omni-accent);
+  background: var(--omni-glass-heavy);
+  box-shadow: 0 0 0 3px var(--omni-tint-soft);
+}
+
+.ds-field::placeholder {
+  color: var(--omni-glass-text-tertiary);
+}
+
+/* The overlay's three line shimmer, for a loading state on a plain document. */
+.ds-shimmer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.ds-shimmer span {
+  height: 8px;
+  border-radius: var(--omni-radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--omni-skeleton-base) 0%,
+    var(--omni-skeleton-shine) 40%,
+    var(--omni-skeleton-base) 80%
+  );
+  background-size: 200% 100%;
+  animation: ds-shimmer 1.2s linear infinite;
+}
+
+.ds-shimmer span:nth-child(1) {
+  width: 92%;
+}
+
+.ds-shimmer span:nth-child(2) {
+  width: 78%;
+}
+
+.ds-shimmer span:nth-child(3) {
+  width: 55%;
+}
+
+/* These pages have no generic .hidden rule; each hidden component owns one. */
+.ds-shimmer.hidden {
+  display: none;
+}
+
+@keyframes ds-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* The page backdrop. A class on <body>, painted by ::before, so neither
+   document needs an extra element. */
+body.ds-backdrop::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 45% at 12% 0%, var(--omni-backdrop-glow-accent) 0%, transparent 70%),
+    radial-gradient(55% 45% at 88% 100%, var(--omni-backdrop-glow-cyan) 0%, transparent 70%);
 }

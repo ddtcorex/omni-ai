@@ -15,6 +15,10 @@ describe("lib/design-system.css", () => {
     ".ds-card--success",
     ".ds-card--error",
     ".ds-card--processing",
+    ".ds-surface",
+    ".ds-pill",
+    ".ds-field",
+    ".ds-shimmer",
   ];
 
   test.each(CLASSES)("defines %s", (selector) => {
@@ -30,5 +34,23 @@ describe("lib/design-system.css", () => {
     const match = css.match(/\.ds-card--accent\s*\{([^}]*)\}/);
     expect(match).not.toBeNull();
     expect(match[1]).toMatch(/margin-bottom\s*:/);
+  });
+
+  test("the primary button uses the AA gradient and never lifts on hover", () => {
+    const block = css.match(/\.ds-btn-primary\s*\{([^}]*)\}/)[1];
+    expect(block).toContain("var(--omni-button-gradient)");
+    expect(css).not.toMatch(/translateY/);
+  });
+
+  test("the page backdrop is a class on body, painted by ::before, in both documents", () => {
+    expect(css).toMatch(/body\.ds-backdrop::before\s*\{/);
+    for (const rel of ["../settings.html", "../sidepanel/sidepanel.html"]) {
+      const html = fs.readFileSync(path.join(__dirname, rel), "utf8");
+      expect(html).toMatch(/<body[^>]*class="[^"]*\bds-backdrop\b/);
+    }
+  });
+
+  test("the shimmer hides through its own .hidden rule, since these pages have no generic one", () => {
+    expect(css).toMatch(/\.ds-shimmer\.hidden\s*\{[^}]*display:\s*none/);
   });
 });
