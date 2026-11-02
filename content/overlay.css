@@ -548,8 +548,9 @@
 /* Content: the card's glass is the background, no panel of its own. */
 /* No height cap of its own: it takes the room the card's placement leaves
    (the card's max height) after the header and the actions. */
+/* The text sits as far below the header as above the footer. */
 .omni-ai-content-area {
-  padding: 2px 10px 6px;
+  padding: 8px 10px 6px;
   overflow-y: auto;
   overscroll-behavior: contain;
   /* .omni-ai-overlay is a flex column; a flex child's default min-width is
