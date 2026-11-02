@@ -54,3 +54,17 @@ describe("lib/design-system.css", () => {
     expect(css).toMatch(/\.ds-shimmer\.hidden\s*\{[^}]*display:\s*none/);
   });
 });
+
+describe("the page stylesheets carry no colour literal except #fff", () => {
+  // Tokens are the only colour source on the two page surfaces; a literal that
+  // duplicates a token value is how the surfaces drifted from the overlay in
+  // the first place.
+  test.each(["../settings.css"])("%s", (rel) => {
+    const text = fs.readFileSync(path.join(__dirname, rel), "utf8");
+    const hexes = (text.match(/#[0-9a-fA-F]{3,8}\b/g) || []).filter(
+      (colour) => colour.toLowerCase() !== "#fff",
+    );
+    expect(hexes).toEqual([]);
+    expect(text).not.toMatch(/\brgba?\(/);
+  });
+});

@@ -62,3 +62,58 @@ test("settings page flips its glass surface in light theme", async () => {
     await context.close();
   }
 });
+
+test("settings fields, flash pills and save bar wear the new material", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    await expect(page.locator("#apiModel")).toHaveClass(/ds-field/);
+    await expect(page.locator("#saveBtn")).toHaveClass(/ds-btn-primary/);
+
+    const barFilter = await page.evaluate(
+      () => getComputedStyle(document.querySelector(".save-actions")).backdropFilter,
+    );
+    expect(barFilter).not.toBe("none");
+
+    const chip = page.locator(".flash-action-option.ds-pill").first();
+    await chip.locator("input").check();
+    const selected = await chip.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(selected).not.toBe("rgba(0, 0, 0, 0)");
+  } finally {
+    await context.close();
+  }
+});
+
+test("a save status does not grow the save bar", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    await page.setViewportSize({ width: 900, height: 900 });
+    const before = await page.locator(".save-actions").boundingBox();
+    await page.evaluate(() => {
+      const status = document.getElementById("saveStatus");
+      status.textContent = "Changes saved";
+      status.classList.add("visible");
+    });
+    const after = await page.locator(".save-actions").boundingBox();
+    expect(after.height).toBe(before.height);
+  } finally {
+    await context.close();
+  }
+});
+
+test("settings page honours reduced motion", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const durations = await page.evaluate(() =>
+      Array.from(document.querySelectorAll(".settings-section"))
+        .map((el) => getComputedStyle(el).animationDuration)
+        .join(","),
+    );
+    expect(durations.split(",").every((duration) => duration === "0s")).toBe(true);
+  } finally {
+    await context.close();
+  }
+});

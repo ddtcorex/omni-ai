@@ -30,9 +30,6 @@ body {
   max-width: 720px;
   margin: 0 auto;
   padding: var(--omni-spacing-2xl);
-  background-image:
-    radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom right, rgba(6, 182, 212, 0.04) 0%, transparent 50%);
 }
 
 /* Header: a slim glass bar. The .ds-surface class supplies the material. */
@@ -120,6 +117,44 @@ body {
 .settings-section {
   display: flex;
   flex-direction: column;
+  animation: omniSettingsIn var(--omni-motion-enter) var(--omni-motion-ease-out) both;
+}
+
+.settings-section:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.settings-section:nth-child(2) {
+  animation-delay: 30ms;
+}
+
+.settings-section:nth-child(3) {
+  animation-delay: 60ms;
+}
+
+.settings-section:nth-child(4) {
+  animation-delay: 90ms;
+}
+
+.settings-section:nth-child(5) {
+  animation-delay: 120ms;
+}
+
+@supports (animation-timing-function: linear(0, 1)) {
+  .settings-section {
+    animation-timing-function: var(--omni-motion-spring);
+  }
+}
+
+@keyframes omniSettingsIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .section-title {
@@ -244,14 +279,19 @@ body {
 }
 
 .flash-action-option {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 1px solid var(--omni-border);
-  border-radius: var(--omni-radius-md);
   font-size: 12px;
-  cursor: pointer;
+}
+
+/* Selected state is driven by the native checkbox, so nothing in settings.js
+   has to write a class. */
+.flash-action-option:has(input:checked) {
+  background: var(--omni-pill-top);
+  color: var(--omni-glass-text);
+  box-shadow: 0 0 0 1px var(--omni-glass-ring);
+}
+
+.flash-action-option input {
+  accent-color: var(--omni-accent);
 }
 
 .flash-action-option:has(input:disabled) {
@@ -262,7 +302,7 @@ body {
 /* Field Note (below inputs) */
 .field-note {
   font-size: 11px;
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-tertiary);
   margin-top: 4px;
   margin-bottom: 12px;
   font-style: italic;
@@ -277,24 +317,13 @@ body {
 
 .setting-input {
   flex: 1;
+  width: 100%;
   padding: var(--omni-spacing-md) var(--omni-spacing-lg);
-  background: var(--omni-bg-tertiary);
-  border: 1px solid var(--omni-border);
-  border-radius: var(--omni-radius-md);
-  color: var(--omni-text-primary);
-  font-family: var(--omni-font-family);
   font-size: 14px;
-  transition: all var(--omni-transition-fast);
-}
-
-.setting-input:focus {
-  outline: none;
-  border-color: var(--omni-accent);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 .setting-input::placeholder {
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-tertiary);
 }
 
 .toggle-btn {
@@ -321,14 +350,8 @@ body {
   padding: var(--omni-spacing-md) var(--omni-spacing-lg);
   padding-right: 48px; /* Space for arrow */
   margin-top: var(--omni-spacing-sm);
-  background: var(--omni-bg-tertiary);
-  border: 1px solid var(--omni-border);
-  border-radius: var(--omni-radius-md);
-  color: var(--omni-text-primary);
-  font-family: var(--omni-font-family);
   font-size: 14px;
   cursor: pointer;
-  transition: all var(--omni-transition-fast);
 
   /* Custom Arrow */
   appearance: none;
@@ -339,69 +362,9 @@ body {
   background-size: 16px;
 }
 
-.setting-select:focus {
-  outline: none;
-  border-color: var(--omni-accent);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
-}
-
 .setting-select option {
   background: var(--omni-bg-secondary);
   color: var(--omni-text-primary);
-}
-
-/* Toggle Switch */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 26px;
-  flex-shrink: 0;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--omni-bg-tertiary);
-  border: 1px solid var(--omni-border);
-  border-radius: var(--omni-radius-full);
-  transition: all var(--omni-transition-fast);
-}
-
-.slider::before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 2px;
-  bottom: 2px;
-  background-color: var(--omni-text-secondary);
-  border-radius: 50%;
-  transition: all var(--omni-transition-fast);
-}
-
-input:checked + .slider {
-  background: var(--omni-accent-gradient);
-  border-color: transparent;
-}
-
-input:checked + .slider::before {
-  transform: translateX(22px);
-  background-color: white;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 /* Shortcuts */
@@ -424,12 +387,12 @@ input:focus + .slider {
 
 .shortcut-keys {
   padding: var(--omni-spacing-xs) var(--omni-spacing-sm);
-  background: var(--omni-bg-tertiary);
+  background: var(--omni-pill-bg);
   border: 1px solid var(--omni-border);
   border-radius: var(--omni-radius-sm);
   font-family: "SF Mono", "Consolas", monospace;
   font-size: 12px;
-  color: var(--omni-text-primary);
+  color: var(--omni-glass-text);
 }
 
 .shortcut-unset {
@@ -437,7 +400,7 @@ input:focus + .slider {
   border: 1px dashed var(--omni-border);
   border-radius: var(--omni-radius-sm);
   font-size: 11px;
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-tertiary);
   font-style: italic;
 }
 
@@ -485,43 +448,27 @@ input:focus + .slider {
 .about-link:hover {
   background: var(--omni-bg-hover);
   color: var(--omni-text-primary);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--omni-border-hover);
 }
 
 /* Save Actions Area
-   Fixed to the bottom of the viewport on tall-enough windows: on a long
-   settings page the Save button would otherwise scroll out of view, so it
-   stays visible as a floating bar once the user scrolls past its natural
-   position. Gated behind a min-height media query (below) rather than
-   applied unconditionally: .save-actions is the LAST element on the page,
-   with the API Configuration section's content alone reaching ~590px at
-   scroll top. On a short window (DevTools open, an unmaximized browser,
-   etc.), an unconditional fixed/sticky bar would overlap the Validate
-   Configuration button that sits right above it, since there isn't enough
-   vertical room for both. Below the threshold the button simply renders
-   in normal document flow (the original, always-safe behavior). */
+   In flow on short windows, and an inset floating glass bar above the 750px
+   gate. The gate stays: .save-actions is the LAST element on the page, so an
+   unconditional fixed bar would overlap the Validate Configuration button on a
+   short window. The bar is always rendered, never dirty-only, so the primary
+   action never disappears. */
 .save-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--omni-spacing-sm);
-  /* Horizontal padding centers the ~656px-wide content (matching
-     .options-container's cards) via max(), while never going below the
-     container's own 32px side padding on narrow viewports, which lets the
-     bar's background/border/shadow span the full window edge-to-edge
-     (see the fixed-position rule below) without the button itself
-     stretching wider than the cards above it. */
-  padding: var(--omni-spacing-lg) max(var(--omni-spacing-2xl), calc(50% - 328px))
-    var(--omni-spacing-xl);
-  margin-top: var(--omni-spacing-2xl);
-  background: var(--omni-glass-heavy);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--omni-border);
+  padding: var(--omni-spacing-lg) 0;
+  margin-top: var(--omni-spacing-xl);
+  border-radius: var(--omni-radius-lg);
 }
 
 /* 750px comfortably clears the API Configuration section's ~590px content
-   height plus the bar's own ~116px, with margin to spare. */
+   height plus the bar's own height, with margin to spare. */
 @media (min-height: 750px) {
   .main {
     /* Reserves room for the now out-of-flow fixed bar so the last
@@ -532,19 +479,14 @@ input:focus + .slider {
   .save-actions {
     /* position: fixed, not sticky: a bottom-anchored sticky last-child
        renders pinned to the viewport bottom for virtually the ENTIRE
-       scroll range (not just once you've scrolled near the end).
-       Margin/padding on the sticky element itself has no effect on that
-       pinned position. Fixed positioning is unconditional and
-       predictable instead. */
+       scroll range, not just once you've scrolled near the end. */
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    /* Edge-to-edge (no inset, no border-radius) reads as an anchored
-       bottom bar; an inset rounded floating card looked disconnected
-       from the window instead. */
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+    left: 50%;
+    bottom: var(--omni-spacing-lg);
+    transform: translateX(-50%);
+    width: min(656px, calc(100vw - 32px));
+    margin: 0;
+    padding: var(--omni-spacing-md) var(--omni-spacing-lg);
     z-index: 10;
   }
 }
@@ -554,16 +496,26 @@ input:focus + .slider {
   width: 100%;
 }
 .save-status {
-  font-size: 13px;
-  color: var(--omni-success);
-  opacity: 0;
+  font-size: 12px;
+  line-height: 20px;
+  /* Fixed height: the status appearing must never grow the bar. */
   height: 20px;
-  transition: opacity var(--omni-transition-normal);
+  color: var(--omni-glass-text-secondary);
   font-weight: 500;
+  opacity: 0;
+  filter: blur(2px);
+  transition:
+    opacity 110ms var(--omni-motion-ease-out),
+    filter 110ms var(--omni-motion-ease-out);
 }
 
 .save-status.visible {
   opacity: 1;
+  filter: blur(0);
+}
+
+.save-status.error {
+  color: var(--omni-error-text);
 }
 
 /* Scrollbar */
@@ -603,9 +555,9 @@ input:focus + .slider {
 
 /* .icon-btn is now .ds-icon-btn from lib/design-system.css */
 .ds-icon-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--omni-error-surface);
   color: var(--omni-error);
-  border-color: rgba(239, 68, 68, 0.2);
+  border-color: var(--omni-error);
 }
 .stats-grid {
   display: grid;
@@ -618,40 +570,29 @@ input:focus + .slider {
   align-items: center;
   gap: var(--omni-spacing-md);
   padding: var(--omni-spacing-lg);
-  background: var(--omni-bg-secondary);
-  border: 1px solid var(--omni-border);
-  border-radius: var(--omni-radius-lg);
-  transition: transform var(--omni-transition-fast);
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .stat-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--omni-bg-tertiary);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--omni-radius-md);
+  background: var(--omni-tint-soft);
+  flex: none;
 }
 
 .stat-icon-wrapper.accent-blue {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  color: var(--omni-accent-cyan);
 }
 
 .stat-icon-wrapper.accent-green {
-  background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
+  color: var(--omni-success);
 }
 
 .stat-icon-wrapper.accent-purple {
-  background: rgba(168, 85, 247, 0.1);
-  color: #a855f7;
+  color: var(--omni-accent);
 }
 
 .stat-content {
@@ -702,7 +643,7 @@ input:focus + .slider {
   background: var(--omni-bg-hover);
   border: 1px solid var(--omni-border);
   border-radius: var(--omni-radius-md);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--omni-shadow-lg);
   opacity: 0;
   visibility: hidden;
   transition: all var(--omni-transition-fast);
@@ -779,12 +720,11 @@ input:focus + .slider {
   background: var(--omni-bg-hover);
   border-color: var(--omni-accent);
   color: var(--omni-text-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--omni-shadow-sm);
 }
 
 .validate-btn:active {
-  transform: translateY(0);
+  transform: scale(var(--omni-motion-press));
 }
 
 .validate-btn.loading {
@@ -820,25 +760,34 @@ input:focus + .slider {
 
 .validation-message.success,
 .ds-card--success {
-  background: rgba(34, 197, 94, 0.1);
-  color: var(--omni-success);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: var(--omni-glass-text);
+  border: 1px solid var(--omni-success);
 }
 
 .validation-message.error,
 .ds-card--error {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--omni-error);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--omni-error-text);
+  border: 1px solid var(--omni-error);
 }
 
 .validation-message.processing,
 .ds-card--processing {
-  background: rgba(139, 92, 246, 0.1);
-  color: var(--omni-accent);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: var(--omni-glass-text);
+  border: 1px solid var(--omni-accent);
 }
 /* Utilities */
 .hidden {
   display: none !important;
+}
+
+/* Reduced motion: only opacity may change. */
+@media (prefers-reduced-motion: reduce) {
+  .settings-section {
+    animation: none;
+  }
+
+  .validate-btn:active,
+  .ds-pill:active {
+    transform: none;
+  }
 }

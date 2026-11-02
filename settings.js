@@ -743,8 +743,10 @@ async function saveSettings() {
  */
 function showSaveStatus(message, type = "success") {
   elements.saveStatus.textContent = message;
-  elements.saveStatus.style.color =
-    type === "success" ? "var(--omni-success)" : "var(--omni-error)";
+  // Colour comes from settings.css (.save-status / .save-status.error): an
+  // inline colour cannot be overridden by the reduced-motion or theme rules,
+  // and the status text now sits on the glass surface.
+  elements.saveStatus.classList.toggle("error", type !== "success");
   elements.saveStatus.classList.add("visible");
 
   setTimeout(() => {
