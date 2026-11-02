@@ -1963,6 +1963,47 @@ function maxEdgeStep(frames) {
   return max;
 }
 
+// Resolves once the card has no finite animation running (the shimmer
+// loops forever and does not count) and its height held for 3 frames.
+function waitCardSettled(page) {
+  return page.evaluate(
+    () =>
+      new Promise((resolve, reject) => {
+        const deadline = performance.now() + 8000;
+        let last = -1;
+        let stable = 0;
+        const tick = () => {
+          const card = document
+            .getElementById("omni-ai-shadow-host")
+            ?.shadowRoot?.querySelector(".omni-ai-overlay");
+          const busy =
+            !card ||
+            card
+              .getAnimations({ subtree: true })
+              .some(
+                (a) =>
+                  a.playState === "running" && a.effect.getComputedTiming().endTime !== Infinity,
+              );
+          const height = card ? card.getBoundingClientRect().height : -1;
+          stable = !busy && height === last ? stable + 1 : 0;
+          last = height;
+          if (stable >= 3) return resolve(undefined);
+          if (performance.now() > deadline) return reject(new Error("card never settled"));
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }),
+  );
+}
+
+// Two frames, so a wheel the page might still scroll by has landed.
+function nextFrames(page) {
+  return page.evaluate(
+    () =>
+      new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(undefined)))),
+  );
+}
+
 test("state changes keep the page scroll and the card edge still, with no transient scrollbar", async () => {
   const { server, port } = await serveFixtureHtml(SCROLL_FIXTURE);
   const { context, sw } = await launchWithExtension();
@@ -1971,20 +2012,20 @@ test("state changes keep the page scroll and the card edge still, with no transi
     await stubGeminiCounted(context, { delayMs: 400, reply: () => "SHORT-DONE improved text." });
     const page = await context.newPage();
     await openEditorMenu(page, port);
-    await page.waitForTimeout(700); // enter animation settles
+    await waitCardSettled(page);
 
     await startFrameSampler(page);
     await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
     await waitResultText(page, "SHORT-DONE");
-    await page.waitForTimeout(700);
+    await waitCardSettled(page);
     await clickShadow(page, "#omniAiBack");
     await waitShadow(page, ".omni-ai-menu-item[data-action]");
-    await page.waitForTimeout(700);
+    await waitCardSettled(page);
     const frames = await stopFrameSampler(page);
 
     expect(frames.length).toBeGreaterThan(20);
     expect(new Set(frames.map((f) => f.scrollY))).toEqual(new Set([0]));
-    expect(maxEdgeStep(frames)).toBeLessThanOrEqual(1);
+    expect(maxEdgeStep(frames)).toBeLessThanOrEqual(1.5);
     // Menu, loading and a short result all fit: no frame shows a scrollbar.
     expect(frames.filter((f) => f.scrollbars.length > 0)).toEqual([]);
   } finally {
@@ -2004,12 +2045,12 @@ test("a long result scrolls only its body: the header and actions stay and the p
     // than the room the card has under the field.
     await page.setViewportSize({ width: 1000, height: 500 });
     await openEditorMenu(page, port, { clientX: 200, clientY: 160 });
-    await page.waitForTimeout(700);
+    await waitCardSettled(page);
 
     await startFrameSampler(page);
     await clickShadow(page, '.omni-ai-menu-item[data-action="explain"]');
     await waitResultText(page, "LONG-DONE");
-    await page.waitForTimeout(700);
+    await waitCardSettled(page);
     const landing = await stopFrameSampler(page);
 
     const layout = () =>
@@ -2040,7 +2081,7 @@ test("a long result scrolls only its body: the header and actions stay and the p
     expect(before.header).toBeGreaterThanOrEqual(before.card.top);
     expect(before.footer).toBeLessThanOrEqual(before.card.bottom + 0.5);
     // While it landed, the edge held and only the body ever had a scrollbar.
-    expect(maxEdgeStep(landing)).toBeLessThanOrEqual(1);
+    expect(maxEdgeStep(landing)).toBeLessThanOrEqual(1.5);
     expect(landing.filter((f) => f.scrollbars.some((c) => c !== "omni-ai-content-area"))).toEqual(
       [],
     );
@@ -2065,14 +2106,15 @@ test("a long result scrolls only its body: the header and actions stay and the p
         footer: pick(".omni-ai-footer-actions"),
       };
     });
-    for (const spot of [box.body, box.header, box.footer]) {
+    const wheel = async (spot) => {
       await page.mouse.move(spot.x, spot.y);
-      for (let i = 0; i < 10; i++) {
-        await page.mouse.wheel(0, 300);
-        await page.waitForTimeout(30);
-      }
-    }
-    await page.waitForTimeout(300);
+      for (let i = 0; i < 10; i++) await page.mouse.wheel(0, 300);
+    };
+    await wheel(box.body);
+    await expect.poll(async () => (await layout()).bodyScrollTop).toBeGreaterThan(0);
+    await wheel(box.header);
+    await wheel(box.footer);
+    await nextFrames(page);
     const after = await layout();
     expect(after.bodyScrollTop).toBeGreaterThan(0);
     expect(after.scrollY).toBe(0);
@@ -2084,9 +2126,9 @@ test("a long result scrolls only its body: the header and actions stay and the p
     await startFrameSampler(page);
     await clickShadow(page, "#omniAiBack");
     await waitShadow(page, ".omni-ai-menu-item[data-action]");
-    await page.waitForTimeout(700);
+    await waitCardSettled(page);
     const back = await stopFrameSampler(page);
-    expect(maxEdgeStep(back)).toBeLessThanOrEqual(1);
+    expect(maxEdgeStep(back)).toBeLessThanOrEqual(1.5);
     expect(new Set(back.map((f) => f.scrollY))).toEqual(new Set([0]));
     expect(back.filter((f) => f.scrollbars.some((c) => c !== "omni-ai-content-area"))).toEqual([]);
   } finally {

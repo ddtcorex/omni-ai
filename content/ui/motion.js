@@ -218,6 +218,8 @@
    * keep their scrollbar from the first frame, so their width never changes.
    * @param {HTMLElement} el
    */
+  // Call after render() and before the height animation starts: "fits" is
+  // judged on the final layout, which only exists at that moment.
   function clipFittingScrollers(el) {
     releaseClips(el);
     const list = [];
