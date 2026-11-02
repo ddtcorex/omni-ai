@@ -117,3 +117,66 @@ test("settings page honours reduced motion", async () => {
     await context.close();
   }
 });
+
+async function openPanel(context, sw, theme) {
+  const page = await context.newPage();
+  const extId = new URL(sw.url()).host;
+  await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+  if (theme === "light") {
+    await page.evaluate(() => chrome.storage.sync.set({ omni_ai_theme: "light" }));
+    await page.reload();
+    await expect(page.locator("html")).toHaveClass(/omni-ai-light-mode/);
+  }
+  return page;
+}
+
+test("side panel shell is glass and its tabs are a segmented pill", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    const shell = await page.evaluate(
+      () => getComputedStyle(document.querySelector(".sidepanel-container")).backdropFilter,
+    );
+    expect(shell).not.toBe("none");
+
+    const active = page.locator("#tabChat");
+    const bg = await active.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(bg).not.toBe("rgba(0, 0, 0, 0)");
+    expect(await active.getAttribute("aria-selected")).toBe("true");
+
+    await expect(page.locator(".tab-icon svg")).toHaveCount(2);
+  } finally {
+    await context.close();
+  }
+});
+
+test("side panel glass flips in light theme", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw, "light");
+    const bg = await page.evaluate(
+      () => getComputedStyle(document.querySelector(".sidepanel-container")).backgroundColor,
+    );
+    expect(bg).toBe("rgba(255, 255, 255, 0.84)");
+  } finally {
+    await context.close();
+  }
+});
+
+test("the panel does not overflow at 280px with long labels", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    await page.setViewportSize({ width: 280, height: 700 });
+    const overflow = await page.evaluate(() => ({
+      horizontal:
+        document.querySelector(".tab-nav").scrollWidth >
+        document.querySelector(".tab-nav").clientWidth + 1,
+      doc: document.documentElement.scrollWidth > window.innerWidth + 1,
+    }));
+    expect(overflow.horizontal).toBe(false);
+    expect(overflow.doc).toBe(false);
+  } finally {
+    await context.close();
+  }
+});

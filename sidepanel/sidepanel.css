@@ -36,7 +36,12 @@ body {
   min-width: 280px;
   display: flex;
   flex-direction: column;
-  background: var(--omni-bg-primary);
+  /* The shared glass shell: the page backdrop shows through it. One glass
+     layer for the whole panel, never one per row or per message. */
+  background: var(--omni-glass-surface);
+  backdrop-filter: var(--omni-glass-filter);
+  -webkit-backdrop-filter: var(--omni-glass-filter);
+  color: var(--omni-glass-text);
   overflow: hidden;
 }
 
@@ -45,7 +50,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: var(--omni-spacing-md);
-  border-bottom: 1px solid var(--omni-border);
+  border-bottom: 1px solid var(--omni-separator);
   flex-shrink: 0;
 }
 
@@ -63,6 +68,7 @@ body {
 .logo-text {
   font-weight: 600;
   font-size: 14px;
+  color: var(--omni-glass-text);
 }
 
 /* .icon-btn is now .ds-icon-btn from lib/design-system.css */
@@ -160,39 +166,66 @@ body {
   color: var(--omni-text-muted);
 }
 
-/* ---- Tabs ---- */
+/* ---- Tabs: one segmented pill, not underlines ---- */
 .tab-nav {
   display: flex;
   gap: var(--omni-spacing-xs);
-  padding: var(--omni-spacing-sm) var(--omni-spacing-md) 0;
-  border-bottom: 1px solid var(--omni-border);
+  margin: var(--omni-spacing-sm) var(--omni-spacing-md) 0;
+  padding: var(--omni-spacing-xs);
+  background: var(--omni-pill-bg);
+  border-radius: var(--omni-radius-full);
   flex-shrink: 0;
 }
 
 .tab-btn {
+  flex: 1 1 0;
+  min-width: 0;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 14px;
+  min-height: 32px;
+  padding: 6px 10px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--omni-text-muted);
-  font-size: 13px;
+  border-radius: var(--omni-radius-full);
+  color: var(--omni-glass-text-secondary);
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition:
-    color 0.15s,
-    border-color 0.15s;
+    background-color var(--omni-transition-fast),
+    color var(--omni-transition-fast);
 }
 
 .tab-btn:hover {
-  color: var(--omni-text-primary);
+  color: var(--omni-glass-text);
 }
 
 .tab-btn.active {
-  color: var(--omni-accent, #4f46e5);
-  border-bottom-color: var(--omni-accent, #4f46e5);
+  background: var(--omni-pill-top);
+  color: var(--omni-glass-text);
+  box-shadow: 0 0 0 1px var(--omni-glass-ring);
+}
+
+.tab-btn:active {
+  transform: scale(var(--omni-motion-press));
+}
+
+.tab-icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.tab-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tab-view {
