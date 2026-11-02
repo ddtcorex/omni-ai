@@ -451,6 +451,10 @@ body {
   .action-buttons .ds-btn-primary:active {
     transform: none;
   }
+
+  .chat-fab:active {
+    transform: translateY(-50%);
+  }
 }
 
 .chat-msg .reasoning {
@@ -487,7 +491,7 @@ body {
   display: block;
   width: 100%;
   resize: none;
-  padding: 10px 44px 10px 12px;
+  padding: 10px 40px 10px 12px;
   border: 1px solid transparent;
   border-radius: var(--omni-radius-lg);
   font-size: 13px;
@@ -513,32 +517,38 @@ body {
    ChatGPT/Claude's own chat inputs -- keeps the textarea's full width for
    typing instead of a text-label pill competing for space in a narrow
    (min-width: 280px) side panel. */
+/* Matches the overlay's .omni-ai-send-btn exactly: 24x24, 7px radius,
+   gradient fill with the accent glow, 12px glyph, press scale only. */
 .chat-fab {
   position: absolute;
-  right: 6px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: 7px;
   color: #fff;
   cursor: pointer;
-  transition:
-    filter 0.1s,
-    transform 0.1s;
+  transition: transform 250ms var(--omni-motion-spring);
 }
 
-.chat-fab:hover {
-  filter: brightness(1.1);
+.chat-fab:active {
+  transform: translateY(-50%) scale(var(--omni-motion-press));
+}
+
+.chat-fab svg {
+  width: 12px;
+  height: 12px;
 }
 
 .chat-send {
   background: var(--omni-button-gradient);
+  box-shadow: var(--omni-accent-glow);
 }
 
 .chat-stop {

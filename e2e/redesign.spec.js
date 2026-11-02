@@ -365,3 +365,47 @@ test("a keyboard focus ring is visible on the tool pills", async () => {
     await context.close();
   }
 });
+
+test("the chat send button matches the overlay's ask-box button", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    const send = await page.locator("#chatSend").evaluate((el) => {
+      const style = getComputedStyle(el);
+      return {
+        width: style.width,
+        height: style.height,
+        radius: style.borderRadius,
+        background: style.backgroundImage,
+        shadow: style.boxShadow,
+        icon: getComputedStyle(el.querySelector("svg")).width,
+      };
+    });
+
+    // The overlay's .omni-ai-send-btn: 24x24, 7px radius, gradient fill,
+    // accent glow, 12px glyph.
+    expect(send.width).toBe("24px");
+    expect(send.height).toBe("24px");
+    expect(send.radius).toBe("7px");
+    expect(send.background).toContain("linear-gradient");
+    expect(send.shadow).not.toBe("none");
+    expect(send.icon).toBe("12px");
+
+    // The geometry contract still holds with the smaller button.
+    const geometry = await page.evaluate(() => {
+      const wrap = document.querySelector(".chat-input-wrap").getBoundingClientRect();
+      const input = document.getElementById("chatInput").getBoundingClientRect();
+      const fab = document.getElementById("chatSend").getBoundingClientRect();
+      return {
+        wrapHeight: wrap.height,
+        inputHeight: input.height,
+        sendCenterY: fab.top + fab.height / 2,
+        inputCenterY: input.top + input.height / 2,
+      };
+    });
+    expect(geometry.wrapHeight).toBeCloseTo(geometry.inputHeight, 0);
+    expect(geometry.sendCenterY).toBeCloseTo(geometry.inputCenterY, 0);
+  } finally {
+    await context.close();
+  }
+});
