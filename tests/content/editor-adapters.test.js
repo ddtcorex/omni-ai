@@ -59,6 +59,90 @@ describe("editor adapter registry", () => {
     expect(editor.textContent).toBe("Improved draft");
   });
 
+  // A native insertText that turns lines into paragraphs: what Chrome does
+  // in a contenteditable (and TinyMCE in its iframe body).
+  function nativeParagraphInsert(editor) {
+    document.execCommand = jest.fn((command, _ui, text) => {
+      const range = window.getSelection().getRangeAt(0);
+      range.deleteContents();
+      const fragment = document.createDocumentFragment();
+      text.split("\n").forEach((line) => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        fragment.appendChild(p);
+      });
+      range.insertNode(fragment);
+      return true;
+    });
+    return () => {
+      delete document.execCommand;
+      editor.remove();
+    };
+  }
+
+  function selectWord(editor, start, end) {
+    const range = document.createRange();
+    range.setStart(editor.firstChild, start);
+    range.setEnd(editor.firstChild, end);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    return range;
+  }
+
+  test("a native edit that turns a multi-line result into paragraphs counts as replaced, once", async () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "Hello world";
+    document.body.appendChild(editor);
+    const cleanup = nativeParagraphInsert(editor);
+    try {
+      const range = selectWord(editor, 6, 11);
+      const result = await registry.replaceViaAdapters(
+        editor,
+        { lastRange: range },
+        "Line one.\nLine two.",
+      );
+      expect(result).toEqual(expect.objectContaining({ ok: true, adapter: "richText" }));
+      expect(editor.querySelectorAll("p")).toHaveLength(2);
+      expect(editor.textContent).toBe("Hello Line one.Line two.");
+    } finally {
+      cleanup();
+    }
+  });
+
+  test("a native edit with a result equal to the selection is not inserted again", async () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "Hello world";
+    document.body.appendChild(editor);
+    const cleanup = nativeParagraphInsert(editor);
+    try {
+      const range = selectWord(editor, 6, 11);
+      const result = await registry.replaceViaAdapters(editor, { lastRange: range }, "world");
+      expect(result.ok).toBe(true);
+      expect(editor.textContent).toBe("Hello world");
+    } finally {
+      cleanup();
+    }
+  });
+
+  test("the DOM fallback writes a multi-line result as lines with <br> between", async () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "Hello world";
+    document.body.appendChild(editor);
+
+    const range = selectWord(editor, 6, 11);
+    const result = await registry.replaceViaAdapters(
+      editor,
+      { lastRange: range },
+      "Line one.\nLine two.",
+    );
+
+    expect(result.ok).toBe(true);
+    expect(editor.innerHTML).toBe("Hello Line one.<br>Line two.");
+  });
+
   test("finds an editable host through an open shadow root", () => {
     const editor = document.createElement("div");
     editor.setAttribute("contenteditable", "true");

@@ -794,6 +794,11 @@
   overflow-wrap: anywhere;
 }
 
+/* A failed Replace: the same warning, above the result's actions. */
+.omni-ai-replace-failed {
+  margin: 0 10px 6px;
+}
+
 .omni-ai-error .omni-ai-btn {
   margin: -2px -2px -2px 0;
 }

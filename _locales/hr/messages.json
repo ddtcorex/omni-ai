@@ -703,5 +703,9 @@
   "status_working": {
     "message": "Obrada…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "Tekst nije moguće zamijeniti. Umjesto toga ga kopirajte.",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

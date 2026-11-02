@@ -260,6 +260,9 @@ let flashHideTimer = null;
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
+// lastRange held selected text when it was captured: once it collapses, the
+// text a result was made for is gone (typed over, deleted).
+let lastRangeHadText = false;
 let floatingButtonEnabled = true;
 
 // Shadow UI root to isolate extension styles from host page CSS.
@@ -798,10 +801,12 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
   if (context.id === "richText" || context.id === "static") {
     const sel = window.getSelection();
     lastRange = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+    lastRangeHadText = Boolean(lastRange && !lastRange.collapsed);
   } else {
     // Standard inputs don't use window.getSelection() ranges effectively in the same way for this tracking,
     // so clear it to prevent stale ranges from blocking fullText detection.
     lastRange = null;
+    lastRangeHadText = false;
   }
 
   const rect = context.getRect(activeElement);
@@ -2419,18 +2424,51 @@ function renderResultState(inner, data, surf) {
 
   const replaceBtn = inner.querySelector("#omniAiReplace");
   if (replaceBtn) {
+    let replacing = false;
     replaceBtn.addEventListener("click", async () => {
-      // The replaced text is gone, and the toolbar with it: a leftover one
-      // would still hold the old selection.
-      if (await replaceSelectedText(result)) {
+      // One write per result: a second click, or one on the closing card,
+      // would replace again into whatever the first write left selected
+      // (the whole field once nothing is selected any more).
+      if (replacing || !surf.isOpen()) return;
+      replacing = true;
+      let replaced = false;
+      try {
+        replaced = await replaceSelectedText(result, null, originalText);
+      } catch (error) {
+        console.warn("[Omni AI] Replace threw:", error);
+      }
+      if (replaced) {
+        // The replaced text is gone, and the toolbar with it: a leftover one
+        // would still hold the old selection.
         hideQuickActionButton();
         hideOverlay();
+        return;
       }
+      replacing = false;
+      showReplaceFailed(inner);
     });
   }
 }
 
-async function replaceSelectedText(newText, specificElement = null) {
+// A Replace that could not write: the card stays, says so above its actions,
+// and Copy is still there. Shown once per result.
+function showReplaceFailed(inner) {
+  if (!overlay || inner.querySelector(".omni-ai-replace-failed")) return;
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
+  const before = motion.settleHeight(overlay);
+  const note = document.createElement("div");
+  note.className = "omni-ai-error omni-ai-replace-failed";
+  note.setAttribute("role", "alert");
+  note.innerHTML = `${ICONS.warn}<span class="omni-ai-error-text">${escapeHtml(i18n.getMessage("overlay_replace_failed"))}</span>`;
+  inner.insertBefore(note, inner.querySelector(".omni-ai-footer-actions"));
+  animateCardHeight(overlay, before, overlay.offsetHeight);
+  positionOverlay(currentAnchorRect, currentCardPosition());
+}
+
+// `originalText` is the text the result was made for, when known: a field
+// that no longer holds it (typed over while the card was open) is not
+// replaced as a whole, it fails.
+async function replaceSelectedText(newText, specificElement = null, originalText = null) {
   let activeElement = specificElement || document.activeElement;
 
   // Fallback to stored input element interaction
@@ -2449,6 +2487,7 @@ async function replaceSelectedText(newText, specificElement = null) {
   // live element sharing the same id (stable across most re-renders) before
   // giving up; the recovered node won't have the original selection, so this
   // falls back to whole-field replacement rather than a partial one.
+  let recoveredTarget = false;
   if (activeElement && !activeElement.isConnected) {
     const recovered = activeElement.id ? document.getElementById(activeElement.id) : null;
     if (recovered?.isConnected) {
@@ -2457,6 +2496,7 @@ async function replaceSelectedText(newText, specificElement = null) {
         "recovered a live element with the same id, replacing its full value instead.",
       );
       activeElement = recovered;
+      recoveredTarget = true;
     } else {
       console.warn(
         "[Omni AI] Replace: target element is no longer attached to the page",
@@ -2481,6 +2521,11 @@ async function replaceSelectedText(newText, specificElement = null) {
     fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
   };
 
+  if (!recoveredTarget && selectionGone(context, activeElement, currentTextState, originalText)) {
+    console.warn("[Omni AI] Replace: the text the result was made for is no longer in the field.");
+    return false;
+  }
+
   if (context.id === "static") {
     // Diagnostic: this branch silently no-ops (Replace click just does
     // nothing, overlay stays open) whenever the resolved target isn't an
@@ -2503,8 +2548,29 @@ async function replaceSelectedText(newText, specificElement = null) {
   );
   if (!replacement.ok) {
     console.warn("[Omni AI] replace failed:", replacement.attempts.join("; "));
+    return false;
   }
-  return replacement.ok;
+  // The selection was written over: a later replace in this field (a
+  // keyboard command on its whole text) must not read it as typed over.
+  lastRange = null;
+  lastRangeHadText = false;
+  return true;
+}
+
+// The selection a result was made for is gone: its range collapsed (rich
+// text), or the field holds no selection and its whole text is not that text
+// any more (input, textarea). A whole-field replace would then overwrite
+// text the user never chose.
+function selectionGone(context, element, textState, originalText) {
+  if (context.id === "richText") {
+    if (!lastRangeHadText || !lastRange || !lastRange.collapsed) return false;
+    const host = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.getEditableHost(element);
+    return Boolean(host && host.contains(lastRange.startContainer));
+  }
+  if (context.id === "standard" && originalText && textState.fullText) {
+    return String(element.value).trim() !== String(originalText).trim();
+  }
+  return false;
 }
 
 async function showQuickAskOverlay(lockedRect = null, originalText = null, isInput = false) {
