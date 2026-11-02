@@ -173,10 +173,10 @@
   }
 
   /**
-   * The height `el` shows right now, then stop every height animation on it
-   * (a morph or a height follow still in flight), so the next measurement
-   * reads the real height of what is rendered. Other animations (the card's
-   * enter, a fade) keep running.
+   * The height `el` shows right now, then stop every size animation on it
+   * (a morph or a height follow still in flight, with or without a width),
+   * so the next measurement reads the real size of what is rendered. Other
+   * animations (the card's enter, a fade) keep running.
    * @param {HTMLElement} el
    * @returns {number}
    */
@@ -187,7 +187,7 @@
       const effect = /** @type {KeyframeEffect | null} */ (anim.effect);
       const frames =
         effect && typeof effect.getKeyframes === "function" ? effect.getKeyframes() : [];
-      if (frames.some((frame) => "height" in frame)) {
+      if (frames.some((frame) => "height" in frame || "width" in frame)) {
         anim.cancel();
         if (running.get(el) === anim) running.delete(el);
       }
@@ -235,29 +235,62 @@
     return list;
   }
 
+  // Keyframes for a size change: height always, width only when it changes.
+  function sizeFrames(fromHeight, toHeight, fromWidth, toWidth) {
+    const widthChanges = Boolean(fromWidth && toWidth && fromWidth !== toWidth);
+    return [
+      { height: `${fromHeight}px`, ...(widthChanges ? { width: `${fromWidth}px` } : {}) },
+      { height: `${toHeight}px`, ...(widthChanges ? { width: `${toWidth}px` } : {}) },
+    ];
+  }
+
+  // Hold `pin` (the card's content) at its current, final width while the
+  // card's width animates, so its text wraps once instead of on every frame.
+  // Returns the release.
+  function pinWidth(pin) {
+    if (!pin) return () => {};
+    const prev = pin.style.width;
+    pin.style.width = `${pin.offsetWidth}px`;
+    return () => {
+      pin.style.width = prev;
+    };
+  }
+
   /**
-   * Height follow for an in-place change (not a state change, which morph
-   * animates): `el` springs from `from` to `to`. Played directly, not through
-   * the per-element slot, so it never cancels the card's enter or exit.
+   * Size follow for an in-place change (not a state change, which morph
+   * animates): `el` springs from `from` to `to` in height, and from
+   * `opts.fromWidth` to `opts.toWidth` in width when those differ, with
+   * `opts.pin` held at its final width meanwhile. Played directly, not
+   * through the per-element slot, so it never cancels the card's enter or
+   * exit.
    * @param {HTMLElement} el
    * @param {number} from
    * @param {number} to
+   * @param {{fromWidth?: number, toWidth?: number, pin?: HTMLElement}} [opts]
    */
-  function followHeight(el, from, to) {
-    if (from === to || !from || prefersReducedMotion()) return null;
+  function followHeight(el, from, to, opts = {}) {
+    const { fromWidth, toWidth, pin } = opts;
+    const widthChanges = Boolean(fromWidth && toWidth && fromWidth !== toWidth);
+    if ((from === to && !widthChanges) || !from || prefersReducedMotion()) return null;
     const clipped = clipFittingScrollers(el);
-    const anim = el.animate([{ height: `${from}px` }, { height: `${to}px` }], {
+    const unpin = widthChanges ? pinWidth(pin) : () => {};
+    const anim = el.animate(sizeFrames(from, to, fromWidth, toWidth), {
       duration: TOKENS.morphMs,
       easing: springEasing(),
     });
-    const release = () => releaseClips(el, clipped);
+    const release = () => {
+      releaseClips(el, clipped);
+      unpin();
+    };
     Promise.resolve(anim.finished).then(release, release);
     return anim;
   }
 
   /**
-   * Fade `inner` out, run `render`, animate `container` height from its old
-   * to its new measured height, fade `inner` back in. A morph superseded by a
+   * Fade `inner` out, run `render`, animate `container` height (and width,
+   * when the render changed it) from its old to its new measured size, fade
+   * `inner` back in. `inner` is held at its final width while the width
+   * animates. A morph superseded by a
    * newer animation on `inner` stops without calling `render`; a `render`
    * returning false stops it right after.
    * @param {HTMLElement} container
@@ -274,6 +307,7 @@
     // (a fast or cached result), and placement in `render` must measure the
     // new content at its real height, not at that animation's frame.
     const oldHeight = settleHeight(container);
+    const oldWidth = container.offsetWidth;
     // `render` returns false when the transition was superseded (a close, a
     // newer state) while the fade ran: stop, so the height morph never takes
     // over the container's running animation (a closing card's exit).
@@ -286,21 +320,25 @@
       return;
     }
     const newHeight = container.offsetHeight;
+    const newWidth = container.offsetWidth;
+    const widthChanges = Boolean(oldWidth && newWidth && oldWidth !== newWidth);
     const tasks = [];
-    if (!reduced && oldHeight !== newHeight) {
+    if (!reduced && (oldHeight !== newHeight || widthChanges)) {
       const clipped = clipFittingScrollers(container);
+      const unpin = widthChanges ? pinWidth(inner) : () => {};
       const release = (result) => {
         releaseClips(container, clipped);
+        unpin();
         return result;
       };
       tasks.push(
         completed(
           container,
-          play(container, [{ height: `${oldHeight}px` }, { height: `${newHeight}px` }], {
+          play(container, sizeFrames(oldHeight, newHeight, oldWidth, newWidth), {
             duration: TOKENS.morphMs,
             easing: springEasing(),
           }),
-        ).then(release),
+        ).then(release, release),
       );
     }
     tasks.push(fade(inner, 0, 1, inMs));

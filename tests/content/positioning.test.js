@@ -96,6 +96,32 @@ describe("positioning helpers", () => {
     });
   });
 
+  // A result card keeps 320px for short text and widens for long text, up to
+  // min(560px, viewport width minus 32px): roughly as wide as keeps its
+  // text near the target height at 320px.
+  describe("cardWidth", () => {
+    test("keeps 320px for text that fits the target height at 320px", () => {
+      expect(positioning.cardWidth(120, 1400)).toBe(320);
+      expect(positioning.cardWidth(240, 1400)).toBe(320);
+    });
+
+    test("widens in proportion to how far the text runs past the target height", () => {
+      expect(positioning.cardWidth(300, 1400)).toBe(400);
+    });
+
+    test("never exceeds 560px", () => {
+      expect(positioning.cardWidth(5000, 1400)).toBe(560);
+    });
+
+    test("never exceeds the viewport width minus 32px", () => {
+      expect(positioning.cardWidth(5000, 500)).toBe(468);
+    });
+
+    test("never goes below 320px, even in a narrow viewport", () => {
+      expect(positioning.cardWidth(5000, 300)).toBe(320);
+    });
+  });
+
   describe("revealSide", () => {
     test('revealSide returns "right" when the row fits to the right of the button', () => {
       expect(positioning.revealSide(100, 120, 1024)).toBe("right");

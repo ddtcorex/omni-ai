@@ -454,6 +454,7 @@ function getSurface() {
       },
       place: (card) => {
         overlay = card;
+        fitCardWidth(card, surface.state());
         positionOverlay(currentAnchorRect, overlayLockedPosition);
       },
       backFallback: surfaceBackFallback,
@@ -1605,28 +1606,68 @@ function startPageTranslation(inner, data, surf, bypassCache) {
     .catch(() => land(showFailure));
 }
 
-// Swap a slot's content with a short blur swap. When the card's height
-// changes, it follows on the spring once, from the old height to the new.
+// Swap a slot's content with a short blur swap. When the card's size
+// changes (a long translation widens it), it follows on the spring once,
+// from the old size to the new.
 function swapSlot(el, render) {
   const motion = /** @type {any} */ (self).OMNI_MOTION;
   return motion.swap(el, () => {
     const card = overlay;
-    // The shown height, with any height follow still running stopped, so
-    // placement below measures the new content at its real height.
+    // The shown size, with any size follow still running stopped, so
+    // placement below measures the new content at its real size.
     const before = card ? motion.settleHeight(card) : 0;
+    const beforeWidth = card ? card.offsetWidth : 0;
     render();
     if (card && card.isConnected) {
-      animateCardHeight(card, before, card.offsetHeight);
+      fitCardWidth(card, surface?.state());
+      // Placed before the follow starts: placement measures the card at its
+      // real new size, not at the follow's first frame.
       positionOverlay(currentAnchorRect, currentCardPosition());
+      animateCardHeight(card, before, card.offsetHeight, beforeWidth, card.offsetWidth);
     }
   });
 }
 
-// Height follow for an in-place change (not a state change, which the
-// surface morphs): OMNI_MOTION.followHeight, which never cancels the card's
-// enter or exit and keeps scrollers that fit from flashing a scrollbar.
-function animateCardHeight(card, from, to) {
-  /** @type {any} */ (self).OMNI_MOTION.followHeight(card, from, to);
+// Size follow for an in-place change (not a state change, which the surface
+// morphs): OMNI_MOTION.followHeight, which never cancels the card's enter or
+// exit, keeps scrollers that fit from flashing a scrollbar, and holds the
+// content at its final width while the width moves.
+function animateCardHeight(card, from, to, fromWidth = 0, toWidth = 0) {
+  /** @type {any} */ (self).OMNI_MOTION.followHeight(card, from, to, {
+    fromWidth,
+    toWidth,
+    pin: card.querySelector(".omni-ai-surface-inner"),
+  });
+}
+
+// States whose body is text the AI, the page or a provider wrote: they widen
+// for long text. Every other state is the 320px card; loading keeps the width
+// of the state it stands in for, so a retry of a wide result does not narrow
+// and widen again.
+const TEXT_BODY_SELECTOR = {
+  result: ".omni-ai-result-text",
+  error: ".omni-ai-error-text",
+  pageCard: ".omni-ai-suggestion-content",
+};
+
+// The card's width for its state and text: measured at the base width, set
+// before the state is placed or animated, so the text wraps once, at the
+// width it keeps (spec follow-up B).
+function fitCardWidth(card, state) {
+  if (state === "loading") return;
+  const positioning = /** @type {any} */ (self).OMNI_POSITIONING;
+  const selector = TEXT_BODY_SELECTOR[state];
+  const text = selector ? card.querySelector(selector) : null;
+  card.style.width = "";
+  if (!text || !positioning?.cardWidth) return;
+  const width = positioning.cardWidth(text.scrollHeight, viewportWidth());
+  if (width !== positioning.CARD_BASE_WIDTH) card.style.width = `${width}px`;
+}
+
+// The layout viewport's width without a page scrollbar: a card reaching
+// under the scrollbar would give the page a horizontal one.
+function viewportWidth() {
+  return Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
 }
 
 // Copy feedback: a short blur swap to a check, then back.
@@ -2017,7 +2058,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
   overlay.style.maxHeight = "";
   overlay.style.position = "";
 
-  const viewportWidth = window.innerWidth;
+  const viewWidth = viewportWidth();
   const viewportHeight = window.innerHeight;
   const scrollX = window.scrollX;
   const scrollY = window.scrollY;
@@ -2069,9 +2110,17 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     }
   };
 
+  // A locked card keeps its left edge unless a wider state would run past
+  // the viewport's right edge: then it moves left just enough.
+  const fitLeft = (leftCss, originX) => {
+    const width = overlay.offsetWidth || 320;
+    const viewportLeft = Math.max(10, Math.min(leftCss + originX, viewWidth - 10 - width));
+    return viewportLeft - originX;
+  };
+
   if (lockedPosition) {
     if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
-      applyAbove(lockedPosition.left, lockedPosition.bottom);
+      applyAbove(fitLeft(lockedPosition.left, cb.left), lockedPosition.bottom);
     } else {
       // A centred card stays fixed to the viewport, so it has no offset.
       const origin = lockedPosition.fixed ? 0 : cb.top;
@@ -2090,7 +2139,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
         }
       }
       if (top < 10) top = 10;
-      applyBelow(top - origin, lockedPosition.left);
+      applyBelow(top - origin, fitLeft(lockedPosition.left, lockedPosition.fixed ? 0 : cb.left));
       if (lockedPosition.fixed) {
         overlay.style.position = "fixed";
         overlay.dataset.placement = "center";
@@ -2106,7 +2155,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     const placed = /** @type {any} */ (self).OMNI_POSITIONING.placeCard(
       { top: anchorRect.top, left: anchorRect.left, bottom: anchorRect.bottom },
       { width: overlay.offsetWidth || 320, height: overlay.offsetHeight || 400 },
-      { width: viewportWidth, height: viewportHeight, scrollX, scrollY },
+      { width: viewWidth, height: viewportHeight, scrollX, scrollY },
       CARD_GAP,
     );
     overlay.style.maxHeight = `${placed.maxHeight}px`;
@@ -2461,8 +2510,8 @@ function showReplaceFailed(inner) {
   note.setAttribute("role", "alert");
   note.innerHTML = `${ICONS.warn}<span class="omni-ai-error-text">${escapeHtml(i18n.getMessage("overlay_replace_failed"))}</span>`;
   inner.insertBefore(note, inner.querySelector(".omni-ai-footer-actions"));
-  animateCardHeight(overlay, before, overlay.offsetHeight);
   positionOverlay(currentAnchorRect, currentCardPosition());
+  animateCardHeight(overlay, before, overlay.offsetHeight);
 }
 
 // `originalText` is the text the result was made for, when known: a field

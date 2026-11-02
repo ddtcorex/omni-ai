@@ -123,6 +123,31 @@
     };
   }
 
+  // Result card widths (spec follow-up B): the editor menu and short text
+  // keep the base width; long text widens the card so it scrolls less.
+  const CARD_BASE_WIDTH = 320;
+  const CARD_MAX_WIDTH = 560;
+  const CARD_VIEWPORT_MARGIN = 32;
+  // Text up to this tall at the base width keeps the base width.
+  const CARD_TARGET_TEXT_HEIGHT = 240;
+
+  /**
+   * The width a result card takes for its text: the base width while the
+   * text is at most the target height at that width, else as much wider as
+   * brings it back near the target (text height scales inversely with
+   * width), capped at min(560, viewport width - 32) and never below the base.
+   *
+   * @param {number} textHeight the text's height laid out at the base width
+   * @param {number} viewportWidth
+   * @returns {number}
+   */
+  function cardWidth(textHeight, viewportWidth) {
+    const max = Math.min(CARD_MAX_WIDTH, viewportWidth - CARD_VIEWPORT_MARGIN);
+    if (!(textHeight > CARD_TARGET_TEXT_HEIGHT) || max <= CARD_BASE_WIDTH) return CARD_BASE_WIDTH;
+    const wanted = Math.round((CARD_BASE_WIDTH * textHeight) / CARD_TARGET_TEXT_HEIGHT);
+    return Math.max(CARD_BASE_WIDTH, Math.min(wanted, max));
+  }
+
   /**
    * Which side of the toolbar button the quick actions reveal on: to its
    * right, or to its left when the row would run past the right edge.
@@ -243,6 +268,8 @@
   }
 
   root.OMNI_POSITIONING = {
+    CARD_BASE_WIDTH,
+    cardWidth,
     clampToViewport,
     getRectEndPoint,
     placeCard,

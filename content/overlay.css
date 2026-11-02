@@ -57,6 +57,9 @@
 .omni-ai-overlay {
   position: absolute;
   z-index: 2147483647;
+  /* The base width: the menu, the ask box and short results. A result-type
+     state with long text sets a wider inline width (fitCardWidth in
+     content.js), up to min(560px, viewport - 32px). */
   width: 320px;
   background: var(--omni-glass-surface);
   backdrop-filter: var(--omni-glass-filter);
@@ -100,7 +103,8 @@
   flex-shrink: 0;
 }
 
-.omni-ai-surface-inner > .omni-ai-content-area {
+.omni-ai-surface-inner > .omni-ai-content-area,
+.omni-ai-surface-inner > .omni-ai-translate {
   flex: 0 1 auto;
   min-height: 0;
 }
@@ -542,9 +546,10 @@
 }
 
 /* Content: the card's glass is the background, no panel of its own. */
+/* No height cap of its own: it takes the room the card's placement leaves
+   (the card's max height) after the header and the actions. */
 .omni-ai-content-area {
   padding: 2px 10px 6px;
-  max-height: 60vh;
   overflow-y: auto;
   overscroll-behavior: contain;
   /* .omni-ai-overlay is a flex column; a flex child's default min-width is
@@ -806,12 +811,15 @@
 /* Page card: the translation section on top. Its body keeps room for three
    lines from the first frame, so the reading actions below stay put. */
 .omni-ai-translate {
+  display: flex;
+  flex-direction: column;
   padding: 6px 6px 8px 10px;
   margin-bottom: 6px;
   border-bottom: 1px solid var(--omni-separator);
 }
 
 .omni-ai-translate-head {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 2px;
@@ -826,7 +834,12 @@
   color: var(--omni-accent-text);
 }
 
+/* The translation takes the room the card leaves: it shrinks with the card
+   down to its three line slot and scrolls inside it. */
 .omni-ai-translate-body {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
   min-height: 62px;
   padding-right: 4px;
 }
@@ -840,7 +853,7 @@
   line-height: 1.55;
   color: var(--omni-glass-text);
   white-space: pre-wrap;
-  max-height: 180px;
+  min-height: 0;
   overflow-y: auto;
   overflow-wrap: anywhere;
   word-break: normal;
