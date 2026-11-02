@@ -1618,17 +1618,10 @@ function swapSlot(el, render) {
 }
 
 // Height follow for an in-place change (not a state change, which the
-// surface morphs). Played directly, not through OMNI_MOTION's per-element
-// slot, so it never cancels the card's enter or exit animation.
+// surface morphs): OMNI_MOTION.followHeight, which never cancels the card's
+// enter or exit and keeps scrollers that fit from flashing a scrollbar.
 function animateCardHeight(card, from, to) {
-  const motion = /** @type {any} */ (self).OMNI_MOTION;
-  if (from === to || !from || motion.prefersReducedMotion()) return;
-  const supportsSpring =
-    typeof CSS !== "undefined" && CSS.supports("animation-timing-function", "linear(0, 1)");
-  card.animate([{ height: `${from}px` }, { height: `${to}px` }], {
-    duration: motion.TOKENS.morphMs,
-    easing: supportsSpring ? motion.TOKENS.spring : motion.TOKENS.easeOut,
-  });
+  /** @type {any} */ (self).OMNI_MOTION.followHeight(card, from, to);
 }
 
 // Copy feedback: a short blur swap to a check, then back.

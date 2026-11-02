@@ -195,6 +195,64 @@
     return shown;
   }
 
+  // Scrollers a height animation clipped, per animated element: the list of
+  // { el, prev } of the animation that owns them, so a newer one (or the end
+  // of the owner) restores each inline overflow-y exactly once.
+  const clips = new WeakMap();
+
+  function releaseClips(el, owner) {
+    const list = clips.get(el);
+    if (!list || (owner && list !== owner)) return;
+    list.forEach(({ el: node, prev }) => {
+      node.style.overflowY = prev;
+    });
+    clips.delete(el);
+  }
+
+  /**
+   * Clip `el` and its descendants that scroll but whose content fits at the
+   * current (final) layout. While the height animates they would overflow on
+   * the frames where `el` is shorter than its end height (the spring
+   * undershoots, or it grows from a smaller state), flashing a scrollbar that
+   * takes width and rewraps the text. Scrollers whose content does not fit
+   * keep their scrollbar from the first frame, so their width never changes.
+   * @param {HTMLElement} el
+   */
+  function clipFittingScrollers(el) {
+    releaseClips(el);
+    const list = [];
+    [el, ...el.querySelectorAll("*")].forEach((node) => {
+      const target = /** @type {HTMLElement} */ (node);
+      const overflowY = getComputedStyle(target).overflowY;
+      if (overflowY !== "auto" && overflowY !== "scroll") return;
+      if (target.scrollHeight > target.clientHeight + 1) return;
+      list.push({ el: target, prev: target.style.overflowY });
+      target.style.overflowY = "hidden";
+    });
+    clips.set(el, list);
+    return list;
+  }
+
+  /**
+   * Height follow for an in-place change (not a state change, which morph
+   * animates): `el` springs from `from` to `to`. Played directly, not through
+   * the per-element slot, so it never cancels the card's enter or exit.
+   * @param {HTMLElement} el
+   * @param {number} from
+   * @param {number} to
+   */
+  function followHeight(el, from, to) {
+    if (from === to || !from || prefersReducedMotion()) return null;
+    const clipped = clipFittingScrollers(el);
+    const anim = el.animate([{ height: `${from}px` }, { height: `${to}px` }], {
+      duration: TOKENS.morphMs,
+      easing: springEasing(),
+    });
+    const release = () => releaseClips(el, clipped);
+    Promise.resolve(anim.finished).then(release, release);
+    return anim;
+  }
+
   /**
    * Fade `inner` out, run `render`, animate `container` height from its old
    * to its new measured height, fade `inner` back in. A morph superseded by a
@@ -228,6 +286,11 @@
     const newHeight = container.offsetHeight;
     const tasks = [];
     if (!reduced && oldHeight !== newHeight) {
+      const clipped = clipFittingScrollers(container);
+      const release = (result) => {
+        releaseClips(container, clipped);
+        return result;
+      };
       tasks.push(
         completed(
           container,
@@ -235,7 +298,7 @@
             duration: TOKENS.morphMs,
             easing: springEasing(),
           }),
-        ),
+        ).then(release),
       );
     }
     tasks.push(fade(inner, 0, 1, inMs));
@@ -390,6 +453,7 @@
     readTokens,
     refreshTokens,
     settleHeight,
+    followHeight,
     prefersReducedMotion,
     enter,
     exit,

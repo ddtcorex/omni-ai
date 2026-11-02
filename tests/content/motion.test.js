@@ -191,6 +191,115 @@ describe("motion helpers", () => {
     expect(fadeAnim.cancel).not.toHaveBeenCalled();
   });
 
+  // While the height animates, a scroller whose content fits at the end
+  // height would still overflow on the frames where the card is shorter (the
+  // spring undershoots, or the card grows from a smaller state): its
+  // scrollbar would flash and rewrap the text. It is clipped meanwhile.
+  describe("scrollers during a height animation", () => {
+    function scroller(scrollHeight, clientHeight) {
+      const el = document.createElement("div");
+      el.style.overflowY = "auto";
+      Object.defineProperty(el, "scrollHeight", { get: () => scrollHeight });
+      Object.defineProperty(el, "clientHeight", { get: () => clientHeight });
+      return el;
+    }
+
+    test("morph clips the scrollers that fit, only while the height animates", async () => {
+      const container = document.createElement("div");
+      const inner = scroller(100, 100);
+      container.appendChild(inner);
+      const fits = scroller(80, 80);
+      const overflows = scroller(600, 300);
+      const heights = [100, 180];
+      Object.defineProperty(container, "offsetHeight", { get: () => heights.shift() ?? 180 });
+      const height = deferred();
+      Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+        const isHeight = keyframes.some((k) => "height" in k);
+        const anim = {
+          finished: isHeight ? height.promise : Promise.resolve(),
+          cancel: jest.fn(),
+          keyframes,
+          options,
+          el: this,
+        };
+        calls.push(anim);
+        return anim;
+      });
+      const done = motion.morph(container, inner, () => {
+        inner.replaceChildren(fits, overflows);
+      });
+      await new Promise((r) => setTimeout(r, 0));
+      expect(calls.some((c) => c.el === container)).toBe(true);
+      expect(inner.style.overflowY).toBe("hidden");
+      expect(fits.style.overflowY).toBe("hidden");
+      expect(overflows.style.overflowY).toBe("auto");
+      height.resolve();
+      await done;
+      expect(inner.style.overflowY).toBe("auto");
+      expect(fits.style.overflowY).toBe("auto");
+    });
+
+    test("a newer morph releases the clips of the one it superseded", async () => {
+      const container = document.createElement("div");
+      const inner = scroller(100, 100);
+      container.appendChild(inner);
+      let h = 100;
+      Object.defineProperty(container, "offsetHeight", { get: () => (h += 40) });
+      const pending = [];
+      Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+        const isHeight = keyframes.some((k) => "height" in k);
+        const d = deferred();
+        if (isHeight) pending.push(d);
+        const anim = {
+          finished: isHeight ? d.promise : Promise.resolve(),
+          cancel: jest.fn(() => d.resolve()),
+          keyframes,
+          options,
+          el: this,
+        };
+        calls.push(anim);
+        return anim;
+      });
+      const first = motion.morph(container, inner, jest.fn());
+      await new Promise((r) => setTimeout(r, 0));
+      expect(inner.style.overflowY).toBe("hidden");
+      const second = motion.morph(container, inner, jest.fn());
+      await new Promise((r) => setTimeout(r, 0));
+      expect(inner.style.overflowY).toBe("hidden");
+      pending.forEach((d) => d.resolve());
+      await Promise.all([first, second]);
+      expect(inner.style.overflowY).toBe("auto");
+    });
+
+    test("followHeight clips fitting scrollers until the height follow ends", async () => {
+      const card = document.createElement("div");
+      const body = scroller(50, 50);
+      card.appendChild(body);
+      const d = deferred();
+      Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+        const anim = { finished: d.promise, cancel: jest.fn(), keyframes, options, el: this };
+        calls.push(anim);
+        return anim;
+      });
+      motion.followHeight(card, 100, 160);
+      expect(calls[0].keyframes.map((k) => k.height)).toEqual(["100px", "160px"]);
+      expect(body.style.overflowY).toBe("hidden");
+      d.resolve();
+      await new Promise((r) => setTimeout(r, 0));
+      expect(body.style.overflowY).toBe("auto");
+    });
+
+    test("followHeight under reduced motion does nothing", () => {
+      reduced = true;
+      const card = document.createElement("div");
+      const body = scroller(50, 50);
+      card.appendChild(body);
+      motion.followHeight(card, 100, 160);
+      expect(calls).toHaveLength(0);
+      expect(body.style.overflowY).toBe("auto");
+    });
+  });
+
   test("swap renders between a fade out and a fade in", async () => {
     const el = document.createElement("div");
     const render = jest.fn(() => {

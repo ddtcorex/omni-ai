@@ -1890,3 +1890,207 @@ test("a centred Quick Ask card stays put on a scrolled page when it changes stat
     server.close();
   }
 });
+
+// Scrolling while the card changes state (owner report: "switching between
+// popups, the scroll jumps"). The page has room to scroll, so a wheel that
+// leaks out of the card, or a focus that scrolls, shows up as a scrollY change.
+const SCROLL_FIXTURE = `<!doctype html><html><body style="margin:0;height:3000px">
+  <textarea id="target" rows="3" cols="40" style="margin:100px 40px">Hello world, this is a test.</textarea>
+</body></html>`;
+
+const LONG_ANSWER =
+  Array.from(
+    { length: 14 },
+    (_, i) =>
+      `Paragraph ${i + 1}: a long explanation that overflows the card so its body has to scroll on its own.`,
+  ).join("\n\n") + " LONG-DONE";
+
+// Records one sample per animation frame until stopFrameSampler: the page
+// scroll, the card's rect and, for the card and every element in it, whether
+// it shows a scrollbar (a scroller whose content does not fit).
+function startFrameSampler(page) {
+  return page.evaluate(() => {
+    const w = /** @type {any} */ (window);
+    w.__omniFrames = [];
+    w.__omniSampling = true;
+    const scrollbars = (card) =>
+      [card, ...card.querySelectorAll("*")]
+        .filter((el) => {
+          const oy = getComputedStyle(el).overflowY;
+          return (oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 1;
+        })
+        .map((el) => el.className || el.tagName);
+    const tick = () => {
+      if (!w.__omniSampling) return;
+      const card = document
+        .getElementById("omni-ai-shadow-host")
+        ?.shadowRoot?.querySelector(".omni-ai-overlay");
+      if (card && card.style.visibility !== "hidden") {
+        const r = card.getBoundingClientRect();
+        w.__omniFrames.push({
+          scrollY: window.scrollY,
+          top: r.top,
+          bottom: r.bottom,
+          left: r.left,
+          placement: card.dataset.placement,
+          scrollbars: scrollbars(card),
+        });
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+function stopFrameSampler(page) {
+  return page.evaluate(() => {
+    const w = /** @type {any} */ (window);
+    w.__omniSampling = false;
+    return w.__omniFrames;
+  });
+}
+
+// The card's pinned edge (top below, bottom above) and its left edge move by
+// at most 1px between consecutive frames.
+function maxEdgeStep(frames) {
+  let max = 0;
+  for (let i = 1; i < frames.length; i++) {
+    const a = frames[i - 1];
+    const b = frames[i];
+    const edge = b.placement === "above" ? "bottom" : "top";
+    max = Math.max(max, Math.abs(b[edge] - a[edge]), Math.abs(b.left - a.left));
+  }
+  return max;
+}
+
+test("state changes keep the page scroll and the card edge still, with no transient scrollbar", async () => {
+  const { server, port } = await serveFixtureHtml(SCROLL_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 400, reply: () => "SHORT-DONE improved text." });
+    const page = await context.newPage();
+    await openEditorMenu(page, port);
+    await page.waitForTimeout(700); // enter animation settles
+
+    await startFrameSampler(page);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="rephrase"]');
+    await waitResultText(page, "SHORT-DONE");
+    await page.waitForTimeout(700);
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, ".omni-ai-menu-item[data-action]");
+    await page.waitForTimeout(700);
+    const frames = await stopFrameSampler(page);
+
+    expect(frames.length).toBeGreaterThan(20);
+    expect(new Set(frames.map((f) => f.scrollY))).toEqual(new Set([0]));
+    expect(maxEdgeStep(frames)).toBeLessThanOrEqual(1);
+    // Menu, loading and a short result all fit: no frame shows a scrollbar.
+    expect(frames.filter((f) => f.scrollbars.length > 0)).toEqual([]);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a long result scrolls only its body: the header and actions stay and the page never scrolls", async () => {
+  const { server, port } = await serveFixtureHtml(SCROLL_FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    await stubGeminiCounted(context, { delayMs: 300, reply: () => LONG_ANSWER });
+    const page = await context.newPage();
+    // Short enough that the body's own cap plus header and footer is taller
+    // than the room the card has under the field.
+    await page.setViewportSize({ width: 1000, height: 500 });
+    await openEditorMenu(page, port, { clientX: 200, clientY: 160 });
+    await page.waitForTimeout(700);
+
+    await startFrameSampler(page);
+    await clickShadow(page, '.omni-ai-menu-item[data-action="explain"]');
+    await waitResultText(page, "LONG-DONE");
+    await page.waitForTimeout(700);
+    const landing = await stopFrameSampler(page);
+
+    const layout = () =>
+      page.evaluate(() => {
+        const card = document
+          .getElementById("omni-ai-shadow-host")
+          .shadowRoot.querySelector(".omni-ai-overlay");
+        const rect = (q) => card.querySelector(q).getBoundingClientRect();
+        const body = card.querySelector(".omni-ai-content-area");
+        const c = card.getBoundingClientRect();
+        return {
+          card: { top: c.top, bottom: c.bottom },
+          cardScrolls: card.scrollHeight > card.clientHeight + 1,
+          bodyScrolls: body.scrollHeight > body.clientHeight + 1,
+          bodyScrollTop: body.scrollTop,
+          header: rect(".omni-ai-overlay-header").top,
+          footer: rect(".omni-ai-footer-actions").bottom,
+          scrollY: window.scrollY,
+          viewportHeight: window.innerHeight,
+        };
+      });
+    const before = await layout();
+    // The answer landed while the loading morph still ran: the card is
+    // placed at its real height, so its actions stay on screen.
+    expect(before.card.bottom).toBeLessThanOrEqual(before.viewportHeight);
+    expect(before.cardScrolls).toBe(false);
+    expect(before.bodyScrolls).toBe(true);
+    expect(before.header).toBeGreaterThanOrEqual(before.card.top);
+    expect(before.footer).toBeLessThanOrEqual(before.card.bottom + 0.5);
+    // While it landed, the edge held and only the body ever had a scrollbar.
+    expect(maxEdgeStep(landing)).toBeLessThanOrEqual(1);
+    expect(landing.filter((f) => f.scrollbars.some((c) => c !== "omni-ai-content-area"))).toEqual(
+      [],
+    );
+
+    // Wheel over the body well past its end, then over header and footer.
+    const box = await page.evaluate(() => {
+      const card = document
+        .getElementById("omni-ai-shadow-host")
+        .shadowRoot.querySelector(".omni-ai-overlay");
+      const pick = (q) => {
+        const r = card.querySelector(q).getBoundingClientRect();
+        return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+      };
+      const c = card.getBoundingClientRect();
+      const b = card.querySelector(".omni-ai-content-area").getBoundingClientRect();
+      return {
+        body: {
+          x: b.x + b.width / 2,
+          y: (Math.max(b.top, c.top) + Math.min(b.bottom, c.bottom)) / 2,
+        },
+        header: pick(".omni-ai-overlay-header"),
+        footer: pick(".omni-ai-footer-actions"),
+      };
+    });
+    for (const spot of [box.body, box.header, box.footer]) {
+      await page.mouse.move(spot.x, spot.y);
+      for (let i = 0; i < 10; i++) {
+        await page.mouse.wheel(0, 300);
+        await page.waitForTimeout(30);
+      }
+    }
+    await page.waitForTimeout(300);
+    const after = await layout();
+    expect(after.bodyScrollTop).toBeGreaterThan(0);
+    expect(after.scrollY).toBe(0);
+    expect(after.header).toBeCloseTo(before.header, 0);
+    expect(after.footer).toBeCloseTo(before.footer, 0);
+
+    // Back to the short menu: the body's scroll goes with the result, and
+    // the card shrinks without a scrollbar.
+    await startFrameSampler(page);
+    await clickShadow(page, "#omniAiBack");
+    await waitShadow(page, ".omni-ai-menu-item[data-action]");
+    await page.waitForTimeout(700);
+    const back = await stopFrameSampler(page);
+    expect(maxEdgeStep(back)).toBeLessThanOrEqual(1);
+    expect(new Set(back.map((f) => f.scrollY))).toEqual(new Set([0]));
+    expect(back.filter((f) => f.scrollbars.some((c) => c !== "omni-ai-content-area"))).toEqual([]);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
