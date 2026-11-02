@@ -318,8 +318,8 @@ body {
   overflow: auto;
   margin: 6px 0 0;
   padding: 8px;
-  background: var(--omni-bg-secondary, #f5f5f7);
-  border-radius: 8px;
+  background: var(--omni-pill-bg);
+  border-radius: var(--omni-radius-sm);
   white-space: pre-wrap;
   word-break: break-word;
   font-size: 11px;
@@ -359,16 +359,36 @@ body {
 
 .chat-msg.user {
   align-self: flex-end;
-  background: var(--omni-accent, #4f46e5);
-  color: #fff;
-  border-bottom-right-radius: 4px;
+  background: var(--omni-pill-top);
+  color: var(--omni-glass-text);
+  border-radius: var(--omni-radius-lg);
 }
 
+/* The reply is plain text on the glass, the same typography as a result
+   card, so the transcript reads as one surface rather than stacked bubbles. */
 .chat-msg.assistant {
-  align-self: flex-start;
-  background: var(--omni-bg-secondary, #f0f0f3);
-  color: var(--omni-text-primary);
-  border-bottom-left-radius: 4px;
+  align-self: stretch;
+  padding: 0;
+  background: transparent;
+  color: var(--omni-glass-text);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.chat-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--omni-accent);
+  vertical-align: text-bottom;
+  animation: chat-caret 1s steps(2, start) infinite;
+}
+
+@keyframes chat-caret {
+  to {
+    opacity: 0;
+  }
 }
 
 .chat-msg.assistant.thinking {
@@ -379,11 +399,11 @@ body {
 }
 
 .thinking-dot {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: currentColor;
-  opacity: 0.4;
+  background: var(--omni-glass-text-tertiary);
+  opacity: 0.6;
   animation: thinking-bounce 1s infinite ease-in-out;
 }
 
@@ -412,6 +432,10 @@ body {
   .thinking-dot {
     animation-duration: 2s;
   }
+
+  .chat-caret {
+    animation-duration: 2s;
+  }
 }
 
 .chat-msg .reasoning {
@@ -423,8 +447,11 @@ body {
 }
 
 .chat-error {
-  padding: 8px var(--omni-spacing-md);
-  color: var(--omni-error, #dc2626);
+  margin: 0 var(--omni-spacing-md);
+  padding: var(--omni-spacing-sm);
+  background: var(--omni-error-surface);
+  border-radius: var(--omni-radius-sm);
+  color: var(--omni-error-text);
   font-size: 12px;
 }
 
@@ -438,17 +465,33 @@ body {
   position: relative;
 }
 
+/* The Ask box: one rounded field with the gradient send button inside.
+   The geometry contract holds because .chat-input-wrap keeps its own box and
+   the field itself supplies the padding, never the wrapper. */
 .chat-input {
   display: block;
   width: 100%;
   resize: none;
-  padding: 8px 44px 8px 10px;
-  border: 1px solid var(--omni-border);
-  border-radius: 10px;
+  padding: 10px 44px 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--omni-radius-lg);
   font-size: 13px;
   font-family: inherit;
-  background: var(--omni-bg-primary);
-  color: var(--omni-text-primary);
+  background: var(--omni-pill-bg);
+  color: var(--omni-glass-text);
+  transition:
+    border-color var(--omni-transition-fast),
+    box-shadow var(--omni-transition-fast);
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--omni-accent);
+  box-shadow: 0 0 0 3px var(--omni-tint-soft);
+}
+
+.chat-input::placeholder {
+  color: var(--omni-glass-text-tertiary);
 }
 
 /* Floating circular action button anchored to the input's corner, like
@@ -480,11 +523,11 @@ body {
 }
 
 .chat-send {
-  background: var(--omni-accent-gradient);
+  background: var(--omni-button-gradient);
 }
 
 .chat-stop {
-  background: var(--omni-error, #dc2626);
+  background: var(--omni-error);
 }
 
 .chat-fab.hidden,

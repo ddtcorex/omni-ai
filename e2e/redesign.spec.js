@@ -218,3 +218,55 @@ test("tools read as pills, loading shimmers and results wear the glass", async (
     await context.close();
   }
 });
+
+test("chat is a transcript: the user message is a pill, the reply plain text", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    await page.evaluate(() => {
+      const list = document.getElementById("chatMessages");
+      const user = document.createElement("div");
+      user.className = "chat-msg user";
+      user.textContent = "Hello";
+      const assistant = document.createElement("div");
+      assistant.className = "chat-msg assistant";
+      assistant.textContent = "Hi there";
+      list.append(user, assistant);
+    });
+
+    const userStyle = await page.locator(".chat-msg.user").evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { bg: s.backgroundColor, radius: s.borderRadius };
+    });
+    // Theme-agnostic: headless Chromium resolves the light tokens by default,
+    // so pin "a fill exists" rather than one theme's exact value.
+    expect(userStyle.bg).not.toBe("rgba(0, 0, 0, 0)");
+    expect(userStyle.radius).not.toBe("0px");
+
+    const assistantBg = await page
+      .locator(".chat-msg.assistant")
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(assistantBg).toBe("rgba(0, 0, 0, 0)");
+  } finally {
+    await context.close();
+  }
+});
+
+test("side panel honours reduced motion", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const dots = await page.evaluate(() => {
+      const el = document.createElement("div");
+      el.className = "thinking-dot";
+      document.body.appendChild(el);
+      const duration = getComputedStyle(el).animationDuration;
+      el.remove();
+      return duration;
+    });
+    expect(parseFloat(dots)).toBeGreaterThanOrEqual(2);
+  } finally {
+    await context.close();
+  }
+});
