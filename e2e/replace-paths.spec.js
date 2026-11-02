@@ -584,8 +584,10 @@ test("a whole-field keyboard command after a typed-over selection replaces the f
 test("a whole-field result in an iframe editor edited while the card is open fails instead of replacing it", async () => {
   await withPage(IFRAME_FIXTURE, "unused", async (page, { sw, port }) => {
     const { frame, frameEl } = await iframeEditor(page);
-    // A caret at the end of the first paragraph: whole-field mode.
+    // "beta" is selected and captured with the toolbar, then the caret moves
+    // to the end of the line: whole-field mode.
     await dragInFrame(page, frame, frameEl, 6, 10);
+    await waitToolbar(frame);
     await page.keyboard.press("End");
     const text = await frameText(frame);
     const frameId = await activeFrameId(sw, port);
@@ -600,3 +602,49 @@ test("a whole-field result in an iframe editor edited while the card is open fai
     expect(await cardCount(frame)).toBe(1);
   });
 });
+
+// The toolbar is up: the selection it was drawn for has been captured.
+async function waitToolbar(target) {
+  await target.waitForFunction(
+    () =>
+      document
+        .getElementById("omni-ai-shadow-host")
+        ?.shadowRoot?.querySelector(".omni-ai-quick-btn"),
+    null,
+    { timeout: 5000 },
+  );
+}
+
+// A word is selected (and captured), then a caret key moves away from it
+// and a keyboard command runs on the whole field: Replace writes the whole
+// field, not the old word.
+for (const key of ["End", "Home", "ArrowRight"]) {
+  test(`a whole-field result after ${key} moved off a captured selection replaces the whole contenteditable`, async () => {
+    await withPage(FIXTURE, "unused", async (page, { sw, port }) => {
+      await selectWorld(page, "ce");
+      await page.keyboard.press(key);
+      const text = await fieldText(page, "ce");
+      await sendWorkerResult(sw, port, "REWRITTEN", text);
+      await waitForResult(page, "REWRITTEN");
+      await clickShadow(page, "#omniAiReplace");
+      await expect.poll(() => fieldText(page, "ce")).toBe("REWRITTEN");
+      await expect.poll(() => cardCount(page)).toBe(0);
+    });
+  });
+
+  test(`a whole-field result after ${key} moved off a captured selection replaces the whole iframe editor`, async () => {
+    await withPage(IFRAME_FIXTURE, "unused", async (page, { sw, port }) => {
+      const { frame, frameEl } = await iframeEditor(page);
+      await dragInFrame(page, frame, frameEl, 6, 10);
+      await waitToolbar(frame);
+      await page.keyboard.press(key);
+      const text = await frameText(frame);
+      const frameId = await activeFrameId(sw, port);
+      await sendWorkerResult(sw, port, "REWRITTEN", text, frameId);
+      await waitForResult(frame, "REWRITTEN");
+      await clickShadow(frame, "#omniAiReplace");
+      await expect.poll(() => frameText(frame)).toBe("REWRITTEN");
+      await expect.poll(() => cardCount(frame)).toBe(0);
+    });
+  });
+}

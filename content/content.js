@@ -835,6 +835,13 @@ function setupSelectionListener() {
     }, 100);
   });
 
+  // The caret moving in the editor (arrows, Home, End, a click, typing)
+  // leaves the captured range covering text that is no longer selected.
+  listen("selectionchange", () => {
+    if (retireIfOrphaned()) return;
+    dropStaleRange();
+  });
+
   listen("focusin", (e) => {
     if (retireIfOrphaned()) return;
     // Focus moving into the extension's own UI (a card button, the Ask box)
@@ -882,6 +889,33 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
     useMousePos ? mousePos : null,
     selectionRects,
   );
+}
+
+// Forget the captured rich text range once the editor's own selection no
+// longer matches it. Only a selection inside that editor counts: a click on
+// the card (focus and selection in the extension's UI) or anywhere else
+// keeps it, so Replace after Back, retry or a tone switch still writes over
+// the selection the result was made for.
+function dropStaleRange() {
+  if (!lastRange) return;
+  const adapters = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS;
+  const host = adapters?.getEditableHost(
+    lastRange.startContainer.parentElement || lastRange.startContainer,
+  );
+  if (!host || !host.isConnected) return;
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const live = sel.getRangeAt(0);
+  if (!host.contains(live.startContainer)) return;
+  const same =
+    !live.collapsed &&
+    live.startContainer === lastRange.startContainer &&
+    live.startOffset === lastRange.startOffset &&
+    live.endContainer === lastRange.endContainer &&
+    live.endOffset === lastRange.endOffset;
+  if (same) return;
+  lastRange = null;
+  lastRangeHadText = false;
 }
 
 // The toolbar belongs to the selection (spec "Floating toolbar"): it stays
@@ -2622,11 +2656,18 @@ async function replaceSelectedText(newText, specificElement = null, originalText
   // Re-evaluate text state to see if it's a full text scenario (no selection)
   const currentTextState = context.getText(activeElement);
 
+  // A result made for the field's whole text replaces the whole field,
+  // whatever range is still remembered from an earlier selection.
+  const wholeField =
+    Boolean(originalText) &&
+    context.id !== "static" &&
+    withoutSpaces(fieldText(context, activeElement)) === withoutSpaces(originalText);
+
   const state = {
     // If range is collapsed, it's just a cursor, so we shouldn't use it for text replacement constraint
     // unless we strictly want insertion. But for "Fix/Replace", we want full text replacement if no selection.
-    lastRange: lastRange && !lastRange.collapsed ? lastRange : null,
-    fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
+    lastRange: !wholeField && lastRange && !lastRange.collapsed ? lastRange : null,
+    fullText: wholeField || ((!lastRange || lastRange.collapsed) && currentTextState.fullText),
   };
 
   if (!recoveredTarget && selectionGone(context, activeElement, state.fullText, originalText)) {
