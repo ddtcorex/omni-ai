@@ -71,7 +71,9 @@
   color: var(--omni-glass-text);
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* Allow scrolling if content exceeds max-height */
+  /* Never a scroller itself: the inner wrapper and the result body scroll,
+     so header and actions stay put and the card has no scrollbar of its own. */
+  overflow: hidden;
   max-height: 90vh; /* Prevent overlay from exceeding viewport height */
   transform-origin: 14px 0;
   box-sizing: border-box;
@@ -85,6 +87,22 @@
   flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
+  /* Shrinks to the card's max height. A result's body takes the shrink, so
+     this only scrolls a state with no body (a menu in a short viewport). */
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Header, tones, question and footer keep their size; only the body gives
+   way when the card reaches its max height. */
+.omni-ai-surface-inner > * {
+  flex-shrink: 0;
+}
+
+.omni-ai-surface-inner > .omni-ai-content-area {
+  flex: 0 1 auto;
+  min-height: 0;
 }
 
 /* Header: compact, no bar of its own; the glass card is the background. */
