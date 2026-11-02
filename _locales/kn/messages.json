@@ -703,5 +703,9 @@
   "status_working": {
     "message": "ಕೆಲಸ ನಡೆಯುತ್ತಿದೆ…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "ಪಠ್ಯವನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಬದಲಿಗೆ ಅದನ್ನು ನಕಲಿಸಿ.",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

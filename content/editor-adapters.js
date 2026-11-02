@@ -42,16 +42,26 @@
     return !!(host && range && host.contains(range.commonAncestorContainer));
   }
 
+  // The range a replace writes over, selected in the editor: the whole
+  // editor only for an explicit whole-field replace; otherwise the saved
+  // selection, or the editor's live selection when the saved one is gone.
+  // Null when there is no selection to write over: a selection replace never
+  // widens to the whole editor.
   function restoreRange(host, savedRange, fullText) {
     const documentRef = host.ownerDocument;
     const selection = selectionFor(host);
-    let range = savedRange && savedRange.cloneRange?.();
+    let range = null;
 
-    if (!rangeBelongsTo(host, range)) {
+    if (fullText) {
       range = documentRef.createRange();
       range.selectNodeContents(host);
+    } else if (rangeBelongsTo(host, savedRange) && !savedRange.collapsed) {
+      range = savedRange.cloneRange();
+    } else if (selection?.rangeCount) {
+      const live = selection.getRangeAt(0);
+      if (!live.collapsed && rangeBelongsTo(host, live)) range = live.cloneRange();
     }
-    if (fullText) range.selectNodeContents(host);
+    if (!range) return null;
 
     selection?.removeAllRanges();
     selection?.addRange(range);
@@ -124,39 +134,81 @@
       const host = getEditableHost(element);
       if (!host) return false;
 
-      const before = editableValue(host);
-      host.focus();
+      // Read the live selection before focusing: focus can move it.
       const range = restoreRange(host, state?.lastRange, state?.fullText);
+      if (!range) return false;
+      host.focus();
+      // Focusing may reset the caret: select the range again.
+      const selection = selectionFor(host);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
 
+      // Whether the native edit touched the editor at all. Its text alone
+      // cannot tell: a result equal to the selection leaves it unchanged.
+      const View = host.ownerDocument.defaultView;
+      const ObserverConstructor = View?.MutationObserver || root.MutationObserver;
+      const observer = ObserverConstructor
+        ? new ObserverConstructor(() => {})
+        : { observe() {}, takeRecords: () => [], disconnect() {} };
+      observer.observe(host, { childList: true, characterData: true, subtree: true });
       try {
         host.ownerDocument.execCommand?.("insertText", false, newText);
       } catch {
         // Use the DOM Range fallback below when the browser rejects execCommand.
       }
+      const nativeEdited = observer.takeRecords().length > 0;
+      observer.disconnect();
 
-      const nativeValue = editableValue(host);
-      if (
-        (state?.fullText && nativeValue === newText) ||
-        (!state?.fullText && nativeValue !== before && nativeValue.includes(newText))
-      ) {
-        return true;
-      }
+      // A native edit already wrote the text: never insert it a second time.
+      // Lines become paragraphs or <br>s and runs of spaces become
+      // non-breaking spaces, so compare without whitespace.
+      if (nativeEdited) return landed(host, newText, state?.fullText);
 
+      // The fallback must change the editor too: text it already held never
+      // reads as a successful replace.
+      observer.observe(host, { childList: true, characterData: true, subtree: true });
       range.deleteContents();
-      const textNode = host.ownerDocument.createTextNode(newText);
-      range.insertNode(textNode);
+      const fragment = textFragment(host.ownerDocument, newText);
+      const last = fragment.lastChild;
+      range.insertNode(fragment);
       const caret = host.ownerDocument.createRange();
-      caret.setStartAfter(textNode);
+      if (last) caret.setStartAfter(last);
       caret.collapse(true);
-      const selection = selectionFor(host);
       selection?.removeAllRanges();
       selection?.addRange(caret);
+      const fallbackEdited = observer.takeRecords().length > 0;
+      observer.disconnect();
       dispatchInput(host);
 
-      const value = editableValue(host);
-      return state?.fullText ? value === newText : value !== before && value.includes(newText);
+      return fallbackEdited && landed(host, newText, state?.fullText);
     },
   };
+
+  // Text without its whitespace (newlines, tabs, non-breaking spaces): how
+  // an editor lays lines and spaces out is not part of what was written.
+  function squash(text) {
+    return String(text).replace(/\s+/g, "");
+  }
+
+  // The editor shows `newText`: as its whole value for a full-text replace,
+  // anywhere in it otherwise.
+  function landed(host, newText, fullText) {
+    const value = squash(editableValue(host));
+    const wanted = squash(newText);
+    return fullText ? value === wanted : value.includes(wanted);
+  }
+
+  // `text` as nodes for an editor: one text node per line, <br> between.
+  function textFragment(documentRef, text) {
+    const fragment = documentRef.createDocumentFragment();
+    String(text)
+      .split("\n")
+      .forEach((line, i) => {
+        if (i > 0) fragment.appendChild(documentRef.createElement("br"));
+        if (line) fragment.appendChild(documentRef.createTextNode(line));
+      });
+    return fragment;
+  }
 
   const staticText = {
     id: "static",

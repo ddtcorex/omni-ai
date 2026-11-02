@@ -689,5 +689,9 @@
   "status_working": {
     "message": "处理中…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "无法替换文本。请改为复制。",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

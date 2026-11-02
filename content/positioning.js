@@ -77,11 +77,19 @@
     return { top: last.bottom, left: last.right };
   }
 
+  // The least room above the anchor worth opening into when the card does
+  // not fit there whole; less than this, the card overlaps the anchor.
+  const MIN_ROOM_ABOVE = 160;
+
   /**
    * Place a card next to an anchor (the toolbar or the selection). Opens
    * below the anchor, left-aligned with it, and flips above when it does not
-   * fit below and there is more room above. The card is kept inside the
-   * viewport horizontally. `anchor` is viewport-relative (a client rect);
+   * fit below, there is more room above, and that room fits the card or is
+   * at least MIN_ROOM_ABOVE (the body scrolls inside it). Otherwise it stays
+   * below, shifted up over the anchor when it has no room there: the card
+   * always stays inside the viewport, overlapping the selection if it must.
+   * `maxHeight` is the room between the card's pinned edge and the
+   * viewport's edge. The card is kept inside the viewport horizontally. `anchor` is viewport-relative (a client rect);
    * the returned top/left are document-relative. For "above", `top` is where
    * the card's top edge sits at the given height, so its bottom edge is
    * `anchor.top - gap` (the edge the caller should pin, see content.js).
@@ -101,7 +109,13 @@
 
     const spaceBelow = viewport.height - anchor.bottom - gap - margin;
     const spaceAbove = anchor.top - gap - margin;
-    const placement = height <= spaceBelow || spaceAbove <= spaceBelow ? "below" : "above";
+    // Above only when the card fits there, or when the room above is larger
+    // and still usable (the body scrolls inside it). Otherwise below, where a
+    // card with no room is shifted up over the anchor: it overlaps the
+    // selection rather than leave the viewport.
+    const aboveUsable = spaceAbove >= Math.min(height, MIN_ROOM_ABOVE);
+    const placement =
+      height <= spaceBelow || spaceAbove <= spaceBelow || !aboveUsable ? "below" : "above";
 
     let viewportTop =
       placement === "below" ? anchor.bottom + gap : Math.max(margin, anchor.top - gap - height);
@@ -115,12 +129,44 @@
     }
     if (viewportLeft < margin) viewportLeft = margin;
 
+    // The room between the card's pinned edge and the window's edge: a
+    // height animation overshooting on its spring is clamped there, never
+    // drawn past the window.
+    const room =
+      placement === "below"
+        ? viewport.height - margin - viewportTop
+        : Math.max(0, anchor.top - gap - margin);
     return {
       top: viewportTop + viewport.scrollY,
       left: viewportLeft + viewport.scrollX,
       placement,
-      maxHeight,
+      maxHeight: Math.min(maxHeight, room),
     };
+  }
+
+  // Result card widths (spec follow-up B): the editor menu and short text
+  // keep the base width; long text widens the card so it scrolls less.
+  const CARD_BASE_WIDTH = 320;
+  const CARD_MAX_WIDTH = 560;
+  const CARD_VIEWPORT_MARGIN = 32;
+  // Text up to this tall at the base width keeps the base width.
+  const CARD_TARGET_TEXT_HEIGHT = 240;
+
+  /**
+   * The width a result card takes for its text: the base width while the
+   * text is at most the target height at that width, else as much wider as
+   * brings it back near the target (text height scales inversely with
+   * width), capped at min(560, viewport width - 32) and never below the base.
+   *
+   * @param {number} textHeight the text's height laid out at the base width
+   * @param {number} viewportWidth
+   * @returns {number}
+   */
+  function cardWidth(textHeight, viewportWidth) {
+    const max = Math.min(CARD_MAX_WIDTH, viewportWidth - CARD_VIEWPORT_MARGIN);
+    if (!(textHeight > CARD_TARGET_TEXT_HEIGHT) || max <= CARD_BASE_WIDTH) return CARD_BASE_WIDTH;
+    const wanted = Math.round((CARD_BASE_WIDTH * textHeight) / CARD_TARGET_TEXT_HEIGHT);
+    return Math.max(CARD_BASE_WIDTH, Math.min(wanted, max));
   }
 
   /**
@@ -243,6 +289,8 @@
   }
 
   root.OMNI_POSITIONING = {
+    CARD_BASE_WIDTH,
+    cardWidth,
     clampToViewport,
     getRectEndPoint,
     placeCard,

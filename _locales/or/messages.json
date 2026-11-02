@@ -703,5 +703,9 @@
   "status_working": {
     "message": "କାମ ଚାଲିଛି…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "ଟେକ୍ସଟ୍ ବଦଳାଯାଇପାରିଲା ନାହିଁ। ଏହା ବଦଳରେ ଏହାକୁ କପି କରନ୍ତୁ।",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

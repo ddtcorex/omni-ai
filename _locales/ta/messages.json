@@ -703,5 +703,9 @@
   "status_working": {
     "message": "செயலாக்கப்படுகிறது…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "உரையை மாற்ற முடியவில்லை. அதற்குப் பதிலாக நகலெடுக்கவும்.",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

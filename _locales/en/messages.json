@@ -703,5 +703,9 @@
   "status_working": {
     "message": "Working…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "Couldn't replace the text. Copy it instead.",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

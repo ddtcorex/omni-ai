@@ -146,8 +146,22 @@
       return run;
     }
 
+    // Take the card down at once, without its exit animation: the content
+    // script that owns it outlived its extension (an extension reload).
+    function destroy() {
+      token += 1;
+      document.removeEventListener("keydown", onKeydown, true);
+      if (card) card.remove();
+      card = null;
+      inner = null;
+      current = null;
+      history = [];
+      closing = null;
+    }
+
     const surface = {
       open,
+      destroy,
       to,
       back,
       close,

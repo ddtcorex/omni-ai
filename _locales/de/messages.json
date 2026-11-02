@@ -689,5 +689,9 @@
   "status_working": {
     "message": "Wird bearbeitet…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "Der Text konnte nicht ersetzt werden. Kopiere ihn stattdessen.",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

@@ -313,6 +313,35 @@ describe("overlay surface", () => {
     expect(pageHandler).not.toHaveBeenCalled();
   });
 
+  // An orphaned content script (its extension reloaded) takes its card down
+  // at once: no exit animation (motion may be gone with it), no Escape
+  // listener left behind, and no state that could bring the card back.
+  test("destroy removes the card and its Escape listener at once", async () => {
+    await surface.open("menu");
+    const card = surface.card();
+    surface.destroy();
+    expect(card.isConnected).toBe(false);
+    expect(surface.card()).toBe(null);
+    expect(surface.isOpen()).toBe(false);
+    expect(global.OMNI_MOTION.exit).not.toHaveBeenCalled();
+    const pageHandler = jest.fn();
+    document.body.addEventListener("keydown", pageHandler);
+    document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    expect(pageHandler).toHaveBeenCalledTimes(1);
+  });
+
+  test("destroy during a close animation still removes the card", async () => {
+    manualExit = true;
+    await surface.open("menu");
+    const card = surface.card();
+    const closing = surface.close();
+    surface.destroy();
+    expect(card.isConnected).toBe(false);
+    exitResolvers.forEach((resolve) => resolve(true));
+    await closing;
+    expect(surface.card()).toBe(null);
+  });
+
   test("Escape reaches the page untouched when no card is open", async () => {
     await surface.open("menu");
     await surface.close();

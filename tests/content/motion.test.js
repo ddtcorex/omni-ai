@@ -174,6 +174,127 @@ describe("motion helpers", () => {
     expect(heightCall.keyframes.map((k) => k.height)).toEqual(["120px", "372px"]);
   });
 
+  // A result card widens for long text: the width springs with the height in
+  // one animation, and the content is held at its final width meanwhile so
+  // the text wraps once, not on every frame.
+  test("morph animates width with height on the same spring and pins inner to the final width", async () => {
+    const container = document.createElement("div");
+    const inner = document.createElement("div");
+    container.appendChild(inner);
+    let rendered = false;
+    Object.defineProperty(container, "offsetHeight", { get: () => (rendered ? 300 : 100) });
+    Object.defineProperty(container, "offsetWidth", { get: () => (rendered ? 520 : 320) });
+    Object.defineProperty(inner, "offsetWidth", { get: () => (rendered ? 518 : 318) });
+    const d = deferred();
+    let pinnedDuring = null;
+    Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+      const finished =
+        this === container && "width" in keyframes[0] ? d.promise : Promise.resolve();
+      const anim = { finished, cancel: jest.fn(), keyframes, options, el: this };
+      calls.push(anim);
+      return anim;
+    });
+    const done = motion.morph(container, inner, () => {
+      rendered = true;
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    pinnedDuring = inner.style.width;
+    d.resolve();
+    await done;
+    const sizeCall = calls.find((c) => c.el === container);
+    expect(sizeCall.keyframes).toEqual([
+      { height: "100px", width: "320px" },
+      { height: "300px", width: "520px" },
+    ]);
+    expect(sizeCall.options.duration).toBe(380);
+    expect(sizeCall.options.easing).toBe(motion.TOKENS.spring);
+    expect(pinnedDuring).toBe("518px");
+    expect(inner.style.width).toBe("");
+  });
+
+  // A second morph (or a swap's size follow) can start while the first's
+  // width animation still runs. Its cancel settles a tick later, so the first
+  // pin must be released when settleHeight stops it, not on that late tick,
+  // or the next render measures under the old pin and the late release
+  // restores the old pinned width for good.
+  test("a morph that supersedes a width morph renders unpinned and ends unpinned", async () => {
+    const container = document.createElement("div");
+    const inner = document.createElement("div");
+    container.appendChild(inner);
+    let width = 320;
+    Object.defineProperty(container, "offsetHeight", { get: () => 200 });
+    Object.defineProperty(container, "offsetWidth", { get: () => width });
+    Object.defineProperty(inner, "offsetWidth", { get: () => width - 2 });
+    const running = [];
+    Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+      let reject;
+      let resolve;
+      const finished = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+      finished.catch(() => {});
+      const anim = {
+        finished,
+        keyframes,
+        options,
+        el: this,
+        effect: { getKeyframes: () => keyframes },
+        cancel: jest.fn(() => reject(new Error("cancelled"))),
+        finish: () => resolve(),
+      };
+      calls.push(anim);
+      if (this === container) running.push(anim);
+      else resolve();
+      return anim;
+    });
+    container.getAnimations = () => running.filter((a) => !a.cancel.mock.calls.length);
+
+    const first = motion.morph(container, inner, () => {
+      width = 560;
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(inner.style.width).toBe("558px");
+
+    let widthAtRender = null;
+    const second = motion.morph(container, inner, () => {
+      widthAtRender = inner.style.width;
+      width = 320;
+    });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(widthAtRender).toBe("");
+    running.forEach((a) => a.finish());
+    await Promise.all([first, second]);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(inner.style.width).toBe("");
+  });
+
+  test("morph animates width alone when only the width changes", async () => {
+    const container = document.createElement("div");
+    const inner = document.createElement("div");
+    container.appendChild(inner);
+    let rendered = false;
+    Object.defineProperty(container, "offsetHeight", { get: () => 200 });
+    Object.defineProperty(container, "offsetWidth", { get: () => (rendered ? 320 : 520) });
+    await motion.morph(container, inner, () => {
+      rendered = true;
+    });
+    const sizeCall = calls.find((c) => c.el === container);
+    expect(sizeCall.keyframes.map((k) => k.width)).toEqual(["520px", "320px"]);
+  });
+
+  test("settleHeight also stops a running width animation", () => {
+    const el = document.createElement("div");
+    Object.defineProperty(el, "offsetHeight", { get: () => 120 });
+    const sizeAnim = {
+      effect: { getKeyframes: () => [{ width: "320px" }, { width: "520px" }] },
+      cancel: jest.fn(),
+    };
+    el.getAnimations = () => [sizeAnim];
+    motion.settleHeight(el);
+    expect(sizeAnim.cancel).toHaveBeenCalled();
+  });
+
   test("settleHeight returns the shown height, then stops only height animations", () => {
     const el = document.createElement("div");
     let shown = 118;
@@ -287,6 +408,28 @@ describe("motion helpers", () => {
       d.resolve();
       await new Promise((r) => setTimeout(r, 0));
       expect(body.style.overflowY).toBe("auto");
+    });
+
+    test("followHeight animates a width change with the height", async () => {
+      const card = document.createElement("div");
+      const inner = document.createElement("div");
+      card.appendChild(inner);
+      Object.defineProperty(inner, "offsetWidth", { get: () => 518 });
+      const d = deferred();
+      Element.prototype.animate = jest.fn(function animate(keyframes, options) {
+        const anim = { finished: d.promise, cancel: jest.fn(), keyframes, options, el: this };
+        calls.push(anim);
+        return anim;
+      });
+      motion.followHeight(card, 100, 160, { fromWidth: 320, toWidth: 520, pin: inner });
+      expect(calls[0].keyframes).toEqual([
+        { height: "100px", width: "320px" },
+        { height: "160px", width: "520px" },
+      ]);
+      expect(inner.style.width).toBe("518px");
+      d.resolve();
+      await new Promise((r) => setTimeout(r, 0));
+      expect(inner.style.width).toBe("");
     });
 
     test("followHeight under reduced motion does nothing", () => {
@@ -423,6 +566,18 @@ describe("motion helpers", () => {
       await motion.morph(container, inner, jest.fn());
       expect(calls.some((c) => c.el === container)).toBe(false);
       calls.forEach((c) => c.keyframes.forEach((kf) => expect(kf).not.toHaveProperty("height")));
+    });
+
+    test("morph does not animate width", async () => {
+      const container = document.createElement("div");
+      const inner = document.createElement("div");
+      let rendered = false;
+      Object.defineProperty(container, "offsetHeight", { get: () => 100 });
+      Object.defineProperty(container, "offsetWidth", { get: () => (rendered ? 520 : 320) });
+      await motion.morph(container, inner, () => {
+        rendered = true;
+      });
+      calls.forEach((c) => c.keyframes.forEach((kf) => expect(kf).not.toHaveProperty("width")));
     });
 
     test("stagger uses opacity only, without transform or delay", () => {

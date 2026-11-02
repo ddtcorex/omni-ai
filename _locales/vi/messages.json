@@ -689,5 +689,9 @@
   "status_working": {
     "message": "Đang xử lý…",
     "description": "Generic overlay loading header when the running action is not known"
+  },
+  "overlay_replace_failed": {
+    "message": "Không thể thay thế văn bản. Hãy sao chép thay vào đó.",
+    "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   }
 }

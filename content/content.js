@@ -260,6 +260,9 @@ let flashHideTimer = null;
 let lastMenuContext = null;
 let currentAnchorRect = null;
 let lastRange = null;
+// lastRange held selected text when it was captured: once it collapses, the
+// text a result was made for is gone (typed over, deleted).
+let lastRangeHadText = false;
 let floatingButtonEnabled = true;
 
 // Shadow UI root to isolate extension styles from host page CSS.
@@ -451,6 +454,7 @@ function getSurface() {
       },
       place: (card) => {
         overlay = card;
+        fitCardWidth(card, surface.state());
         positionOverlay(currentAnchorRect, overlayLockedPosition);
       },
       backFallback: surfaceBackFallback,
@@ -570,6 +574,52 @@ function getContext(element) {
 }
 
 // ============================================
+// Orphaned script teardown
+// ============================================
+
+// An extension reload leaves this script running in tabs that were already
+// open, with an invalid extension context, next to the script that replaces
+// it. Such an orphan takes its UI down and stops listening the first time a
+// listener or a UI entry point notices (spec follow-up C).
+let orphaned = false;
+const documentListeners = [];
+
+// addEventListener on this frame's document, remembered for the teardown.
+function listen(type, handler, options) {
+  document.addEventListener(type, handler, options);
+  documentListeners.push(() => document.removeEventListener(type, handler, options));
+}
+
+// True when this script outlived its extension; the first call tears down.
+function retireIfOrphaned() {
+  if (orphaned) return true;
+  if (isContextValid()) return false;
+  orphaned = true;
+  documentListeners.splice(0).forEach((remove) => remove());
+  clearTimeout(flashHoverTimer);
+  clearTimeout(flashHideTimer);
+  surface?.destroy();
+  overlay = null;
+  hideQuickActionButton();
+  removeOwnUiHost();
+  return true;
+}
+
+// The host is found by id, so the script that replaced this one may have
+// mounted into it too: remove it only when nothing but this script's
+// stylesheet is left inside.
+function removeOwnUiHost() {
+  const host = omniUiHost;
+  if (!host) return;
+  const others = Array.from(host.shadowRoot?.children || []).filter(
+    (el) => !el.matches("style[data-omni-ai-shadow-style='true']"),
+  );
+  if (others.length === 0) host.remove();
+  omniUiHost = null;
+  omniUiRoot = null;
+}
+
+// ============================================
 // Initialization
 // ============================================
 
@@ -653,8 +703,10 @@ function setupMessageListener() {
       }
 
       case "REPLACE_SELECTION":
-        replaceSelectedText(message.payload.text);
-        sendResponse({ success: true });
+        // Replies once the write is done, with whether it landed.
+        replaceSelectedText(message.payload.text)
+          .catch(() => false)
+          .then((replaced) => sendResponse({ success: replaced === true }));
         break;
 
       case "SHOW_QUICK_ASK_OVERLAY": {
@@ -715,6 +767,7 @@ function setupMessageListener() {
 function setupSelectionListener() {
   const handleSelectionChange = (mousePos = null) => {
     setTimeout(() => {
+      if (retireIfOrphaned()) return;
       // If overlay is already open, don't show specific button logic or hide it?
       // Usually checking !isCardOpen() is correct (a closing card is not open).
       if (isCardOpen()) return;
@@ -741,7 +794,8 @@ function setupSelectionListener() {
     }, 10);
   };
 
-  document.addEventListener("mouseup", (e) => {
+  listen("mouseup", (e) => {
+    if (retireIfOrphaned()) return;
     // A click on the extension's own UI is not a page selection. Its
     // deferred check would otherwise run after the click's handler: after
     // Replace the card is closing and the editor has focus with a collapsed
@@ -752,7 +806,8 @@ function setupSelectionListener() {
     handleSelectionChange({ x: e.clientX, y: e.clientY });
   });
 
-  document.addEventListener("keyup", (e) => {
+  listen("keyup", (e) => {
+    if (retireIfOrphaned()) return;
     // Handle Ctrl+A (Select All) and Shift+Arrows (Selection)
     if (
       ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") ||
@@ -770,7 +825,8 @@ function setupSelectionListener() {
   });
 
   // Handle paste events
-  document.addEventListener("paste", () => {
+  listen("paste", () => {
+    if (retireIfOrphaned()) return;
     // Rely on generic detection shortly after paste
 
     // Slight delay to allow paste to complete
@@ -779,7 +835,15 @@ function setupSelectionListener() {
     }, 100);
   });
 
-  document.addEventListener("focusin", (e) => {
+  // The caret moving in the editor (arrows, Home, End, a click, typing)
+  // leaves the captured range covering text that is no longer selected.
+  listen("selectionchange", () => {
+    if (retireIfOrphaned()) return;
+    dropStaleRange();
+  });
+
+  listen("focusin", (e) => {
+    if (retireIfOrphaned()) return;
     // Focus moving into the extension's own UI (a card button, the Ask box)
     // is not the editor losing focus: reporting it would clear the active
     // editor frame and send the next result to the top frame.
@@ -798,10 +862,12 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
   if (context.id === "richText" || context.id === "static") {
     const sel = window.getSelection();
     lastRange = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+    lastRangeHadText = Boolean(lastRange && !lastRange.collapsed);
   } else {
     // Standard inputs don't use window.getSelection() ranges effectively in the same way for this tracking,
     // so clear it to prevent stale ranges from blocking fullText detection.
     lastRange = null;
+    lastRangeHadText = false;
   }
 
   const rect = context.getRect(activeElement);
@@ -823,6 +889,53 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
     useMousePos ? mousePos : null,
     selectionRects,
   );
+}
+
+// Forget the captured rich text range once the editor's own selection
+// moved off it: collapsed to a caret, or selecting other text. Only a
+// selection inside that editor counts: a click on the card (focus and
+// selection in the extension's UI) or anywhere else keeps it, so Replace
+// after Back, retry or a tone switch still writes over the selection the
+// result was made for. Editors that re-set the same selection with other
+// boundary nodes (ProseMirror, Lexical, Slate) keep it too: ranges are
+// compared by their text positions in the editor, not by node.
+function dropStaleRange() {
+  if (!lastRange) return;
+  const adapters = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS;
+  const host = adapters?.getEditableHost(
+    lastRange.startContainer.parentElement || lastRange.startContainer,
+  );
+  if (!host || !host.isConnected) return;
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const live = sel.getRangeAt(0);
+  if (!host.contains(live.startContainer)) return;
+  if (!live.collapsed) {
+    const was = textSpan(host, lastRange);
+    const now = textSpan(host, live);
+    if (was && now && was.start === now.start && was.end === now.end) {
+      // The same text: follow the editor's own nodes, which it may replace.
+      lastRange = live.cloneRange();
+      return;
+    }
+  }
+  lastRange = null;
+  lastRangeHadText = false;
+}
+
+// A range's start and end as character offsets into the editor's text, or
+// null when it is not inside the editor any more.
+function textSpan(host, range) {
+  if (!host.contains(range.startContainer) || !host.contains(range.endContainer)) return null;
+  try {
+    const before = document.createRange();
+    before.selectNodeContents(host);
+    before.setEnd(range.startContainer, range.startOffset);
+    const start = before.toString().length;
+    return { start, end: start + range.toString().length };
+  } catch {
+    return null;
+  }
 }
 
 // The toolbar belongs to the selection (spec "Floating toolbar"): it stays
@@ -886,7 +999,7 @@ function presentQuickActionButton(
   mousePosition = null,
   selectionRects = null,
 ) {
-  if (!isContextValid()) return;
+  if (retireIfOrphaned()) return;
   if (!floatingButtonEnabled) return;
   if (quickActionBtn) hideQuickActionButton();
 
@@ -925,6 +1038,7 @@ const TOOLBAR_SIZE = 24;
 const TOOLBAR_INSET = 2;
 
 async function createQuickBtn(rect, isInput, mousePosition = null, selectionRects = null) {
+  if (retireIfOrphaned()) return;
   const toolbar = document.createElement("div");
   toolbar.className = "omni-ai-toolbar";
   const button = document.createElement("button");
@@ -1193,6 +1307,7 @@ function hideFlashActions() {
  * delay/settings read was in flight.
  */
 async function showFlashActions(text, inputElement) {
+  if (retireIfOrphaned()) return;
   if (!text || !quickToolbar || quickToolbar.classList.contains("is-revealed")) return;
   const toolbar = quickToolbar;
   const row = flashActionsRow;
@@ -1283,6 +1398,8 @@ async function showQuickActionMenu(
   lockedPosition = null,
   isInput = false,
 ) {
+  // An orphaned script (its extension reloaded) shows nothing.
+  if (retireIfOrphaned()) return;
   // Save current anchor for re-positioning later
   const menuAnchorRect = anchorRect || cardAnchorRect();
   currentAnchorRect = menuAnchorRect;
@@ -1600,28 +1717,70 @@ function startPageTranslation(inner, data, surf, bypassCache) {
     .catch(() => land(showFailure));
 }
 
-// Swap a slot's content with a short blur swap. When the card's height
-// changes, it follows on the spring once, from the old height to the new.
+// Swap a slot's content with a short blur swap. When the card's size
+// changes (a long translation widens it), it follows on the spring once,
+// from the old size to the new.
 function swapSlot(el, render) {
   const motion = /** @type {any} */ (self).OMNI_MOTION;
   return motion.swap(el, () => {
     const card = overlay;
-    // The shown height, with any height follow still running stopped, so
-    // placement below measures the new content at its real height.
+    // The shown size, with any size follow still running stopped, so
+    // placement below measures the new content at its real size.
     const before = card ? motion.settleHeight(card) : 0;
+    const beforeWidth = card ? card.offsetWidth : 0;
     render();
     if (card && card.isConnected) {
-      animateCardHeight(card, before, card.offsetHeight);
+      fitCardWidth(card, surface?.state());
+      // Placed before the follow starts: placement measures the card at its
+      // real new size, not at the follow's first frame.
       positionOverlay(currentAnchorRect, currentCardPosition());
+      animateCardHeight(card, before, card.offsetHeight, beforeWidth, card.offsetWidth);
     }
   });
 }
 
-// Height follow for an in-place change (not a state change, which the
-// surface morphs): OMNI_MOTION.followHeight, which never cancels the card's
-// enter or exit and keeps scrollers that fit from flashing a scrollbar.
-function animateCardHeight(card, from, to) {
-  /** @type {any} */ (self).OMNI_MOTION.followHeight(card, from, to);
+// Size follow for an in-place change (not a state change, which the surface
+// morphs): OMNI_MOTION.followHeight, which never cancels the card's enter or
+// exit, keeps scrollers that fit from flashing a scrollbar, and holds the
+// content at its final width while the width moves.
+function animateCardHeight(card, from, to, fromWidth = 0, toWidth = 0) {
+  /** @type {any} */ (self).OMNI_MOTION.followHeight(card, from, to, {
+    fromWidth,
+    toWidth,
+    pin: card.querySelector(".omni-ai-surface-inner"),
+  });
+}
+
+// States whose body is text the AI, the page or a provider wrote: they widen
+// for long text. Every other state is the 320px card; loading keeps the width
+// of the state it stands in for, so a retry of a wide result does not narrow
+// and widen again.
+const TEXT_BODY_SELECTOR = {
+  result: ".omni-ai-result-text",
+  error: ".omni-ai-error-text",
+  pageCard: ".omni-ai-suggestion-content",
+};
+
+// The card's width for its state and text: measured at the base width, set
+// before the state is placed or animated, so the text wraps once, at the
+// width it keeps (spec follow-up B).
+function fitCardWidth(card, state) {
+  if (state === "loading") return;
+  const positioning = /** @type {any} */ (self).OMNI_POSITIONING;
+  const selector = TEXT_BODY_SELECTOR[state];
+  const text = selector ? card.querySelector(selector) : null;
+  card.style.width = "";
+  // Measured free of the previous placement's cap (positionOverlay sets it).
+  card.style.maxWidth = "none";
+  if (!text || !positioning?.cardWidth) return;
+  const width = positioning.cardWidth(text.scrollHeight, viewportWidth());
+  if (width !== positioning.CARD_BASE_WIDTH) card.style.width = `${width}px`;
+}
+
+// The layout viewport's width without a page scrollbar: a card reaching
+// under the scrollbar would give the page a horizontal one.
+function viewportWidth() {
+  return Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
 }
 
 // Copy feedback: a short blur swap to a check, then back.
@@ -2006,13 +2165,17 @@ function containingBlockEdges() {
 function positionOverlay(anchorRect = null, lockedPosition = null) {
   if (!overlay) return;
 
-  // Ensure visibility to calculate height
+  // Ensure visibility to calculate height. No max height while measuring:
+  // the stylesheet's 90vh cap would report a tall card shorter than it is,
+  // and placement would let it run past the window once its real max height
+  // applies.
   overlay.style.display = "flex";
   overlay.style.visibility = "hidden";
-  overlay.style.maxHeight = "";
+  overlay.style.maxHeight = "none";
+  overlay.style.maxWidth = "none";
   overlay.style.position = "";
 
-  const viewportWidth = window.innerWidth;
+  const viewWidth = viewportWidth();
   const viewportHeight = window.innerHeight;
   const scrollX = window.scrollX;
   const scrollY = window.scrollY;
@@ -2021,7 +2184,9 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
   const applyAbove = (leftCss, bottomCss) => {
     // Viewport y of the card's bottom edge is cb.bottom - bottomCss.
     const room = cb.bottom - bottomCss - 10;
-    overlay.style.maxHeight = `${Math.max(120, Math.min(viewportHeight - 20, room))}px`;
+    // Never more than the room above: the card stays inside the window
+    // (placeCard only opens above into usable room).
+    overlay.style.maxHeight = `${Math.max(0, Math.min(viewportHeight - 20, room))}px`;
     overlay.style.top = "auto";
     overlay.style.bottom = `${Math.round(bottomCss)}px`;
     overlay.style.left = `${Math.round(leftCss)}px`;
@@ -2060,32 +2225,50 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
       if (!moved) return;
       const leftCss = parseFloat(overlay.style.left) || 0;
       if (moved.placement === "above") applyAbove(leftCss, cb.bottom - moved.bottom);
-      else applyBelow(moved.top - cb.top, leftCss);
+      else {
+        applyBelow(moved.top - cb.top, leftCss);
+        // Moved below the host's bar: its room ends at the window's bottom.
+        overlay.style.maxHeight = `${Math.max(0, Math.min(viewportHeight - 20, viewportHeight - 10 - moved.top))}px`;
+      }
     }
+  };
+
+  // A locked card keeps its left edge unless a wider state would run past
+  // the viewport's right edge: then it moves left just enough.
+  const fitLeft = (leftCss, originX) => {
+    const width = overlay.offsetWidth || 320;
+    const viewportLeft = Math.max(10, Math.min(leftCss + originX, viewWidth - 10 - width));
+    return viewportLeft - originX;
+  };
+
+  // Caps the width at the room to the window's right margin, so the width
+  // spring's overshoot of a widening card is clamped there. Its final width
+  // already fits: the left edge was moved for it.
+  const capWidthToWindow = () => {
+    const leftCss = parseFloat(overlay.style.left) || 0;
+    const originX = overlay.style.position === "fixed" ? 0 : cb.left;
+    overlay.style.maxWidth = `${Math.max(0, viewWidth - 10 - (leftCss + originX))}px`;
   };
 
   if (lockedPosition) {
     if (lockedPosition.placement === "above" && typeof lockedPosition.bottom === "number") {
-      applyAbove(lockedPosition.left, lockedPosition.bottom);
+      applyAbove(fitLeft(lockedPosition.left, cb.left), lockedPosition.bottom);
     } else {
       // A centred card stays fixed to the viewport, so it has no offset.
       const origin = lockedPosition.fixed ? 0 : cb.top;
       const overlayHeight = overlay.offsetHeight || 400;
       let top = lockedPosition.top + origin; // viewport y
       const available = viewportHeight - 10 - top;
-
-      if (overlayHeight > available && available >= 200) {
-        // Keep the top edge still and scroll inside the card.
-        overlay.style.maxHeight = `${available}px`;
-      } else {
-        overlay.style.maxHeight = `${viewportHeight - 20}px`;
-        // Not enough room even to scroll: shift up.
-        if (top + overlayHeight > viewportHeight - 10) {
-          top = Math.max(10, viewportHeight - 10 - overlayHeight);
-        }
+      // The top edge stays and the body scrolls when at least 200px are left
+      // below it; with less, the card moves up just enough to fit.
+      if (overlayHeight > available && available < 200) {
+        top = Math.max(10, viewportHeight - 10 - overlayHeight);
       }
       if (top < 10) top = 10;
-      applyBelow(top - origin, lockedPosition.left);
+      // Capped at the room down to the window's edge, so a spring overshoot
+      // of a growing card is clamped there.
+      overlay.style.maxHeight = `${Math.min(viewportHeight - 20, viewportHeight - 10 - top)}px`;
+      applyBelow(top - origin, fitLeft(lockedPosition.left, lockedPosition.fixed ? 0 : cb.left));
       if (lockedPosition.fixed) {
         overlay.style.position = "fixed";
         overlay.dataset.placement = "center";
@@ -2093,6 +2276,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     }
     overlay.style.transform = "none";
     stepClearOfHost(anchorRect);
+    capWidthToWindow();
     overlay.style.visibility = "visible";
     return;
   }
@@ -2101,7 +2285,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     const placed = /** @type {any} */ (self).OMNI_POSITIONING.placeCard(
       { top: anchorRect.top, left: anchorRect.left, bottom: anchorRect.bottom },
       { width: overlay.offsetWidth || 320, height: overlay.offsetHeight || 400 },
-      { width: viewportWidth, height: viewportHeight, scrollX, scrollY },
+      { width: viewWidth, height: viewportHeight, scrollX, scrollY },
       CARD_GAP,
     );
     overlay.style.maxHeight = `${placed.maxHeight}px`;
@@ -2130,6 +2314,7 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
     overlay.dataset.placement = "center";
   }
 
+  capWidthToWindow();
   overlay.style.visibility = "visible";
 }
 
@@ -2287,6 +2472,7 @@ function extractPageContent() {
 // the toolbar opens the card straight into loading). Resolves once the
 // transition has started, so a request token taken right after is current.
 async function showLoadingInOverlay(data, { replace = false } = {}) {
+  if (retireIfOrphaned()) return;
   const surf = getSurface();
   if (isCardOpen()) {
     // Loading swaps the content where the card already sits.
@@ -2339,6 +2525,7 @@ function renderLoadingState(inner, data, surf) {
 }
 
 async function showResultOverlay(payload, isInput = false) {
+  if (retireIfOrphaned()) return;
   resetQuickButtonIcon();
   const surf = getSurface();
   const data = { ...payload, isInput };
@@ -2419,18 +2606,51 @@ function renderResultState(inner, data, surf) {
 
   const replaceBtn = inner.querySelector("#omniAiReplace");
   if (replaceBtn) {
+    let replacing = false;
     replaceBtn.addEventListener("click", async () => {
-      // The replaced text is gone, and the toolbar with it: a leftover one
-      // would still hold the old selection.
-      if (await replaceSelectedText(result)) {
+      // One write per result: a second click, or one on the closing card,
+      // would replace again into whatever the first write left selected
+      // (the whole field once nothing is selected any more).
+      if (replacing || !surf.isOpen()) return;
+      replacing = true;
+      let replaced = false;
+      try {
+        replaced = await replaceSelectedText(result, null, originalText);
+      } catch (error) {
+        console.warn("[Omni AI] Replace threw:", error);
+      }
+      if (replaced) {
+        // The replaced text is gone, and the toolbar with it: a leftover one
+        // would still hold the old selection.
         hideQuickActionButton();
         hideOverlay();
+        return;
       }
+      replacing = false;
+      showReplaceFailed(inner);
     });
   }
 }
 
-async function replaceSelectedText(newText, specificElement = null) {
+// A Replace that could not write: the card stays, says so above its actions,
+// and Copy is still there. Shown once per result.
+function showReplaceFailed(inner) {
+  if (!overlay || inner.querySelector(".omni-ai-replace-failed")) return;
+  const motion = /** @type {any} */ (self).OMNI_MOTION;
+  const before = motion.settleHeight(overlay);
+  const note = document.createElement("div");
+  note.className = "omni-ai-error omni-ai-replace-failed";
+  note.setAttribute("role", "alert");
+  note.innerHTML = `${ICONS.warn}<span class="omni-ai-error-text">${escapeHtml(i18n.getMessage("overlay_replace_failed"))}</span>`;
+  inner.insertBefore(note, inner.querySelector(".omni-ai-footer-actions"));
+  positionOverlay(currentAnchorRect, currentCardPosition());
+  animateCardHeight(overlay, before, overlay.offsetHeight);
+}
+
+// `originalText` is the text the result was made for, when known: a field
+// that no longer holds it (typed over while the card was open) is not
+// replaced as a whole, it fails.
+async function replaceSelectedText(newText, specificElement = null, originalText = null) {
   let activeElement = specificElement || document.activeElement;
 
   // Fallback to stored input element interaction
@@ -2449,6 +2669,7 @@ async function replaceSelectedText(newText, specificElement = null) {
   // live element sharing the same id (stable across most re-renders) before
   // giving up; the recovered node won't have the original selection, so this
   // falls back to whole-field replacement rather than a partial one.
+  let recoveredTarget = false;
   if (activeElement && !activeElement.isConnected) {
     const recovered = activeElement.id ? document.getElementById(activeElement.id) : null;
     if (recovered?.isConnected) {
@@ -2457,6 +2678,7 @@ async function replaceSelectedText(newText, specificElement = null) {
         "recovered a live element with the same id, replacing its full value instead.",
       );
       activeElement = recovered;
+      recoveredTarget = true;
     } else {
       console.warn(
         "[Omni AI] Replace: target element is no longer attached to the page",
@@ -2474,12 +2696,37 @@ async function replaceSelectedText(newText, specificElement = null) {
   // Re-evaluate text state to see if it's a full text scenario (no selection)
   const currentTextState = context.getText(activeElement);
 
+  // A result made for the field's whole text replaces the whole field,
+  // whatever range is still remembered from an earlier selection.
+  const wholeField =
+    Boolean(originalText) &&
+    context.id !== "static" &&
+    withoutSpaces(fieldText(context, activeElement)) === withoutSpaces(originalText);
+
   const state = {
     // If range is collapsed, it's just a cursor, so we shouldn't use it for text replacement constraint
     // unless we strictly want insertion. But for "Fix/Replace", we want full text replacement if no selection.
-    lastRange: lastRange && !lastRange.collapsed ? lastRange : null,
-    fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
+    lastRange: !wholeField && lastRange && !lastRange.collapsed ? lastRange : null,
+    fullText: wholeField || ((!lastRange || lastRange.collapsed) && currentTextState.fullText),
   };
+
+  if (!recoveredTarget && selectionGone(context, activeElement, state.fullText, originalText)) {
+    console.warn("[Omni AI] Replace: the text the result was made for is no longer in the field.");
+    return false;
+  }
+
+  // A selection replace writes over what is selected now: other text
+  // selected since the result was made is not the text it was made for.
+  const selected = state.lastRange ? state.lastRange.toString() : currentTextState.text;
+  if (
+    !recoveredTarget &&
+    !state.fullText &&
+    originalText &&
+    withoutSpaces(selected) !== withoutSpaces(originalText)
+  ) {
+    console.warn("[Omni AI] Replace: other text is selected than the result was made for.");
+    return false;
+  }
 
   if (context.id === "static") {
     // Diagnostic: this branch silently no-ops (Replace click just does
@@ -2503,11 +2750,47 @@ async function replaceSelectedText(newText, specificElement = null) {
   );
   if (!replacement.ok) {
     console.warn("[Omni AI] replace failed:", replacement.attempts.join("; "));
+    return false;
   }
-  return replacement.ok;
+  // The selection was written over: a later replace in this field (a
+  // keyboard command on its whole text) must not read it as typed over.
+  lastRange = null;
+  lastRangeHadText = false;
+  return true;
+}
+
+// The text a result was made for is gone. A whole-field replace checks the
+// field still holds that text (it was edited while the card was open, or the
+// selection the result was for was typed over), compared without whitespace
+// since editors lay lines and spaces out their own way. Without the text to
+// compare (a REPLACE_SELECTION message carries none), a captured rich text
+// range that collapsed before selectionchange dropped it is the only sign.
+// A selection replace is never refused here: the editor adapter writes over
+// the saved or live selection, or fails, and never widens to the whole field.
+function selectionGone(context, element, fullText, originalText) {
+  if (!fullText) return false;
+  if (originalText) {
+    return withoutSpaces(fieldText(context, element)) !== withoutSpaces(originalText);
+  }
+  if (context.id !== "richText") return false;
+  if (!lastRangeHadText || !lastRange || !lastRange.collapsed) return false;
+  const host = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.getEditableHost(element);
+  return Boolean(host && host.contains(lastRange.startContainer));
+}
+
+// The whole text of a field: an input's value, an editor's rendered text.
+function fieldText(context, element) {
+  if (context.id === "standard") return String(element.value);
+  const host = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.getEditableHost(element);
+  return host ? host.innerText || host.textContent || "" : "";
+}
+
+function withoutSpaces(text) {
+  return String(text).replace(/\s+/g, "");
 }
 
 async function showQuickAskOverlay(lockedRect = null, originalText = null, isInput = false) {
+  if (retireIfOrphaned()) return;
   await ensureUiRootReady();
 
   // Save current anchor for re-positioning
@@ -2538,6 +2821,7 @@ function renderAskState(inner, data, surf) {
 }
 
 async function showErrorInOverlay(msg, retryData = {}) {
+  if (retireIfOrphaned()) return;
   // A quick action's request can fail before any card is open: the surface
   // opens one, or the error would render nowhere and leave the floating
   // icon's spinner frozen.
