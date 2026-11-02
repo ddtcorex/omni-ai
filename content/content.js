@@ -2715,6 +2715,19 @@ async function replaceSelectedText(newText, specificElement = null, originalText
     return false;
   }
 
+  // A selection replace writes over what is selected now: other text
+  // selected since the result was made is not the text it was made for.
+  const selected = state.lastRange ? state.lastRange.toString() : currentTextState.text;
+  if (
+    !recoveredTarget &&
+    !state.fullText &&
+    originalText &&
+    withoutSpaces(selected) !== withoutSpaces(originalText)
+  ) {
+    console.warn("[Omni AI] Replace: other text is selected than the result was made for.");
+    return false;
+  }
+
   if (context.id === "static") {
     // Diagnostic: this branch silently no-ops (Replace click just does
     // nothing, overlay stays open) whenever the resolved target isn't an

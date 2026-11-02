@@ -460,6 +460,34 @@ for (const id of ["ta", "ce"]) {
   });
 }
 
+// Selecting other text while the card is open: the result was made for
+// "world", so Replace must not write it over the new selection.
+for (const id of ["ta", "ce"]) {
+  test(`Replace after other text was selected fails instead of writing over it in #${id}`, async () => {
+    await withPage(FIXTURE, "WORLD", async (page) => {
+      await selectWorld(page, id);
+      await runFromMenu(page);
+      await waitForResult(page, "WORLD");
+      await page.evaluate((fieldId) => {
+        const el = document.getElementById(fieldId);
+        if (el.setSelectionRange) {
+          el.setSelectionRange(23, 27);
+          return;
+        }
+        const text = el.querySelector("p").firstChild;
+        getSelection().setBaseAndExtent(text, 23, text, 27);
+      }, id);
+      await page.evaluate(
+        () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+      );
+      await clickShadow(page, "#omniAiReplace");
+      await expect.poll(() => inShadow(page, ".omni-ai-replace-failed")).toBe(true);
+      expect(await fieldText(page, id)).toBe("Hello world, this is a test.");
+      expect(await cardCount(page)).toBe(1);
+    });
+  });
+}
+
 // A keyboard command on the whole field (no selection), delivered the way
 // the worker does: PROCESSING_START, then SHOW_RESULT with the field's text.
 async function sendWorkerResult(sw, port, result, originalText, frameId = 0) {
