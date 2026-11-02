@@ -824,6 +824,11 @@
   align-items: center;
   gap: 2px;
   min-height: 24px;
+  /* Same separator and spacing as the section's bottom edge, run to the
+     section's full width. */
+  margin: 0 -6px 8px -10px;
+  padding: 0 6px 6px 10px;
+  border-bottom: 1px solid var(--omni-separator);
 }
 
 .omni-ai-suggestion-label {
