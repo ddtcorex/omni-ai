@@ -703,8 +703,10 @@ function setupMessageListener() {
       }
 
       case "REPLACE_SELECTION":
-        replaceSelectedText(message.payload.text);
-        sendResponse({ success: true });
+        // Replies once the write is done, with whether it landed.
+        replaceSelectedText(message.payload.text)
+          .catch(() => false)
+          .then((replaced) => sendResponse({ success: replaced === true }));
         break;
 
       case "SHOW_QUICK_ASK_OVERLAY": {
@@ -2627,7 +2629,7 @@ async function replaceSelectedText(newText, specificElement = null, originalText
     fullText: (!lastRange || lastRange.collapsed) && currentTextState.fullText,
   };
 
-  if (!recoveredTarget && selectionGone(context, activeElement, currentTextState, originalText)) {
+  if (!recoveredTarget && selectionGone(context, activeElement, state.fullText, originalText)) {
     console.warn("[Omni AI] Replace: the text the result was made for is no longer in the field.");
     return false;
   }
@@ -2663,20 +2665,33 @@ async function replaceSelectedText(newText, specificElement = null, originalText
   return true;
 }
 
-// The selection a result was made for is gone: its range collapsed (rich
-// text), or the field holds no selection and its whole text is not that text
-// any more (input, textarea). A whole-field replace would then overwrite
-// text the user never chose.
-function selectionGone(context, element, textState, originalText) {
-  if (context.id === "richText") {
-    if (!lastRangeHadText || !lastRange || !lastRange.collapsed) return false;
-    const host = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.getEditableHost(element);
-    return Boolean(host && host.contains(lastRange.startContainer));
+// The text a result was made for is gone. A whole-field replace checks the
+// field still holds that text (it was edited while the card was open, or the
+// selection the result was for was typed over), compared without whitespace
+// since editors lay lines and spaces out their own way. Without the text to
+// compare (a REPLACE_SELECTION message), a rich text selection that collapsed
+// after it was captured is the only sign. A replace of a live selection is
+// never refused.
+function selectionGone(context, element, fullText, originalText) {
+  if (!fullText) return false;
+  if (originalText) {
+    return withoutSpaces(fieldText(context, element)) !== withoutSpaces(originalText);
   }
-  if (context.id === "standard" && originalText && textState.fullText) {
-    return String(element.value).trim() !== String(originalText).trim();
-  }
-  return false;
+  if (context.id !== "richText") return false;
+  if (!lastRangeHadText || !lastRange || !lastRange.collapsed) return false;
+  const host = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.getEditableHost(element);
+  return Boolean(host && host.contains(lastRange.startContainer));
+}
+
+// The whole text of a field: an input's value, an editor's rendered text.
+function fieldText(context, element) {
+  if (context.id === "standard") return String(element.value);
+  const host = /** @type {any} */ (self).OMNI_EDITOR_ADAPTERS.getEditableHost(element);
+  return host ? host.innerText || host.textContent || "" : "";
+}
+
+function withoutSpaces(text) {
+  return String(text).replace(/\s+/g, "");
 }
 
 async function showQuickAskOverlay(lockedRect = null, originalText = null, isInput = false) {

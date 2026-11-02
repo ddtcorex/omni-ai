@@ -148,6 +148,9 @@
       // non-breaking spaces, so compare without whitespace.
       if (nativeEdited) return landed(host, newText, state?.fullText);
 
+      // The fallback must change the editor too: text it already held never
+      // reads as a successful replace.
+      observer.observe(host, { childList: true, characterData: true, subtree: true });
       range.deleteContents();
       const fragment = textFragment(host.ownerDocument, newText);
       const last = fragment.lastChild;
@@ -158,9 +161,11 @@
       const selection = selectionFor(host);
       selection?.removeAllRanges();
       selection?.addRange(caret);
+      const fallbackEdited = observer.takeRecords().length > 0;
+      observer.disconnect();
       dispatchInput(host);
 
-      return landed(host, newText, state?.fullText);
+      return fallbackEdited && landed(host, newText, state?.fullText);
     },
   };
 

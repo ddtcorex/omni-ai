@@ -143,6 +143,25 @@ describe("editor adapter registry", () => {
     expect(editor.innerHTML).toBe("Hello Line one.<br>Line two.");
   });
 
+  test("an edit that changed nothing in the editor is not a success", async () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "Hello world";
+    document.body.appendChild(editor);
+    const range = selectWord(editor, 6, 11);
+    const insertNode = Range.prototype.insertNode;
+    const deleteContents = Range.prototype.deleteContents;
+    Range.prototype.insertNode = () => {};
+    Range.prototype.deleteContents = () => {};
+    try {
+      const result = await registry.replaceViaAdapters(editor, { lastRange: range }, "world");
+      expect(result.ok).toBe(false);
+    } finally {
+      Range.prototype.insertNode = insertNode;
+      Range.prototype.deleteContents = deleteContents;
+    }
+  });
+
   test("finds an editable host through an open shadow root", () => {
     const editor = document.createElement("div");
     editor.setAttribute("contenteditable", "true");

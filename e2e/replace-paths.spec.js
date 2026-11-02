@@ -459,3 +459,144 @@ for (const id of ["ta", "ce"]) {
     });
   });
 }
+
+// A keyboard command on the whole field (no selection), delivered the way
+// the worker does: PROCESSING_START, then SHOW_RESULT with the field's text.
+async function sendWorkerResult(sw, port, result, originalText, frameId = 0) {
+  await sw.evaluate(
+    async ({ port, result, originalText, frameId }) => {
+      const [tab] = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      await chrome.tabs.sendMessage(
+        tab.id,
+        { type: "PROCESSING_START", action: "rephrase" },
+        { frameId },
+      );
+      await chrome.tabs.sendMessage(
+        tab.id,
+        {
+          type: "SHOW_RESULT",
+          payload: { action: "rephrase", result, originalText, isInput: true },
+        },
+        { frameId },
+      );
+    },
+    { port, result, originalText, frameId },
+  );
+}
+
+async function iframeEditor(page) {
+  const frameEl = await page.waitForSelector("#editor");
+  const frame = await frameEl.contentFrame();
+  await frame.waitForSelector("p");
+  return { frame, frameEl };
+}
+
+// The frame id the worker would route a keyboard command to.
+async function activeFrameId(sw, port) {
+  return sw.evaluate(async (p) => {
+    const [tab] = await chrome.tabs.query({ url: `http://127.0.0.1:${p}/*` });
+    const key = `omni_ai_active_frame_${tab.id}`;
+    for (let i = 0; i < 50; i++) {
+      const stored = (await chrome.storage.session.get(key))[key];
+      if (Number.isInteger(stored) && stored !== 0) return stored;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    return null;
+  }, port);
+}
+
+// Drag-select characters [start, end) of the frame's first paragraph.
+async function dragInFrame(page, frame, frameEl, start, end) {
+  const word = await frame.evaluate(
+    ([s, e]) => {
+      const text = document.querySelector("p").firstChild;
+      const range = document.createRange();
+      range.setStart(text, s);
+      range.setEnd(text, e);
+      const r = range.getBoundingClientRect();
+      return { x: r.x, y: r.y, w: r.width, h: r.height };
+    },
+    [start, end],
+  );
+  const box = await frameEl.boundingBox();
+  await page.mouse.move(box.x + word.x + 1, box.y + word.y + word.h / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + word.x + word.w - 1, box.y + word.y + word.h / 2, { steps: 6 });
+  await page.mouse.up();
+}
+
+const frameText = (frame) =>
+  frame.evaluate(() => document.body.innerText.replace(/\s+/g, " ").trim());
+
+test("a whole-field keyboard command after a typed-over selection replaces the field in a contenteditable", async () => {
+  await withPage(FIXTURE, "unused", async (page, { sw, port }) => {
+    await selectWorld(page, "ce");
+    await page.keyboard.type("X");
+    const text = await fieldText(page, "ce");
+    expect(text).toBe("Hello X, this is a test.");
+    await sendWorkerResult(sw, port, "REWRITTEN", text);
+    await waitForResult(page, "REWRITTEN");
+    await clickShadow(page, "#omniAiReplace");
+    await expect.poll(() => fieldText(page, "ce")).toBe("REWRITTEN");
+    await expect.poll(() => cardCount(page)).toBe(0);
+  });
+});
+
+test("a whole-field result in a contenteditable edited while the card is open fails instead of replacing it", async () => {
+  await withPage(FIXTURE, "unused", async (page, { sw, port }) => {
+    await page.evaluate(() => {
+      const el = document.getElementById("ce");
+      el.focus();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      getSelection().removeAllRanges();
+      getSelection().addRange(range);
+    });
+    await page.locator("#ce").dispatchEvent("mouseup");
+    const text = await fieldText(page, "ce");
+    await sendWorkerResult(sw, port, "REWRITTEN", text);
+    await waitForResult(page, "REWRITTEN");
+    await page.keyboard.type(" More");
+    await clickShadow(page, "#omniAiReplace");
+    await expect.poll(() => inShadow(page, ".omni-ai-replace-failed")).toBe(true);
+    expect(await fieldText(page, "ce")).toBe("Hello world, this is a test. More");
+    expect(await cardCount(page)).toBe(1);
+  });
+});
+
+test("a whole-field keyboard command after a typed-over selection replaces the field in an iframe editor", async () => {
+  await withPage(IFRAME_FIXTURE, "unused", async (page, { sw, port }) => {
+    const { frame, frameEl } = await iframeEditor(page);
+    await dragInFrame(page, frame, frameEl, 6, 10);
+    await page.keyboard.type("X");
+    const text = await frameText(frame);
+    expect(text).toBe("Alpha X gamma delta epsilon. Second paragraph stays.");
+    const frameId = await activeFrameId(sw, port);
+    await sendWorkerResult(sw, port, "REWRITTEN", text, frameId);
+    await waitForResult(frame, "REWRITTEN");
+    await clickShadow(frame, "#omniAiReplace");
+    await expect.poll(() => frameText(frame)).toBe("REWRITTEN");
+    await expect.poll(() => cardCount(frame)).toBe(0);
+  });
+});
+
+test("a whole-field result in an iframe editor edited while the card is open fails instead of replacing it", async () => {
+  await withPage(IFRAME_FIXTURE, "unused", async (page, { sw, port }) => {
+    const { frame, frameEl } = await iframeEditor(page);
+    // A caret at the end of the first paragraph: whole-field mode.
+    await dragInFrame(page, frame, frameEl, 6, 10);
+    await page.keyboard.press("End");
+    const text = await frameText(frame);
+    const frameId = await activeFrameId(sw, port);
+    await sendWorkerResult(sw, port, "REWRITTEN", text, frameId);
+    await waitForResult(frame, "REWRITTEN");
+    await page.keyboard.type(" More");
+    await clickShadow(frame, "#omniAiReplace");
+    await expect.poll(() => inShadow(frame, ".omni-ai-replace-failed")).toBe(true);
+    expect(await frameText(frame)).toBe(
+      "Alpha beta gamma delta epsilon. More Second paragraph stays.",
+    );
+    expect(await cardCount(frame)).toBe(1);
+  });
+});
