@@ -83,6 +83,9 @@
   --omni-glass-text: #f1f2f6;
   --omni-glass-text-secondary: #c2c5d2;
   --omni-glass-text-tertiary: #a8acbd;
+  /* Thin scrollbar of the overlay card's scrolling parts. */
+  --omni-glass-scrollbar-thumb: rgba(255, 255, 255, 0.22);
+  --omni-glass-scrollbar-thumb-hover: rgba(255, 255, 255, 0.36);
   --omni-accent-glow: 0 2px 8px rgba(139, 92, 246, 0.4);
   /* AA companions for white content on, and accent text over, the overlay
      glass. --omni-accent-gradient stays as is for settings and side panel;
@@ -135,6 +138,8 @@
   --omni-glass-text: #1f2430;
   --omni-glass-text-secondary: #4b4f63;
   --omni-glass-text-tertiary: #565a70;
+  --omni-glass-scrollbar-thumb: rgba(20, 20, 40, 0.2);
+  --omni-glass-scrollbar-thumb-hover: rgba(20, 20, 40, 0.34);
   --omni-separator: rgba(20, 20, 40, 0.07);
   --omni-skeleton-base: #e6e6f0;
   --omni-skeleton-shine: #f8f8fc;
@@ -189,6 +194,8 @@
   --omni-glass-text: #1f2430;
   --omni-glass-text-secondary: #4b4f63;
   --omni-glass-text-tertiary: #565a70;
+  --omni-glass-scrollbar-thumb: rgba(20, 20, 40, 0.2);
+  --omni-glass-scrollbar-thumb-hover: rgba(20, 20, 40, 0.34);
   --omni-separator: rgba(20, 20, 40, 0.07);
   --omni-skeleton-base: #e6e6f0;
   --omni-skeleton-shine: #f8f8fc;

@@ -841,13 +841,37 @@
   word-break: normal;
 }
 
+/* Scrollbars inside the card (the inner wrapper, the result body, a long
+   translation): thin, rounded, on the glass tokens, never the browser's
+   default bar. Chrome 121+ reads scrollbar-width and scrollbar-color; the
+   webkit rules cover older engines. Every scroller contains its overscroll,
+   so a wheel that reaches the end never scrolls the page under the card. */
+.omni-ai-overlay,
+.omni-ai-overlay * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--omni-glass-scrollbar-thumb) transparent;
+}
+
 .omni-ai-overlay ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
+  height: 6px;
+}
+
+.omni-ai-overlay ::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .omni-ai-overlay ::-webkit-scrollbar-thumb {
-  background: var(--omni-border);
-  border-radius: 4px;
+  background: var(--omni-glass-scrollbar-thumb);
+  border-radius: 999px;
+}
+
+.omni-ai-overlay ::-webkit-scrollbar-thumb:hover {
+  background: var(--omni-glass-scrollbar-thumb-hover);
+}
+
+.omni-ai-suggestion-content {
+  overscroll-behavior: contain;
 }
 
 /* Reduced motion: no shimmer sweep, no press scale, no knob slide. */

@@ -2094,3 +2094,49 @@ test("a long result scrolls only its body: the header and actions stay and the p
     server.close();
   }
 });
+
+for (const theme of ["dark", "light"]) {
+  test(`${theme} card scrollbars are thin, use the glass tokens and contain overscroll`, async () => {
+    const { server, port } = await serveFixtureHtml(SCROLL_FIXTURE);
+    const { context, sw } = await launchWithExtension();
+    try {
+      await seedConfig(sw);
+      await sw.evaluate((t) => chrome.storage.sync.set({ omni_ai_theme: t }), theme);
+      await stubGeminiCounted(context, { reply: () => LONG_ANSWER });
+      const page = await context.newPage();
+      await openEditorMenu(page, port);
+      await clickShadow(page, '.omni-ai-menu-item[data-action="explain"]');
+      await waitResultText(page, "LONG-DONE");
+      const styles = await page.evaluate(() => {
+        const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+        const card = root.querySelector(".omni-ai-overlay");
+        const pick = (el) => {
+          const cs = getComputedStyle(el);
+          return {
+            width: cs.scrollbarWidth,
+            color: cs.scrollbarColor,
+            overscroll: cs.overscrollBehaviorY,
+          };
+        };
+        const host = getComputedStyle(root.host);
+        return {
+          body: pick(card.querySelector(".omni-ai-content-area")),
+          inner: pick(card.querySelector(".omni-ai-surface-inner")),
+          thumb: host.getPropertyValue("--omni-glass-scrollbar-thumb").trim(),
+        };
+      });
+      // A light thumb on the dark glass, a dark one on the light glass.
+      expect(styles.thumb.replace(/\s/g, "")).toContain(
+        theme === "dark" ? "rgba(255,255,255" : "rgba(20,20,40",
+      );
+      for (const el of [styles.body, styles.inner]) {
+        expect(el.width).toBe("thin");
+        expect(el.color).not.toBe("auto");
+        expect(el.overscroll).toBe("contain");
+      }
+    } finally {
+      await context.close();
+      server.close();
+    }
+  });
+}
