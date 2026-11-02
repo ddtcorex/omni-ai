@@ -61,7 +61,8 @@ describe("positioning helpers", () => {
 
     test("placeCard opens below the anchor when it fits", () => {
       const result = positioning.placeCard({ top: 100, left: 50, bottom: 124 }, card, viewport);
-      expect(result).toEqual({ top: 132, left: 50, placement: "below", maxHeight: 748 });
+      // Its max height is the room down to the window's bottom margin.
+      expect(result).toEqual({ top: 132, left: 50, placement: "below", maxHeight: 768 - 10 - 132 });
     });
 
     test('placeCard opens above when there is no room below and reports placement "above"', () => {
@@ -78,6 +79,27 @@ describe("positioning helpers", () => {
         viewport,
       );
       expect(result.maxHeight).toBe(768 - 20);
+    });
+
+    // A selection covering most of the window leaves a sliver on both
+    // sides: the card overlaps the selection inside the viewport instead of
+    // opening above into a gap it cannot fit (owner report).
+    test("placeCard overlaps the anchor inside the viewport when neither side has usable room", () => {
+      const result = positioning.placeCard({ top: 40, left: 50, bottom: 740 }, card, viewport);
+      expect(result.placement).toBe("below");
+      expect(result.top).toBeGreaterThanOrEqual(10);
+      expect(result.top + card.height).toBeLessThanOrEqual(768 - 10);
+    });
+
+    test("placeCard opens above into less room than the card only when that room is usable", () => {
+      const tall = { width: 320, height: 600 };
+      // 300px above, 100px below: above, scrolling inside the room.
+      const above = positioning.placeCard({ top: 318, left: 50, bottom: 650 }, tall, viewport);
+      expect(above.placement).toBe("above");
+      // 100px above, 50px below: overlap inside the viewport.
+      const overlap = positioning.placeCard({ top: 118, left: 50, bottom: 700 }, tall, viewport);
+      expect(overlap.placement).toBe("below");
+      expect(overlap.top + tall.height).toBeLessThanOrEqual(768 - 10);
     });
 
     test("placeCard keeps the card inside the right edge", () => {

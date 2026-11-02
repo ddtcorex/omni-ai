@@ -94,6 +94,10 @@
    * @param {number} [gap]
    * @returns {{top: number, left: number, placement: "below" | "above", maxHeight: number}}
    */
+  // The least room above the anchor worth opening into when the card does
+  // not fit there whole; less than this, the card overlaps the anchor.
+  const MIN_ROOM_ABOVE = 160;
+
   function placeCard(anchor, card, viewport, gap = 8) {
     const margin = 10;
     const maxHeight = viewport.height - 20;
@@ -101,7 +105,13 @@
 
     const spaceBelow = viewport.height - anchor.bottom - gap - margin;
     const spaceAbove = anchor.top - gap - margin;
-    const placement = height <= spaceBelow || spaceAbove <= spaceBelow ? "below" : "above";
+    // Above only when the card fits there, or when the room above is larger
+    // and still usable (the body scrolls inside it). Otherwise below, where a
+    // card with no room is shifted up over the anchor: it overlaps the
+    // selection rather than leave the viewport.
+    const aboveUsable = spaceAbove >= Math.min(height, MIN_ROOM_ABOVE);
+    const placement =
+      height <= spaceBelow || spaceAbove <= spaceBelow || !aboveUsable ? "below" : "above";
 
     let viewportTop =
       placement === "below" ? anchor.bottom + gap : Math.max(margin, anchor.top - gap - height);
@@ -115,11 +125,18 @@
     }
     if (viewportLeft < margin) viewportLeft = margin;
 
+    // The room between the card's pinned edge and the window's edge: a
+    // height animation overshooting on its spring is clamped there, never
+    // drawn past the window.
+    const room =
+      placement === "below"
+        ? viewport.height - margin - viewportTop
+        : Math.max(0, anchor.top - gap - margin);
     return {
       top: viewportTop + viewport.scrollY,
       left: viewportLeft + viewport.scrollX,
       placement,
-      maxHeight,
+      maxHeight: Math.min(maxHeight, room),
     };
   }
 

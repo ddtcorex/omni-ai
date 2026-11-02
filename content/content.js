@@ -2143,10 +2143,13 @@ function containingBlockEdges() {
 function positionOverlay(anchorRect = null, lockedPosition = null) {
   if (!overlay) return;
 
-  // Ensure visibility to calculate height
+  // Ensure visibility to calculate height. No max height while measuring:
+  // the stylesheet's 90vh cap would report a tall card shorter than it is,
+  // and placement would let it run past the window once its real max height
+  // applies.
   overlay.style.display = "flex";
   overlay.style.visibility = "hidden";
-  overlay.style.maxHeight = "";
+  overlay.style.maxHeight = "none";
   overlay.style.position = "";
 
   const viewWidth = viewportWidth();
@@ -2158,7 +2161,9 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
   const applyAbove = (leftCss, bottomCss) => {
     // Viewport y of the card's bottom edge is cb.bottom - bottomCss.
     const room = cb.bottom - bottomCss - 10;
-    overlay.style.maxHeight = `${Math.max(120, Math.min(viewportHeight - 20, room))}px`;
+    // Never more than the room above: the card stays inside the window
+    // (placeCard only opens above into usable room).
+    overlay.style.maxHeight = `${Math.max(0, Math.min(viewportHeight - 20, room))}px`;
     overlay.style.top = "auto";
     overlay.style.bottom = `${Math.round(bottomCss)}px`;
     overlay.style.left = `${Math.round(leftCss)}px`;
@@ -2230,6 +2235,9 @@ function positionOverlay(anchorRect = null, lockedPosition = null) {
         }
       }
       if (top < 10) top = 10;
+      // Capped at the room down to the window's edge, so a spring overshoot
+      // of a growing card is clamped there.
+      overlay.style.maxHeight = `${Math.min(viewportHeight - 20, viewportHeight - 10 - top)}px`;
       applyBelow(top - origin, fitLeft(lockedPosition.left, lockedPosition.fixed ? 0 : cb.left));
       if (lockedPosition.fixed) {
         overlay.style.position = "fixed";
