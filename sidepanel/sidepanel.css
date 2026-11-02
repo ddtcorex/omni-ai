@@ -118,6 +118,14 @@ body {
   filter: none;
 }
 
+/* The tool rows set box-shadow: none above, which outranks the shared pill
+   ring, so the keyboard ring is restored here. */
+.action-buttons .ds-btn-primary:focus-visible {
+  background: var(--omni-pill-hover);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--omni-accent);
+}
+
 .action-buttons .ds-btn-primary:active {
   transform: scale(var(--omni-motion-press));
 }
@@ -207,7 +215,7 @@ body {
 
 .version {
   font-size: 11px;
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-tertiary);
 }
 
 /* ---- Tabs: one segmented pill, not underlines ---- */
@@ -323,7 +331,7 @@ body {
   white-space: pre-wrap;
   word-break: break-word;
   font-size: 11px;
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-tertiary);
 }
 
 .chat-messages {
@@ -338,7 +346,7 @@ body {
 
 .chat-empty {
   margin: auto;
-  color: var(--omni-text-muted);
+  color: var(--omni-glass-text-secondary);
   font-size: 13px;
   text-align: center;
 }
@@ -435,6 +443,13 @@ body {
 
   .chat-caret {
     animation-duration: 2s;
+  }
+
+  /* Media queries add no specificity, so the surface-level :active rules need
+     their own guard to lose to this one. */
+  .tab-btn:active,
+  .action-buttons .ds-btn-primary:active {
+    transform: none;
   }
 }
 

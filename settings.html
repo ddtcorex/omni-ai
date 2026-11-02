@@ -62,9 +62,11 @@
                 <span class="label-text">__MSG_settings_model__</span>
                 <span class="label-hint">__MSG_settings_modelHint__</span>
               </label>
-              <select id="apiModel" class="setting-select ds-field">
-                <!-- Populated by JS -->
-              </select>
+              <div class="select-field">
+                <select id="apiModel" class="setting-select ds-field">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
 
               <!-- Gemini API Key -->
               <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
@@ -383,11 +385,13 @@
                 <span class="label-text">__MSG_settings_theme__</span>
                 <span class="label-hint">__MSG_settings_themeHint__</span>
               </label>
-              <select id="themeSelector" class="setting-select ds-field">
-                <option value="system">__MSG_theme_system__</option>
-                <option value="dark">__MSG_theme_dark__</option>
-                <option value="light">__MSG_theme_light__</option>
-              </select>
+              <div class="select-field">
+                <select id="themeSelector" class="setting-select ds-field">
+                  <option value="system">__MSG_theme_system__</option>
+                  <option value="dark">__MSG_theme_dark__</option>
+                  <option value="light">__MSG_theme_light__</option>
+                </select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -395,10 +399,12 @@
                 <span class="label-text">__MSG_settings_showFloatingButton__</span>
                 <span class="label-hint">__MSG_settings_showFloatingButtonHint__</span>
               </label>
-              <select id="showFloatingButton" class="setting-select ds-field">
-                <option value="on">__MSG_settings_on__</option>
-                <option value="off">__MSG_settings_off__</option>
-              </select>
+              <div class="select-field">
+                <select id="showFloatingButton" class="setting-select ds-field">
+                  <option value="on">__MSG_settings_on__</option>
+                  <option value="off">__MSG_settings_off__</option>
+                </select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -455,13 +461,15 @@
                 <span class="label-text">__MSG_settings_defaultTone__</span>
                 <span class="label-hint">__MSG_settings_defaultToneHint__</span>
               </label>
-              <select id="defaultPreset" class="setting-select ds-field">
-                <option value="professional">👔 __MSG_tone_professional__</option>
-                <option value="casual">💬 __MSG_tone_casual__</option>
-                <option value="friendly">😊 __MSG_tone_friendly__</option>
-                <option value="direct">⚡ __MSG_tone_direct__</option>
-                <option value="confident">🚀 __MSG_tone_confident__</option>
-              </select>
+              <div class="select-field">
+                <select id="defaultPreset" class="setting-select ds-field">
+                  <option value="professional">👔 __MSG_tone_professional__</option>
+                  <option value="casual">💬 __MSG_tone_casual__</option>
+                  <option value="friendly">😊 __MSG_tone_friendly__</option>
+                  <option value="direct">⚡ __MSG_tone_direct__</option>
+                  <option value="confident">🚀 __MSG_tone_confident__</option>
+                </select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -469,7 +477,9 @@
                 <span class="label-text">__MSG_settings_primaryLanguage__</span>
                 <span class="label-hint">__MSG_settings_primaryLanguageHint__</span>
               </label>
-              <select id="primaryLanguage" class="setting-select ds-field"></select>
+              <div class="select-field">
+                <select id="primaryLanguage" class="setting-select ds-field"></select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -477,7 +487,9 @@
                 <span class="label-text">__MSG_settings_language__</span>
                 <span class="label-hint">__MSG_settings_languageHint__</span>
               </label>
-              <select id="defaultLanguage" class="setting-select ds-field"></select>
+              <div class="select-field">
+                <select id="defaultLanguage" class="setting-select ds-field"></select>
+              </div>
             </div>
           </div>
         </section>

@@ -129,11 +129,6 @@
     animation-duration: 1.5s;
   }
 
-  /* Slow the shimmer rather than stopping it: loading must stay perceivable. */
-  .ds-shimmer span {
-    animation-duration: 3s;
-  }
-
   .ds-pill:active,
   .ds-btn-primary:active,
   .ds-btn-primary--lg:active {
@@ -223,11 +218,18 @@
     color var(--omni-transition-fast);
 }
 
-.ds-pill:hover,
+.ds-pill:hover {
+  background: var(--omni-pill-hover);
+  color: var(--omni-glass-text);
+}
+
+/* A real ring, not outline: none: the pill is often the only focusable
+   element in a row, and WCAG 2.4.7 needs something visible. */
 .ds-pill:focus-visible {
   background: var(--omni-pill-hover);
   color: var(--omni-glass-text);
   outline: none;
+  box-shadow: 0 0 0 2px var(--omni-accent);
 }
 
 .ds-pill:active {
@@ -314,4 +316,14 @@ body.ds-backdrop::before {
   background:
     radial-gradient(60% 45% at 12% 0%, var(--omni-backdrop-glow-accent) 0%, transparent 70%),
     radial-gradient(55% 45% at 88% 100%, var(--omni-backdrop-glow-cyan) 0%, transparent 70%);
+}
+
+/* Reduce overrides that must follow the shorthands they correct. Keeping this
+   block last is load-bearing: `animation: ds-shimmer 1.2s ...` resets the
+   duration, so an earlier override never wins. */
+@media (prefers-reduced-motion: reduce) {
+  .ds-shimmer span {
+    /* Slowed, not stopped: the loading state must stay perceivable. */
+    animation-duration: 3s;
+  }
 }

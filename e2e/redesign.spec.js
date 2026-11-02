@@ -9,10 +9,14 @@ async function openSettings(context, sw, theme) {
   const page = await context.newPage();
   const extId = new URL(sw.url()).host;
   await page.goto(`chrome-extension://${extId}/settings.html`);
-  if (theme === "light") {
-    await page.evaluate(() => chrome.storage.sync.set({ omni_ai_theme: "light" }));
+  if (theme) {
+    await page.evaluate((value) => chrome.storage.sync.set({ omni_ai_theme: value }), theme);
     await page.reload();
-    await expect(page.locator("html")).toHaveClass(/omni-ai-light-mode/);
+    if (theme === "light") {
+      await expect(page.locator("html")).toHaveClass(/omni-ai-light-mode/);
+    } else {
+      await expect(page.locator("html")).not.toHaveClass(/omni-ai-light-mode/);
+    }
   }
   return page;
 }
@@ -50,14 +54,21 @@ test("settings page paints the glass shell on the page backdrop", async () => {
   }
 });
 
-test("settings page flips its glass surface in light theme", async () => {
+test("settings page flips its glass surface between themes", async () => {
   const { context, sw } = await launchWithExtension();
   try {
-    const page = await openSettings(context, sw, "light");
-    const bg = await page.evaluate(
-      () => getComputedStyle(document.querySelector(".setting-card.ds-surface")).backgroundColor,
-    );
-    expect(bg).toBe("rgba(255, 255, 255, 0.84)");
+    const surfaces = {};
+    for (const theme of ["dark", "light"]) {
+      const page = await openSettings(context, sw, theme);
+      surfaces[theme] = await page.evaluate(
+        () => getComputedStyle(document.querySelector(".setting-card.ds-surface")).backgroundColor,
+      );
+      await page.close();
+    }
+    // Both branches are pinned: an empty profile only ever renders light, so a
+    // dark-only regression would otherwise ship green.
+    expect(surfaces.dark).toBe("rgba(30, 30, 40, 0.92)");
+    expect(surfaces.light).toBe("rgba(255, 255, 255, 0.84)");
   } finally {
     await context.close();
   }
@@ -122,10 +133,14 @@ async function openPanel(context, sw, theme) {
   const page = await context.newPage();
   const extId = new URL(sw.url()).host;
   await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
-  if (theme === "light") {
-    await page.evaluate(() => chrome.storage.sync.set({ omni_ai_theme: "light" }));
+  if (theme) {
+    await page.evaluate((value) => chrome.storage.sync.set({ omni_ai_theme: value }), theme);
     await page.reload();
-    await expect(page.locator("html")).toHaveClass(/omni-ai-light-mode/);
+    if (theme === "light") {
+      await expect(page.locator("html")).toHaveClass(/omni-ai-light-mode/);
+    } else {
+      await expect(page.locator("html")).not.toHaveClass(/omni-ai-light-mode/);
+    }
   }
   return page;
 }
@@ -150,32 +165,54 @@ test("side panel shell is glass and its tabs are a segmented pill", async () => 
   }
 });
 
-test("side panel glass flips in light theme", async () => {
+test("side panel glass flips between themes", async () => {
   const { context, sw } = await launchWithExtension();
   try {
-    const page = await openPanel(context, sw, "light");
-    const bg = await page.evaluate(
-      () => getComputedStyle(document.querySelector(".sidepanel-container")).backgroundColor,
-    );
-    expect(bg).toBe("rgba(255, 255, 255, 0.84)");
+    const surfaces = {};
+    for (const theme of ["dark", "light"]) {
+      const page = await openPanel(context, sw, theme);
+      surfaces[theme] = await page.evaluate(
+        () => getComputedStyle(document.querySelector(".sidepanel-container")).backgroundColor,
+      );
+      await page.close();
+    }
+    expect(surfaces.dark).toBe("rgba(30, 30, 40, 0.92)");
+    expect(surfaces.light).toBe("rgba(255, 255, 255, 0.84)");
   } finally {
     await context.close();
   }
 });
 
-test("the panel does not overflow at 280px with long labels", async () => {
+test("the panel does not overflow at 280px with the longest shipped labels", async () => {
   const { context, sw } = await launchWithExtension();
   try {
     const page = await openPanel(context, sw);
+    await page.locator("#tabTools").click();
+    // The default locale is English ("Chat", "Tools"), which never exercises
+    // the narrow case. Use the shipped German strings, the longest of the 52
+    // catalogues for these labels.
+    await page.evaluate(() => {
+      document.querySelector("#tabChat .tab-label").textContent = "Chat";
+      document.querySelector("#tabTools .tab-label").textContent = "Werkzeuge";
+      document.querySelector("#summarizeBtn .action-label").textContent = "Zusammenfassen";
+      document.querySelector("#translateBtn .action-label").textContent =
+        "Intelligente Übersetzung";
+      document.querySelector("#explainBtn .action-label").textContent = "Erklären";
+    });
     await page.setViewportSize({ width: 280, height: 700 });
+
     const overflow = await page.evaluate(() => ({
       horizontal:
         document.querySelector(".tab-nav").scrollWidth >
         document.querySelector(".tab-nav").clientWidth + 1,
       doc: document.documentElement.scrollWidth > window.innerWidth + 1,
+      pills: Array.from(document.querySelectorAll(".action-buttons .ds-pill")).some(
+        (el) => el.scrollWidth > el.clientWidth + 1,
+      ),
     }));
     expect(overflow.horizontal).toBe(false);
     expect(overflow.doc).toBe(false);
+    expect(overflow.pills).toBe(false);
   } finally {
     await context.close();
   }
@@ -266,6 +303,64 @@ test("side panel honours reduced motion", async () => {
       return duration;
     });
     expect(parseFloat(dots)).toBeGreaterThanOrEqual(2);
+
+    // The loading skeleton slows rather than sweeping at full speed.
+    const shimmer = await page.evaluate(() => {
+      const wrap = document.createElement("div");
+      wrap.className = "ds-shimmer";
+      wrap.innerHTML = "<span></span>";
+      document.body.appendChild(wrap);
+      const duration = getComputedStyle(wrap.firstElementChild).animationDuration;
+      wrap.remove();
+      return duration;
+    });
+    expect(parseFloat(shimmer)).toBeGreaterThanOrEqual(2);
+
+    // No press scale on the tabs or the tool rows.
+    await page.locator("#tabTools").click();
+    const pressScale = async (selector) => {
+      const box = await page.locator(selector).boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      const transform = await page
+        .locator(selector)
+        .evaluate((el) => getComputedStyle(el).transform);
+      await page.mouse.up();
+      return transform;
+    };
+    expect(await pressScale("#summarizeBtn")).toBe("none");
+    expect(await pressScale("#tabTools")).toBe("none");
+  } finally {
+    await context.close();
+  }
+});
+
+test("a keyboard focus ring is visible on the tool pills", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    await page.locator("#tabTools").click();
+
+    // Tab moves focus, which is what makes Chromium match :focus-visible.
+    let focused = "";
+    for (let i = 0; i < 12 && focused !== "summarizeBtn"; i++) {
+      await page.keyboard.press("Tab");
+      focused = await page.evaluate(() => document.activeElement?.id || "");
+    }
+    expect(focused).toBe("summarizeBtn");
+
+    const ring = await page.evaluate(() => {
+      const el = document.getElementById("summarizeBtn");
+      const style = getComputedStyle(el);
+      return {
+        matches: el.matches(":focus-visible"),
+        outline: style.outlineStyle,
+        shadow: style.boxShadow,
+      };
+    });
+
+    expect(ring.matches).toBe(true);
+    expect(ring.shadow !== "none" || ring.outline !== "none").toBe(true);
   } finally {
     await context.close();
   }

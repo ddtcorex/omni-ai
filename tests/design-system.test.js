@@ -55,6 +55,17 @@ describe("lib/design-system.css", () => {
   });
 });
 
+describe("the page stylesheets read the AA glass text tokens, not the page ones", () => {
+  // --omni-text-muted is 2.56:1 on the light glass and about 4.0:1 on the dark
+  // one, so it fails AA wherever these two surfaces paint it. The glass text
+  // tokens are the AA companions.
+  test.each(["../settings.css", "../sidepanel/sidepanel.css"])("%s", (rel) => {
+    const text = fs.readFileSync(path.join(__dirname, rel), "utf8");
+    expect(text).not.toMatch(/--omni-text-muted\b/);
+    expect(text).not.toMatch(/--omni-text-tertiary\b/);
+  });
+});
+
 describe("the page stylesheets carry no colour literal except #fff", () => {
   // Tokens are the only colour source on the two page surfaces; a literal that
   // duplicates a token value is how the surfaces drifted from the overlay in
@@ -66,5 +77,7 @@ describe("the page stylesheets carry no colour literal except #fff", () => {
     );
     expect(hexes).toEqual([]);
     expect(text).not.toMatch(/\brgba?\(/);
+    // URL-encoded hex inside a data: URI is still a colour literal.
+    expect(text).not.toMatch(/%23[0-9a-fA-F]{3,8}\b/);
   });
 });
