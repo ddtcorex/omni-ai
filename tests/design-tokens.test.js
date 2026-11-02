@@ -34,6 +34,9 @@ describe("lib/design-tokens.css", () => {
     "--omni-pill-top",
     "--omni-pill-hover",
     "--omni-motion-press",
+    "--omni-backdrop-glow-accent",
+    "--omni-backdrop-glow-cyan",
+    "--omni-tint-soft",
   ];
 
   test.each(CRITICAL_TOKENS)("defines %s", (token) => {
@@ -62,6 +65,9 @@ describe("lib/design-tokens.css", () => {
     "--omni-diff-del",
     "--omni-diff-ins",
     "--omni-diff-ins-bg",
+    "--omni-backdrop-glow-accent",
+    "--omni-backdrop-glow-cyan",
+    "--omni-tint-soft",
   ])("overrides %s in both light-mode blocks", (token) => {
     for (const selector of [
       /:root\.omni-ai-light-mode\s*\{([^}]*)\}/,
