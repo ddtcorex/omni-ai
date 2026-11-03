@@ -1565,9 +1565,9 @@ function bindAskBox(root, onAsk) {
 
 // Pills with icon and label on one line that wrap naturally (spec "Action
 // menu"); the page card's reading actions and the tone row reuse them.
-function pillMarkup(action, icon, label, primary = false) {
+function pillMarkup(action, icon, label) {
   return `
-       <button class="omni-ai-menu-item${primary ? " is-primary" : ""}" data-action="${action}">
+       <button class="omni-ai-menu-item" data-action="${action}">
          <span class="omni-ai-menu-icon">${icon}</span><span class="omni-ai-menu-label">${escapeHtml(label)}</span>
        </button>`;
 }
@@ -1583,13 +1583,15 @@ function translatePills(data) {
 // The editor menu has no header (spec prototype): only the action pills and
 // the Ask box. Escape or a click outside closes it.
 function buildMenuMarkup(data) {
-  // The four rewrite actions first and emphasized, then the rest.
+  // One flat list of equal pills. An earlier build gave the four rewrite
+  // actions a brighter fill, which made four of nine look like a different
+  // group and diluted the emphasis it was meant to carry.
   const menu = `
     <div class="omni-ai-menu-grid">${[
-      pillMarkup("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase"), true),
-      pillMarkup("grammar", ICONS.grammar, i18n.getMessage("action_grammar"), true),
-      pillMarkup("tone", ICONS.tone, i18n.getMessage("action_tone"), true),
-      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
+      pillMarkup("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase")),
+      pillMarkup("grammar", ICONS.grammar, i18n.getMessage("action_grammar")),
+      pillMarkup("tone", ICONS.tone, i18n.getMessage("action_tone")),
+      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize")),
       pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain")),
       pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
       pillMarkup("emoji", ICONS.emoji, i18n.getMessage("action_emojify")),
@@ -1638,8 +1640,8 @@ function renderPageCardState(inner, data, surf) {
       <div class="omni-ai-translate-body">${SKELETON}</div>
     </div>
     <div class="omni-ai-menu-grid">${[
-      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
-      pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain"), true),
+      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize")),
+      pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain")),
       pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
     ].join("")}
     </div>
