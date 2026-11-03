@@ -1,4 +1,10 @@
-import { filterChatModels } from "../../lib/model-catalog.js";
+import {
+  CACHE_TTL_MS,
+  buildPickerModel,
+  filterChatModels,
+  isCacheFresh,
+  normalizeSavedId,
+} from "../../lib/model-catalog.js";
 
 const m = (id, extra = {}) => ({
   id,
@@ -45,4 +51,94 @@ test("retired models never survive and custom gateway is never filtered", () => 
 test("an empty result from a non empty payload is not the filter's problem to hide", () => {
   const listed = [m("text-embedding-3-large")];
   expect(filterChatModels("openai", listed)).toHaveLength(0);
+});
+
+const listed = [
+  { id: "gpt-5.6-sol", label: "gpt-5.6-sol", createdAt: 300, state: "active", methods: null },
+  { id: "gpt-5.7-nova", label: "gpt-5.7-nova", createdAt: 100, state: "active", methods: null },
+];
+const bundled = [{ id: "openai-gpt-5.6-sol", name: "GPT-5.6 Sol", apiModel: "gpt-5.6-sol" }];
+const toApiName = (id) =>
+  id === "openai-gpt-5.6-sol" ? "gpt-5.6-sol" : id === "openai-gpt-4o" ? "gpt-4o" : id;
+
+test("a shipped saved id dedupes against its fetched raw id instead of showing as missing", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: "openai-gpt-5.6-sol",
+    bundled,
+    recommended: [],
+    toApiName,
+  });
+
+  expect(model.pinned).toBeNull();
+  expect(model.recommended.map((x) => x.id)).toContain("gpt-5.6-sol");
+});
+
+test("a genuinely absent saved model is pinned and still selectable", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: "openai-gpt-4o",
+    bundled,
+    recommended: [],
+    toApiName,
+  });
+
+  expect(model.pinned).toEqual({ id: "gpt-4o", label: "gpt-4o", state: "missing" });
+});
+
+test("recommended comes first and recent is capped newest first", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: null,
+    bundled,
+    recommended: ["openai-gpt-5.6-sol"],
+    toApiName,
+    cap: 1,
+  });
+
+  expect(model.recommended[0].id).toBe("gpt-5.6-sol");
+  expect(model.recent).toHaveLength(1);
+  expect(model.recent[0].id).toBe("gpt-5.7-nova");
+  expect(model.total).toBe(2);
+});
+
+test("no fetch falls back to the bundled list and says so", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: null,
+    savedModelId: null,
+    bundled,
+    recommended: ["openai-gpt-5.6-sol"],
+    toApiName,
+  });
+
+  expect(model.source).toBe("bundled");
+  expect(model.recommended.map((x) => x.id)).toEqual(["openai-gpt-5.6-sol"]);
+});
+
+test("a filter that matches nothing degrades to the raw list instead of an empty picker", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: [m("text-embedding-3-large", { createdAt: 5 })],
+    savedModelId: null,
+    bundled,
+    recommended: [],
+    toApiName,
+  });
+
+  expect(model.source).toBe("live");
+  expect(model.recent.map((x) => x.id)).toEqual(["text-embedding-3-large"]);
+});
+
+test("cache is fresh for seven days and stale after", () => {
+  const now = Date.parse("2026-11-03T00:00:00Z");
+  expect(isCacheFresh(now - CACHE_TTL_MS + 1000, now)).toBe(true);
+  expect(isCacheFresh(now - CACHE_TTL_MS - 1000, now)).toBe(false);
+});
+
+test("normalizeSavedId returns null for an empty value", () => {
+  expect(normalizeSavedId("", toApiName)).toBeNull();
 });

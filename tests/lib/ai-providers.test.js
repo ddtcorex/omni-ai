@@ -51,3 +51,16 @@ describe("AI_PROVIDERS registry", () => {
     expect(getApiModelName("70b")).toBe("70b");
   });
 });
+
+describe("recommended tier", () => {
+  it("gives every provider one or two recommended ids that exist in its own catalog", () => {
+    Object.values(AI_PROVIDERS).forEach((provider) => {
+      expect(Array.isArray(provider.recommended)).toBe(true);
+      expect(provider.recommended.length).toBeGreaterThan(0);
+      expect(provider.recommended.length).toBeLessThanOrEqual(2);
+
+      const ids = new Set(provider.models.map((model) => model.id));
+      provider.recommended.forEach((id) => expect(ids.has(id)).toBe(true));
+    });
+  });
+});
