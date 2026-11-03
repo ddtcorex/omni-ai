@@ -296,7 +296,10 @@ To publish on the Chrome Web Store, you need a Google Developer account.
    holds the description field as well as the remaining dashboard fields
    (product name, summary, category, languages, single purpose, screenshots).
    - **Icons**: Use `assets/icons/` (ensure 128x128 PNG is available or convert SVG).
-   - **Screenshots**: Upload 1280x800 screenshots of the extension in action.
+   - **Screenshots**: the dashboard has two fields, "Localized screenshots" and
+     "Screenshots shown in all languages" (up to five each, 1280x800 or 640x400,
+     PNG 24-bit without alpha or JPEG). Both take the same five scenes; see
+     `docs/CHROME_WEBSTORE_LISTING.txt` for the list and the order.
    - **Category**: Productivity or Search Tools.
 3. **Privacy & Permissions**: paste the permission justifications and the data
    collection answers from `docs/PERMISSION_JUSTIFICATIONS.txt`, and link the
@@ -304,7 +307,7 @@ To publish on the Chrome Web Store, you need a Google Developer account.
 
 ### Pro Tips for Approval
 
-- **Screenshot Quality**: Use high-quality screenshots. Show the ✨ floating button and the Usage Dashboard.
+- **Screenshot Quality**: Use high-quality screenshots. Show the ✨ floating button and the action menu on a highlighted paragraph, a result with Replace, the side panel, the settings page and Quick Ask.
 - **Clear Description**: Clearly explain that users need an API key (Gemini, OpenAI, Groq, Anthropic Claude) or Custom Gateway to use the extension.
 - **Permission Scope**: Chrome reviewers prefer the narrowest permissions possible.
 
