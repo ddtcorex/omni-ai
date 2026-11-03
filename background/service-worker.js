@@ -4,6 +4,7 @@ import {
   getApiKey as getStoredApiKey,
   getCustomGatewayConfig,
   getApiModel,
+  getApiProvider,
   setModelCatalogCache,
 } from "../lib/storage.js";
 import {
@@ -604,7 +605,7 @@ async function handleListModels(payload = {}) {
   if (apiKey) config.apiKey = apiKey;
   if (providerId === "customGateway") {
     const gateway = await getCustomGatewayConfig();
-    config.baseUrl = baseUrl || /** @type {string} */ (gateway.baseUrl);
+    config.baseUrl = baseUrl || /** @type {string} */ (gateway.customGatewayBaseUrl) || undefined;
   }
 
   const { models, truncated } = await listModels(providerId, config);
@@ -778,8 +779,10 @@ const PROVIDER_KEY_MAP = {
 
 async function getChatConfig(modelId, temperature) {
   const model = modelId || (await getApiModel());
+  const storedModel = modelId ? null : model;
+  const storedProvider = storedModel ? await getApiProvider() : null;
   const providerInfo = getProviderByModel(model);
-  const providerId = providerInfo?.id || "google";
+  const providerId = providerInfo?.id || storedProvider || "google";
   const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
 
   const config = { apiKey, model, provider: providerId, temperature: temperature ?? 0.7 };

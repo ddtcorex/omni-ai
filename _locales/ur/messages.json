@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "اب دستیاب نہیں",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "بلٹ اِن ماڈل فہرست استعمال ہو رہی ہے",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

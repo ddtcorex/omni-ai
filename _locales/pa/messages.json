@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "ਹੁਣ ਉਪਲਬਧ ਨਹੀਂ",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "ਬਿਲਟ-ਇਨ ਮਾਡਲ ਸੂਚੀ ਵਰਤੀ ਜਾ ਰਹੀ ਹੈ",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

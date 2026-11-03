@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "više se ne nudi",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "Koristi se ugrađeni popis modela",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

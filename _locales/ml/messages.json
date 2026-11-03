@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "ഇനി ലഭ്യമല്ല",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "അന്തർനിർമിത മോഡൽ ലിസ്റ്റ് ഉപയോഗിക്കുന്നു",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

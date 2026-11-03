@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "لم يعد متاحًا",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "يتم استخدام قائمة النماذج المدمجة",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

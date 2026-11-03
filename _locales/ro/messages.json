@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "nu mai este disponibil",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "Se folosește lista de modele integrată",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

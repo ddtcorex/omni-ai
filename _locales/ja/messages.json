@@ -729,5 +729,9 @@
   "settings_modelNoLongerOffered": {
     "message": "提供終了",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "組み込みのモデルリストを使用中",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

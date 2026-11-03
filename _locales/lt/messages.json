@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "nebeteikiamas",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "Naudojamas įtaisytasis modelių sąrašas",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

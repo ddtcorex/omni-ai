@@ -483,6 +483,97 @@ describe("localizeDOM", () => {
     expect(el.getAttribute("aria-label")).toBe("translated:settings_languageSearchPlaceholder");
   });
 
+  describe("picker regressions", () => {
+    const liveOpenai = [
+      { id: "gpt-5.6-sol", label: "gpt-5.6-sol", createdAt: 2, state: "active", methods: null },
+      { id: "gpt-5.7-nova", label: "gpt-5.7-nova", createdAt: 1, state: "active", methods: null },
+    ];
+
+    it("selects the fetched counterpart of a shipped saved id instead of blanking the select", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "openai-gpt-5.6-sol",
+        fetchedAt: 1,
+      });
+
+      expect(document.getElementById("apiModel").value).toBe("gpt-5.6-sol");
+    });
+
+    it("does not pin the saved model inside a provider that does not own it", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "gemini-3.6-flash",
+        fetchedAt: 1,
+      });
+
+      const openaiLabels = Array.from(
+        document.querySelectorAll("#apiModel optgroup[label='OpenAI'] option"),
+      ).map((o) => o.textContent);
+      expect(openaiLabels.join(" ")).not.toContain("settings_modelNoLongerOffered");
+    });
+
+    it("finds a model past the cap when the search box is used", () => {
+      const many = Array.from({ length: 30 }, (_, i) => ({
+        id: `gpt-5.${i}-model`,
+        label: `gpt-5.${i}-model`,
+        createdAt: i,
+        state: "active",
+        methods: null,
+      }));
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: many,
+        savedModelId: null,
+        fetchedAt: 1,
+      });
+
+      const input = document.getElementById("modelSearch");
+      input.value = "gpt-5.29";
+      input.dispatchEvent(new Event("input"));
+
+      expect(Array.from(document.querySelectorAll("#apiModel option")).map((o) => o.value)).toEqual(
+        ["gpt-5.29-model"],
+      );
+    });
+
+    it("writes apiProvider next to apiModel when the picker is saved", async () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "gpt-5.7-nova",
+        fetchedAt: 1,
+      });
+      chrome.storage.local.get.mockResolvedValue({});
+      chrome.storage.sync.get.mockResolvedValue({});
+
+      await Settings.saveSettings();
+
+      const written = {};
+      chrome.storage.local.set.mock.calls.forEach(([arg]) => Object.assign(written, arg));
+      expect(written.apiModel).toBe("gpt-5.7-nova");
+      expect(written.apiProvider).toBe("openai");
+    });
+
+    it("refreshes a provider the user switches into, once", async () => {
+      chrome.storage.local.get.mockResolvedValue({});
+      chrome.runtime.sendMessage.mockReset();
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 1 });
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      Settings.setupEventListeners();
+      document.getElementById("openaiApiKey").value = "sk-test";
+
+      const select = document.getElementById("apiModel");
+      select.value = "openai-gpt-5.6-sol";
+      select.dispatchEvent(new Event("change"));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      const calls = chrome.runtime.sendMessage.mock.calls.filter(([m]) => m.type === "LIST_MODELS");
+      expect(calls.some(([m]) => m.payload.provider === "openai")).toBe(true);
+    });
+  });
+
   describe("catalog refresh", () => {
     beforeEach(() => {
       chrome.runtime.getManifest = jest.fn(() => ({ version: "2.6.0" }));
@@ -594,7 +685,7 @@ describe("localizeDOM", () => {
         document.querySelectorAll("#apiModel optgroup[label='OpenAI'] option"),
       ).map((o) => o.value);
 
-      expect(options[0]).toBe("openai-gpt-5.6-sol");
+      expect(options[0]).toBe("gpt-5.6-sol");
       expect(options).toContain("gpt-5.7-nova");
     });
 

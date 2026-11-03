@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "már nem elérhető",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "A beépített modellista van használatban",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

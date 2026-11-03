@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "இனி வழங்கப்படாது",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "உள்ளமைந்த மாடல் பட்டியல் பயன்படுத்தப்படுகிறது",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

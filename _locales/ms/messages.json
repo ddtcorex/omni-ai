@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "tidak lagi ditawarkan",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "Menggunakan senarai model terbina dalam",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

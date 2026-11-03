@@ -729,5 +729,9 @@
   "settings_modelNoLongerOffered": {
     "message": "không còn được cung cấp",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "Đang dùng danh sách model có sẵn",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

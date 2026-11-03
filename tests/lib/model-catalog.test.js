@@ -142,3 +142,69 @@ test("cache is fresh for seven days and stale after", () => {
 test("normalizeSavedId returns null for an empty value", () => {
   expect(normalizeSavedId("", toApiName)).toBeNull();
 });
+
+test("typing finds a model that sits past the cap", () => {
+  const many = Array.from({ length: 30 }, (_, i) => ({
+    id: `gpt-5.${i}-model`,
+    label: `gpt-5.${i}-model`,
+    createdAt: i,
+    state: "active",
+    methods: null,
+  }));
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: many,
+    savedModelId: null,
+    bundled,
+    recommended: [],
+    toApiName,
+    cap: 5,
+    query: "gpt-5.29",
+  });
+
+  expect(model.recent.map((x) => x.id)).toEqual(["gpt-5.29-model"]);
+  expect(model.matches).toBe(1);
+  expect(model.total).toBe(30);
+});
+
+test("the custom model sentinels survive a live catalog", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: null,
+    bundled,
+    recommended: [],
+    toApiName,
+    sentinels: [{ id: "openai-custom", label: "OpenAI Custom Model..." }],
+  });
+
+  expect(model.recent.map((x) => x.id)).toContain("openai-custom");
+});
+
+test("a provider that is not the saved model's owner never pins it", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: "gemini-3.6-flash",
+    bundled,
+    recommended: [],
+    toApiName,
+    ownsSavedModel: false,
+  });
+
+  expect(model.pinned).toBeNull();
+});
+
+test("an empty live catalog keeps the bundled list instead of emptying the group", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: [],
+    savedModelId: null,
+    bundled,
+    recommended: [],
+    toApiName,
+  });
+
+  expect(model.source).toBe("bundled");
+  expect(model.recommended.length + model.recent.length).toBeGreaterThan(0);
+});

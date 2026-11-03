@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "אינו מוצע עוד",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "נעשה שימוש ברשימת המודלים המובנית",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

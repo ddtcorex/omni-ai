@@ -147,10 +147,22 @@ export async function init() {
 const modelCatalogs = new Map();
 
 let savedModelForPicker = null;
+let savedProviderForPicker = null;
 let modelSearchQuery = "";
 let modelSourceCounts = { visible: 0, total: 0, query: "" };
+let modelSourceByProvider = new Map();
 let modelSourceFailure = false;
 let modelSearchBound = false;
+
+/**
+ * The picker holds API model names, so a shipped id addresses its own model
+ * through the same alias the request would use.
+ * @param {string} savedModelId
+ * @returns {string}
+ */
+function normalizeSavedIdForPicker(savedModelId) {
+  return getApiModelName(savedModelId) || savedModelId;
+}
 
 /**
  * @param {number} timestamp
@@ -191,10 +203,15 @@ function paintModelSource() {
     return;
   }
   if (catalog?.fetchedAt) {
-    el.textContent = `${i18n.getMessage("settings_modelsUpdated")} ${formatCatalogDate(catalog.fetchedAt)}`;
+    const shown = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
+    const tail = shown && shown.visible < shown.total ? ` (${shown.visible}/${shown.total})` : "";
+    el.textContent = `${i18n.getMessage("settings_modelsUpdated")} ${formatCatalogDate(catalog.fetchedAt)}${tail}`;
     return;
   }
-  el.textContent = i18n.getMessage("settings_modelsCapped");
+  const counts = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
+  const ratio =
+    counts && counts.visible < counts.total ? ` (${counts.visible}/${counts.total})` : "";
+  el.textContent = `${i18n.getMessage("settings_modelsBundled")}${ratio}`;
 }
 
 /**
@@ -208,6 +225,7 @@ function paintModelSource() {
  * @param {string} [args.providerId]
  * @param {Array<Object>|null} [args.listed]
  * @param {string|null} [args.savedModelId]
+ * @param {string|null} [args.savedProviderId]
  * @param {number|null} [args.fetchedAt]
  * @param {boolean} [args.fromCache]
  */
@@ -215,6 +233,7 @@ export function renderModelPicker({
   providerId,
   listed,
   savedModelId,
+  savedProviderId,
   fetchedAt = null,
   fromCache = false,
 } = {}) {
@@ -222,6 +241,7 @@ export function renderModelPicker({
   if (!select) return;
 
   if (savedModelId !== undefined) savedModelForPicker = savedModelId;
+  if (savedProviderId !== undefined) savedProviderForPicker = savedProviderId;
   if (providerId) {
     modelCatalogs.set(providerId, {
       listed: Array.isArray(listed) ? listed : null,
@@ -240,6 +260,9 @@ export function renderModelPicker({
   }
 
   const query = modelSearchQuery.trim().toLowerCase();
+  const ownerId = savedModelForPicker
+    ? savedProviderForPicker || getProviderByModel(savedModelForPicker)?.id || null
+    : null;
   select.textContent = "";
 
   let visible = 0;
@@ -247,6 +270,10 @@ export function renderModelPicker({
 
   Object.values(AI_PROVIDERS).forEach((provider) => {
     const catalog = modelCatalogs.get(provider.id);
+    const sentinels = (provider.models || [])
+      .filter((model) => model.id.endsWith("-custom") || model.id === "custom-gateway")
+      .map((model) => ({ id: model.id, label: model.name }));
+
     const picker = buildPickerModel({
       providerId: provider.id,
       listed: catalog ? catalog.listed : null,
@@ -254,38 +281,42 @@ export function renderModelPicker({
       bundled: provider.models,
       recommended: provider.recommended || [],
       toApiName: getApiModelName,
+      query,
+      sentinels,
+      ownsSavedModel: provider.id === ownerId,
     });
 
+    // Values are always the API model name, so a fetched id and its shipped
+    // alias address the same option and the select can hold either.
     const entries = [];
+    const legacy = savedModelForPicker ? LEGACY_MODELS[savedModelForPicker] : null;
+    const legacyHere = Boolean(legacy && legacy.provider === provider.id);
+
     if (picker.pinned) {
       entries.push({
+        value: picker.pinned.id,
+        label: legacyHere
+          ? `${i18n.getMessage("settings_legacyModelPrefix")} ${picker.pinned.id}`
+          : `${picker.pinned.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`,
+      });
+    } else if (legacyHere) {
+      // A retired id the bundled list no longer carries: keep it selectable so
+      // an upgrade never blanks the picker.
+      entries.push({
         value: savedModelForPicker,
-        label: `${picker.pinned.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`,
+        label: `${i18n.getMessage("settings_legacyModelPrefix")} ${savedModelForPicker}`,
       });
     }
     picker.recommended.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
     picker.recent.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
 
-    const legacy = savedModelForPicker ? LEGACY_MODELS[savedModelForPicker] : null;
-    if (
-      legacy &&
-      legacy.provider === provider.id &&
-      !entries.some((entry) => entry.value === savedModelForPicker)
-    ) {
-      entries.unshift({
-        value: savedModelForPicker,
-        label: `${i18n.getMessage("settings_legacyModelPrefix")} ${savedModelForPicker}`,
-      });
-    }
+    total += picker.total;
 
-    total += entries.length;
-
-    const matching = query
-      ? entries.filter(
-          (entry) =>
-            entry.value.toLowerCase().includes(query) || entry.label.toLowerCase().includes(query),
-        )
-      : entries;
+    const matching = entries;
+    modelSourceByProvider.set(provider.id, {
+      visible: matching.length,
+      total: picker.total,
+    });
     if (!matching.length) return;
 
     const group = document.createElement("optgroup");
@@ -302,7 +333,7 @@ export function renderModelPicker({
   });
 
   if (savedModelForPicker) {
-    select.value = savedModelForPicker;
+    select.value = normalizeSavedIdForPicker(savedModelForPicker);
   }
 
   modelSourceCounts = { visible, total, query };
@@ -366,15 +397,17 @@ function selectedModelProvider() {
  * A failure keeps the rows already on screen and marks the source line: an
  * unreachable provider must never empty the picker.
  * @param {string} providerId
- * @param {{ key?: string }} [options] `key` is an in form value not yet saved
+ * @param {{ key?: string, baseUrl?: string }} [options] `key` and `baseUrl` are in form
+ *   values not yet saved
  */
-export async function refreshModelCatalog(providerId, { key } = {}) {
+export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
   if (!providerId || modelRefreshInFlight) return;
   modelRefreshInFlight = true;
 
   try {
     const payload = { provider: providerId };
     if (key) payload.key = key;
+    if (baseUrl) payload.baseUrl = baseUrl;
 
     const response = await chrome.runtime.sendMessage({ type: "LIST_MODELS", payload });
 
@@ -400,8 +433,12 @@ export async function refreshModelCatalog(providerId, { key } = {}) {
  * when the cache is missing or stale. At most one request per page load.
  */
 async function hydrateModelCatalog() {
-  const savedModel = elements.apiModel?.value;
-  const provider = savedModel ? getProviderByModel(savedModel) : null;
+  const savedModel = savedModelForPicker || elements.apiModel?.value;
+  const provider = savedProviderForPicker
+    ? AI_PROVIDERS[savedProviderForPicker]
+    : savedModel
+      ? getProviderByModel(savedModel)
+      : null;
   if (!provider) return;
 
   const cache = await getModelCatalogCache(provider.id);
@@ -551,7 +588,16 @@ async function loadStats() {
  */
 export function setupEventListeners() {
   // Model change listener
-  elements.apiModel.addEventListener("change", updateModelVisibility);
+  elements.apiModel.addEventListener("change", () => {
+    updateModelVisibility();
+    paintModelSource();
+
+    const provider = selectedModelProvider();
+    const key = provider ? keyFieldValue(provider.keySetting) : "";
+    if (provider && (key || provider.id === "customGateway") && !modelCatalogs.has(provider.id)) {
+      refreshModelCatalog(provider.id, { key: key || undefined });
+    }
+  });
 
   // Theme preview listener
   if (elements.themeSelector) {
@@ -608,7 +654,10 @@ export function setupEventListeners() {
       const provider = selectedModelProvider();
       if (!provider) return;
       const key = keyFieldValue(provider.keySetting);
-      refreshModelCatalog(provider.id, { key: key || undefined });
+      refreshModelCatalog(provider.id, {
+        key: key || undefined,
+        baseUrl: keyFieldValue("customGatewayBaseUrl") || undefined,
+      });
     });
   }
 
@@ -907,6 +956,7 @@ export async function loadSettings() {
 
     // Load custom model name for selected provider
     const savedModel = config.apiModel || DEFAULT_MODEL;
+    savedProviderForPicker = config.apiProvider || null;
     populateModelSelect(savedModel);
     elements.apiModel.value = savedModel;
     if (!config.apiModel && !config.geminiApiKey) {
@@ -943,7 +993,7 @@ export async function loadSettings() {
 /**
  * Save settings to storage
  */
-async function saveSettings() {
+export async function saveSettings() {
   try {
     // Preferences to Sync
     const preferences = {
@@ -962,6 +1012,10 @@ async function saveSettings() {
       openaiApiKey: elements.openaiApiKey.value.trim(),
       anthropicApiKey: elements.anthropicApiKey.value.trim(),
       apiModel: elements.apiModel.value,
+      apiProvider:
+        elements.apiModel.selectedOptions?.[0]?.dataset.provider ||
+        getProviderByModel(elements.apiModel.value)?.id ||
+        "",
       customModelName: elements.customModelName.value.trim(),
       currentPreset: elements.defaultPreset.value,
       customGatewayBaseUrl: elements.customGatewayBaseUrl.value.trim(),

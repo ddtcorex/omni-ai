@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "আর উপলব্ধ নেই",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "অন্তর্নির্মিত মডেল তালিকা ব্যবহার হচ্ছে",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }

@@ -724,4 +724,58 @@ describe("Service Worker Integration", () => {
       expect(sendResponse.mock.calls[0][0].success).toBe(false);
     });
   });
+
+  it("LIST_MODELS uses the stored Custom Gateway base URL", async () => {
+    const Providers = await import("../../lib/providers/index");
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({
+      customGatewayApiKey: "gw-key",
+      customGatewayBaseUrl: "https://gw.example/v1",
+    });
+    Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+    const sendResponse = jest.fn();
+    listener({ type: "LIST_MODELS", payload: { provider: "customGateway" } }, {}, sendResponse);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+      apiKey: "gw-key",
+      baseUrl: "https://gw.example/v1",
+    });
+  });
+
+  it("getChatConfig routes a raw fetched model id through the stored provider", async () => {
+    chromeMock.storage.local.get.mockResolvedValue({
+      apiModel: "gpt-5.7-nova",
+      apiProvider: "openai",
+      openaiApiKey: "sk-o",
+      geminiApiKey: "should-not-be-used",
+    });
+
+    const providers = await import("../../lib/providers/index");
+    providers.generateContentStream.mockResolvedValue("assistant reply");
+
+    await import("../../background/service-worker");
+    const connectListener = chromeMock.runtime.onConnect.addListener.mock.calls[0][0];
+    const port = {
+      name: "omni-chat",
+      onMessage: { addListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn() },
+      postMessage: jest.fn(),
+    };
+
+    connectListener(port);
+    const onMessage = port.onMessage.addListener.mock.calls[0][0];
+    await onMessage({ type: "chat", message: "hi", pageContext: "", history: [] });
+
+    const AIService = providers;
+    expect(AIService.generateContentStream).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ provider: "openai", apiKey: "sk-o" }),
+      expect.anything(),
+      expect.anything(),
+    );
+  });
 });

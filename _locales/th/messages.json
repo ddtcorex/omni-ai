@@ -743,5 +743,9 @@
   "settings_modelNoLongerOffered": {
     "message": "ไม่มีให้บริการแล้ว",
     "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "settings_modelsBundled": {
+    "message": "กำลังใช้รายการโมเดลในตัว",
+    "description": "Shown under the model picker when no provider catalog has been fetched"
   }
 }
