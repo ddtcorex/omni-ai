@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.6.0] - 2026-11-03
 
 ### Changed
 
@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Editors no longer run a background grammar check.** Opening the menu on a textarea or rich text editor saves one AI call.
 - **The page text card translates automatically** and offers the reading actions beside it.
 - **Results show clean text** instead of an inline diff.
+- **The settings page and the side panel adopt the overlay's glass look.** One shared kit (`--omni-glass-*`, `--omni-pill-*` and three new page tokens) gives both surfaces glass panels on a soft backdrop, pill controls and a floating save bar; the side panel gains a segmented tab bar, the shimmer skeleton as its loading state and a chat transcript instead of bubbles. Neither stylesheet carries a colour literal any more, and a test enforces it.
+- **One notice shape for every status message** on both surfaces: the save status, the validation card, the panel's tool status and the chat error now share one primitive.
+- **The action menu's pills are uniform.** The first four actions used to be emphasised; with four of nine singled out it read as two arbitrary groups rather than a recommendation, so the emphasis is gone from the editor menu and the page-text card.
 - **The floating button sits at the end of the selection in rich-text editors and steps clear of the editor's own toolbar.** It goes right of the selection's last line (left of its start when that does not fit) instead of under the mouse, and inside a same-origin iframe editor (TinyMCE classic, CKEditor 4, ...) the button and the card move off any parent-document element drawn over them, such as the editor's selection quickbar. Inputs, textareas and page text keep the old placement.
 
 ### Added
@@ -21,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Show changes switch on results** for rephrase, grammar, tone and emoji: it reveals the diff against the selected text.
 - **Try again on results.** For actions run from the menu or the toolbar it bypasses the result cache; keyboard-shortcut and context-menu results re-run through the service worker, which keeps no cache (new `RERUN_ACTION` message).
 - **Keyboard navigation in the action menu.**
+- **Distinct section titles in Settings.** "AI Provider" and "Preferences", translated in all 52 catalogues, replace two sections that both read "Settings".
+- **Visible keyboard focus on the side panel's tool rows** and the shared pills, with a test that drives real Tab focus.
 
 ### Security
 
@@ -32,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The floating button no longer covers the field being edited.** In a small field such as a qty box it sat in the field's bottom-right corner, hiding the last digits and the caret; it now sits just outside the field, flipping sides when there is no room.
+- **Long locale strings no longer spill out of the save bar**, the panel's tab labels carry their label as a tooltip for clipped locales, and hints and empty states use the AA glass text tokens.
+- **Reduced motion covers the shimmer and the press scale** on both page surfaces, not only the overlay.
 - **The content script no longer runs in Cloudflare's challenge frame.** `manifest.json` excludes `https://challenges.cloudflare.com/*`, so nothing from Omni AI lands in the Turnstile widget's document; a user reported Cloudflare verification failing with the extension on. Covered by `e2e/cloudflare-challenge.spec.js`.
 - **Replace with the mouse in an iframe rich text editor no longer leaves a toolbar behind.** The click's own mouseup ran the selection check after Replace had collapsed the selection, which brought back a toolbar for the whole field.
 - **Iframe-mode rich text editors (TinyMCE classic, CKEditor 4, ...) no longer save Omni AI's UI, and Replace now replaces the selection there.** These editors make their iframe's own `<body>` contenteditable and save its HTML, and the content script mounted its shadow UI host on that same `<body>`. The host was therefore saved with the content (an empty `div#omni-ai-shadow-host` with a long inline style), and once the overlay had focus the host itself became the replace target, so the result was appended at the end of the editor while the selected text stayed. The host now mounts on `<html>` whenever `<body>` is editable, re-checked on every use because editors often turn the body editable after the content script has loaded. Covered by `e2e/iframe-editor.spec.js` and checked by hand against TinyMCE 7.0.1.
