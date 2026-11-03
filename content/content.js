@@ -1097,9 +1097,27 @@ async function createQuickBtn(rect, isInput, mousePosition = null, selectionRect
     top = mousePosition.y + window.scrollY + 8;
     left = mousePosition.x + window.scrollX + 8;
   } else if (isInput && rect) {
-    // Input elements: bottom-right corner (inside the input)
-    top = rect.bottom + window.scrollY - TOOLBAR_SIZE - 4;
-    left = rect.right + window.scrollX - TOOLBAR_SIZE - 4;
+    // A field being edited is never covered: the toolbar sits just outside
+    // it, vertically centred. The old rule placed it in the field's
+    // bottom-right corner, which hid the caret and the last digits of any
+    // narrow field (a qty box) and covered the end of the last line in a
+    // textarea. Right side first, then left, then above, then below, so a
+    // field as wide as the viewport still leaves the text visible.
+    const gap = 4;
+    const centredTop = rect.top + (rect.height - TOOLBAR_SIZE) / 2;
+    const rightSpot = rect.right + gap;
+    const leftSpot = rect.left - gap - TOOLBAR_SIZE;
+    if (rightSpot + TOOLBAR_SIZE <= window.innerWidth) {
+      top = centredTop + window.scrollY;
+      left = rightSpot + window.scrollX;
+    } else if (leftSpot >= 0) {
+      top = centredTop + window.scrollY;
+      left = leftSpot + window.scrollX;
+    } else {
+      const above = rect.top - gap - TOOLBAR_SIZE;
+      top = (above >= 0 ? above : rect.bottom + gap) + window.scrollY;
+      left = rect.right + window.scrollX - TOOLBAR_SIZE;
+    }
   } else if (rect) {
     // Fallback to selection rect
     top = rect.bottom + window.scrollY + 5;
@@ -1565,9 +1583,9 @@ function bindAskBox(root, onAsk) {
 
 // Pills with icon and label on one line that wrap naturally (spec "Action
 // menu"); the page card's reading actions and the tone row reuse them.
-function pillMarkup(action, icon, label, primary = false) {
+function pillMarkup(action, icon, label) {
   return `
-       <button class="omni-ai-menu-item${primary ? " is-primary" : ""}" data-action="${action}">
+       <button class="omni-ai-menu-item" data-action="${action}">
          <span class="omni-ai-menu-icon">${icon}</span><span class="omni-ai-menu-label">${escapeHtml(label)}</span>
        </button>`;
 }
@@ -1583,13 +1601,15 @@ function translatePills(data) {
 // The editor menu has no header (spec prototype): only the action pills and
 // the Ask box. Escape or a click outside closes it.
 function buildMenuMarkup(data) {
-  // The four rewrite actions first and emphasized, then the rest.
+  // One flat list of equal pills. An earlier build gave the four rewrite
+  // actions a brighter fill, which made four of nine look like a different
+  // group and diluted the emphasis it was meant to carry.
   const menu = `
     <div class="omni-ai-menu-grid">${[
-      pillMarkup("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase"), true),
-      pillMarkup("grammar", ICONS.grammar, i18n.getMessage("action_grammar"), true),
-      pillMarkup("tone", ICONS.tone, i18n.getMessage("action_tone"), true),
-      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
+      pillMarkup("rephrase", ICONS.rephrase, i18n.getMessage("action_rephrase")),
+      pillMarkup("grammar", ICONS.grammar, i18n.getMessage("action_grammar")),
+      pillMarkup("tone", ICONS.tone, i18n.getMessage("action_tone")),
+      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize")),
       pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain")),
       pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
       pillMarkup("emoji", ICONS.emoji, i18n.getMessage("action_emojify")),
@@ -1638,8 +1658,8 @@ function renderPageCardState(inner, data, surf) {
       <div class="omni-ai-translate-body">${SKELETON}</div>
     </div>
     <div class="omni-ai-menu-grid">${[
-      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize"), true),
-      pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain"), true),
+      pillMarkup("summarize", ICONS.summarize, i18n.getMessage("action_summarize")),
+      pillMarkup("explain", ICONS.explain, i18n.getMessage("action_explain")),
       pillMarkup("reply", ICONS.reply, i18n.getMessage("action_reply")),
     ].join("")}
     </div>

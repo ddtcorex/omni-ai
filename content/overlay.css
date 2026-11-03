@@ -183,13 +183,6 @@
     transform 250ms var(--omni-motion-spring);
 }
 
-.omni-ai-menu-item.is-primary {
-  background: var(--omni-pill-top);
-  color: var(--omni-glass-text);
-  font-weight: 500;
-  box-shadow: 0 0 0 1px var(--omni-glass-ring);
-}
-
 .omni-ai-menu-item:hover,
 .omni-ai-menu-item:focus-visible {
   background: var(--omni-pill-hover);

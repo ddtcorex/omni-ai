@@ -838,3 +838,58 @@ test("a worker retry left with Back does not overwrite the next action", async (
     server.close();
   }
 });
+
+test("the floating icon sits outside the field being edited, never over its text", async () => {
+  const FIXTURE = `<!doctype html><html><body style="padding:30px">
+    <input id="qty" type="text" value="9999" style="width:48px;height:26px;font-size:14px;padding:2px 4px" />
+    <input id="full" type="text" value="1234567890123456789012345678901234567890"
+      style="width:96vw;height:26px;font-size:14px;padding:2px 4px;margin-top:24px" />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    for (const id of ["qty", "full"]) {
+      await page.evaluate((sel) => {
+        const el = document.getElementById(sel);
+        el.focus();
+        el.setSelectionRange(el.value.length, el.value.length);
+      }, id);
+      await page.locator(`#${id}`).dispatchEvent("mouseup");
+
+      const quickBtn = page.locator(".omni-ai-quick-btn");
+      await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+      await page.waitForTimeout(400);
+
+      const geometry = await page.evaluate((sel) => {
+        const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+        const btn = root.querySelector(".omni-ai-quick-btn").getBoundingClientRect();
+        const field = document.getElementById(sel).getBoundingClientRect();
+        const overlapX = Math.min(btn.right, field.right) - Math.max(btn.left, field.left);
+        const overlapY = Math.min(btn.bottom, field.bottom) - Math.max(btn.top, field.top);
+        return {
+          overlapArea: Math.max(0, overlapX) * Math.max(0, overlapY),
+          onScreen:
+            btn.left >= 0 &&
+            btn.top >= 0 &&
+            btn.right <= window.innerWidth &&
+            btn.bottom <= window.innerHeight,
+        };
+      }, id);
+
+      // Covering the field hides the caret and the digits being typed.
+      expect(geometry.overlapArea).toBe(0);
+      expect(geometry.onScreen).toBe(true);
+
+      await page.keyboard.press("Escape");
+      await page.evaluate(() => document.activeElement.blur());
+      await page.waitForTimeout(250);
+    }
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

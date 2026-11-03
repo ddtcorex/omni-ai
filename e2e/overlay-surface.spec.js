@@ -658,7 +658,7 @@ test("a long page selection whose start is scrolled away still opens the card ab
   }
 });
 
-test("menu actions wrap as pills, primary four first", async () => {
+test("menu actions wrap as uniform pills", async () => {
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
   try {
@@ -672,11 +672,15 @@ test("menu actions wrap as pills, primary four first", async () => {
         document
           .getElementById("omni-ai-shadow-host")
           .shadowRoot.querySelectorAll("button.omni-ai-menu-item[data-action]"),
-      ).map((el) => ({
-        action: el.dataset.action,
-        primary: el.classList.contains("is-primary"),
-        whiteSpace: getComputedStyle(el).whiteSpace,
-      })),
+      ).map((el) => {
+        const style = getComputedStyle(el);
+        return {
+          action: el.dataset.action,
+          primary: el.classList.contains("is-primary"),
+          surface: `${style.backgroundColor}|${style.fontWeight}|${style.boxShadow}`,
+          whiteSpace: style.whiteSpace,
+        };
+      }),
     );
     expect(items.map((i) => i.action)).toEqual([
       "rephrase",
@@ -689,12 +693,10 @@ test("menu actions wrap as pills, primary four first", async () => {
       "translate_primary",
       "translate_default",
     ]);
-    expect(items.filter((i) => i.primary).map((i) => i.action)).toEqual([
-      "rephrase",
-      "grammar",
-      "tone",
-      "summarize",
-    ]);
+    // One flat action list: no pill is singled out, so the menu reads as a
+    // set of equal choices rather than two arbitrary groups.
+    expect(items.filter((i) => i.primary)).toEqual([]);
+    expect(new Set(items.map((i) => i.surface)).size).toBe(1);
     for (const item of items) expect(item.whiteSpace).toBe("nowrap");
     // The Ask box follows the pills.
     expect(await shadowCount(page, "#omniAiInlineInput")).toBe(1);
@@ -754,27 +756,21 @@ test("dark menu pills use the prototype glass values and pass AA contrast", asyn
       return {
         cardBg: card.backgroundColor,
         cardBorder: card.borderTopColor,
-        primary: pill('.omni-ai-menu-item.is-primary[data-action="rephrase"]'),
-        secondary: pill('.omni-ai-menu-item[data-action="explain"]'),
+        pill: pill('.omni-ai-menu-item[data-action="explain"]'),
         page: getComputedStyle(document.body).backgroundColor,
       };
     });
     expect(s.cardBg).toBe("rgba(30, 30, 40, 0.92)");
     expect(s.cardBorder).toBe("rgba(255, 255, 255, 0.08)");
-    expect(s.secondary.bg).toBe("rgba(255, 255, 255, 0.07)");
-    expect(s.secondary.color).toBe("rgb(194, 197, 210)");
-    expect(s.primary.bg).toBe("rgba(255, 255, 255, 0.12)");
-    expect(s.primary.color).toBe("rgb(241, 242, 246)");
-    expect(s.primary.ring).toContain("rgba(255, 255, 255, 0.06) 0px 0px 0px 1px");
+    expect(s.pill.bg).toBe("rgba(255, 255, 255, 0.07)");
+    expect(s.pill.color).toBe("rgb(194, 197, 210)");
+    expect(s.pill.ring).toBe("none");
     // The glyph takes the label's color, never the purple accent.
-    expect(s.primary.icon).toBe(s.primary.color);
-    expect(s.secondary.icon).toBe(s.secondary.color);
+    expect(s.pill.icon).toBe(s.pill.color);
 
     const cardRgb = composite([parseRgba(s.page), parseRgba(s.cardBg)]);
-    for (const p of [s.primary, s.secondary]) {
-      const bg = composite([{ rgb: cardRgb, a: 1 }, parseRgba(p.bg)]);
-      expect(contrast(parseRgba(p.color).rgb, bg)).toBeGreaterThanOrEqual(4.5);
-    }
+    const pillBg = composite([{ rgb: cardRgb, a: 1 }, parseRgba(s.pill.bg)]);
+    expect(contrast(parseRgba(s.pill.color).rgb, pillBg)).toBeGreaterThanOrEqual(4.5);
   } finally {
     await context.close();
     server.close();
