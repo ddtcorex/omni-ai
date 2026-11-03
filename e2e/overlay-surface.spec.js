@@ -30,6 +30,8 @@ async function seedConfig(sw) {
 
 function stubGemini(context, replyText) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+    if (route.request().url().includes("/models"))
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -271,6 +273,12 @@ test("opening the menu in an editor sends no AI request", async () => {
     await seedConfig(sw);
     let aiRequests = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       aiRequests += 1;
       await route.fulfill({
         status: 200,
@@ -517,6 +525,12 @@ test("closing the card mid flash action leaves no spinner on the toolbar", async
       });
     });
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       await new Promise((r) => setTimeout(r, 1500));
       await route.fulfill({
         status: 200,
@@ -1286,6 +1300,12 @@ test("two quick tone clicks show the last one", async () => {
     await context.unrouteAll({ behavior: "ignoreErrors" });
     let hits = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       hits += 1;
       const n = hits;
       const body = route.request().postData() || "";

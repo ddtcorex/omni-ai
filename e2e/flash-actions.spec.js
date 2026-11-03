@@ -29,6 +29,8 @@ async function seedConfig(sw, flashActions) {
 
 function stubGemini(context, replyText) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+    if (route.request().url().includes("/models"))
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -144,6 +146,12 @@ test("clicking a flash action does not reposition or recreate the floating icon"
     // Delay the AI response so there's a deterministic window, after the
     // click but before the result arrives, to check the icon hasn't moved.
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       await new Promise((r) => setTimeout(r, 300));
       await route.fulfill({
         status: 200,
@@ -329,6 +337,12 @@ test("Replace recovers by id when the page re-renders the field mid-flight, inst
     // Replace becomes clickable -- simulating a live page (e.g. a comment
     // counter poll) re-rendering the field while a flash action is in flight.
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       await new Promise((r) => setTimeout(r, 300));
       await route.fulfill({
         status: 200,
@@ -390,6 +404,12 @@ test("Replace fails gracefully (overlay stays open) when the field is removed en
   try {
     await seedConfig(sw, ["rephrase"]);
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       await new Promise((r) => setTimeout(r, 300));
       await route.fulfill({
         status: 200,
@@ -621,6 +641,12 @@ test("a translate_primary flash action re-calls the AI after a language-setting 
 
     let callCount = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       callCount += 1;
       const replyText = callCount === 1 ? "FIRST-TRANSLATION" : "SECOND-TRANSLATION-AFTER-CHANGE";
       await route.fulfill({

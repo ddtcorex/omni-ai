@@ -27,6 +27,8 @@ async function seedConfig(sw) {
 
 function stubGemini(context, replyText) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+    if (route.request().url().includes("/models"))
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -403,6 +405,12 @@ test("the auto Smart Translation card re-calls the AI after a language-setting c
 
     let callCount = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       callCount += 1;
       const replyText =
         callCount === 1 ? "FIRST-TRANSLATION-EN" : "SECOND-TRANSLATION-AFTER-SETTING-CHANGE";
@@ -797,6 +805,12 @@ test("a worker retry left with Back does not overwrite the next action", async (
     // Call 1 is the worker re-run, call 2 the content-path action after it.
     let hits = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (route.request().url().includes("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       hits += 1;
       const n = hits;
       await new Promise((r) => setTimeout(r, n === 1 ? 1200 : 2500));
