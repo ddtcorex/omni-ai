@@ -701,5 +701,33 @@
   "overlay_replace_failed": {
     "message": "No se pudo reemplazar el texto. Cópialo en su lugar.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsSearch": {
+    "message": "Buscar modelos",
+    "description": "Placeholder and label of the model search box"
+  },
+  "settings_modelsRefresh": {
+    "message": "Actualizar lista",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelsUpdated": {
+    "message": "Lista de modelos actualizada",
+    "description": "Shown before the date the list was fetched"
+  },
+  "settings_modelsRefreshFailed": {
+    "message": "No se pudo actualizar, se muestra la lista guardada del",
+    "description": "Shown on a failed refresh, before the cached date"
+  },
+  "settings_modelsNoMatch": {
+    "message": "Ningún modelo coincide con tu búsqueda",
+    "description": "Shown when the search filters every model out"
+  },
+  "settings_modelsCapped": {
+    "message": "Se muestran los modelos más recientes, escribe para buscar el resto",
+    "description": "Shown when the list is capped"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ya no disponible",
+    "description": "Suffix on a saved model the provider no longer lists"
   }
 }

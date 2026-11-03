@@ -797,3 +797,38 @@ body {
     transform: none;
   }
 }
+
+/* Model picker: search box, refresh control and the source line under it. */
+.model-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.model-controls #modelSearch {
+  flex: 1;
+  min-width: 0;
+}
+
+.model-refresh {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border: 1px solid var(--omni-border);
+  border-radius: var(--omni-radius-sm);
+  background: var(--omni-glass-bg);
+  color: var(--omni-glass-text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.model-refresh:hover {
+  border-color: var(--omni-accent);
+  color: var(--omni-accent);
+}
+
+.model-refresh:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--omni-accent);
+}

@@ -715,5 +715,33 @@
   "overlay_replace_failed": {
     "message": "Metin değiştirilemedi. Bunun yerine kopyalayın.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsSearch": {
+    "message": "Model ara",
+    "description": "Placeholder and label of the model search box"
+  },
+  "settings_modelsRefresh": {
+    "message": "Listeyi yenile",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelsUpdated": {
+    "message": "Model listesi güncellendi",
+    "description": "Shown before the date the list was fetched"
+  },
+  "settings_modelsRefreshFailed": {
+    "message": "Yenilenemedi, kayıtlı liste gösteriliyor:",
+    "description": "Shown on a failed refresh, before the cached date"
+  },
+  "settings_modelsNoMatch": {
+    "message": "Aramanızla eşleşen model yok",
+    "description": "Shown when the search filters every model out"
+  },
+  "settings_modelsCapped": {
+    "message": "En yeni modeller gösteriliyor, kalanları aramak için yazın",
+    "description": "Shown when the list is capped"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "artık sunulmuyor",
+    "description": "Suffix on a saved model the provider no longer lists"
   }
 }

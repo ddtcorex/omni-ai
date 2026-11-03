@@ -68,6 +68,20 @@
                 </select>
               </div>
 
+              <div class="model-controls">
+                <input
+                  type="search"
+                  id="modelSearch"
+                  class="setting-input ds-field"
+                  placeholder="__MSG_settings_modelsSearch__"
+                  aria-label="__MSG_settings_modelsSearch__"
+                />
+                <button type="button" id="modelRefresh" class="model-refresh">
+                  __MSG_settings_modelsRefresh__
+                </button>
+              </div>
+              <p id="modelSource" class="field-note" aria-live="polite"></p>
+
               <!-- Gemini API Key -->
               <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
                 <label class="setting-label" for="geminiApiKey">

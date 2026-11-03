@@ -715,5 +715,33 @@
   "overlay_replace_failed": {
     "message": "Tidak dapat mengganti teks. Salin saja.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsSearch": {
+    "message": "Cari model",
+    "description": "Placeholder and label of the model search box"
+  },
+  "settings_modelsRefresh": {
+    "message": "Segarkan daftar",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelsUpdated": {
+    "message": "Daftar model diperbarui",
+    "description": "Shown before the date the list was fetched"
+  },
+  "settings_modelsRefreshFailed": {
+    "message": "Gagal menyegarkan, menampilkan daftar tersimpan dari",
+    "description": "Shown on a failed refresh, before the cached date"
+  },
+  "settings_modelsNoMatch": {
+    "message": "Tidak ada model yang cocok",
+    "description": "Shown when the search filters every model out"
+  },
+  "settings_modelsCapped": {
+    "message": "Menampilkan model terbaru, ketik untuk mencari sisanya",
+    "description": "Shown when the list is capped"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "tidak lagi tersedia",
+    "description": "Suffix on a saved model the provider no longer lists"
   }
 }

@@ -2,6 +2,9 @@ const FIXTURE_IDS = [
   "extVersion",
   "geminiApiKey",
   "apiModel",
+  "modelSearch",
+  "modelSource",
+  "modelRefresh",
   "customModelName",
   "customModelGroup",
   "googleKeyGroup",
@@ -51,6 +54,9 @@ const FLASH_ACTION_IDS = [
 function buildFixture() {
   document.body.innerHTML = FIXTURE_IDS.map((id) => {
     if (id === "apiModel") return `<select id="${id}"></select>`;
+    if (id === "modelSearch") return `<input id="${id}" />`;
+    if (id === "modelSource") return `<div id="${id}"></div>`;
+    if (id === "modelRefresh") return `<button id="${id}"></button>`;
     if (id === "advancedProviderSettings")
       return `<details id="${id}"><summary></summary></details>`;
     if (["primaryLanguage", "defaultLanguage"].includes(id)) {
@@ -475,5 +481,65 @@ describe("localizeDOM", () => {
     Settings.localizeDOM();
 
     expect(el.getAttribute("aria-label")).toBe("translated:settings_languageSearchPlaceholder");
+  });
+
+  describe("model picker", () => {
+    it("puts the saved model first in its own provider group", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: [
+          {
+            id: "gpt-5.7-nova",
+            label: "gpt-5.7-nova",
+            createdAt: 1,
+            state: "active",
+            methods: null,
+          },
+        ],
+        savedModelId: "openai-gpt-5.6-sol",
+      });
+
+      const options = Array.from(
+        document.querySelectorAll("#apiModel optgroup[label='OpenAI'] option"),
+      ).map((o) => o.value);
+
+      expect(options[0]).toBe("openai-gpt-5.6-sol");
+      expect(options).toContain("gpt-5.7-nova");
+    });
+
+    it("filters the options from the search box and says when nothing matches", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: [
+          {
+            id: "gpt-5.7-nova",
+            label: "gpt-5.7-nova",
+            createdAt: 1,
+            state: "active",
+            methods: null,
+          },
+          { id: "gpt-5.6-sol", label: "gpt-5.6-sol", createdAt: 2, state: "active", methods: null },
+        ],
+        savedModelId: null,
+      });
+
+      const input = document.getElementById("modelSearch");
+      input.value = "nova";
+      input.dispatchEvent(new Event("input"));
+      expect(Array.from(document.querySelectorAll("#apiModel option")).map((o) => o.value)).toEqual(
+        ["gpt-5.7-nova"],
+      );
+
+      input.value = "zzz";
+      input.dispatchEvent(new Event("input"));
+      expect(document.getElementById("modelSource").textContent).toContain(
+        "settings_modelsNoMatch",
+      );
+    });
+
+    it("renders the bundled list and marks the source when nothing was fetched", () => {
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      expect(document.getElementById("modelSource").dataset.source).toBe("bundled");
+    });
   });
 });

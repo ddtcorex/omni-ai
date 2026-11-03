@@ -9,9 +9,11 @@ import {
 import {
   AI_PROVIDERS,
   getProviderByModel,
+  getApiModelName,
   LEGACY_MODELS,
   DEFAULT_MODEL,
 } from "./lib/ai-providers.js";
+import { buildPickerModel } from "./lib/model-catalog.js";
 import {
   getSyncPreferences,
   setSyncPreferences,
@@ -31,6 +33,9 @@ const elements = {
   extVersion: document.getElementById("extVersion"),
   geminiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("geminiApiKey")), // Google Key
   apiModel: /** @type {HTMLSelectElement} */ (document.getElementById("apiModel")),
+  modelSearch: /** @type {HTMLInputElement|null} */ (document.getElementById("modelSearch")),
+  modelSource: document.getElementById("modelSource"),
+  modelRefresh: /** @type {HTMLButtonElement|null} */ (document.getElementById("modelRefresh")),
   customModelName: /** @type {HTMLInputElement} */ (document.getElementById("customModelName")),
   customModelGroup: document.getElementById("customModelGroup"),
   googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
@@ -136,36 +141,191 @@ export async function init() {
 /**
  * Populate AI Models dropdown
  */
-export function populateModelSelect(currentApiModel) {
+/** Fetched catalogs for this page's lifetime, one entry per provider. */
+const modelCatalogs = new Map();
+
+let savedModelForPicker = null;
+let modelSearchQuery = "";
+let modelSourceCounts = { visible: 0, total: 0, query: "" };
+let modelSourceFailure = false;
+let modelSearchBound = false;
+
+/**
+ * @param {number} timestamp
+ * @returns {string}
+ */
+function formatCatalogDate(timestamp) {
+  try {
+    return new Date(timestamp).toLocaleDateString();
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Paint the line under the picker: where this list came from, or why it is
+ * empty. `data-source` carries the same fact for tests and styling.
+ */
+function paintModelSource() {
+  const el = elements.modelSource;
+  if (!el) return;
+
+  const selectedProviderId = elements.apiModel?.selectedOptions?.[0]?.dataset.provider;
+  const catalog = selectedProviderId ? modelCatalogs.get(selectedProviderId) : null;
+  // A catalog entry with no list means "we asked and got nothing usable", which
+  // renders exactly like the bundled case.
+  const hasList = Boolean(catalog && Array.isArray(catalog.listed));
+
+  let kind = "bundled";
+  if (modelSourceFailure) {
+    kind = "failed";
+  } else if (hasList) {
+    kind = catalog.fromCache ? "cache" : "live";
+  }
+  el.dataset.source = kind;
+
+  if (modelSourceCounts.query && modelSourceCounts.visible === 0) {
+    el.textContent = i18n.getMessage("settings_modelsNoMatch");
+    return;
+  }
+  if (kind === "failed" && catalog?.fetchedAt) {
+    el.textContent = `${i18n.getMessage("settings_modelsRefreshFailed")} ${formatCatalogDate(catalog.fetchedAt)}`;
+    return;
+  }
+  if (catalog?.fetchedAt) {
+    el.textContent = `${i18n.getMessage("settings_modelsUpdated")} ${formatCatalogDate(catalog.fetchedAt)}`;
+    return;
+  }
+  el.textContent = i18n.getMessage("settings_modelsCapped");
+}
+
+/**
+ * Render every provider group of the model picker.
+ *
+ * The saved value stays the select's value, so loadSettings, saveSettings and
+ * the storage contract are untouched. Passing a providerId records that
+ * provider's fetched list; every other provider keeps rendering its bundled
+ * catalog until it is fetched in turn.
+ * @param {Object} [args]
+ * @param {string} [args.providerId]
+ * @param {Array<Object>|null} [args.listed]
+ * @param {string|null} [args.savedModelId]
+ * @param {number|null} [args.fetchedAt]
+ * @param {boolean} [args.fromCache]
+ */
+export function renderModelPicker({
+  providerId,
+  listed,
+  savedModelId,
+  fetchedAt = null,
+  fromCache = false,
+} = {}) {
   const select = elements.apiModel;
-  select.innerHTML = "";
+  if (!select) return;
 
-  const groupsByProvider = {};
+  if (savedModelId !== undefined) savedModelForPicker = savedModelId;
+  if (providerId) {
+    modelCatalogs.set(providerId, {
+      listed: Array.isArray(listed) ? listed : null,
+      fetchedAt,
+      fromCache,
+    });
+    modelSourceFailure = false;
+  }
+
+  if (elements.modelSearch && !modelSearchBound) {
+    modelSearchBound = true;
+    elements.modelSearch.addEventListener("input", () => {
+      modelSearchQuery = elements.modelSearch?.value || "";
+      renderModelPicker();
+    });
+  }
+
+  const query = modelSearchQuery.trim().toLowerCase();
+  select.textContent = "";
+
+  let visible = 0;
+  let total = 0;
+
   Object.values(AI_PROVIDERS).forEach((provider) => {
-    const group = document.createElement("optgroup");
-    group.label = provider.name;
-
-    provider.models.forEach((model) => {
-      const option = document.createElement("option");
-      option.value = model.id;
-      option.textContent = model.name;
-      group.appendChild(option);
+    const catalog = modelCatalogs.get(provider.id);
+    const picker = buildPickerModel({
+      providerId: provider.id,
+      listed: catalog ? catalog.listed : null,
+      savedModelId: savedModelForPicker,
+      bundled: provider.models,
+      recommended: provider.recommended || [],
+      toApiName: getApiModelName,
     });
 
+    const entries = [];
+    if (picker.pinned) {
+      entries.push({
+        value: savedModelForPicker,
+        label: `${picker.pinned.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`,
+      });
+    }
+    picker.recommended.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
+    picker.recent.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
+
+    const legacy = savedModelForPicker ? LEGACY_MODELS[savedModelForPicker] : null;
+    if (
+      legacy &&
+      legacy.provider === provider.id &&
+      !entries.some((entry) => entry.value === savedModelForPicker)
+    ) {
+      entries.unshift({
+        value: savedModelForPicker,
+        label: `${i18n.getMessage("settings_legacyModelPrefix")} ${savedModelForPicker}`,
+      });
+    }
+
+    total += entries.length;
+
+    const matching = query
+      ? entries.filter(
+          (entry) =>
+            entry.value.toLowerCase().includes(query) || entry.label.toLowerCase().includes(query),
+        )
+      : entries;
+    if (!matching.length) return;
+
+    const group = document.createElement("optgroup");
+    group.label = provider.name;
+    matching.forEach((entry) => {
+      const option = document.createElement("option");
+      option.value = entry.value;
+      option.textContent = entry.label;
+      option.dataset.provider = provider.id;
+      group.appendChild(option);
+    });
     select.appendChild(group);
-    groupsByProvider[provider.id] = group;
+    visible += matching.length;
   });
 
-  const knownIds = new Set(Object.values(AI_PROVIDERS).flatMap((p) => p.models.map((m) => m.id)));
-  if (currentApiModel && !knownIds.has(currentApiModel) && LEGACY_MODELS[currentApiModel]) {
-    const group = groupsByProvider[LEGACY_MODELS[currentApiModel].provider];
-    if (group) {
-      const option = document.createElement("option");
-      option.value = currentApiModel;
-      option.textContent = `${i18n.getMessage("settings_legacyModelPrefix")} ${currentApiModel}`;
-      group.insertBefore(option, group.firstChild);
-    }
+  if (savedModelForPicker) {
+    select.value = savedModelForPicker;
   }
+
+  modelSourceCounts = { visible, total, query };
+  paintModelSource();
+}
+
+/**
+ * Backwards compatible entry point: render the picker for an already saved id.
+ * @param {string} [currentApiModel]
+ */
+export function populateModelSelect(currentApiModel) {
+  renderModelPicker({ savedModelId: currentApiModel || null });
+}
+
+/**
+ * Mark the catalog refresh as failed without dropping the rows on screen.
+ * @param {boolean} failed
+ */
+export function setModelCatalogFailure(failed) {
+  modelSourceFailure = Boolean(failed);
+  paintModelSource();
 }
 
 /**
