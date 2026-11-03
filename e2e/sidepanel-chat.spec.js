@@ -94,6 +94,20 @@ test("shows a thinking indicator immediately, replaced by the reply once the fir
     const streamed = await page.locator(".chat-msg.assistant").textContent();
     expect(streamed).toBe("Hi there");
 
+    // The caret node survives the next chunk: recreating it per token would
+    // restart its blink and make it read as a solid bar while text streams.
+    await page.evaluate(() => {
+      window.__caretNode = document.querySelector(".chat-msg.assistant .chat-caret");
+    });
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "chunk", text: " again" }));
+    await expect(page.locator(".chat-msg.assistant")).toHaveText("Hi there again");
+    const caretSurvived = await page.evaluate(
+      () =>
+        window.__caretNode === document.querySelector(".chat-msg.assistant .chat-caret") &&
+        window.__caretNode.isConnected,
+    );
+    expect(caretSurvived).toBe(true);
+
     await page.evaluate(() => window.__sendFakeChatMessage({ type: "done", text: "Hi there" }));
     await expect(page.locator(".chat-msg.assistant .chat-caret")).toHaveCount(0);
   } finally {

@@ -479,3 +479,100 @@ test("every status message on both surfaces shares one notice shape", async () =
     await context.close();
   }
 });
+
+test("the version badge does not look clickable", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    const cursor = await page.locator("#extVersion").evaluate((el) => getComputedStyle(el).cursor);
+    expect(cursor).toBe("default");
+  } finally {
+    await context.close();
+  }
+});
+
+test("hairline rows use the separator token, not the border token", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    const colours = await page.evaluate(() => {
+      const root = getComputedStyle(document.documentElement);
+      // Only a row that actually draws a hairline reports a border colour;
+      // the first or last child resolves to currentColor instead.
+      const row = Array.from(document.querySelectorAll(".setting-item")).find(
+        (el) => getComputedStyle(el).borderBottomStyle === "solid",
+      );
+      return {
+        separator: root.getPropertyValue("--omni-separator").trim(),
+        row: row ? getComputedStyle(row).borderBottomColor : null,
+      };
+    });
+    const probe = colours.separator.startsWith("#") ? null : colours.separator;
+    expect(probe).toBeTruthy();
+    expect(colours.row).toBe(probe);
+  } finally {
+    await context.close();
+  }
+});
+
+test("a long save status clips inside the bar instead of spilling", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    await page.setViewportSize({ width: 900, height: 900 });
+    const before = await page.locator(".save-actions").boundingBox();
+    const clipped = await page.evaluate(() => {
+      const status = document.getElementById("saveStatus");
+      status.textContent =
+        "Cambios guardados correctamente en todos los proveedores configurados y en los idiomas de la interfaz";
+      status.classList.add("visible");
+      const style = getComputedStyle(status);
+      return {
+        overflow: style.overflow,
+        textOverflow: style.textOverflow,
+        whiteSpace: style.whiteSpace,
+      };
+    });
+    const after = await page.locator(".save-actions").boundingBox();
+    expect(clipped.overflow).toBe("hidden");
+    expect(clipped.textOverflow).toBe("ellipsis");
+    expect(clipped.whiteSpace).toBe("nowrap");
+    expect(after.height).toBe(before.height);
+  } finally {
+    await context.close();
+  }
+});
+
+test("the stat tiles drop the backdrop filter the big panels need", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw);
+    const filters = await page.evaluate(() => ({
+      stat: getComputedStyle(document.querySelector(".stat-card")).backdropFilter,
+      card: getComputedStyle(document.querySelector(".setting-card")).backdropFilter,
+    }));
+    expect(filters.stat).toBe("none");
+    expect(filters.card).not.toBe("none");
+  } finally {
+    await context.close();
+  }
+});
+
+test("the panel tabs carry their label as a tooltip for clipped locales", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openPanel(context, sw);
+    const tabs = await page.evaluate(() =>
+      Array.from(document.querySelectorAll(".tab-btn")).map((btn) => ({
+        title: btn.getAttribute("title"),
+        label: btn.querySelector(".tab-label")?.textContent.trim(),
+      })),
+    );
+    expect(tabs).toHaveLength(2);
+    for (const tab of tabs) {
+      expect(tab.title).toBe(tab.label);
+    }
+  } finally {
+    await context.close();
+  }
+});

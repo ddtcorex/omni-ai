@@ -334,7 +334,8 @@
   width: 55%;
 }
 
-/* These pages have no generic .hidden rule; each hidden component owns one. */
+/* The side panel has no generic .hidden rule of its own (settings.css declares
+   one for that page), so the shared kit carries its own here. */
 .ds-shimmer.hidden {
   display: none;
 }
