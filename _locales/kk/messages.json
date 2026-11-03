@@ -139,6 +139,14 @@
     "message": "Параметрлер",
     "description": "Settings page title"
   },
+  "settings_provider": {
+    "message": "AI провайдері",
+    "description": "Section title: AI model and provider keys"
+  },
+  "settings_preferences": {
+    "message": "Қалаулар",
+    "description": "Section title: theme, quick actions, languages"
+  },
   "settings_geminiApiKey": {
     "message": "Gemini API кілті",
     "description": "Gemini API key label"

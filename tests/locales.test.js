@@ -49,6 +49,32 @@ describe("locale files", () => {
     expect(Object.keys(readMessages(locale)).filter((key) => !keys.has(key))).toEqual([]);
   });
 
+  test.each(localeDirs.filter((locale) => !["en", "en_GB"].includes(locale)))(
+    "%s translates the settings section headings",
+    (locale) => {
+      // Both keys are new: an English copy-paste in a catalogue is exactly the
+      // drift the earlier i18n waves had to clean up.
+      const messages = readMessages(locale);
+      for (const key of ["settings_provider", "settings_preferences"]) {
+        expect(messages[key].message).not.toBe(en[key].message);
+      }
+    },
+  );
+
+  test("the settings page gives its two sections distinct headings", () => {
+    // Both sections used to render __MSG_settings_title__, so a Vietnamese
+    // user read "Cài đặt" twice on one page.
+    const html = fs.readFileSync(path.join(__dirname, "../settings.html"), "utf8");
+    const headings = html
+      .match(/__MSG_settings_[a-z]+__/g)
+      .filter((key) => key !== "__MSG_settings_title__");
+    expect(headings).toContain("__MSG_settings_provider__");
+    expect(headings).toContain("__MSG_settings_preferences__");
+    expect(
+      html.match(/<h2 class="section-title"[\s\S]*?__MSG_settings_title__/g) || [],
+    ).toHaveLength(0);
+  });
+
   test.each(localeDirs)("%s gives every message a non-empty string body", (locale) => {
     const messages = readMessages(locale);
     const empty = Object.entries(messages)

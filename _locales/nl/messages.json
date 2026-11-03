@@ -139,6 +139,14 @@
     "message": "Instellingen",
     "description": "Settings page title"
   },
+  "settings_provider": {
+    "message": "AI-provider",
+    "description": "Section title: AI model and provider keys"
+  },
+  "settings_preferences": {
+    "message": "Voorkeuren",
+    "description": "Section title: theme, quick actions, languages"
+  },
   "settings_geminiApiKey": {
     "message": "Gemini API-sleutel",
     "description": "Gemini API key label"

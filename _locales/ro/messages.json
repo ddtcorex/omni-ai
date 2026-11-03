@@ -139,6 +139,14 @@
     "message": "Setări",
     "description": "Settings page title"
   },
+  "settings_provider": {
+    "message": "Furnizor AI",
+    "description": "Section title: AI model and provider keys"
+  },
+  "settings_preferences": {
+    "message": "Preferințe",
+    "description": "Section title: theme, quick actions, languages"
+  },
   "settings_geminiApiKey": {
     "message": "Cheie API Gemini",
     "description": "Gemini API key label"
