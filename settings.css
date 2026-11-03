@@ -85,6 +85,7 @@ body {
 
 .version {
   display: inline-block;
+  cursor: default; /* a badge, not a control, despite wearing the pill class */
   padding: 2px 8px;
   background: var(--omni-pill-bg);
   border: none;
@@ -191,7 +192,7 @@ body {
 /* Setting Item */
 .setting-item {
   padding: var(--omni-spacing-md) 0;
-  border-bottom: 1px solid var(--omni-border);
+  border-bottom: 1px solid var(--omni-separator);
 }
 
 .setting-item:first-child {
@@ -518,6 +519,11 @@ body {
      must never grow the bar. */
   height: 34px;
   font-weight: 500;
+  /* A long locale string clips on one line instead of spilling out of the
+     floating bar. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   opacity: 0;
   filter: blur(2px);
   transition:
@@ -582,6 +588,12 @@ body {
   align-items: center;
   gap: var(--omni-spacing-md);
   padding: var(--omni-spacing-lg);
+  /* Three small tiles on a long page: the blur buys nothing visible here and
+     each backdrop-filter is its own compositing layer, so they forgo it while
+     the header, the section panels and the save bar keep the glass. */
+  background: var(--omni-pill-bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .stat-icon-wrapper {

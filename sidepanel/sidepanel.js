@@ -316,7 +316,21 @@ function connectChatPort() {
   return chatPort;
 }
 
-// Streaming caret: a sibling of the text, never part of it, so textContent
+// Streaming text and caret. The reply accumulates into one text node that is
+// kept in place, so assigning the whole string on every chunk does not destroy
+// and recreate the caret beside it (which restarted its blink on each token and
+// read as a solid bar while text streamed).
+function appendStreamingText(bubble, chunk) {
+  let node = bubble.firstChild;
+  if (!node || node.nodeType !== Node.TEXT_NODE) {
+    node = document.createTextNode("");
+    bubble.insertBefore(node, bubble.firstChild);
+  }
+  node.nodeValue += chunk;
+  ensureStreamingCaret(bubble);
+}
+
+// The caret is a sibling of the text, never part of it, so textContent
 // streaming and the tests that read the reply are unaffected.
 function ensureStreamingCaret(bubble) {
   if (bubble.querySelector(".chat-caret")) return;
@@ -345,17 +359,14 @@ function sendChatMessage() {
   assistantBubble.innerHTML =
     '<span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span>';
   currentAssistantBubble = assistantBubble;
-  let acc = "";
 
   setStreamingUI(true);
 
   port.onMessage.addListener(function handler(msg) {
     if (!msg) return;
     if (msg.type === "chunk") {
-      acc += msg.text;
       assistantBubble.classList.remove("thinking");
-      assistantBubble.textContent = acc;
-      ensureStreamingCaret(assistantBubble);
+      appendStreamingText(assistantBubble, msg.text);
       elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
     } else if (msg.type === "done") {
       // Defensive: a reply that completes with no separate "chunk" message

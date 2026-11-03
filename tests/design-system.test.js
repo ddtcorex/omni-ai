@@ -52,7 +52,7 @@ describe("lib/design-system.css", () => {
     }
   });
 
-  test("the shimmer hides through its own .hidden rule, since these pages have no generic one", () => {
+  test("the shimmer hides through its own .hidden rule, since the side panel has no generic one", () => {
     expect(css).toMatch(/\.ds-shimmer\.hidden\s*\{[^}]*display:\s*none/);
   });
 });
