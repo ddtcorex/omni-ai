@@ -93,12 +93,33 @@ The store requires a publicly reachable URL, not a repository file. The policy t
 DATA USAGE DISCLOSURES
 Answer the dashboard's data collection questions exactly as written in the declaration block of `docs/PERMISSION_JUSTIFICATIONS.txt`: the extension sends the selected text and, for Page Tools, the active page's text directly to the AI provider the user configured, using the user's own API key. It does not send that data to any Omni AI backend, does not store it, does not use it for advertising, and does not sell or share it.
 
-SCREENSHOTS (1280x800)
-Suggest four, in this order, since they cover the workflow a reviewer and a new user both look for:
-1. The floating button and the quick action menu on a highlighted paragraph.
-2. A result card with the Replace action visible, showing an edit in place.
-3. The side panel with Summarize, Smart Translate and Explain.
-4. Settings, showing the provider cards and the language picker.
+SCREENSHOTS
+The dashboard has two screenshot fields, and they are not interchangeable. Each
+takes up to five images, 1280x800 or 640x400, PNG 24-bit (no alpha) or JPEG, and
+each needs at least one image before the listing can be saved.
+
+- "Localized screenshots": shown only on the listing for that language, so
+  upload the extension's own UI in that language. Vietnamese was uploaded with
+  v2.6.0.
+- "Screenshots shown in all languages": shown to every visitor whichever
+  language they browse in, so upload a language-neutral set. English was
+  uploaded with v2.6.0.
+
+Both fields use the same five scenes, in this order, because together they cover
+the workflow a reviewer and a new user both look for:
+
+1. The floating button and the action menu on a highlighted paragraph, with the
+   Ask box under it.
+2. A rewrite result with the Replace action visible, beside the draft it edits.
+3. The side panel docked beside the page, on its Page tools tab with Summarize,
+   Smart Translate and Explain.
+4. The settings page from its header down: model, provider key, validate, then
+   the preferences section.
+5. Quick Ask on a selection, with the selected text as context.
+
+Keep the two fields consistent: same five scenes, same theme. The v2.6.0 upload
+used the dark theme for both fields; a light-theme capture of the same scenes
+exists, so the pair can be replaced as a unit if the dark one ages out.
 
 ICONS
 `assets/icons/` (a 128x128 PNG is required by the store; convert the SVG if only the vector is present).
