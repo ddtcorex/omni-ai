@@ -38,7 +38,7 @@ async function seedConfig(sw, flashActions = []) {
 
 function stubGemini(context) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
-    if (route.request().url().includes("/models"))
+    if (new URL(route.request().url()).pathname.endsWith("/models"))
       return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await new Promise((r) => setTimeout(r, 150));
     await route.fulfill({

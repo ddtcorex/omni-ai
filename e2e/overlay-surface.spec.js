@@ -30,7 +30,7 @@ async function seedConfig(sw) {
 
 function stubGemini(context, replyText) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
-    if (route.request().url().includes("/models"))
+    if (new URL(route.request().url()).pathname.endsWith("/models"))
       return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await route.fulfill({
       status: 200,
@@ -273,7 +273,7 @@ test("opening the menu in an editor sends no AI request", async () => {
     await seedConfig(sw);
     let aiRequests = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
-      if (route.request().url().includes("/models"))
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
         return route.fulfill({
           status: 200,
           contentType: "application/json",
@@ -525,7 +525,7 @@ test("closing the card mid flash action leaves no spinner on the toolbar", async
       });
     });
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
-      if (route.request().url().includes("/models"))
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
         return route.fulfill({
           status: 200,
           contentType: "application/json",
@@ -979,6 +979,11 @@ test("German labels are never truncated in the menu", async () => {
 function stubGeminiCounted(context, { delayMs = 0, reply = () => "OK", status = 200 } = {}) {
   const state = { hits: 0, bodies: [] };
   const handler = async (route) => {
+    // The extension also asks this host for its model directory; that request
+    // is not a generation call and must not consume a counted reply.
+    if (new URL(route.request().url()).pathname.endsWith("/models")) {
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
+    }
     state.hits += 1;
     const n = state.hits;
     state.bodies.push(route.request().postData() || "");
@@ -1300,7 +1305,7 @@ test("two quick tone clicks show the last one", async () => {
     await context.unrouteAll({ behavior: "ignoreErrors" });
     let hits = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
-      if (route.request().url().includes("/models"))
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
         return route.fulfill({
           status: 200,
           contentType: "application/json",
