@@ -1097,9 +1097,27 @@ async function createQuickBtn(rect, isInput, mousePosition = null, selectionRect
     top = mousePosition.y + window.scrollY + 8;
     left = mousePosition.x + window.scrollX + 8;
   } else if (isInput && rect) {
-    // Input elements: bottom-right corner (inside the input)
-    top = rect.bottom + window.scrollY - TOOLBAR_SIZE - 4;
-    left = rect.right + window.scrollX - TOOLBAR_SIZE - 4;
+    // A field being edited is never covered: the toolbar sits just outside
+    // it, vertically centred. The old rule placed it in the field's
+    // bottom-right corner, which hid the caret and the last digits of any
+    // narrow field (a qty box) and covered the end of the last line in a
+    // textarea. Right side first, then left, then above, then below, so a
+    // field as wide as the viewport still leaves the text visible.
+    const gap = 4;
+    const centredTop = rect.top + (rect.height - TOOLBAR_SIZE) / 2;
+    const rightSpot = rect.right + gap;
+    const leftSpot = rect.left - gap - TOOLBAR_SIZE;
+    if (rightSpot + TOOLBAR_SIZE <= window.innerWidth) {
+      top = centredTop + window.scrollY;
+      left = rightSpot + window.scrollX;
+    } else if (leftSpot >= 0) {
+      top = centredTop + window.scrollY;
+      left = leftSpot + window.scrollX;
+    } else {
+      const above = rect.top - gap - TOOLBAR_SIZE;
+      top = (above >= 0 ? above : rect.bottom + gap) + window.scrollY;
+      left = rect.right + window.scrollX - TOOLBAR_SIZE;
+    }
   } else if (rect) {
     // Fallback to selection rect
     top = rect.bottom + window.scrollY + 5;
