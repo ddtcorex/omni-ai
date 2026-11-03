@@ -4,6 +4,7 @@ import {
   getApiKey as getStoredApiKey,
   getCustomGatewayConfig,
   getApiModel,
+  setModelCatalogCache,
 } from "../lib/storage.js";
 import {
   quickAsk,
@@ -16,9 +17,9 @@ import {
   generateContent,
   smartTranslate,
 } from "../lib/ai-service.js";
-import { generateContentStream } from "../lib/providers/index.js";
+import { generateContentStream, listModels } from "../lib/providers/index.js";
 import { createOmniChatHandler } from "../lib/omni-chat-port.js";
-import { getProviderByModel } from "../lib/ai-providers.js";
+import { AI_PROVIDERS, getProviderByModel } from "../lib/ai-providers.js";
 
 /**
  * Omni AI: Service Worker
@@ -360,6 +361,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
+    case "LIST_MODELS":
+      handleListModels(message.payload)
+        .then((data) => sendResponse({ success: true, ...data }))
+        .catch((error) => sendResponse({ success: false, error: error.message }));
+      return true;
+
     default:
       sendResponse({ success: false, error: "Unknown message type" });
   }
@@ -567,6 +574,40 @@ async function handleQuickAction(payload) {
   }
 
   return { response: result };
+}
+
+/**
+ * Answer a directory listing for one provider, and cache it.
+ *
+ * The key is taken from the payload when the settings page has one in its form
+ * (a key typed but not yet saved), otherwise from storage. No fan out: one
+ * call, one provider.
+ * @param {{ provider: string, key?: string, baseUrl?: string }} payload
+ */
+async function handleListModels(payload = {}) {
+  const { provider: providerId, key, baseUrl } = payload;
+  const provider = AI_PROVIDERS[providerId];
+
+  if (!provider) {
+    throw new Error(`Unknown provider: ${providerId}`);
+  }
+
+  const apiKey = key || (await getStoredApiKey(provider.keySetting));
+
+  if (!apiKey && providerId !== "customGateway") {
+    throw new Error("API Key is missing");
+  }
+
+  const config = { apiKey };
+  if (providerId === "customGateway") {
+    config.baseUrl = baseUrl || (await getCustomGatewayConfig()).baseUrl;
+  }
+
+  const { models, truncated } = await listModels(providerId, config);
+  const fetchedAt = Date.now();
+  await setModelCatalogCache(providerId, { fetchedAt, models, truncated });
+
+  return { models, truncated, fetchedAt };
 }
 
 /**

@@ -663,4 +663,65 @@ describe("Service Worker Integration", () => {
       expect.any(Object),
     );
   });
+
+  describe("LIST_MODELS", () => {
+    it("uses the in form key when present and caches the result", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      Providers.listModels.mockResolvedValue({
+        models: [{ id: "gpt-5.7-nova" }],
+        truncated: false,
+      });
+      chromeMock.storage.local.get.mockResolvedValue({});
+
+      const sendResponse = jest.fn();
+      const returned = listener(
+        { type: "LIST_MODELS", payload: { provider: "openai", key: "sk-inform" } },
+        {},
+        sendResponse,
+      );
+
+      expect(returned).toBe(true);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Providers.listModels).toHaveBeenCalledWith("openai", { apiKey: "sk-inform" });
+      expect(chromeMock.storage.local.set).toHaveBeenCalled();
+      expect(sendResponse).toHaveBeenCalledWith(
+        expect.objectContaining({ success: true, truncated: false }),
+      );
+    });
+
+    it("falls back to the stored key and reports a failure without throwing", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({ openaiApiKey: "sk-stored" });
+      Providers.listModels.mockRejectedValue(new Error("bad key"));
+
+      const sendResponse = jest.fn();
+      listener({ type: "LIST_MODELS", payload: { provider: "openai" } }, {}, sendResponse);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Providers.listModels).toHaveBeenCalledWith("openai", { apiKey: "sk-stored" });
+      expect(sendResponse).toHaveBeenCalledWith({ success: false, error: "bad key" });
+    });
+
+    it("answers a missing key without calling the provider", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({});
+      Providers.listModels.mockReset();
+
+      const sendResponse = jest.fn();
+      listener({ type: "LIST_MODELS", payload: { provider: "openai" } }, {}, sendResponse);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Providers.listModels).not.toHaveBeenCalled();
+      expect(sendResponse.mock.calls[0][0].success).toBe(false);
+    });
+  });
 });
