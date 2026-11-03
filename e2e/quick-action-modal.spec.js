@@ -844,6 +844,8 @@ test("the floating icon sits outside the field being edited, never over its text
     <input id="qty" type="text" value="9999" style="width:48px;height:26px;font-size:14px;padding:2px 4px" />
     <input id="full" type="text" value="1234567890123456789012345678901234567890"
       style="width:96vw;height:26px;font-size:14px;padding:2px 4px;margin-top:24px" />
+    <textarea id="draft" style="width:600px;height:120px;font-size:15px;padding:12px;margin-top:24px"
+      >hey so i looked at it again and the export is still broken for me, can you check it</textarea>
   </body></html>`;
   const { server, port } = await serveFixtureHtml(FIXTURE);
   const { context, sw } = await launchWithExtension();
@@ -888,6 +890,26 @@ test("the floating icon sits outside the field being edited, never over its text
       await page.evaluate(() => document.activeElement.blur());
       await page.waitForTimeout(250);
     }
+
+    // Selecting part of the text with the mouse is the other way a user lands
+    // here, and it used to anchor the button at the pointer, inside the field.
+    // A wide field is where that hurts: the pointer ends well inside it.
+    const box = await page.locator("#draft").boundingBox();
+    await page.mouse.move(box.x + 16, box.y + 18);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 340, box.y + 20, { steps: 8 });
+    await page.mouse.up();
+    await expect(page.locator(".omni-ai-quick-btn")).toHaveCount(1, { timeout: 5000 });
+    await page.waitForTimeout(400);
+    const dragged = await page.evaluate(() => {
+      const root = document.getElementById("omni-ai-shadow-host").shadowRoot;
+      const btn = root.querySelector(".omni-ai-quick-btn").getBoundingClientRect();
+      const field = document.getElementById("draft").getBoundingClientRect();
+      const overlapX = Math.min(btn.right, field.right) - Math.max(btn.left, field.left);
+      const overlapY = Math.min(btn.bottom, field.bottom) - Math.max(btn.top, field.top);
+      return Math.max(0, overlapX) * Math.max(0, overlapY);
+    });
+    expect(dragged).toBe(0);
   } finally {
     await context.close();
     server.close();

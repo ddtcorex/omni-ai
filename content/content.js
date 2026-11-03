@@ -881,7 +881,12 @@ function presentToolbarFor(activeElement, context, result, mousePos = null) {
       selectionRects = lastRange.getClientRects();
     } catch {}
   }
-  const useMousePos = mousePos && result.isSelection;
+  // A text selection in page text anchors at the pointer, which is where the
+  // user just let go. A selection inside a field does not: the pointer is by
+  // definition over the field, and anchoring there draws the toolbar on top of
+  // the text the user is selecting and about to replace. Fields always use the
+  // outside-the-field placement in createQuickBtn.
+  const useMousePos = mousePos && result.isSelection && context.id !== "standard";
   presentQuickActionButton(
     rect,
     inputEl,
