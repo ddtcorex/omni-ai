@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **AI output is always rendered as text.** It used to be inserted into the overlay as HTML.
 
+### Removed
+
+- **Dependabot version updates.** `.github/dependabot.yml` is gone; dependencies are bumped by hand. The production-scoped `npm audit` CI gate stays.
+
 ### Fixed
 
 - **The content script no longer runs in Cloudflare's challenge frame.** `manifest.json` excludes `https://challenges.cloudflare.com/*`, so nothing from Omni AI lands in the Turnstile widget's document; a user reported Cloudflare verification failing with the extension on. Covered by `e2e/cloudflare-challenge.spec.js`.
