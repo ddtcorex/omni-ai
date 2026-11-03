@@ -331,7 +331,7 @@ let modelRefreshInFlight = false;
 /**
  * The provider that owns a key or base URL field.
  * @param {HTMLElement|null} input
- * @returns {{ id: string, keySetting: string }|null}
+ * @returns {{ id: string, keySetting?: string }|null}
  */
 function providerForField(input) {
   if (!input) return null;
@@ -339,8 +339,18 @@ function providerForField(input) {
 }
 
 /**
+ * Read the current value of a provider's key or base URL field.
+ * @param {string} fieldId
+ * @returns {string}
+ */
+function keyFieldValue(fieldId) {
+  const field = /** @type {HTMLInputElement|null} */ (document.getElementById(fieldId));
+  return field?.value?.trim() || "";
+}
+
+/**
  * The provider that owns the model currently selected in the picker.
- * @returns {{ id: string, keySetting: string }|null}
+ * @returns {{ id: string, keySetting?: string }|null}
  */
 function selectedModelProvider() {
   const selectedProviderId = elements.apiModel?.selectedOptions?.[0]?.dataset.provider;
@@ -405,7 +415,7 @@ async function hydrateModelCatalog() {
     });
   }
 
-  const storedKey = document.getElementById(provider.keySetting)?.value?.trim();
+  const storedKey = keyFieldValue(provider.keySetting);
   const needsRefresh = !isCacheFresh(cache?.fetchedAt);
   if (needsRefresh && (storedKey || provider.id === "customGateway")) {
     await refreshModelCatalog(provider.id);
@@ -597,7 +607,7 @@ export function setupEventListeners() {
     elements.modelRefresh.addEventListener("click", () => {
       const provider = selectedModelProvider();
       if (!provider) return;
-      const key = document.getElementById(provider.keySetting)?.value?.trim();
+      const key = keyFieldValue(provider.keySetting);
       refreshModelCatalog(provider.id, { key: key || undefined });
     });
   }

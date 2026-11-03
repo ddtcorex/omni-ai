@@ -582,7 +582,7 @@ async function handleQuickAction(payload) {
  * The key is taken from the payload when the settings page has one in its form
  * (a key typed but not yet saved), otherwise from storage. No fan out: one
  * call, one provider.
- * @param {{ provider: string, key?: string, baseUrl?: string }} payload
+ * @param {{ provider?: string, key?: string, baseUrl?: string }} [payload]
  */
 async function handleListModels(payload = {}) {
   const { provider: providerId, key, baseUrl } = payload;
@@ -592,15 +592,19 @@ async function handleListModels(payload = {}) {
     throw new Error(`Unknown provider: ${providerId}`);
   }
 
-  const apiKey = key || (await getStoredApiKey(provider.keySetting));
+  const storedKey = /** @type {string|undefined} */ (await getStoredApiKey(provider.keySetting));
+  const apiKey = key || storedKey;
 
   if (!apiKey && providerId !== "customGateway") {
     throw new Error("API Key is missing");
   }
 
-  const config = { apiKey };
+  /** @type {{ apiKey?: string, baseUrl?: string }} */
+  const config = {};
+  if (apiKey) config.apiKey = apiKey;
   if (providerId === "customGateway") {
-    config.baseUrl = baseUrl || (await getCustomGatewayConfig()).baseUrl;
+    const gateway = await getCustomGatewayConfig();
+    config.baseUrl = baseUrl || /** @type {string} */ (gateway.baseUrl);
   }
 
   const { models, truncated } = await listModels(providerId, config);
