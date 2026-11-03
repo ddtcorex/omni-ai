@@ -483,6 +483,97 @@ describe("localizeDOM", () => {
     expect(el.getAttribute("aria-label")).toBe("translated:settings_languageSearchPlaceholder");
   });
 
+  describe("catalog refresh", () => {
+    beforeEach(() => {
+      chrome.runtime.getManifest = jest.fn(() => ({ version: "2.6.0" }));
+      // Calls accumulate across this file's tests, so count only this test's.
+      chrome.runtime.sendMessage.mockReset();
+      chrome.storage.sync.get.mockResolvedValue({});
+      // init() touches the theme manager, which jsdom does not implement.
+      window.matchMedia = jest.fn(() => ({
+        matches: false,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      }));
+    });
+
+    function storageWith(values) {
+      chrome.storage.local.get.mockImplementation(async (keys) => {
+        if (typeof keys === "string") return { [keys]: values[keys] };
+        if (Array.isArray(keys)) {
+          const out = {};
+          keys.forEach((key) => {
+            if (key in values) out[key] = values[key];
+          });
+          return out;
+        }
+        return { ...values };
+      });
+    }
+
+    it("opening settings with a saved key and no cache fetches exactly one provider", async () => {
+      storageWith({ apiModel: "gemini-3.6-flash", geminiApiKey: "k" });
+      chrome.runtime.sendMessage.mockResolvedValue({
+        success: true,
+        models: [],
+        truncated: false,
+        fetchedAt: 1,
+      });
+
+      await Settings.init();
+
+      const calls = chrome.runtime.sendMessage.mock.calls.filter(([m]) => m.type === "LIST_MODELS");
+      expect(calls).toHaveLength(1);
+      expect(calls[0][0].payload.provider).toBe("google");
+    });
+
+    it("opening settings with a fresh cache fetches nothing", async () => {
+      storageWith({
+        apiModel: "gemini-3.6-flash",
+        geminiApiKey: "k",
+        modelCatalog: { google: { fetchedAt: Date.now(), models: [], truncated: false } },
+      });
+
+      await Settings.init();
+
+      const calls = chrome.runtime.sendMessage.mock.calls.filter(([m]) => m.type === "LIST_MODELS");
+      expect(calls).toHaveLength(0);
+    });
+
+    it("a key blur that validates also refreshes that provider with the in form key", async () => {
+      storageWith({ apiModel: "gemini-3.6-flash" });
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 1 });
+      await Settings.init();
+      Settings.setupEventListeners();
+
+      const field = document.getElementById("geminiApiKey");
+      field.value = "typed";
+      field.dispatchEvent(new Event("blur"));
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      const list = chrome.runtime.sendMessage.mock.calls
+        .filter(([m]) => m.type === "LIST_MODELS")
+        .pop();
+      expect(list[0].payload).toMatchObject({ provider: "google", key: "typed" });
+    });
+
+    it("a failed refresh keeps the previous list and shows the notice", async () => {
+      storageWith({
+        apiModel: "gemini-3.6-flash",
+        geminiApiKey: "k",
+        modelCatalog: { google: { fetchedAt: 1, models: [], truncated: false } },
+      });
+      chrome.runtime.sendMessage.mockResolvedValue({ success: false, error: "boom" });
+
+      await Settings.init();
+
+      expect(document.getElementById("modelSource").dataset.source).toBe("cache");
+      expect(document.getElementById("modelSource").textContent).toContain(
+        "settings_modelsRefreshFailed",
+      );
+    });
+  });
+
   describe("model picker", () => {
     it("puts the saved model first in its own provider group", () => {
       Settings.renderModelPicker({

@@ -13,13 +13,14 @@ import {
   LEGACY_MODELS,
   DEFAULT_MODEL,
 } from "./lib/ai-providers.js";
-import { buildPickerModel } from "./lib/model-catalog.js";
+import { buildPickerModel, isCacheFresh } from "./lib/model-catalog.js";
 import {
   getSyncPreferences,
   setSyncPreferences,
   getLocalAiConfig,
   setLocalAiConfig,
   getSettingsBag,
+  getModelCatalogCache,
 } from "./lib/storage.js";
 import { buildLanguageOptionGroups, LANGUAGES } from "./lib/languages.js";
 
@@ -136,6 +137,7 @@ export async function init() {
   await loadStats();
   setupEventListeners();
   updateModelVisibility(); // Initial check
+  await hydrateModelCatalog();
 }
 
 /**
@@ -176,20 +178,16 @@ function paintModelSource() {
   // renders exactly like the bundled case.
   const hasList = Boolean(catalog && Array.isArray(catalog.listed));
 
-  let kind = "bundled";
-  if (modelSourceFailure) {
-    kind = "failed";
-  } else if (hasList) {
-    kind = catalog.fromCache ? "cache" : "live";
-  }
+  const kind = hasList ? (catalog.fromCache ? "cache" : "live") : "bundled";
   el.dataset.source = kind;
 
   if (modelSourceCounts.query && modelSourceCounts.visible === 0) {
     el.textContent = i18n.getMessage("settings_modelsNoMatch");
     return;
   }
-  if (kind === "failed" && catalog?.fetchedAt) {
-    el.textContent = `${i18n.getMessage("settings_modelsRefreshFailed")} ${formatCatalogDate(catalog.fetchedAt)}`;
+  if (modelSourceFailure) {
+    const suffix = catalog?.fetchedAt ? ` ${formatCatalogDate(catalog.fetchedAt)}` : "";
+    el.textContent = `${i18n.getMessage("settings_modelsRefreshFailed")}${suffix}`;
     return;
   }
   if (catalog?.fetchedAt) {
@@ -326,6 +324,92 @@ export function populateModelSelect(currentApiModel) {
 export function setModelCatalogFailure(failed) {
   modelSourceFailure = Boolean(failed);
   paintModelSource();
+}
+
+let modelRefreshInFlight = false;
+
+/**
+ * The provider that owns a key or base URL field.
+ * @param {HTMLElement|null} input
+ * @returns {{ id: string, keySetting: string }|null}
+ */
+function providerForField(input) {
+  if (!input) return null;
+  return Object.values(AI_PROVIDERS).find((provider) => provider.keySetting === input.id) || null;
+}
+
+/**
+ * The provider that owns the model currently selected in the picker.
+ * @returns {{ id: string, keySetting: string }|null}
+ */
+function selectedModelProvider() {
+  const selectedProviderId = elements.apiModel?.selectedOptions?.[0]?.dataset.provider;
+  if (selectedProviderId && AI_PROVIDERS[selectedProviderId]) {
+    return AI_PROVIDERS[selectedProviderId];
+  }
+  const value = elements.apiModel?.value;
+  return value ? getProviderByModel(value) : null;
+}
+
+/**
+ * Ask the worker for one provider's catalog and render whatever comes back.
+ * A failure keeps the rows already on screen and marks the source line: an
+ * unreachable provider must never empty the picker.
+ * @param {string} providerId
+ * @param {{ key?: string }} [options] `key` is an in form value not yet saved
+ */
+export async function refreshModelCatalog(providerId, { key } = {}) {
+  if (!providerId || modelRefreshInFlight) return;
+  modelRefreshInFlight = true;
+
+  try {
+    const payload = { provider: providerId };
+    if (key) payload.key = key;
+
+    const response = await chrome.runtime.sendMessage({ type: "LIST_MODELS", payload });
+
+    if (!response || !response.success) {
+      setModelCatalogFailure(true);
+      return;
+    }
+
+    renderModelPicker({
+      providerId,
+      listed: Array.isArray(response.models) ? response.models : [],
+      fetchedAt: response.fetchedAt || Date.now(),
+    });
+  } catch {
+    setModelCatalogFailure(true);
+  } finally {
+    modelRefreshInFlight = false;
+  }
+}
+
+/**
+ * Render the cached catalog for the saved model's provider, then refresh it
+ * when the cache is missing or stale. At most one request per page load.
+ */
+async function hydrateModelCatalog() {
+  const savedModel = elements.apiModel?.value;
+  const provider = savedModel ? getProviderByModel(savedModel) : null;
+  if (!provider) return;
+
+  const cache = await getModelCatalogCache(provider.id);
+
+  if (cache) {
+    renderModelPicker({
+      providerId: provider.id,
+      listed: cache.models,
+      fetchedAt: cache.fetchedAt,
+      fromCache: true,
+    });
+  }
+
+  const storedKey = document.getElementById(provider.keySetting)?.value?.trim();
+  const needsRefresh = !isCacheFresh(cache?.fetchedAt);
+  if (needsRefresh && (storedKey || provider.id === "customGateway")) {
+    await refreshModelCatalog(provider.id);
+  }
 }
 
 /**
@@ -502,9 +586,21 @@ export function setupEventListeners() {
       autoValidateTimer = setTimeout(() => {
         lastValidatedValues.set(input, value);
         validateConfiguration();
+        const provider = providerForField(input);
+        if (provider) refreshModelCatalog(provider.id, { key: value });
       }, 500);
     });
   });
+
+  // Refresh the fetched model list for the selected provider
+  if (elements.modelRefresh) {
+    elements.modelRefresh.addEventListener("click", () => {
+      const provider = selectedModelProvider();
+      if (!provider) return;
+      const key = document.getElementById(provider.keySetting)?.value?.trim();
+      refreshModelCatalog(provider.id, { key: key || undefined });
+    });
+  }
 
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener("click", toggleApiKeyVisibility);
