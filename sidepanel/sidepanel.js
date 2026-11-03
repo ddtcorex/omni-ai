@@ -132,6 +132,7 @@ function setStatus(text, isError = false) {
   elements.statusLine.textContent = text;
   elements.statusLine.classList.remove("hidden");
   elements.statusLine.classList.toggle("error", isError);
+  elements.statusLine.classList.toggle("ds-notice--error", isError);
 }
 
 function setButtonsDisabled(disabled) {
@@ -315,6 +316,20 @@ function connectChatPort() {
   return chatPort;
 }
 
+// Streaming caret: a sibling of the text, never part of it, so textContent
+// streaming and the tests that read the reply are unaffected.
+function ensureStreamingCaret(bubble) {
+  if (bubble.querySelector(".chat-caret")) return;
+  const caret = document.createElement("span");
+  caret.className = "chat-caret";
+  caret.setAttribute("aria-hidden", "true");
+  bubble.appendChild(caret);
+}
+
+function removeStreamingCaret(bubble) {
+  bubble.querySelector(".chat-caret")?.remove();
+}
+
 function sendChatMessage() {
   if (isStreaming) return;
   const message = elements.chatInput?.value.trim();
@@ -340,11 +355,13 @@ function sendChatMessage() {
       acc += msg.text;
       assistantBubble.classList.remove("thinking");
       assistantBubble.textContent = acc;
+      ensureStreamingCaret(assistantBubble);
       elements.chatMessages?.scrollTo({ top: elements.chatMessages.scrollHeight });
     } else if (msg.type === "done") {
       // Defensive: a reply that completes with no separate "chunk" message
       // would otherwise leave the thinking dots stuck forever.
       assistantBubble.classList.remove("thinking");
+      removeStreamingCaret(assistantBubble);
       if (!assistantBubble.textContent) assistantBubble.textContent = msg.text || "";
       chatHistory.push({ role: "user", content: message });
       chatHistory.push({ role: "assistant", content: msg.text });
@@ -385,6 +402,8 @@ function stopChat() {
   // alone -- that partial reply is still worth keeping.
   if (currentAssistantBubble?.classList.contains("thinking")) {
     currentAssistantBubble.remove();
+  } else if (currentAssistantBubble) {
+    removeStreamingCaret(currentAssistantBubble);
   }
   currentAssistantBubble = null;
   setStreamingUI(false);

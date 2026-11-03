@@ -281,7 +281,7 @@ describe("settings.js", () => {
     jest.useRealTimers();
   });
 
-  it("uses the shared ds-card class for the validation message, not the old validation-message-only class", async () => {
+  it("uses the shared ds-notice class for the validation message, not the old validation-message-only class", async () => {
     chrome.storage.local.get.mockResolvedValue({});
     await Settings.loadSettings();
 
@@ -293,7 +293,8 @@ describe("settings.js", () => {
     await Settings.validateConfiguration();
 
     const el = document.getElementById("validationStatus");
-    expect(el.className).toContain("ds-card");
+    expect(el.className).toContain("ds-notice");
+    expect(el.className).toContain("ds-notice--error");
     expect(el.className).not.toContain("validation-message");
   });
 

@@ -102,6 +102,11 @@
   --omni-diff-del: #fdba74;
   --omni-diff-ins: #4ade80;
   --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
+
+  /* Page surfaces (settings, side panel): backdrop glows and the icon-tile tint */
+  --omni-backdrop-glow-accent: rgba(139, 92, 246, 0.1);
+  --omni-backdrop-glow-cyan: rgba(6, 182, 212, 0.06);
+  --omni-tint-soft: rgba(139, 92, 246, 0.14);
 }
 
 /* Light-mode overrides: plain-document surfaces (settings.html, sidepanel.html) */
@@ -148,6 +153,10 @@
   --omni-diff-del: #c2410c;
   --omni-diff-ins: #16a34a;
   --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
+
+  --omni-backdrop-glow-accent: rgba(139, 92, 246, 0.08);
+  --omni-backdrop-glow-cyan: rgba(6, 182, 212, 0.05);
+  --omni-tint-soft: rgba(139, 92, 246, 0.1);
 }
 
 /* Light-mode overrides: the Shadow-DOM overlay surface. :host() matches only
@@ -204,4 +213,8 @@
   --omni-diff-del: #c2410c;
   --omni-diff-ins: #16a34a;
   --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
+
+  --omni-backdrop-glow-accent: rgba(139, 92, 246, 0.08);
+  --omni-backdrop-glow-cyan: rgba(6, 182, 212, 0.05);
+  --omni-tint-soft: rgba(139, 92, 246, 0.1);
 }

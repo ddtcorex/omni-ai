@@ -89,6 +89,13 @@ test("shows a thinking indicator immediately, replaced by the reply once the fir
     await page.evaluate(() => window.__sendFakeChatMessage({ type: "chunk", text: "Hi there" }));
     await expect(page.locator(".chat-msg.assistant")).toHaveText("Hi there");
     await expect(page.locator(".chat-msg.assistant.thinking")).toHaveCount(0);
+    // The caret lives beside the text, never inside it.
+    await expect(page.locator(".chat-msg.assistant .chat-caret")).toHaveCount(1);
+    const streamed = await page.locator(".chat-msg.assistant").textContent();
+    expect(streamed).toBe("Hi there");
+
+    await page.evaluate(() => window.__sendFakeChatMessage({ type: "done", text: "Hi there" }));
+    await expect(page.locator(".chat-msg.assistant .chat-caret")).toHaveCount(0);
   } finally {
     await context.close();
   }

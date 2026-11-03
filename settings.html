@@ -15,17 +15,17 @@
     />
     <link rel="icon" type="image/svg+xml" href="assets/icons/logo.svg" />
   </head>
-  <body>
+  <body class="ds-backdrop">
     <div class="options-container">
       <!-- Header -->
       <header class="header">
-        <div class="header-content">
+        <div class="header-content ds-surface">
           <div class="logo">
             <img src="assets/icons/logo.svg" alt="__MSG_extName__" class="logo-icon" />
             <div class="logo-text">
               <div class="title-row">
                 <h1>__MSG_extName__</h1>
-                <span class="version" id="extVersion"></span>
+                <span class="version ds-pill" id="extVersion"></span>
               </div>
               <p class="tagline">__MSG_settings_tagline__</p>
             </div>
@@ -38,19 +38,35 @@
         <!-- API Configuration -->
         <section class="settings-section">
           <h2 class="section-title">
-            <span class="section-icon">🔑</span>
-            __MSG_settings_title__
+            <span class="section-icon"
+              ><svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"
+                ></path></svg
+            ></span>
+            __MSG_settings_provider__
           </h2>
-          <div class="setting-card">
+          <div class="setting-card ds-surface">
             <!-- AI Model Selector (Top) -->
             <div class="setting-item">
               <label class="setting-label" for="apiModel">
                 <span class="label-text">__MSG_settings_model__</span>
                 <span class="label-hint">__MSG_settings_modelHint__</span>
               </label>
-              <select id="apiModel" class="setting-select">
-                <!-- Populated by JS -->
-              </select>
+              <div class="select-field">
+                <select id="apiModel" class="setting-select ds-field">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
 
               <!-- Gemini API Key -->
               <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
@@ -90,7 +106,7 @@
                   <input
                     type="password"
                     id="geminiApiKey"
-                    class="setting-input"
+                    class="setting-input ds-field"
                     placeholder="__MSG_settings_geminiApiKeyPlaceholder__"
                   />
                   <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
@@ -147,7 +163,7 @@
                   <input
                     type="password"
                     id="groqApiKey"
-                    class="setting-input"
+                    class="setting-input ds-field"
                     placeholder="gsk_..."
                   />
                 </div>
@@ -191,7 +207,7 @@
                   <input
                     type="password"
                     id="openaiApiKey"
-                    class="setting-input"
+                    class="setting-input ds-field"
                     placeholder="sk-..."
                   />
                 </div>
@@ -235,7 +251,7 @@
                   <input
                     type="password"
                     id="anthropicApiKey"
-                    class="setting-input"
+                    class="setting-input ds-field"
                     placeholder="sk-ant-..."
                   />
                 </div>
@@ -254,7 +270,7 @@
                     <input
                       type="text"
                       id="customModelName"
-                      class="setting-input"
+                      class="setting-input ds-field"
                       placeholder="__MSG_settings_customModelPlaceholder__"
                     />
                   </div>
@@ -295,7 +311,7 @@
                     <input
                       type="text"
                       id="customGatewayBaseUrl"
-                      class="setting-input"
+                      class="setting-input ds-field"
                       placeholder="__MSG_settings_customGatewayUrlPlaceholder__"
                     />
                   </div>
@@ -306,7 +322,7 @@
                     <input
                       type="password"
                       id="customGatewayApiKey"
-                      class="setting-input"
+                      class="setting-input ds-field"
                       placeholder="__MSG_settings_customGatewayKeyPlaceholder__"
                     />
                   </div>
@@ -330,7 +346,7 @@
                   </svg>
                   <span>__MSG_settings_validate__</span>
                 </button>
-                <div id="validationStatus" class="ds-card"></div>
+                <div id="validationStatus" class="ds-notice hidden"></div>
               </div>
             </div>
             <!-- closes .setting-item opened above; browser previously implied this close; do not move -->
@@ -340,20 +356,42 @@
         <!-- Preferences -->
         <section class="settings-section">
           <h2 class="section-title">
-            <span class="section-icon">⚙️</span>
-            __MSG_settings_title__
+            <span class="section-icon"
+              ><svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line></svg
+            ></span>
+            __MSG_settings_preferences__
           </h2>
-          <div class="setting-card">
+          <div class="setting-card ds-surface">
             <div class="setting-item">
               <label class="setting-label" for="themeSelector">
                 <span class="label-text">__MSG_settings_theme__</span>
                 <span class="label-hint">__MSG_settings_themeHint__</span>
               </label>
-              <select id="themeSelector" class="setting-select">
-                <option value="system">__MSG_theme_system__</option>
-                <option value="dark">__MSG_theme_dark__</option>
-                <option value="light">__MSG_theme_light__</option>
-              </select>
+              <div class="select-field">
+                <select id="themeSelector" class="setting-select ds-field">
+                  <option value="system">__MSG_theme_system__</option>
+                  <option value="dark">__MSG_theme_dark__</option>
+                  <option value="light">__MSG_theme_light__</option>
+                </select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -361,10 +399,12 @@
                 <span class="label-text">__MSG_settings_showFloatingButton__</span>
                 <span class="label-hint">__MSG_settings_showFloatingButtonHint__</span>
               </label>
-              <select id="showFloatingButton" class="setting-select">
-                <option value="on">__MSG_settings_on__</option>
-                <option value="off">__MSG_settings_off__</option>
-              </select>
+              <div class="select-field">
+                <select id="showFloatingButton" class="setting-select ds-field">
+                  <option value="on">__MSG_settings_on__</option>
+                  <option value="off">__MSG_settings_off__</option>
+                </select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -373,43 +413,43 @@
                 <span class="label-hint">__MSG_settings_flashActionsHint__</span>
               </label>
               <div class="flash-actions-list" id="flashActionsList">
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="smart_translate" />
                   <span>__MSG_overlay_smart_translation__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="translate_primary" />
                   <span>__MSG_settings_flashAction_translatePrimary__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="translate_default" />
                   <span>__MSG_settings_flashAction_translateDefault__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="grammar" />
                   <span>__MSG_action_grammar__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="rephrase" />
                   <span>__MSG_action_rephrase__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="reply" />
                   <span>__MSG_action_reply__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="emoji" />
                   <span>__MSG_action_emojify__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="tone" />
                   <span>__MSG_action_tone__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="summarize" />
                   <span>__MSG_action_summarize__</span>
                 </label>
-                <label class="flash-action-option">
+                <label class="flash-action-option ds-pill">
                   <input type="checkbox" data-flash-action="explain" />
                   <span>__MSG_action_explain__</span>
                 </label>
@@ -421,13 +461,15 @@
                 <span class="label-text">__MSG_settings_defaultTone__</span>
                 <span class="label-hint">__MSG_settings_defaultToneHint__</span>
               </label>
-              <select id="defaultPreset" class="setting-select">
-                <option value="professional">👔 __MSG_tone_professional__</option>
-                <option value="casual">💬 __MSG_tone_casual__</option>
-                <option value="friendly">😊 __MSG_tone_friendly__</option>
-                <option value="direct">⚡ __MSG_tone_direct__</option>
-                <option value="confident">🚀 __MSG_tone_confident__</option>
-              </select>
+              <div class="select-field">
+                <select id="defaultPreset" class="setting-select ds-field">
+                  <option value="professional">👔 __MSG_tone_professional__</option>
+                  <option value="casual">💬 __MSG_tone_casual__</option>
+                  <option value="friendly">😊 __MSG_tone_friendly__</option>
+                  <option value="direct">⚡ __MSG_tone_direct__</option>
+                  <option value="confident">🚀 __MSG_tone_confident__</option>
+                </select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -435,7 +477,9 @@
                 <span class="label-text">__MSG_settings_primaryLanguage__</span>
                 <span class="label-hint">__MSG_settings_primaryLanguageHint__</span>
               </label>
-              <select id="primaryLanguage" class="setting-select"></select>
+              <div class="select-field">
+                <select id="primaryLanguage" class="setting-select ds-field"></select>
+              </div>
             </div>
 
             <div class="setting-item">
@@ -443,7 +487,9 @@
                 <span class="label-text">__MSG_settings_language__</span>
                 <span class="label-hint">__MSG_settings_languageHint__</span>
               </label>
-              <select id="defaultLanguage" class="setting-select"></select>
+              <div class="select-field">
+                <select id="defaultLanguage" class="setting-select ds-field"></select>
+              </div>
             </div>
           </div>
         </section>
@@ -451,10 +497,23 @@
         <!-- Keyboard Shortcuts -->
         <section class="settings-section">
           <h2 class="section-title">
-            <span class="section-icon">⌨️</span>
+            <span class="section-icon"
+              ><svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"></path></svg
+            ></span>
             __MSG_settings_shortcuts__
           </h2>
-          <div class="setting-card">
+          <div class="setting-card ds-surface">
             <div class="shortcuts-list">
               <div class="shortcut-item">
                 <span class="shortcut-action">__MSG_command_openQuickMenu__</span>
@@ -501,7 +560,21 @@
         <section class="settings-section">
           <div class="section-header-row">
             <h2 class="section-title">
-              <span class="section-icon">📊</span>
+              <span class="section-icon"
+                ><svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="18" y1="20" x2="18" y2="4"></line>
+                  <line x1="12" y1="20" x2="12" y2="10"></line>
+                  <line x1="6" y1="20" x2="6" y2="16"></line></svg
+              ></span>
               __MSG_settings_history__
             </h2>
             <div class="history-actions">
@@ -541,7 +614,7 @@
 
           <div class="stats-grid">
             <!-- Total Actions -->
-            <div class="stat-card">
+            <div class="stat-card ds-surface">
               <div class="stat-icon-wrapper accent-blue">
                 <svg
                   width="20"
@@ -561,7 +634,7 @@
             </div>
 
             <!-- Words Processed -->
-            <div class="stat-card">
+            <div class="stat-card ds-surface">
               <div class="stat-icon-wrapper accent-green">
                 <svg
                   width="20"
@@ -585,7 +658,7 @@
             </div>
 
             <!-- Words Generated -->
-            <div class="stat-card">
+            <div class="stat-card ds-surface">
               <div class="stat-icon-wrapper accent-purple">
                 <svg
                   width="20"
@@ -611,10 +684,24 @@
         <!-- About -->
         <section class="settings-section">
           <h2 class="section-title">
-            <span class="section-icon">ℹ️</span>
+            <span class="section-icon"
+              ><svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line></svg
+            ></span>
             __MSG_settings_about__
           </h2>
-          <div class="setting-card about-card">
+          <div class="setting-card about-card ds-surface">
             <p>__MSG_extDescription__</p>
             <div class="about-links">
               <a href="https://github.com/ddtcorex/omni-ai" target="_blank" class="about-link">
@@ -648,7 +735,7 @@
           </div>
         </section>
         <!-- Save Actions -->
-        <div class="save-actions">
+        <div class="save-actions ds-surface">
           <button id="saveBtn" class="ds-btn-primary ds-btn-primary--lg full-width">
             <svg
               width="18"
@@ -664,7 +751,7 @@
             </svg>
             __MSG_settings_save__
           </button>
-          <span id="saveStatus" class="save-status"></span>
+          <span id="saveStatus" class="save-status ds-notice"></span>
         </div>
       </main>
     </div>

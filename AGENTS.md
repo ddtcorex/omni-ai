@@ -74,7 +74,7 @@ omni-ai/
 |-- settings.{html,js,css}   # Options dashboard: providers, languages, theme, usage stats
 |-- lib/
 |   |-- design-tokens.css    # Canonical --omni-* custom properties (see docs/design-system/MASTER.md)
-|   |-- design-system.css    # Shared component classes: .ds-icon-btn, .ds-btn-*, .ds-spinner, .ds-card (see docs/design-system/MASTER.md)
+|   |-- design-system.css    # Shared component classes: .ds-icon-btn, .ds-btn-*, .ds-spinner, .ds-card, .ds-surface, .ds-pill, .ds-field, .ds-shimmer, body.ds-backdrop (see docs/design-system/MASTER.md)
 |   |-- ai-service.js        # Action functions (improveText, translateText, ...) +
 |   |                        #   generateContent() dispatcher
 |   |-- ai-providers.js      # AI_PROVIDERS registry: models, key-setting names, routing

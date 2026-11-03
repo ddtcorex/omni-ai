@@ -95,6 +95,14 @@
     "message": "Configuración",
     "description": "Título de la página de ajustes"
   },
+  "settings_provider": {
+    "message": "Proveedor de IA",
+    "description": "Section title: AI model and provider keys"
+  },
+  "settings_preferences": {
+    "message": "Preferencias",
+    "description": "Section title: theme, quick actions, languages"
+  },
   "settings_geminiApiKey": {
     "message": "Clave API de Gemini",
     "description": "Etiqueta de la clave API"

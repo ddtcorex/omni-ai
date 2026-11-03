@@ -139,6 +139,14 @@
     "message": "הגדרות",
     "description": "Settings page title"
   },
+  "settings_provider": {
+    "message": "ספק AI",
+    "description": "Section title: AI model and provider keys"
+  },
+  "settings_preferences": {
+    "message": "העדפות",
+    "description": "Section title: theme, quick actions, languages"
+  },
   "settings_geminiApiKey": {
     "message": "מפתח API של Gemini",
     "description": "Gemini API key label"
