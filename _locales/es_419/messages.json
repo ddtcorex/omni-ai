@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "No se pudo actualizar, se muestra la lista guardada del",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "No se pudo actualizar la lista de modelos",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "Ningún modelo coincide con tu búsqueda",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "Se usa la lista de modelos integrada",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "Este modelo ya no está disponible.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Elegir otro modelo",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "El proveedor devolvió más modelos de los mostrados",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

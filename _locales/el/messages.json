@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "Η ανανέωση απέτυχε, εμφανίζεται η αποθηκευμένη λίστα από",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "Δεν ήταν δυνατή η ανανέωση της λίστας μοντέλων",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "Κανένα μοντέλο δεν ταιριάζει με την αναζήτηση",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "Χρήση της ενσωματωμένης λίστας μοντέλων",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "Αυτό το μοντέλο δεν είναι πλέον διαθέσιμο.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Επιλογή άλλου μοντέλου",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "Ο πάροχος επέστρεψε περισσότερα μοντέλα από όσα εμφανίζονται",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

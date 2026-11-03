@@ -687,12 +687,16 @@ function setupMessageListener() {
         const failed =
           payload.error === true || (payload.error === undefined && raw.startsWith("Error: "));
         if (failed) {
-          void showErrorInOverlay(raw.replace(/^Error: /, ""), {
-            action: payload.action,
-            originalText: payload.originalText,
-            isInput: payload.isInput,
-            source: "worker",
-          });
+          void showErrorInOverlay(
+            raw.replace(/^Error: /, ""),
+            {
+              action: payload.action,
+              originalText: payload.originalText,
+              isInput: payload.isInput,
+              source: "worker",
+            },
+            payload.errorCode || "",
+          );
         } else {
           // Marked so retry knows this result came from the worker's own run
           // (keyboard command, context menu), not from a content-path request.
@@ -1938,7 +1942,7 @@ async function handleAction(
         if (!surf.isCurrent(token)) return;
         showResultOverlay({ ...retryData, result: response.data.response }, isInput);
       } else if (surf.isCurrent(token)) {
-        showErrorInOverlay(response.error, retryData);
+        showErrorInOverlay(response.error, retryData, response.errorCode);
       }
     })
     .catch((err) => {
@@ -1974,7 +1978,7 @@ async function handleAskAction(query, originalText, isInput, { replace = false }
     if (response.success) {
       showResultOverlay({ ...retryData, result: response.data.response }, isInput);
     } else {
-      showErrorInOverlay(response.error, retryData);
+      showErrorInOverlay(response.error, retryData, response.errorCode);
     }
   } catch (err) {
     if (surf.isCurrent(token)) showErrorInOverlay(err.message, retryData);
@@ -2845,14 +2849,14 @@ function renderAskState(inner, data, surf) {
   input.focus({ preventScroll: true });
 }
 
-async function showErrorInOverlay(msg, retryData = {}) {
+async function showErrorInOverlay(msg, retryData = {}, errorCode = "") {
   if (retireIfOrphaned()) return;
   // A quick action's request can fail before any card is open: the surface
   // opens one, or the error would render nowhere and leave the floating
   // icon's spinner frozen.
   resetQuickButtonIcon();
   const surf = getSurface();
-  const data = { ...retryData, msg };
+  const data = { ...retryData, msg, errorCode };
   if (isCardOpen()) {
     overlayLockedPosition = currentCardPosition();
     return surf.to("error", data);
@@ -2865,24 +2869,43 @@ async function showErrorInOverlay(msg, retryData = {}) {
 
 function renderErrorState(inner, data, surf) {
   const title = data.action ? actionTitle(data.action) : i18n.getMessage("overlay_error");
+  // A model the provider no longer offers is the one failure with an action
+  // that actually helps, so it says its own sentence and offers the route out.
+  const modelGone = data.errorCode === "model_not_found";
+  const message = modelGone
+    ? i18n.getMessage("error_modelNotAvailable")
+    : data.msg || i18n.getMessage("overlay_error");
+
   inner.innerHTML = `
     ${cardHeader(title, { icon: "error" })}
     <div class="omni-ai-content-area">
       <div class="omni-ai-error" role="alert">
         ${ICONS.warn}
-        <span class="omni-ai-error-text">${escapeHtml(data.msg || i18n.getMessage("overlay_error"))}</span>
+        <span class="omni-ai-error-text">${escapeHtml(message)}</span>
       </div>
     </div>
     ${
-      canRerun(data)
+      modelGone || canRerun(data)
         ? `<div class="omni-ai-footer-actions">
             <span class="omni-ai-spacer"></span>
-            <button class="omni-ai-btn" id="omniAiRetry">${ICONS.retry}<span>${escapeHtml(i18n.getMessage("overlay_try_again"))}</span></button>
+            ${
+              modelGone
+                ? `<button class="omni-ai-btn is-primary" id="omniAiChangeModel">${escapeHtml(i18n.getMessage("overlay_change_model"))}</button>`
+                : ""
+            }
+            ${
+              canRerun(data)
+                ? `<button class="omni-ai-btn" id="omniAiRetry">${ICONS.retry}<span>${escapeHtml(i18n.getMessage("overlay_try_again"))}</span></button>`
+                : ""
+            }
           </div>`
         : ""
     }`;
   bindCardHeader(inner, surf);
   inner.querySelector("#omniAiRetry")?.addEventListener("click", () => rerun(data));
+  inner.querySelector("#omniAiChangeModel")?.addEventListener("click", () => {
+    sendMessageToBackground({ type: "OPEN_SETTINGS" }).catch(() => {});
+  });
 }
 
 // Run

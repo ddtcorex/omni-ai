@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "Gagal menyegarkan, menampilkan daftar tersimpan dari",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "Daftar model tidak dapat disegarkan",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "Tidak ada model yang cocok",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "Memakai daftar model bawaan",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "Model ini tidak lagi tersedia.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Pilih model lain",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "Penyedia mengembalikan lebih banyak model daripada yang ditampilkan",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

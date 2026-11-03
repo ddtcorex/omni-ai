@@ -153,6 +153,8 @@ let modelSourceCounts = { visible: 0, total: 0, query: "" };
 let modelSourceByProvider = new Map();
 let modelSourceFailure = false;
 let modelSearchBound = false;
+let selectedModelForPicker = null;
+let pendingRefreshProvider = null;
 
 /**
  * The picker holds API model names, so a shipped id addresses its own model
@@ -205,9 +207,21 @@ function paintModelSource() {
   if (catalog?.fetchedAt) {
     const shown = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
     const tail = shown && shown.visible < shown.total ? ` (${shown.visible}/${shown.total})` : "";
-    el.textContent = `${i18n.getMessage("settings_modelsUpdated")} ${formatCatalogDate(catalog.fetchedAt)}${tail}`;
+    const truncated = catalog.truncated ? ` ${i18n.getMessage("settings_modelsTruncated")}` : "";
+    const when = formatCatalogDate(catalog.fetchedAt);
+    el.textContent = `${i18n.getMessage("settings_modelsUpdated")}${
+      when ? ` (${when})` : ""
+    }${tail}${truncated}`;
     return;
   }
+  if (elements.modelRefresh) {
+    const provider = selectedProviderId ? AI_PROVIDERS[selectedProviderId] : null;
+    const hasCredential = provider
+      ? Boolean(keyFieldValue(provider.keySetting)) || provider.id === "customGateway"
+      : false;
+    elements.modelRefresh.disabled = !hasCredential;
+  }
+
   const counts = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
   const ratio =
     counts && counts.visible < counts.total ? ` (${counts.visible}/${counts.total})` : "";
@@ -228,6 +242,7 @@ function paintModelSource() {
  * @param {string|null} [args.savedProviderId]
  * @param {number|null} [args.fetchedAt]
  * @param {boolean} [args.fromCache]
+ * @param {boolean} [args.truncated] the provider returned more than it lists
  */
 export function renderModelPicker({
   providerId,
@@ -236,6 +251,7 @@ export function renderModelPicker({
   savedProviderId,
   fetchedAt = null,
   fromCache = false,
+  truncated = false,
 } = {}) {
   const select = elements.apiModel;
   if (!select) return;
@@ -247,6 +263,7 @@ export function renderModelPicker({
       listed: Array.isArray(listed) ? listed : null,
       fetchedAt,
       fromCache,
+      truncated: Boolean(truncated),
     });
     modelSourceFailure = false;
   }
@@ -332,9 +349,14 @@ export function renderModelPicker({
     visible += matching.length;
   });
 
-  if (savedModelForPicker) {
-    select.value = normalizeSavedIdForPicker(savedModelForPicker);
+  const preferred = selectedModelForPicker || savedModelForPicker;
+  if (preferred) {
+    // Bundled options carry the shipped id, fetched ones the API name: try both
+    // so a selection survives whichever list happens to be rendered.
+    select.value = normalizeSavedIdForPicker(preferred);
+    if (!select.value) select.value = preferred;
   }
+  if (!select.value) selectedModelForPicker = null;
 
   modelSourceCounts = { visible, total, query };
   paintModelSource();
@@ -358,6 +380,9 @@ export function setModelCatalogFailure(failed) {
 }
 
 let modelRefreshInFlight = false;
+
+/** How long one provider listing may take before the source line reports a failure. */
+const MODEL_REFRESH_TIMEOUT_MS = 15000;
 
 /**
  * The provider that owns a key or base URL field.
@@ -401,7 +426,13 @@ function selectedModelProvider() {
  *   values not yet saved
  */
 export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
-  if (!providerId || modelRefreshInFlight) return;
+  if (!providerId) return;
+  if (modelRefreshInFlight) {
+    // A second request while one is in flight is the newer intent, so it runs
+    // next instead of being dropped.
+    pendingRefreshProvider = { providerId, key, baseUrl };
+    return;
+  }
   modelRefreshInFlight = true;
 
   try {
@@ -409,7 +440,12 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
     if (key) payload.key = key;
     if (baseUrl) payload.baseUrl = baseUrl;
 
-    const response = await chrome.runtime.sendMessage({ type: "LIST_MODELS", payload });
+    const response = await Promise.race([
+      chrome.runtime.sendMessage({ type: "LIST_MODELS", payload }),
+      new Promise((resolve) =>
+        setTimeout(() => resolve({ success: false, timedOut: true }), MODEL_REFRESH_TIMEOUT_MS),
+      ),
+    ]);
 
     if (!response || !response.success) {
       setModelCatalogFailure(true);
@@ -420,11 +456,15 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
       providerId,
       listed: Array.isArray(response.models) ? response.models : [],
       fetchedAt: response.fetchedAt || Date.now(),
+      truncated: Boolean(response.truncated),
     });
   } catch {
     setModelCatalogFailure(true);
   } finally {
     modelRefreshInFlight = false;
+    const queued = pendingRefreshProvider;
+    pendingRefreshProvider = null;
+    if (queued) void refreshModelCatalog(queued.providerId, queued);
   }
 }
 
@@ -449,6 +489,7 @@ async function hydrateModelCatalog() {
       listed: cache.models,
       fetchedAt: cache.fetchedAt,
       fromCache: true,
+      truncated: Boolean(cache.truncated),
     });
   }
 
@@ -589,6 +630,7 @@ async function loadStats() {
 export function setupEventListeners() {
   // Model change listener
   elements.apiModel.addEventListener("change", () => {
+    selectedModelForPicker = elements.apiModel.value || null;
     updateModelVisibility();
     paintModelSource();
 

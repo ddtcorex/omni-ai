@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "રિફ્રેશ કરી શકાયું નથી, સાચવેલી સૂચિ બતાવી રહ્યા છીએ",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "મોડલ સૂચિ રિફ્રેશ કરી શકાઈ નથી",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "કોઈ મોડલ તમારી શોધ સાથે મેળ ખાતું નથી",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "બિલ્ટ-ઇન મોડલ સૂચિ વપરાઈ રહી છે",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "આ મોડલ હવે ઉપલબ્ધ નથી.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "બીજું મોડલ પસંદ કરો",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "પ્રદાતાએ દર્શાવેલા કરતાં વધુ મોડલ પરત કર્યા",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

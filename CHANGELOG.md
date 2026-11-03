@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **The model picker now lists what each provider actually offers.** Every provider has a `GET /models` listing call (`lib/providers/model-listing.js` plus one `listModels` per provider, paginated with a five page cap), so a model a vendor ships appears in Settings without a code change, and a retired one stops being offered. Results are filtered down to chat capable models (`lib/model-catalog.js`), ranked with the saved model first, then that provider's recommended tier, then the newest, and cached per provider in `chrome.storage.local` for seven days.
-- **A search box and a refresh control above the model picker**, plus a source line under it that says whether the list is live, cached (with its date) or the bundled fallback.
+- **A search box and a refresh control above the model picker**, plus a source line under it that says whether the list is live, cached (with its date), truncated or the bundled fallback. The search reaches the whole fetched catalog, not only the visible window.
+- **A route out of a dead model.** When a provider answers that the saved model is gone, the overlay says so in its own words and offers a button that opens Settings on the picker, instead of printing the provider's raw error.
 
 ### Changed
 

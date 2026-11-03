@@ -325,7 +325,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "QUICK_ACTION":
       handleQuickAction(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
-        .catch((error) => sendResponse({ success: false, error: error.message }));
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message, errorCode: error.code || "" }),
+        );
       return true;
 
     case "GET_API_KEY":
@@ -361,6 +363,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then((result) => sendResponse({ success: true, data: result }))
         .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
+
+    case "OPEN_SETTINGS":
+      chrome.runtime.openOptionsPage?.();
+      sendResponse({ success: true });
+      break;
 
     case "LIST_MODELS":
       handleListModels(message.payload)
@@ -605,7 +612,11 @@ async function handleListModels(payload = {}) {
   if (apiKey) config.apiKey = apiKey;
   if (providerId === "customGateway") {
     const gateway = await getCustomGatewayConfig();
-    config.baseUrl = baseUrl || /** @type {string} */ (gateway.customGatewayBaseUrl) || undefined;
+    // A key and a base URL are one credential pair. A caller supplied base URL
+    // is only trusted alongside a key from that same caller, so a stored key is
+    // never sent to a host somebody else chose.
+    const origin = key ? baseUrl : undefined;
+    config.baseUrl = origin || /** @type {string} */ (gateway.customGatewayBaseUrl) || undefined;
   }
 
   const { models, truncated } = await listModels(providerId, config);
@@ -742,6 +753,7 @@ async function processSelectedText(tabId, text, action, isInput = false, frameId
           originalText: text,
           result: `Error: ${error.message}`,
           error: true,
+          errorCode: error.code || "",
           isInput,
         },
       },

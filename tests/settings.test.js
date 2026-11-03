@@ -574,6 +574,81 @@ describe("localizeDOM", () => {
     });
   });
 
+  describe("catalog polish", () => {
+    beforeEach(() => {
+      chrome.runtime.getManifest = jest.fn(() => ({ version: "2.6.0" }));
+      chrome.storage.sync.get.mockResolvedValue({});
+      window.matchMedia = jest.fn(() => ({
+        matches: false,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      }));
+      chrome.runtime.sendMessage.mockReset();
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 1 });
+    });
+
+    it("keeps an in-progress selection when the picker re-renders", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: null,
+        savedModelId: "gemini-3.6-flash",
+      });
+      const select = document.getElementById("apiModel");
+      Settings.setupEventListeners();
+      select.value = "openai-gpt-5.6-terra";
+      select.dispatchEvent(new Event("change"));
+
+      const input = document.getElementById("modelSearch");
+      input.value = "";
+      input.dispatchEvent(new Event("input"));
+
+      expect(document.getElementById("apiModel").value).toBe("openai-gpt-5.6-terra");
+    });
+
+    it("disables the refresh control when the selected provider has no credential", () => {
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      expect(document.getElementById("modelRefresh").disabled).toBe(true);
+
+      document.getElementById("geminiApiKey").value = "k";
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      expect(document.getElementById("modelRefresh").disabled).toBe(false);
+    });
+
+    it("says so when the provider catalog was truncated", async () => {
+      chrome.storage.local.get.mockResolvedValue({
+        apiModel: "gemini-3.6-flash",
+        geminiApiKey: "k",
+        modelCatalog: { google: { fetchedAt: Date.now(), models: [], truncated: true } },
+      });
+      await Settings.init();
+      expect(document.getElementById("modelSource").textContent).toContain(
+        "settings_modelsTruncated",
+      );
+    });
+
+    it("queues a refresh that arrives while another is in flight", async () => {
+      let release;
+      chrome.runtime.sendMessage.mockImplementation((message) => {
+        if (message.payload.provider === "google") {
+          return new Promise((resolve) => {
+            release = () => resolve({ success: true, models: [], fetchedAt: 1 });
+          });
+        }
+        return Promise.resolve({ success: true, models: [], fetchedAt: 1 });
+      });
+
+      const first = Settings.refreshModelCatalog("google");
+      const second = Settings.refreshModelCatalog("openai");
+      release();
+      await Promise.all([first, second]);
+
+      const providers = chrome.runtime.sendMessage.mock.calls
+        .filter(([m]) => m.type === "LIST_MODELS")
+        .map(([m]) => m.payload.provider);
+      expect(providers).toEqual(["google", "openai"]);
+    });
+  });
+
   describe("catalog refresh", () => {
     beforeEach(() => {
       chrome.runtime.getManifest = jest.fn(() => ({ version: "2.6.0" }));

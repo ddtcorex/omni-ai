@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "Обновяването не успя, показан е запазен списък от",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "Списъкът с модели не можа да бъде обновен",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "Няма модели, отговарящи на търсенето",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "Използва се вграденият списък с модели",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "Този модел вече не е достъпен.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Избор на друг модел",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "Доставчикът върна повече модели от показаните",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

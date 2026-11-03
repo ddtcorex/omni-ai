@@ -778,4 +778,67 @@ describe("Service Worker Integration", () => {
       expect.anything(),
     );
   });
+
+  it("a model-not-found failure reaches the overlay with its code", async () => {
+    const AIService = await import("../../lib/ai-service");
+    AIService.improveText.mockRejectedValue(
+      Object.assign(new Error("The model does not exist"), { code: "model_not_found" }),
+    );
+
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    const sendResponse = jest.fn();
+    listener(
+      { type: "QUICK_ACTION", payload: { action: "grammar", text: "hi" } },
+      { tab: { id: 5 }, frameId: 0 },
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // The overlay reads this reply, so the code has to survive the failure path.
+    expect(sendResponse).toHaveBeenCalledWith(
+      expect.objectContaining({ success: false, errorCode: "model_not_found" }),
+    );
+  });
+
+  it("OPEN_SETTINGS opens the options page", async () => {
+    chromeMock.runtime.openOptionsPage = jest.fn();
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    const sendResponse = jest.fn();
+    listener({ type: "OPEN_SETTINGS" }, {}, sendResponse);
+
+    expect(chromeMock.runtime.openOptionsPage).toHaveBeenCalled();
+    expect(sendResponse).toHaveBeenCalledWith({ success: true });
+  });
+
+  it("LIST_MODELS never pairs a stored key with a caller supplied base URL", async () => {
+    const Providers = await import("../../lib/providers/index");
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({
+      customGatewayApiKey: "gw-key",
+      customGatewayBaseUrl: "https://stored.example/v1",
+    });
+    Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+    const sendResponse = jest.fn();
+    listener(
+      {
+        type: "LIST_MODELS",
+        payload: { provider: "customGateway", baseUrl: "https://evil.example" },
+      },
+      {},
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+      apiKey: "gw-key",
+      baseUrl: "https://stored.example/v1",
+    });
+  });
 });

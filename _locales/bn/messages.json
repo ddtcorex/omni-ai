@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "রিফ্রেশ করা যায়নি, সংরক্ষিত তালিকা দেখানো হচ্ছে",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "মডেল তালিকা রিফ্রেশ করা যায়নি",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "কোনো মডেল আপনার অনুসন্ধানের সাথে মেলে না",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "অন্তর্নির্মিত মডেল তালিকা ব্যবহার হচ্ছে",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "এই মডেল আর উপলব্ধ নেই।",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "অন্য মডেল বেছে নিন",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "প্রদানকারী দেখানো মডেলের চেয়ে বেশি মডেল ফেরত দিয়েছে",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

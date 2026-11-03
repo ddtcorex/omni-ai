@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "ରିଫ୍ରେଶ କରାଯାଇପାରିଲା ନାହିଁ, ସଞ୍ଚିତ ତାଲିକା ଦେଖାଯାଉଛି",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "ମଡେଲ ତାଲିକା ରିଫ୍ରେଶ କରାଯାଇପାରିଲା ନାହିଁ",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "ଆପଣଙ୍କ ଖୋଜ ସହିତ କୌଣସି ମଡେଲ ମେଳ ଖାଉନାହିଁ",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "ଅନ୍ତର୍ନିହିତ ମଡେଲ ତାଲିକା ବ୍ୟବହୃତ ହେଉଛି",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "ଏହି ମଡେଲ ଆଉ ଉପଲବ୍ଧ ନାହିଁ।",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "ଅନ୍ୟ ମଡେଲ ବାଛନ୍ତୁ",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "ପ୍ରଦାତା ଦେଖାଯାଇଥିବା ଠାରୁ ଅଧିକ ମଡେଲ ଫେରାଇଛନ୍ତି",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

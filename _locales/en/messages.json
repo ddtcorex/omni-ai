@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "Could not refresh, showing the saved list from",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "Could not refresh the model list",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "No models match your search",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "Using the built-in model list",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "This model is no longer available.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Choose another model",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "The provider returned more models than shown",
+    "description": "Source line note when the provider catalog was capped"
   }
 }

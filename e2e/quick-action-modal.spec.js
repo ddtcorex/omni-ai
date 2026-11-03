@@ -929,3 +929,63 @@ test("the floating icon sits outside the field being edited, never over its text
     server.close();
   }
 });
+
+test("a model the provider dropped offers a route to the picker", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // 404 on the generation call: the provider says the model is gone.
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models")) {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: "application/json",
+        body: JSON.stringify({ error: { code: 404, message: "models/gone is not found" } }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.evaluate(() => {
+      const el = document.getElementById("target");
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await page.locator("#target").dispatchEvent("mouseup");
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    const grammarBtn = page.locator('[data-action="grammar"]');
+    await expect(grammarBtn).toBeVisible();
+    await page.waitForTimeout(200);
+    await grammarBtn.click();
+
+    const chip = page.locator("#omniAiChangeModel");
+    await expect(chip).toBeVisible({ timeout: 8000 });
+    await expect(chip).toHaveText("Choose another model");
+
+    // The card says its own sentence instead of the provider's raw text. The
+    // click posts OPEN_SETTINGS; that half is pinned by the service worker test
+    // (openOptionsPage focuses the settings tab the extension opened on
+    // install rather than creating a page this context would see).
+    await expect(page.locator(".omni-ai-error-text")).toHaveText(
+      "This model is no longer available.",
+    );
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

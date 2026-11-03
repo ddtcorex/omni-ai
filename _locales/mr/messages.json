@@ -729,8 +729,8 @@
     "description": "Shown before the date the list was fetched"
   },
   "settings_modelsRefreshFailed": {
-    "message": "रिफ्रेश करता आले नाही, जतन केलेली यादी दाखवत आहोत",
-    "description": "Shown on a failed refresh, before the cached date"
+    "message": "मॉडेल यादी रिफ्रेश करता आली नाही",
+    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
   "settings_modelsNoMatch": {
     "message": "तुमच्या शोधाशी जुळणारे मॉडेल नाही",
@@ -747,5 +747,17 @@
   "settings_modelsBundled": {
     "message": "अंगभूत मॉडेल यादी वापरात आहे",
     "description": "Shown under the model picker when no provider catalog has been fetched"
+  },
+  "error_modelNotAvailable": {
+    "message": "हे मॉडेल आता उपलब्ध नाही.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "दुसरे मॉडेल निवडा",
+    "description": "Overlay button that opens Settings on the model picker"
+  },
+  "settings_modelsTruncated": {
+    "message": "प्रदात्याने दाखवलेल्यांपेक्षा जास्त मॉडेल परत केली",
+    "description": "Source line note when the provider catalog was capped"
   }
 }
