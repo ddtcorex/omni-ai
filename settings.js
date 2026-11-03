@@ -559,17 +559,17 @@ function showValidationStatus(message, type) {
   const el = elements.validationStatus;
   if (!el) return;
 
-  // Reset classes (now ds-card)
-  el.className = "ds-card visible";
+  // One notification shape everywhere: .ds-notice plus its status modifier.
+  el.className = "ds-notice visible";
   const typeClass =
     type === "success"
-      ? "ds-card--success"
+      ? "ds-notice--success"
       : type === "error"
-        ? "ds-card--error"
+        ? "ds-notice--error"
         : type === "processing"
-          ? "ds-card--processing"
-          : type;
-  el.classList.add(typeClass);
+          ? "ds-notice--processing"
+          : "";
+  if (typeClass) el.classList.add(typeClass);
 
   // Icon based on type
   let icon = "";
@@ -746,7 +746,8 @@ function showSaveStatus(message, type = "success") {
   // Colour comes from settings.css (.save-status / .save-status.error): an
   // inline colour cannot be overridden by the reduced-motion or theme rules,
   // and the status text now sits on the glass surface.
-  elements.saveStatus.classList.toggle("error", type !== "success");
+  elements.saveStatus.classList.toggle("ds-notice--error", type !== "success");
+  elements.saveStatus.classList.toggle("ds-notice--success", type === "success");
   elements.saveStatus.classList.add("visible");
 
   setTimeout(() => {

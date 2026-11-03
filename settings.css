@@ -509,12 +509,14 @@ body {
 .ds-btn-primary.full-width {
   width: 100%;
 }
+/* A notice that reserves its own box, so showing it never resizes the bar.
+   The .ds-notice class supplies the shape and colours. */
 .save-status {
-  font-size: 12px;
-  line-height: 20px;
-  /* Fixed height: the status appearing must never grow the bar. */
-  height: 20px;
-  color: var(--omni-glass-text-secondary);
+  width: 100%;
+  justify-content: center;
+  /* Fixed height, same padding as every other notice: the status appearing
+     must never grow the bar. */
+  height: 34px;
   font-weight: 500;
   opacity: 0;
   filter: blur(2px);
@@ -526,10 +528,6 @@ body {
 .save-status.visible {
   opacity: 1;
   filter: blur(0);
-}
-
-.save-status.error {
-  color: var(--omni-error-text);
 }
 
 /* Scrollbar */
@@ -759,7 +757,6 @@ body {
   align-items: center;
   gap: 8px;
   margin-top: 12px;
-  font-size: 13px;
   opacity: 0;
   transform: translateY(-5px);
   transition: all var(--omni-transition-normal);
@@ -772,23 +769,6 @@ body {
   display: flex;
 }
 
-.validation-message.success,
-.ds-card--success {
-  color: var(--omni-glass-text);
-  border: 1px solid var(--omni-success);
-}
-
-.validation-message.error,
-.ds-card--error {
-  color: var(--omni-error-text);
-  border: 1px solid var(--omni-error);
-}
-
-.validation-message.processing,
-.ds-card--processing {
-  color: var(--omni-glass-text);
-  border: 1px solid var(--omni-accent);
-}
 /* Utilities */
 .hidden {
   display: none !important;

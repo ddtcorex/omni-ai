@@ -19,6 +19,8 @@ describe("lib/design-system.css", () => {
     ".ds-pill",
     ".ds-field",
     ".ds-shimmer",
+    ".ds-notice",
+    ".ds-notice--error",
   ];
 
   test.each(CLASSES)("defines %s", (selector) => {

@@ -132,6 +132,7 @@ function setStatus(text, isError = false) {
   elements.statusLine.textContent = text;
   elements.statusLine.classList.remove("hidden");
   elements.statusLine.classList.toggle("error", isError);
+  elements.statusLine.classList.toggle("ds-notice--error", isError);
 }
 
 function setButtonsDisabled(disabled) {

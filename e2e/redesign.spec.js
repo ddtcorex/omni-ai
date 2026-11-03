@@ -391,6 +391,17 @@ test("the chat send button matches the overlay's ask-box button", async () => {
     expect(send.shadow).not.toBe("none");
     expect(send.icon).toBe("12px");
 
+    // Same glyph as the overlay's ICONS.send (filled paper plane), not the
+    // outlined Feather variant it used before.
+    const glyph = await page.locator("#chatSend svg").evaluate((el) => ({
+      fill: el.getAttribute("fill"),
+      stroke: el.getAttribute("stroke"),
+      path: el.querySelector("path")?.getAttribute("d"),
+    }));
+    expect(glyph.fill).toBe("currentColor");
+    expect(glyph.stroke).toBe("none");
+    expect(glyph.path).toBe("M2.5 2.8L22 12L2.5 21.2L6.8 12Z");
+
     // The geometry contract still holds with the smaller button.
     const geometry = await page.evaluate(() => {
       const wrap = document.querySelector(".chat-input-wrap").getBoundingClientRect();
@@ -405,6 +416,65 @@ test("the chat send button matches the overlay's ask-box button", async () => {
     });
     expect(geometry.wrapHeight).toBeCloseTo(geometry.inputHeight, 0);
     expect(geometry.sendCenterY).toBeCloseTo(geometry.inputCenterY, 0);
+  } finally {
+    await context.close();
+  }
+});
+
+test("every status message on both surfaces shares one notice shape", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    // Read after the theme has settled, or a half-applied theme skews the
+    // token values the comparison is about.
+    const settings = await openSettings(context, sw, "dark");
+    const fromSettings = await settings.evaluate(() => {
+      const read = (el) => {
+        const s = getComputedStyle(el);
+        return {
+          radius: s.borderRadius,
+          padding: s.padding,
+          fontSize: s.fontSize,
+          background: s.backgroundColor,
+          color: s.color,
+        };
+      };
+      const save = document.getElementById("saveStatus");
+      save.textContent = "Saved";
+      save.classList.add("visible", "ds-notice--success");
+      const validation = document.getElementById("validationStatus");
+      validation.className = "ds-notice visible ds-notice--error";
+      validation.textContent = "Failed";
+      return { save: read(save), validation: read(validation) };
+    });
+
+    const panel = await openPanel(context, sw, "dark");
+    const fromPanel = await panel.evaluate(() => {
+      const read = (el) => {
+        const s = getComputedStyle(el);
+        return {
+          radius: s.borderRadius,
+          padding: s.padding,
+          fontSize: s.fontSize,
+          background: s.backgroundColor,
+          color: s.color,
+        };
+      };
+      const status = document.getElementById("statusLine");
+      status.className = "status-line ds-notice ds-notice--error";
+      status.textContent = "Failed";
+      const error = document.getElementById("chatError");
+      error.classList.remove("hidden");
+      return { status: read(status), error: read(error) };
+    });
+
+    const notices = { ...fromSettings, ...fromPanel };
+    const shapes = Object.values(notices).map((s) => `${s.radius}|${s.padding}|${s.fontSize}`);
+    expect(new Set(shapes).size).toBe(1);
+
+    // The three error surfaces share the same tint; the success one does not.
+    expect(fromSettings.validation.background).toBe(fromPanel.status.background);
+    expect(fromPanel.status.background).toBe(fromPanel.error.background);
+    expect(fromSettings.save.background).not.toBe(fromPanel.status.background);
   } finally {
     await context.close();
   }

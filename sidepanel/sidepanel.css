@@ -146,19 +146,9 @@ body {
   height: 16px;
 }
 
+/* The .ds-notice class supplies the shape and colours. */
 .status-line {
-  font-size: 12px;
-  color: var(--omni-glass-text-secondary);
-  text-align: center;
   margin-top: var(--omni-spacing-xs);
-}
-
-.status-line.error {
-  background: var(--omni-error-surface);
-  color: var(--omni-error-text);
-  border-radius: var(--omni-radius-sm);
-  padding: var(--omni-spacing-sm);
-  text-align: left;
 }
 
 .status-line.hidden,
@@ -467,11 +457,6 @@ body {
 
 .chat-error {
   margin: 0 var(--omni-spacing-md);
-  padding: var(--omni-spacing-sm);
-  background: var(--omni-error-surface);
-  border-radius: var(--omni-radius-sm);
-  color: var(--omni-error-text);
-  font-size: 12px;
 }
 
 .chat-input-row {

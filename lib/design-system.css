@@ -261,6 +261,46 @@
   color: var(--omni-glass-text-tertiary);
 }
 
+/* Notifications: one shape for every status line on the two page surfaces.
+   Settings' save status and validation card, and the side panel's tool status
+   and chat error, all read this. */
+.ds-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--omni-spacing-sm);
+  padding: var(--omni-spacing-sm) var(--omni-spacing-md);
+  border-radius: var(--omni-radius-md);
+  background: var(--omni-pill-bg);
+  color: var(--omni-glass-text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ds-notice svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.ds-notice--success {
+  color: var(--omni-glass-text);
+  box-shadow: inset 0 0 0 1px var(--omni-success);
+}
+
+.ds-notice--error {
+  background: var(--omni-error-surface);
+  color: var(--omni-error-text);
+}
+
+.ds-notice--processing {
+  color: var(--omni-glass-text);
+  box-shadow: inset 0 0 0 1px var(--omni-accent);
+}
+
+.ds-notice.hidden {
+  display: none;
+}
+
 /* The overlay's three line shimmer, for a loading state on a plain document. */
 .ds-shimmer {
   display: flex;

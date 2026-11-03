@@ -154,7 +154,7 @@
             </button>
           </div>
 
-          <div id="statusLine" class="status-line hidden"></div>
+          <div id="statusLine" class="status-line ds-notice hidden"></div>
           <div id="loadingSpinner" class="ds-shimmer hidden" style="margin: 12px 0">
             <span></span><span></span><span></span>
           </div>
@@ -199,7 +199,9 @@
             <div class="chat-empty" id="chatEmpty">__MSG_sidebar_chat_empty__</div>
           </div>
 
-          <div class="chat-error hidden" id="chatError">__MSG_sidebar_chat_error__</div>
+          <div class="chat-error ds-notice ds-notice--error hidden" id="chatError">
+            __MSG_sidebar_chat_error__
+          </div>
 
           <div class="chat-input-row">
             <div class="chat-input-wrap">
@@ -210,18 +212,8 @@
                 placeholder="__MSG_sidebar_chat_placeholder__"
               ></textarea>
               <button id="chatSend" class="chat-fab chat-send" title="__MSG_sidebar_chat_send__">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <path d="M2.5 2.8L22 12L2.5 21.2L6.8 12Z"></path>
                 </svg>
               </button>
               <button
