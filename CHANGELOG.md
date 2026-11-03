@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **The model picker now lists what each provider actually offers.** Every provider has a `GET /models` listing call (`lib/providers/model-listing.js` plus one `listModels` per provider, paginated with a five page cap), so a model a vendor ships appears in Settings without a code change, and a retired one stops being offered. Results are filtered down to chat capable models (`lib/model-catalog.js`), ranked with the saved model first, then that provider's recommended tier, then the newest, and cached per provider in `chrome.storage.local` for seven days.
+- **A search box and a refresh control above the model picker**, plus a source line under it that says whether the list is live, cached (with its date) or the bundled fallback.
+
+### Changed
+
+- **`AI_PROVIDERS[].models` is frozen, not deleted.** It keeps three jobs: mapping a shipped id to its provider and API name for values already in storage, acting as the offline and no-key fallback, and seeding the new `recommended` tier. New models reach users through the listing call, not through this file.
+- **Saving the picker now writes `apiProvider` next to `apiModel`**, so routing reads the provider directly instead of re-deriving it from an id string.
+
+### Fixed
+
+- A saved model is no longer offered twice: the stored id is normalized to its API name before the picker compares it with the fetched list, so an upgrade shows one row instead of a false "no longer offered" badge beside a duplicate.
+
 ## [2.6.0] - 2026-11-03
 
 ### Changed

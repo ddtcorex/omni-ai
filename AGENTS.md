@@ -119,6 +119,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 | `WRITING_ACTION`  | Action request with explicit text                                                                                                                                                                      |
 | `QUICK_ACTION`    | Floating-menu actions (translate / smart_translate / grammar / rephrase / tone / …), also used by the side panel's Page Tools buttons (summarize / smart_translate / explain)                          |
 | `VALIDATE_CONFIG` | Test provider credentials with a tiny prompt                                                                                                                                                           |
+| `LIST_MODELS`     | Fetch and cache one provider's model catalog (`{ provider, key?, baseUrl? }`); the reply carries `{ success, models, truncated, fetchedAt }`                                                           |
 | `GET_API_KEY`     | Read Gemini key                                                                                                                                                                                        |
 
 **Rule**: any `onMessage` listener case that responds asynchronously MUST `return true` immediately. A missing `return true` silently drops the response _and_ falls through to the next `case` (a bug of exactly this shape has shipped here before).
@@ -131,14 +132,17 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 - Every provider module ALSO exports `async generateContentStream(prompt, config, onChunk, signal)`, the streaming entry point used by Sidebar Chat. It calls `onChunk(textChunk)` for each token/line and honors an `AbortSignal` (`signal`) for cancellation. `lib/providers/index.js`'s `generateContentStream()` is the dispatcher (same routing as `generateContent`) and throws if the resolved provider does not implement streaming.
 - Sidebar Chat wiring: `sidepanel/sidepanel.js` opens a `chrome.runtime.connect({ name: "omni-chat" })` Port; the service worker's `onConnect` listener hands the Port to `createOmniChatHandler()` from `lib/omni-chat-port.js`, which resolves chat config via `getChatConfig()` and streams the reply from `generateContentStream()`. `lib/sidebar-chat.js` `buildChatPrompt()` assembles page context (capped at `PAGE_CONTEXT_MAX_CHARS = 8000`) + history + the latest message.
 - Custom models use the `-custom` suffix convention; the actual model name comes from storage (`customModelName` / `customGatewayModelName`).
+- Listing: every provider module also exports `async listModels(config)` returning `{ models, truncated }`, where each model is `{ id, label, createdAt, state, methods }`. `listModels(providerId, config)` in `lib/providers/index.js` dispatches through the same `MODULES` map and throws for an id that is not in it (a listing call carries a credential, so it never falls back to Gemini). Anthropic and Gemini paginate; every listing call stops at `LIST_PAGE_CAP` (5) and reports `truncated`. The wire calls live in `lib/providers/model-listing.js` (shared by the OpenAI-shaped trio) so the Provider Pattern rule keeps holding.
+- Catalog: `lib/model-catalog.js` holds the pure logic (chat filters `CHAT_ID_RULES`, ranking and dedupe in `buildPickerModel`, `isCacheFresh`). The settings picker renders from it behind a search input; `AI_PROVIDERS[].models` is the frozen fallback and `recommended` seeds the top of each group.
+- Cache: one `chrome.storage.local` key `modelCatalog`, `{ [providerId]: { fetchedAt, models, truncated } }`, owned by `getModelCatalogCache` / `setModelCatalogCache` in `lib/storage.js`, seven day TTL. The `LIST_MODELS` message takes `{ provider, key?, baseUrl? }` and refreshes exactly one provider per call.
 
 ### Storage Map (the contract)
 
-| Area      | Keys                                                                                                                                                                                                                                |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`                                                                                                                                                                               |
-| `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
-| `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                                             |
+| Area      | Keys                                                                                                                                                                                                                                                               |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `sync`    | `primaryLanguage`, `defaultLanguage`, `omni_ai_theme`                                                                                                                                                                                                              |
+| `local`   | `geminiApiKey`, `openaiApiKey`, `groqApiKey`, `anthropicApiKey`, `customGatewayApiKey`, `apiModel`, `apiProvider`, `modelCatalog`, `currentPreset`, `customGatewayBaseUrl`, `customGatewayModelName`, `customModelName`, history/stats keys (see `lib/history.js`) |
+| `session` | `omni_ai_active_frame_<tabId>` (most recently focused editor frame for command routing)                                                                                                                                                                            |
 
 ---
 
@@ -149,7 +153,7 @@ Side panel/settings ⇄ service worker (`chrome.runtime.sendMessage`; handler MU
 1. Create `lib/providers/[name].js` exporting `generateContent(prompt, config)`.
 2. Register it in `lib/providers/index.js`: import the module and add one line to the `MODULES` map (`providerId: Module`).
 3. Add the registry entry (models + `keySetting`) to `AI_PROVIDERS` in `lib/ai-providers.js`.
-4. Add key/model inputs to `settings.html` plus load/save wiring in `settings.js`.
+4. Export `listModels(config)` from the module, route it through `MODULES`, and add that provider's keep/drop rule to `CHAT_ID_RULES` in `lib/model-catalog.js`. Add a `recommended` id to the registry entry. Do **not** add entries to `models[]`: that array is frozen and only carries ids this extension has already shipped.
 5. Add tests under `tests/lib/providers/`.
 
 ### Adding a Writing Action (e.g. "Simplify")
