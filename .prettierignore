@@ -9,3 +9,6 @@ coverage/
 # documents other tasks execute from.
 .superpowers/
 docs/superpowers/
+# Captured provider payloads: written verbatim by scripts/capture-model-fixtures.mjs
+# so the field names and values stay exactly as the vendor sent them.
+tests/fixtures/models/
