@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **A model picked from a fetched list keeps its provider's key field**, and Validate checks it, instead of hiding the key and doing nothing.
 - **A saved fetched model stays selected while its list loads.** The picker briefly fell back to Gemini and showed the Gemini key field, and without a cached list a Save switched the model.
 - **Changing the model drops cached results on open pages**, so the next action runs on the new model instead of answering from the old one.
+- **A long result in the side panel's Tools tab scrolls.** Its end was cut off with no scrollbar, and the result card's sides and shadow were shaved by the same clipping; the card also gets a hairline that shows on the light panel.
 - The Advanced toggle in Settings shows the accent focus ring instead of the browser's default outline.
 
 ## [2.6.0] - 2026-11-03

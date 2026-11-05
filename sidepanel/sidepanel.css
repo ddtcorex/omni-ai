@@ -165,6 +165,9 @@ body {
      own explicit spacing -- match .action-buttons' own inter-button gap
      (var(--omni-spacing-sm)) for a consistent rhythm down the column. */
   margin-top: var(--omni-spacing-sm);
+  /* The glass border is a white highlight, made for a card floating over a
+     page; on the panel's own white surface it vanished. */
+  border-color: var(--omni-border);
 }
 
 .result-label {
@@ -270,9 +273,16 @@ body {
   white-space: nowrap;
 }
 
+/* Tools grow with their content and .page-tools scrolls them: clipping here
+   cut a long result off and shaved the result card's sides and shadow. */
 .tab-view {
   display: flex;
   flex-direction: column;
+  flex: none;
+}
+
+/* Chat fills the panel and scrolls its transcript inside it instead. */
+#chatView {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;

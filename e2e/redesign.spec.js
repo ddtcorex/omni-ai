@@ -256,6 +256,78 @@ test("tools read as pills, loading shimmers and results wear the glass", async (
   }
 });
 
+test("a long tool result scrolls and its card is drawn whole", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    for (const theme of ["light", "dark"]) {
+      const page = await openPanel(context, sw, theme);
+      await page.setViewportSize({ width: 400, height: 640 });
+      await page.locator("#tabTools").click();
+      await page.evaluate(() => {
+        document.getElementById("resultArea").classList.remove("hidden");
+        document.getElementById("resultText").textContent = "A sentence of the summary. ".repeat(
+          160,
+        );
+      });
+
+      // The whole result is reachable: the panel scrolls to the card's end.
+      const reach = await page.evaluate(() => {
+        const scroller = document.querySelector(".page-tools");
+        scroller.scrollTop = scroller.scrollHeight;
+        const card = document.getElementById("resultArea").getBoundingClientRect();
+        const view = scroller.getBoundingClientRect();
+        return {
+          scrolls: scroller.scrollHeight > scroller.clientHeight,
+          gap: card.bottom - view.bottom,
+        };
+      });
+      expect(reach.scrolls, theme).toBe(true);
+      expect(reach.gap, theme).toBeLessThanOrEqual(0);
+
+      // Nothing between the card and the scroller clips its edges or shadow.
+      const clippers = await page.evaluate(() => {
+        const found = [];
+        let el = document.getElementById("resultArea").parentElement;
+        while (el && !el.classList.contains("page-tools")) {
+          if (getComputedStyle(el).overflow !== "visible") found.push(el.id || el.className);
+          el = el.parentElement;
+        }
+        return found;
+      });
+      expect(clippers, theme).toEqual([]);
+
+      // The card's edge reads against the panel: its border is not the panel
+      // colour itself (a white hairline vanished on the light panel).
+      const edge = await page.evaluate(() => {
+        const parse = (c) => (c.match(/[\d.]+/g) || []).map(Number);
+        const over = (fg, bg) => {
+          const a = fg.length > 3 ? fg[3] : 1;
+          return [0, 1, 2].map((i) => fg[i] * a + bg[i] * (1 - a));
+        };
+        const lum = (rgb) => {
+          const [r, g, b] = rgb.map((v) => {
+            const s = v / 255;
+            return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+          });
+          return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        };
+        const panel = getComputedStyle(document.querySelector(".sidepanel-container"));
+        const base = over(parse(panel.backgroundColor), [255, 255, 255]);
+        const border = over(
+          parse(getComputedStyle(document.getElementById("resultArea")).borderLeftColor),
+          base,
+        );
+        const [hi, lo] = [lum(border), lum(base)].sort((a, b) => b - a);
+        return (hi + 0.05) / (lo + 0.05);
+      });
+      expect(edge, theme).toBeGreaterThan(1.1);
+      await page.close();
+    }
+  } finally {
+    await context.close();
+  }
+});
+
 test("chat is a transcript: the user message is a pill, the reply plain text", async () => {
   const { context, sw } = await launchWithExtension();
   try {
