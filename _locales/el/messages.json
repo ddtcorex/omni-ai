@@ -532,6 +532,10 @@
     "message": "Εισαγάγετε πρώτα ένα κλειδί API/Endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Εισαγάγετε πρώτα τη βασική διεύθυνση URL της πύλης.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Γίνεται έλεγχος...",
     "description": "Validating status"

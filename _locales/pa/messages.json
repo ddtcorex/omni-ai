@@ -532,6 +532,10 @@
     "message": "ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ API ਕੁੰਜੀ/ਐਂਡਪੌਇੰਟ ਦਰਜ ਕਰੋ।",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ ਗੇਟਵੇ ਦਾ ਬੇਸ URL ਦਾਖਲ ਕਰੋ।",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
     "description": "Validating status"

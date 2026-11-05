@@ -532,6 +532,10 @@
     "message": "請先輸入 API 密鑰或端點。",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "請先輸入閘道的基本 URL。",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "正在驗證...",
     "description": "Validating status"

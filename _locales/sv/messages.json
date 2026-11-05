@@ -532,6 +532,10 @@
     "message": "Ange en API-nyckel/endpoint först.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Ange gatewayens bas-URL först.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validerar...",
     "description": "Validating status"

@@ -532,6 +532,10 @@
     "message": "براہ کرم پہلے API کلید/اینڈ پوائنٹ درج کریں۔",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "براہ کرم پہلے گیٹ وے کا بیس URL درج کریں۔",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "جانچ جاری ہے...",
     "description": "Validating status"

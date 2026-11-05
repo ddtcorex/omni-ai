@@ -532,6 +532,10 @@
     "message": "Sila masukkan Kunci API/Endpoint terlebih dahulu.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Sila masukkan URL asas get laluan dahulu.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Mengesahkan...",
     "description": "Validating status"

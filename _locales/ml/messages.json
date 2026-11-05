@@ -532,6 +532,10 @@
     "message": "ആദ്യം ഒരു API കീ/എൻഡ്പോയിന്റ് നൽകുക.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "ആദ്യം ഗേറ്റ്‌വേയുടെ ബേസ് URL നൽകുക.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "സാധുത പരിശോധിക്കുന്നു...",
     "description": "Validating status"

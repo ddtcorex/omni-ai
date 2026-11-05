@@ -532,6 +532,10 @@
     "message": "Saisissez d'abord une clé API ou un point d'accès.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Veuillez d'abord saisir l'URL de base de la passerelle.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validation en cours...",
     "description": "Validating status"

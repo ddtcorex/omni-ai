@@ -532,6 +532,10 @@
     "message": "يرجى إدخال مفتاح API أو نقطة نهاية أولاً.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "يُرجى إدخال عنوان URL الأساسي للبوابة أولاً.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "جارٍ التحقق...",
     "description": "Validating status"

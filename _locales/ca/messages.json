@@ -532,6 +532,10 @@
     "message": "Introdueix primer una clau API o un endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Introduïu primer l'URL base de la passarel·la.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validant...",
     "description": "Validating status"

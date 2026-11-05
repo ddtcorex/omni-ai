@@ -532,6 +532,10 @@
     "message": "Nejprve prosím zadejte klíč API nebo koncový bod.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Nejprve zadejte základní URL brány.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Ověřování...",
     "description": "Validating status"

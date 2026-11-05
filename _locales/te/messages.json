@@ -532,6 +532,10 @@
     "message": "దయచేసి ముందుగా API కీ/ఎండ్‌పాయింట్‌ను నమోదు చేయండి.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "దయచేసి ముందుగా గేట్‌వే బేస్ URL నమోదు చేయండి.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "ధృవీకరిస్తోంది...",
     "description": "Validating status"

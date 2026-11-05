@@ -532,6 +532,10 @@
     "message": "ದಯವಿಟ್ಟು ಮೊದಲು API ಕೀ/ಎಂಡ್ಪಾಯಿಂಟ್ ನಮೂದಿಸಿ.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "ದಯವಿಟ್ಟು ಮೊದಲು ಗೇಟ್‌ವೇ ಮೂಲ URL ನಮೂದಿಸಿ.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
     "description": "Validating status"

@@ -532,6 +532,10 @@
     "message": "Спочатку введіть ключ API або ендпоінт.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Спершу введіть базову URL-адресу шлюзу.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Перевірка...",
     "description": "Validating status"

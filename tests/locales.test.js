@@ -242,3 +242,40 @@ describe("catalogues translate UI copy, not just brand names", () => {
     expect(untranslated).toEqual([]);
   });
 });
+
+describe("message keys used by the source", () => {
+  // A key read by the code but absent from the catalogue renders as an empty
+  // string, which is how settings_errorNoGatewayUrl shipped as a blank notice.
+  const root = path.join(__dirname, "..");
+  const SKIP = new Set(["node_modules", "tests", "e2e", "scripts", "coverage", "_locales", ".git"]);
+
+  const sourceFiles = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      if (entry.name.startsWith(".") || SKIP.has(entry.name)) return [];
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) return sourceFiles(full);
+      return /\.(js|html)$/.test(entry.name) ? [full] : [];
+    });
+
+  test("every literal key exists in the English catalogue", () => {
+    const en = readMessages("en");
+    const missing = [];
+
+    sourceFiles(root).forEach((file) => {
+      // Comments describe the token form (`__MSG_key__`) without using a key.
+      const text = fs
+        .readFileSync(file, "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/^\s*\/\/.*$/gm, "");
+      const keys = [
+        ...[...text.matchAll(/getMessage\(\s*["']([A-Za-z0-9_]+)["']\s*[,)]/g)].map((m) => m[1]),
+        ...[...text.matchAll(/__MSG_([A-Za-z0-9_]+)__/g)].map((m) => m[1]),
+      ];
+      keys
+        .filter((key) => !key.startsWith("@@") && !(key in en))
+        .forEach((key) => missing.push(`${path.relative(root, file)}: ${key}`));
+    });
+
+    expect(missing).toEqual([]);
+  });
+});

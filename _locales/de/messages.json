@@ -440,6 +440,10 @@
     "message": "Bitte geben Sie zuerst einen API-Schlüssel oder Endpunkt ein.",
     "description": "Prüfungsfehler"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Bitte zuerst die Basis-URL des Gateways eingeben.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Prüfung läuft...",
     "description": "Prüfstatus"

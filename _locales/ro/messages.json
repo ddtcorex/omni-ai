@@ -532,6 +532,10 @@
     "message": "Te rugăm să introduci mai întâi o cheie API/un endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Introduceți mai întâi URL-ul de bază al gateway-ului.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Se validează...",
     "description": "Validating status"

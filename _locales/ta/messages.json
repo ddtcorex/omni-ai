@@ -532,6 +532,10 @@
     "message": "முதலில் API விசை/எண்ட்பாயின்ட்டை உள்ளிடவும்.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "முதலில் நுழைவாயிலின் அடிப்படை URL ஐ உள்ளிடவும்.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "சரிபார்க்கிறது...",
     "description": "Validating status"

@@ -532,6 +532,10 @@
     "message": "Lütfen önce bir API Anahtarı/Uç Noktası girin.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Lütfen önce ağ geçidinin temel URL'sini girin.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Doğrulanıyor...",
     "description": "Validating status"

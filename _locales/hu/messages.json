@@ -532,6 +532,10 @@
     "message": "Először add meg az API-kulcsot vagy a végpontot.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Először adja meg az átjáró alap URL-jét.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Ellenőrzés...",
     "description": "Validating status"

@@ -440,6 +440,10 @@
     "message": "Inserisci prima una chiave API o un endpoint.",
     "description": "Errore validazione"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Inserisci prima l'URL di base del gateway.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validazione in corso...",
     "description": "Stato validazione"

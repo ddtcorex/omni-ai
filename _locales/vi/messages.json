@@ -493,6 +493,10 @@
     "message": "Vui lòng nhập Khóa API/Endpoint trước.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Vui lòng nhập base URL của gateway trước.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Đang kiểm tra...",
     "description": "Validating status"

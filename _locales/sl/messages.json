@@ -532,6 +532,10 @@
     "message": "Najprej vnesite ključ API ali končno točko.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Najprej vnesite osnovni URL prehoda.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Preverjanje...",
     "description": "Validating status"

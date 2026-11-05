@@ -532,6 +532,10 @@
     "message": "Pirmiausia įveskite API raktą arba prieigos tašką.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Pirmiausia įveskite šliuzo bazinį URL.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Tikrinama...",
     "description": "Validating status"

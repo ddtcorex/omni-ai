@@ -532,6 +532,10 @@
     "message": "Please enter an API Key/Endpoint first.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Please enter the gateway base URL first.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validating...",
     "description": "Validating status"

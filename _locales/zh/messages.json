@@ -440,6 +440,10 @@
     "message": "请先输入 API 密钥或端点。",
     "description": "未输入密钥错误"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "请先输入网关的基础 URL。",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "正在验证...",
     "description": "验证状态提示"

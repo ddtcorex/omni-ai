@@ -440,6 +440,10 @@
     "message": "먼저 API 키 또는 엔드포인트를 입력해 주세요.",
     "description": "입력 부족 오류"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "먼저 게이트웨이 기본 URL을 입력하세요.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "검증 중...",
     "description": "검증 상태"

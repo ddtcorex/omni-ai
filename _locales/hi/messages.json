@@ -532,6 +532,10 @@
     "message": "कृपया पहले API कुंजी/एंडपॉइंट दर्ज करें।",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "कृपया पहले गेटवे का बेस URL दर्ज करें।",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "जाँच हो रही है...",
     "description": "Validating status"

@@ -532,6 +532,10 @@
     "message": "אנא הזן תחילה מפתח API או כתובת Endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "יש להזין קודם את כתובת ה-URL הבסיסית של השער.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "מאמת...",
     "description": "Validating status"

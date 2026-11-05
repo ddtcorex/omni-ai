@@ -532,6 +532,10 @@
     "message": "Алдымен API кілтін/эндпоинтті енгізіңіз.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Алдымен шлюздің негізгі URL мекенжайын енгізіңіз.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Жарамдылығы тексерілуде...",
     "description": "Validating status"

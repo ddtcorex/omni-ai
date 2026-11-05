@@ -532,6 +532,10 @@
     "message": "โปรดป้อนคีย์ API/ปลายทางก่อน",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "โปรดป้อน URL ฐานของเกตเวย์ก่อน",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "กำลังตรวจสอบ...",
     "description": "Validating status"

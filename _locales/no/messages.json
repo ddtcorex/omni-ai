@@ -532,6 +532,10 @@
     "message": "Skriv inn en API-nøkkel/endepunkt først.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Skriv inn basis-URL-en for gatewayen først.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validerer...",
     "description": "Validating status"
