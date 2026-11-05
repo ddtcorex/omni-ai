@@ -35,6 +35,7 @@ const elements = {
   geminiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("geminiApiKey")), // Google Key
   apiModel: /** @type {HTMLSelectElement} */ (document.getElementById("apiModel")),
   modelSearch: /** @type {HTMLInputElement|null} */ (document.getElementById("modelSearch")),
+  modelSearchRow: document.getElementById("modelSearchRow"),
   modelSource: document.getElementById("modelSource"),
   modelRefresh: /** @type {HTMLButtonElement|null} */ (document.getElementById("modelRefresh")),
   customModelName: /** @type {HTMLInputElement} */ (document.getElementById("customModelName")),
@@ -153,6 +154,8 @@ let modelSourceCounts = { visible: 0, total: 0, matches: 0, query: "" };
 let modelSourceByProvider = new Map();
 /** Providers whose last refresh failed; the line says so only for its own provider. */
 const failedProviders = new Set();
+/** The provider's own words for its last failure, shown as the line's tooltip. */
+const failureReasons = new Map();
 /** The provider a listing is in flight for, so its line and control show it. */
 let refreshingProvider = null;
 let modelSearchBound = false;
@@ -215,6 +218,15 @@ function paintModelSource() {
     elements.modelRefresh.setAttribute("aria-busy", String(busy));
   }
 
+  // Search earns its row once some provider's own list is loaded; the bundled
+  // list is short enough to scan. A query in progress keeps it open.
+  if (elements.modelSearchRow) {
+    const anyList = Array.from(modelCatalogs.values()).some(
+      (entry) => Array.isArray(entry.listed) && entry.listed.length > 0,
+    );
+    elements.modelSearchRow.hidden = !anyList && !modelSourceCounts.query;
+  }
+
   const shown = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
   const ratio = shown && shown.visible < shown.total ? `${shown.visible}/${shown.total}` : "";
   const when = catalog?.fetchedAt ? formatCatalogDate(catalog.fetchedAt) : "";
@@ -228,6 +240,7 @@ function paintModelSource() {
     parts.push(i18n.getMessage("settings_modelsRefreshing"));
   } else if (el.dataset.state === "failed") {
     parts.push(i18n.getMessage("settings_modelsRefreshFailed"));
+    el.title = failureReasons.get(selectedProviderId) || "";
     if (when) parts.push(`${i18n.getMessage("settings_modelsUpdated")} ${when}`);
   } else if (catalog?.fetchedAt) {
     parts.push(`${i18n.getMessage("settings_modelsUpdated")}${when ? ` ${when}` : ""}`);
@@ -238,6 +251,7 @@ function paintModelSource() {
     if (ratio) parts.push(ratio);
   }
 
+  if (el.dataset.state !== "failed") el.title = "";
   el.textContent = parts.join(" · ");
 }
 
@@ -530,6 +544,7 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
 
     if (!response || !response.success) {
       refreshingProvider = null;
+      failureReasons.set(providerId, String(response?.error || ""));
       setModelCatalogFailure(true, providerId);
       return;
     }
@@ -545,8 +560,9 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
       fetchedAt: response.fetchedAt || Date.now(),
       truncated: Boolean(response.truncated),
     });
-  } catch {
+  } catch (error) {
     refreshingProvider = null;
+    failureReasons.set(providerId, String(error?.message || ""));
     setModelCatalogFailure(true, providerId);
   } finally {
     clearTimeout(timer);

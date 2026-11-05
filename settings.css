@@ -798,37 +798,90 @@ body {
   }
 }
 
-/* Model picker: search box, refresh control and the source line under it. */
-.model-controls {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 8px;
+/* Model picker: search box, then one quiet line saying where the list came
+   from, with the refresh control at its end. */
+.model-search {
+  position: relative;
+  margin-top: var(--omni-spacing-sm);
 }
 
-.model-controls #modelSearch {
+.model-search[hidden] {
+  display: none;
+}
+
+.model-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--omni-glass-text-tertiary);
+  pointer-events: none;
+}
+
+.model-search #modelSearch {
+  padding: 8px 12px 8px 36px;
+  font-size: 13px;
+}
+
+.model-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--omni-spacing-sm);
+  min-height: 28px;
+  margin-top: 4px;
+}
+
+.model-source {
   flex: 1;
   min-width: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--omni-glass-text-tertiary);
+}
+
+.model-source[data-state="failed"] {
+  color: var(--omni-error);
 }
 
 .model-refresh {
   flex: 0 0 auto;
-  padding: 8px 12px;
-  border: 1px solid var(--omni-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
   border-radius: var(--omni-radius-sm);
-  background: var(--omni-glass-bg);
-  color: var(--omni-glass-text);
-  font: inherit;
-  font-size: 13px;
+  background: transparent;
+  color: var(--omni-glass-text-secondary);
   cursor: pointer;
+  transition:
+    background-color var(--omni-transition-fast),
+    color var(--omni-transition-fast);
 }
 
-.model-refresh:hover {
-  border-color: var(--omni-accent);
+.model-refresh:hover:not(:disabled) {
+  background: var(--omni-bg-hover);
   color: var(--omni-accent);
 }
 
 .model-refresh:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--omni-accent);
+}
+
+.model-refresh:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.model-refresh[aria-busy="true"] svg {
+  animation: ds-spin 0.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .model-refresh[aria-busy="true"] svg {
+    animation-duration: 1.5s;
+  }
 }

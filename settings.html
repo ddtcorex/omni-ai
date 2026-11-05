@@ -68,19 +68,58 @@
                 </select>
               </div>
 
-              <div class="model-controls">
+              <!-- Shown once a provider's own list is loaded: the bundled
+                   list is short enough to scan without it. -->
+              <div class="model-search" id="modelSearchRow" hidden>
+                <svg
+                  class="model-search-icon"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <path d="m20 20-3.5-3.5"></path>
+                </svg>
                 <input
                   type="search"
                   id="modelSearch"
                   class="setting-input ds-field"
                   placeholder="__MSG_settings_modelsSearch__"
                   aria-label="__MSG_settings_modelsSearch__"
+                  autocomplete="off"
                 />
-                <button type="button" id="modelRefresh" class="model-refresh">
-                  __MSG_settings_modelsRefresh__
+              </div>
+              <div class="model-meta">
+                <p id="modelSource" class="model-source" aria-live="polite"></p>
+                <button
+                  type="button"
+                  id="modelRefresh"
+                  class="model-refresh"
+                  title="__MSG_settings_modelsRefresh__"
+                  aria-label="__MSG_settings_modelsRefresh__"
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                    <path d="M21 3v6h-6"></path>
+                  </svg>
                 </button>
               </div>
-              <p id="modelSource" class="field-note" aria-live="polite"></p>
 
               <!-- Gemini API Key -->
               <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">

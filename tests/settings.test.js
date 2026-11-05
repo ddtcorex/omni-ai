@@ -572,7 +572,9 @@ describe("localizeDOM", () => {
       input.dispatchEvent(new Event("input"));
 
       expect(document.getElementById("apiModel").value).toBe("gpt-5.6-sol");
-      expect(document.getElementById("modelSource").textContent).toContain("settings_modelsNoMatch");
+      expect(document.getElementById("modelSource").textContent).toContain(
+        "settings_modelsNoMatch",
+      );
     });
 
     it("keeps a gateway model selected when another provider lists the same id", () => {
@@ -730,6 +732,15 @@ describe("localizeDOM", () => {
       release();
       await pending;
       expect(button.getAttribute("aria-busy")).toBe("false");
+    });
+
+    it("a failed refresh keeps the provider's reason as the line's tooltip", async () => {
+      chrome.runtime.sendMessage.mockResolvedValue({ success: false, error: "Invalid API key" });
+      document.getElementById("geminiApiKey").value = "k";
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      await Settings.refreshModelCatalog("google", { key: "k" });
+
+      expect(document.getElementById("modelSource").title).toBe("Invalid API key");
     });
 
     it("a failed refresh for one provider leaves another provider's line alone", async () => {
