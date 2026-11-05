@@ -214,6 +214,8 @@ describe("key check on blur", () => {
       provider: "customGateway",
       baseUrl: "http://localhost:11434/v1",
     });
+    // No key was checked, so the line does not call one valid.
+    expect(keyStatus().textContent).toBe("settings_modelsListed:1");
   });
 
   test("a reply for another provider does not paint the one shown", async () => {
@@ -696,6 +698,28 @@ describe("save and check", () => {
     expect(sent("VALIDATE_CONFIG")).toHaveLength(0);
     expect(validation().classList.contains("ds-notice--error")).toBe(true);
     expect(validation().textContent).toBe("settings_errorChooseModel");
+  });
+
+  test("a check result does not stay on screen for another provider or model", async () => {
+    await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+    document.getElementById("validateBtn").click();
+    await flush();
+    expect(validation().classList.contains("ds-notice--success")).toBe(true);
+
+    modelButtons()
+      .find((b) => b.dataset.model === "gpt-5.6-terra")
+      .click();
+    expect(validation().classList.contains("hidden")).toBe(true);
+
+    document.getElementById("validateBtn").click();
+    await flush();
+    providerButton("anthropic").click();
+    expect(validation().classList.contains("hidden")).toBe(true);
   });
 
   test("a provider's validation error is shown as text, not markup", async () => {

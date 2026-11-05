@@ -129,6 +129,7 @@ describe("messages that take a substitution", () => {
       "error_apiKeyNotConfiguredFor",
       "overlay_loading_action",
       "settings_keyValid",
+      "settings_modelsListed",
       "settings_modelsLoadFailed",
       "settings_modelsMore",
       "ui_to",

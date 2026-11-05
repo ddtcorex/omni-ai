@@ -196,6 +196,11 @@
     "description": "Status once the key listed the provider's models; $COUNT$ is how many",
     "placeholders": { "count": { "content": "$1", "example": "42" } }
   },
+  "settings_modelsListed": {
+    "message": "$COUNT$ модела",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
   "settings_modelsLoadFailed": {
     "message": "Моделите не можаха да се заредят: $REASON$",
     "description": "Status when listing the models failed; $REASON$ is the provider's own message",

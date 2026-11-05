@@ -219,6 +219,11 @@ function renderProviderPicker() {
   bindRadioGroup(row, (button) => selectProvider(button.dataset.provider));
 }
 
+/** A check result belongs to the choice it checked; any new choice clears it. */
+function clearValidationStatus() {
+  renderNotice(elements.validationStatus, "success", "");
+}
+
 /** Remember the shown provider's choice before another one replaces it. */
 function keepDraft() {
   if (selection.providerId) {
@@ -235,6 +240,7 @@ function keepDraft() {
  */
 export function selectProvider(providerId, { focus = true, hydrate = true } = {}) {
   if (!AI_PROVIDERS[providerId]) return;
+  if (providerId !== selection.providerId) clearValidationStatus();
   keepDraft();
   const draft = drafts.get(providerId) || { modelId: null, customName: "" };
   selection = { providerId, modelId: draft.modelId, customName: draft.customName };
@@ -373,7 +379,12 @@ function paintKeyStatus() {
   } else if (state === "ok" && catalog) {
     const chat = filterChatModels(providerId, catalog.listed);
     const count = (chat.length ? chat : catalog.listed).length;
-    el.textContent = i18n.getMessage("settings_keyValid", [String(count)]);
+    // A keyless gateway listed models without any key to check.
+    const keyless =
+      providerId === "customGateway" && !keyFieldValue(AI_PROVIDERS.customGateway.keySetting);
+    el.textContent = i18n.getMessage(keyless ? "settings_modelsListed" : "settings_keyValid", [
+      String(count),
+    ]);
   } else {
     el.textContent = "";
   }
@@ -591,6 +602,7 @@ function renderModelArea() {
  * @param {string} modelId
  */
 function chooseModel(modelId) {
+  if (modelId !== selection.modelId || selection.customName) clearValidationStatus();
   selection.modelId = modelId;
   selection.customName = "";
   if (elements.customModelName) elements.customModelName.value = "";
@@ -771,6 +783,7 @@ export function setupEventListeners() {
   // A typed model name replaces the buttons' choice for this provider.
   elements.customModelName?.addEventListener("input", () => {
     selection.customName = elements.customModelName.value;
+    clearValidationStatus();
     if (selection.customName.trim()) selection.modelId = null;
     renderModelArea();
   });
