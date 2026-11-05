@@ -697,14 +697,29 @@ test("choice button outlines hold 3:1 and checked labels 4.5:1 in both themes", 
     for (const theme of ["light", "dark"]) {
       const page = await openSettings(context, sw, theme);
       await expect(page.locator("#providerPicker [role=radio]")).toHaveCount(5);
+      // Check one pill and give it a tag, then let the pill's colour
+      // transition finish: read mid transition, it still has the unchecked fill.
+      await page.evaluate(() => {
+        const checked = document.querySelector('#providerPicker [data-provider="openai"]');
+        checked.setAttribute("aria-checked", "true");
+        const tag = document.createElement("span");
+        tag.className = "choice-tag";
+        tag.textContent = "recommended";
+        checked.appendChild(tag);
+      });
+      await page.waitForFunction(
+        () => !document.getAnimations().some((animation) => animation instanceof CSSTransition),
+      );
       const colors = await page.evaluate(() => {
         const pick = (el, prop) => getComputedStyle(el)[prop];
         const card = document.querySelector(".setting-card");
         const [unchecked, checked] = ["google", "openai"].map((id) =>
           document.querySelector(`#providerPicker [data-provider="${id}"]`),
         );
-        checked.setAttribute("aria-checked", "true");
+        const tagStyle = getComputedStyle(checked.querySelector(".choice-tag"));
         return {
+          tag: tagStyle.color,
+          tagOpacity: Number(tagStyle.opacity),
           body: pick(document.body, "backgroundColor"),
           card: pick(card, "backgroundColor"),
           line: pick(unchecked, "borderTopColor"),
@@ -732,6 +747,12 @@ test("choice button outlines hold 3:1 and checked labels 4.5:1 in both themes", 
       const line = over([{ rgb: ground, a: 1 }, parse(colors.line)]);
       const fill = over([{ rgb: ground, a: 1 }, parse(colors.fill)]);
       expect(ratio(line, ground), `${theme} outline`).toBeGreaterThanOrEqual(3);
+      const tag = parse(colors.tag);
+      const tagOnFill = over([
+        { rgb: fill, a: 1 },
+        { rgb: tag.rgb, a: tag.a * colors.tagOpacity },
+      ]);
+      expect(ratio(tagOnFill, fill), `${theme} checked tag`).toBeGreaterThanOrEqual(4.5);
       expect(ratio(parse(colors.text).rgb, fill), `${theme} checked label`).toBeGreaterThanOrEqual(
         4.5,
       );

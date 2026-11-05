@@ -818,6 +818,11 @@ body {
   opacity: 0.8;
 }
 
+/* On the checked fill a faded tag drops under AA, so it keeps full white. */
+.choice[aria-checked="true"] .choice-tag {
+  opacity: 1;
+}
+
 .choice[data-state="missing"][aria-checked="true"] {
   border-color: var(--omni-error-ring);
   background: var(--omni-error-surface);
