@@ -4,6 +4,9 @@ import {
   filterChatModels,
   isCacheFresh,
   normalizeSavedId,
+  pickerRows,
+  FIRST_VIEW,
+  FILTER_THRESHOLD,
 } from "../../lib/model-catalog.js";
 
 const m = (id, extra = {}) => ({
@@ -356,4 +359,49 @@ test("the bundled list keeps a saved model it does not carry, without calling it
   });
 
   expect(model.pinned).toEqual({ id: "gpt-5.7-nova", label: "gpt-5.7-nova", state: "unlisted" });
+});
+
+describe("pickerRows", () => {
+  const forty = Array.from({ length: 40 }, (_, i) =>
+    m(`model-${String(i).padStart(2, "0")}`, { createdAt: 1000 - i }),
+  );
+  const picker = (savedModelId = null, list = forty) =>
+    buildPickerModel({
+      providerId: "customGateway",
+      listed: list,
+      savedModelId,
+      recommended: ["model-30"],
+      cap: Infinity,
+    });
+
+  test("the first view and the filter threshold are the design's numbers", () => {
+    expect(FIRST_VIEW).toBe(12);
+    expect(FILTER_THRESHOLD).toBe(30);
+  });
+
+  test("the first view is twelve rows, recommended first", () => {
+    const { rows, hidden } = pickerRows(picker(), { expanded: false });
+    expect(rows).toHaveLength(12);
+    expect(rows[0]).toMatchObject({ id: "model-30", recommended: true });
+    expect(rows[1].recommended).toBe(false);
+    expect(hidden).toBe(28);
+  });
+
+  test("the selected row past the cut stays in the first view", () => {
+    const { rows, hidden } = pickerRows(picker(), { expanded: false, keepId: "model-39" });
+    expect(rows.map((r) => r.id)).toContain("model-39");
+    expect(rows).toHaveLength(13);
+    expect(hidden).toBe(27);
+  });
+
+  test("a missing saved model leads the rows", () => {
+    const { rows } = pickerRows(picker("gone-model"), { expanded: false });
+    expect(rows[0]).toMatchObject({ id: "gone-model", state: "missing" });
+  });
+
+  test("expanded shows every row", () => {
+    const { rows, hidden } = pickerRows(picker(), { expanded: true });
+    expect(rows).toHaveLength(40);
+    expect(hidden).toBe(0);
+  });
 });
