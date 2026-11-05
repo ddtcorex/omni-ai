@@ -926,6 +926,23 @@ describe("Service Worker Integration", () => {
     expect(config).toMatchObject({ provider: "customGateway", model: "typed/model" });
   });
 
+  it("omni chat sends a gateway model named like a shipped id to the gateway", async () => {
+    const config = await chatConfigFor({
+      apiModel: "claude-sonnet-5",
+      apiProvider: "customGateway",
+      customGatewayBaseUrl: "https://gw.example.com/v1",
+      customGatewayApiKey: "gw-k",
+      anthropicApiKey: "ant-k",
+    });
+
+    expect(config).toMatchObject({
+      provider: "customGateway",
+      apiKey: "gw-k",
+      baseUrl: "https://gw.example.com/v1",
+      model: "claude-sonnet-5",
+    });
+  });
+
   it("getChatConfig sends the typed name for a provider's custom entry", async () => {
     const config = await chatConfigFor({
       apiModel: "openai-custom",

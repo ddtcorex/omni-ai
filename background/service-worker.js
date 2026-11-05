@@ -809,7 +809,10 @@ async function getChatConfig(modelId, temperature) {
   const storedModel = modelId ? null : model;
   const storedProvider = storedModel ? await getApiProvider() : null;
   const providerInfo = getProviderByModel(model);
-  const providerId = providerInfo?.id || storedProvider || "google";
+  // The saved model goes through the provider saved beside it: a gateway can
+  // list a model under a vendor's own id, which the registry would hand to
+  // that vendor with its key. An explicit model still routes by its id.
+  const providerId = storedProvider || providerInfo?.id || "google";
   // The registry owns which storage key holds each provider's API key.
   const keySetting = AI_PROVIDERS[providerId]?.keySetting || "geminiApiKey";
   const apiKey = (await getStoredApiKey(keySetting)) || "";
