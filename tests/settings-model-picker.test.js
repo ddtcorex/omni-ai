@@ -118,6 +118,42 @@ describe("provider row", () => {
     expect(visible(document.getElementById("openaiKeyGroup"))).toBe(true);
   });
 
+  test("Home and End jump to the first and last provider", async () => {
+    await boot({ apiProvider: "groq", apiModel: "llama-3.3-70b-versatile" });
+    providerButton("groq").focus();
+    providerButton("groq").dispatchEvent(
+      new KeyboardEvent("keydown", { key: "End", bubbles: true }),
+    );
+    expect(document.activeElement).toBe(providerButton("customGateway"));
+    providerButton("customGateway").dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Home", bubbles: true }),
+    );
+    expect(document.activeElement).toBe(providerButton("google"));
+  });
+
+  test("a list that lands while a model button has focus keeps that focus", async () => {
+    let release;
+    await boot(
+      {
+        apiProvider: "openai",
+        apiModel: "gpt-5.7-nova",
+        openaiApiKey: "sk",
+        modelCatalog: {
+          openai: { fetchedAt: Date.now(), models: models("gpt-5.7-nova", "gpt-5.6-terra") },
+        },
+      },
+      { listModels: () => new Promise((resolve) => (release = resolve)) },
+    );
+    const terra = () => document.querySelector('#modelPicker [data-model="gpt-5.6-terra"]');
+    document.getElementById("modelRefresh").click();
+    terra().focus();
+    release(listReply("gpt-5.7-nova", "gpt-5.6-terra", "gpt-5.8"));
+    await flush();
+
+    expect(document.querySelector('#modelPicker [data-model="gpt-5.8"]')).not.toBeNull();
+    expect(document.activeElement).toBe(terra());
+  });
+
   test("switching provider changes no stored value", async () => {
     await boot({ apiProvider: "google", apiModel: "gemini-3.6-flash", geminiApiKey: "AIza-k" });
     chrome.storage.local.set.mockClear();

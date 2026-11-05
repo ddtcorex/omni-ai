@@ -182,7 +182,10 @@ function bindRadioGroup(container, onSelect) {
     const index = list.indexOf(/** @type {HTMLElement} */ (document.activeElement));
     if (index < 0) return;
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
-    if (step) {
+    if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      list[event.key === "Home" ? 0 : list.length - 1].focus();
+    } else if (step) {
       event.preventDefault();
       list[(index + step + list.length) % list.length].focus();
     } else if (event.key === " " || event.key === "Enter") {
@@ -559,6 +562,11 @@ function renderModelArea() {
 
   const picker = elements.modelPicker;
   if (!picker) return;
+  // A rebuild must not drop keyboard focus: a listing can land while the user
+  // is arrowing through the buttons.
+  const focusedModel = picker.contains(document.activeElement)
+    ? /** @type {HTMLElement} */ (document.activeElement).dataset.model
+    : null;
   picker.textContent = "";
   const { rows, hidden, total } = providerId
     ? modelRowsFor(providerId)
@@ -589,6 +597,14 @@ function renderModelArea() {
     picker.appendChild(button);
   });
   bindRadioGroup(picker, (button) => chooseModel(button.dataset.model));
+  if (focusedModel) {
+    const again = /** @type {HTMLElement|null} */ (
+      Array.from(picker.querySelectorAll("[data-model]")).find(
+        (el) => /** @type {HTMLElement} */ (el).dataset.model === focusedModel,
+      )
+    );
+    again?.focus({ preventScroll: true });
+  }
 
   if (elements.modelMore) {
     const collapsible = modelListExpanded && !modelFilterQuery.trim();
