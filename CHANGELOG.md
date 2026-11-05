@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **A model whose id ends in `-custom` runs as itself.** Page actions, Omni Chat and Settings took any such id for a provider's custom entry and swapped in the typed custom name; only the registry's own custom entries count now.
+- **A Save error stays on screen** until the next Save instead of fading after three seconds, and status notices are spoken through live regions that exist before the first one, so screen readers announce them.
 - **Omni Chat sends a gateway model to the gateway.** A Custom Gateway model listed under a vendor's own id (`claude-sonnet-5`) went to that vendor with its key, because the chat resolved the provider from the model id before the saved provider. Page actions already used the saved provider.
 - **Saving with a provider but no model keeps the working configuration.** Save stores the keys and preferences and asks for a model instead of writing an empty one.
 - A saved model is no longer offered twice: the stored id is normalized to its API name before the picker compares it with the fetched list, so an upgrade shows one row instead of a false "no longer offered" badge beside a duplicate.
