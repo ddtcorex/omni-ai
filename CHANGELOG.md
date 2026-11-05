@@ -34,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Every status notice shares one look.** Validation, Save, the side panel's status line and chat error now come from one helper (`lib/notice.js`): success, warning, error and progress are each a tinted surface, a hairline ring and text of one hue with a matching icon, and the overlay's error box takes the same ring. The validation notice no longer puts a provider's error text into the page as markup.
 - **The Show changes switch is visible on a light card.** Its off track was white under a white knob (1.0:1 against the card); it now holds at least 3:1 in both themes, and its label is no longer the faintest text colour.
 - **The side panel chat scrolls in a proper frame.** A long conversation fades out under the context row and the input instead of being cut against their lines, a thin themed scrollbar sits at the panel's edge in place of a white track over the separators, and user bubbles stay visible on the light panel.
+- **A saved Custom Gateway or custom model entry is not shown as gone.** Once the provider's list was fetched, the picker labelled it "(no longer offered)" and listed it a second time.
+- **A model picked from a fetched list keeps its provider's key field**, and Validate checks it, instead of hiding the key and doing nothing.
+- **A saved fetched model stays selected while its list loads.** The picker briefly fell back to Gemini and showed the Gemini key field, and without a cached list a Save switched the model.
+- **Changing the model drops cached results on open pages**, so the next action runs on the new model instead of answering from the old one.
+- The Advanced toggle in Settings shows the accent focus ring instead of the browser's default outline.
 
 ## [2.6.0] - 2026-11-03
 
