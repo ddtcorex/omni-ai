@@ -650,25 +650,9 @@
     "message": "மொழிபெயர்ப்பு தோல்வியடைந்தது",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(பழையது)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "மேம்பட்டவை",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "தனிப்பயன் மாடல் பெயர்",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "தனிப்பயன் மாடல் ID-ஐ உள்ளிடவும்",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "தனிப்பயன் மாடல் பெயரை உள்ளிடவும்",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "எ.கா. your-model-id",
@@ -775,41 +759,13 @@
     "message": "உரையை மாற்ற முடியவில்லை. அதற்குப் பதிலாக நகலெடுக்கவும்.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "மாடல்களைத் தேடு",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "பட்டியலைப் புதுப்பி",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "மாடல் பட்டியல் புதுப்பிக்கப்பட்டது",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "மாடல் பட்டியலைப் புதுப்பிக்க முடியவில்லை",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "மாடல் பட்டியல் புதுப்பிக்கப்படுகிறது…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "உங்கள் தேடலுக்கு எந்த மாடலும் பொருந்தவில்லை",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "புதிய மாடல்கள் காட்டப்படுகின்றன, மீதமுள்ளவற்றைத் தேட தட்டச்சு செய்யவும்",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "இனி வழங்கப்படாது",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "உள்ளமைந்த மாடல் பட்டியல் பயன்படுத்தப்படுகிறது",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "இந்த மாடல் இனி கிடைக்காது.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "வேறு மாடலைத் தேர்ந்தெடு",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "வழங்குநர் காட்டப்பட்டதை விட அதிக மாடல்களைத் திருப்பியுள்ளார்",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

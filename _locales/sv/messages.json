@@ -650,25 +650,9 @@
     "message": "Översättningen misslyckades",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Äldre)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Avancerat",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Anpassat modellnamn",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Ange det anpassade modell-ID:t",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Ange ett anpassat modellnamn",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "t.ex. ditt-modell-id",
@@ -775,41 +759,13 @@
     "message": "Det gick inte att ersätta texten. Kopiera den i stället.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Sök modeller",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Uppdatera listan",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Modellistan uppdaterad",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Det gick inte att uppdatera modellistan",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Uppdaterar modellistan…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Inga modeller matchar din sökning",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "De nyaste modellerna visas, skriv för att söka i resten",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "erbjuds inte längre",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Använder den inbyggda modellistan",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Den här modellen är inte längre tillgänglig.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Välj en annan modell",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Leverantören returnerade fler modeller än de som visas",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

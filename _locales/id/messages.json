@@ -650,25 +650,9 @@
     "message": "Terjemahan gagal",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Lama)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Lanjutan",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Nama Model Kustom",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Masukkan ID model kustom",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Silakan masukkan Nama Model Kustom",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "mis. id-model-anda",
@@ -775,41 +759,13 @@
     "message": "Tidak dapat mengganti teks. Salin saja.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Cari model",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Segarkan daftar",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Daftar model diperbarui",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Daftar model tidak dapat disegarkan",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Memperbarui daftar model…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Tidak ada model yang cocok",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Menampilkan model terbaru, ketik untuk mencari sisanya",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "tidak lagi tersedia",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Memakai daftar model bawaan",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Model ini tidak lagi tersedia.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Pilih model lain",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Penyedia mengembalikan lebih banyak model daripada yang ditampilkan",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

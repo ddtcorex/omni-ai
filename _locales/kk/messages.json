@@ -650,25 +650,9 @@
     "message": "Аудару сәтсіз аяқталды",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Ескірген)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Қосымша",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Теңшелген модель атауы",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Теңшелген модель ID енгізіңіз",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Теңшелген модель атауын енгізіңіз",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "мысалы: your-model-id",
@@ -775,41 +759,13 @@
     "message": "Мәтінді ауыстыру мүмкін болмады. Оның орнына көшіріп алыңыз.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Модельдерді іздеу",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Тізімді жаңарту",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Модель тізімі жаңартылды",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Модель тізімін жаңарту мүмкін болмады",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Модельдер тізімі жаңартылуда…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Сіздің іздеуіңізге сәйкес модель жоқ",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Ең жаңа модельдер көрсетілуде, қалғанын іздеу үшін теріңіз",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "енді ұсынылмайды",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Кірістірілген модель тізімі қолданылуда",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Бұл модель енді қолжетімсіз.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Басқа модель таңдау",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Провайдер көрсетілгеннен көп модель қайтарды",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

@@ -650,25 +650,9 @@
     "message": "ಅನುವಾದ ವಿಫಲವಾಗಿದೆ",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(ಹಳೆಯದು)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "ಸುಧಾರಿತ",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "ಕಸ್ಟಮ್ ಮಾದರಿ ಹೆಸರು",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "ಕಸ್ಟಮ್ ಮಾದರಿ ID ನಮೂದಿಸಿ",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "ದಯವಿಟ್ಟು ಕಸ್ಟಮ್ ಮಾದರಿ ಹೆಸರು ನಮೂದಿಸಿ",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ಉದಾ. your-model-id",
@@ -775,41 +759,13 @@
     "message": "ಪಠ್ಯವನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಬದಲಿಗೆ ಅದನ್ನು ನಕಲಿಸಿ.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "ಮಾದರಿಗಳನ್ನು ಹುಡುಕಿ",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "ಪಟ್ಟಿ ರಿಫ್ರೆಶ್ ಮಾಡಿ",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "ಮಾದರಿ ಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "ಮಾದರಿ ಪಟ್ಟಿಯನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "ಮಾದರಿ ಪಟ್ಟಿಯನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗುತ್ತಿದೆ…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "ನಿಮ್ಮ ಹುಡುಕಾಟಕ್ಕೆ ಯಾವುದೇ ಮಾದರಿ ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "ಹೊಸ ಮಾದರಿಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ, ಉಳಿದವನ್ನು ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ಇನ್ನು ಲಭ್ಯವಿಲ್ಲ",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "ಒಳನಿರ್ಮಿತ ಮಾದರಿ ಪಟ್ಟಿ ಬಳಕೆಯಲ್ಲಿದೆ",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "ಈ ಮಾದರಿ ಇನ್ನು ಲಭ್ಯವಿಲ್ಲ.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "ಬೇರೆ ಮಾದರಿ ಆಯ್ಕೆಮಾಡಿ",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "ಒದಗಿಸುವವರು ತೋರಿಸಿದ್ದಕ್ಕಿಂತ ಹೆಚ್ಚು ಮಾದರಿಗಳನ್ನು ಹಿಂತಿರುಗಿಸಿದರು",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

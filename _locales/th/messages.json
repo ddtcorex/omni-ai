@@ -650,25 +650,9 @@
     "message": "การแปลล้มเหลว",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(รุ่นเก่า)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "ขั้นสูง",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "ชื่อโมเดลกำหนดเอง",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "ป้อน ID ของโมเดลกำหนดเอง",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "โปรดป้อนชื่อโมเดลกำหนดเอง",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "เช่น your-model-id",
@@ -775,41 +759,13 @@
     "message": "ไม่สามารถแทนที่ข้อความได้ ให้คัดลอกแทน",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "ค้นหาโมเดล",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "รีเฟรชรายการ",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "อัปเดตรายการโมเดลแล้ว",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "รีเฟรชรายการโมเดลไม่สำเร็จ",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "กำลังรีเฟรชรายการโมเดล…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "ไม่มีโมเดลที่ตรงกับการค้นหา",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "กำลังแสดงโมเดลล่าสุด พิมพ์เพื่อค้นหาที่เหลือ",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ไม่มีให้บริการแล้ว",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "กำลังใช้รายการโมเดลในตัว",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "โมเดลนี้ไม่มีให้บริการแล้ว",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "เลือกโมเดลอื่น",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "ผู้ให้บริการส่งคืนโมเดลมากกว่าที่แสดง",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

@@ -650,25 +650,9 @@
     "message": "فشلت الترجمة",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(قديم)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "متقدّم",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "اسم النموذج المخصّص",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "أدخل معرّف النموذج المخصّص",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "يرجى إدخال اسم نموذج مخصّص",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "مثال: your-model-id",
@@ -775,41 +759,13 @@
     "message": "تعذّر استبدال النص. انسخه بدلاً من ذلك.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "البحث عن النماذج",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "تحديث القائمة",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "تم تحديث قائمة النماذج",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "تعذر تحديث قائمة النماذج",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "جارٍ تحديث قائمة النماذج…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "لا توجد نماذج تطابق بحثك",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "يتم عرض أحدث النماذج، اكتب للبحث في الباقي",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "لم يعد متاحًا",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "يتم استخدام قائمة النماذج المدمجة",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "هذا النموذج لم يعد متاحًا.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "اختر نموذجًا آخر",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "أعاد المزوّد نماذج أكثر مما هو معروض",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

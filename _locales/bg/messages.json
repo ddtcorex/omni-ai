@@ -650,25 +650,9 @@
     "message": "Преводът не бе успешен",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Остарял)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Разширени",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Име на потребителски модел",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Въведи ID на потребителския модел",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Моля, въведи име на потребителски модел",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "напр. your-model-id",
@@ -775,41 +759,13 @@
     "message": "Текстът не можа да бъде заменен. Копирайте го вместо това.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Търсене на модели",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Обнови списъка",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Списъкът с модели е обновен",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Списъкът с модели не можа да бъде обновен",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Списъкът с модели се обновява…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Няма модели, отговарящи на търсенето",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Показани са най-новите модели, въведете за търсене на останалите",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "вече не се предлага",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Използва се вграденият списък с модели",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Този модел вече не е достъпен.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Избор на друг модел",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Доставчикът върна повече модели от показаните",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

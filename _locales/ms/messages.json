@@ -650,25 +650,9 @@
     "message": "Terjemahan gagal",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Lama)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Lanjutan",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Nama Model Tersuai",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Masukkan ID model tersuai",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Sila masukkan Nama Model Tersuai",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "cth. id-model-anda",
@@ -775,41 +759,13 @@
     "message": "Tidak dapat menggantikan teks. Salin sahaja.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Cari model",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Muat semula senarai",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Senarai model dikemas kini",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Senarai model tidak dapat dimuat semula",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Menyegarkan senarai model…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Tiada model sepadan dengan carian anda",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Memaparkan model terbaharu, taip untuk mencari yang lain",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "tidak lagi ditawarkan",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Menggunakan senarai model terbina dalam",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Model ini tidak lagi tersedia.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Pilih model lain",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Pembekal memulangkan lebih banyak model daripada yang dipaparkan",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

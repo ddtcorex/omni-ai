@@ -650,25 +650,9 @@
     "message": "Oversettelsen mislyktes",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Eldre)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Avansert",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Egendefinert modellnavn",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Skriv inn ID-en til den egendefinerte modellen",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Skriv inn et egendefinert modellnavn",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "f.eks. din-modell-id",
@@ -775,41 +759,13 @@
     "message": "Kunne ikke erstatte teksten. Kopier den i stedet.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Søk modeller",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Oppdater listen",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Modellisten er oppdatert",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Modellisten kunne ikke oppdateres",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Oppdaterer modellisten…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Ingen modeller samsvarer med søket",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "De nyeste modellene vises, skriv for å søke i resten",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ikke lenger tilgjengelig",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Bruker den innebygde modellisten",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Denne modellen er ikke lenger tilgjengelig.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Velg en annen modell",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Leverandøren returnerte flere modeller enn de som vises",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

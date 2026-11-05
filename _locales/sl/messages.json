@@ -650,25 +650,9 @@
     "message": "Prevajanje ni uspelo",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Zastarelo)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Napredno",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Ime modela po meri",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Vnesite ID modela po meri",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Vnesite ime modela po meri",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "npr. your-model-id",
@@ -775,41 +759,13 @@
     "message": "Besedila ni bilo mogoče zamenjati. Namesto tega ga kopirajte.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Iskanje modelov",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Osveži seznam",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Seznam modelov posodobljen",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Seznama modelov ni bilo mogoče osvežiti",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Osveževanje seznama modelov…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Noben model se ne ujema z iskanjem",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Prikazani so najnovejši modeli, vnesite za iskanje ostalih",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ni več na voljo",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Uporabljen je vgrajeni seznam modelov",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Ta model ni več na voljo.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Izberi drug model",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Ponudnik je vrnil več modelov, kot jih je prikazanih",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

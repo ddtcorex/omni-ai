@@ -558,23 +558,9 @@
     "message": "Falha na tradução",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Legado)"
-  },
-  "settings_advanced": {
-    "message": "Avançado"
-  },
   "settings_customModel": {
     "message": "Nome do modelo personalizado",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Digite o ID do modelo personalizado",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Insira um nome de modelo personalizado",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ex: seu-id-de-modelo",
@@ -761,41 +747,13 @@
     "message": "Não foi possível substituir o texto. Copie-o em vez disso.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Pesquisar modelos",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Atualizar lista",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Lista de modelos atualizada",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Não foi possível atualizar a lista de modelos",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Atualizando a lista de modelos…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Nenhum modelo corresponde à sua pesquisa",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "A mostrar os modelos mais recentes, escreva para pesquisar os restantes",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "já não disponível",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "A usar a lista de modelos integrada",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Este modelo já não está disponível.",
@@ -804,9 +762,5 @@
   "overlay_change_model": {
     "message": "Escolher outro modelo",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "O fornecedor devolveu mais modelos do que os mostrados",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

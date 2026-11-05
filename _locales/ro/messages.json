@@ -650,25 +650,9 @@
     "message": "Traducerea a eșuat",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Vechi)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Avansat",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Nume model personalizat",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Introdu ID-ul modelului personalizat",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Te rugăm să introduci un nume de model personalizat",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "de ex. id-ul-modelului-tău",
@@ -775,41 +759,13 @@
     "message": "Textul nu a putut fi înlocuit. Copiază-l în schimb.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Caută modele",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Reîmprospătează lista",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Lista de modele actualizată",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Lista de modele nu a putut fi reîmprospătată",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Se actualizează lista de modele…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Niciun model nu corespunde căutării",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Sunt afișate cele mai noi modele, scrie pentru a le căuta pe restul",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "nu mai este disponibil",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Se folosește lista de modele integrată",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Acest model nu mai este disponibil.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Alege alt model",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Furnizorul a returnat mai multe modele decât cele afișate",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

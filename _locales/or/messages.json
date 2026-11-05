@@ -650,25 +650,9 @@
     "message": "ଅନୁବାଦ ବିଫଳ ହେଲା",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(ପୁରାତନ)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "ଉନ୍ନତ",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "କଷ୍ଟମ୍ ମଡେଲ୍ ନାମ",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "କଷ୍ଟମ୍ ମଡେଲ୍ ID ଲେଖନ୍ତୁ",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "ଦୟାକରି ଏକ କଷ୍ଟମ୍ ମଡେଲ୍ ନାମ ଲେଖନ୍ତୁ",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ଯଥା: your-model-id",
@@ -775,41 +759,13 @@
     "message": "ଟେକ୍ସଟ୍ ବଦଳାଯାଇପାରିଲା ନାହିଁ। ଏହା ବଦଳରେ ଏହାକୁ କପି କରନ୍ତୁ।",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "ମଡେଲ ଖୋଜନ୍ତୁ",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "ତାଲିକା ରିଫ୍ରେଶ କରନ୍ତୁ",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "ମଡେଲ ତାଲିକା ଅପଡେଟ ହୋଇଛି",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "ମଡେଲ ତାଲିକା ରିଫ୍ରେଶ କରାଯାଇପାରିଲା ନାହିଁ",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "ମଡେଲ ତାଲିକା ରିଫ୍ରେସ୍ ହେଉଛି…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "ଆପଣଙ୍କ ଖୋଜ ସହିତ କୌଣସି ମଡେଲ ମେଳ ଖାଉନାହିଁ",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "ନୂତନ ମଡେଲ ଦେଖାଯାଉଛି, ବାକିଗୁଡ଼ିକ ଖୋଜିବାକୁ ଟାଇପ କରନ୍ତୁ",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ଆଉ ଉପଲବ୍ଧ ନାହିଁ",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "ଅନ୍ତର୍ନିହିତ ମଡେଲ ତାଲିକା ବ୍ୟବହୃତ ହେଉଛି",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "ଏହି ମଡେଲ ଆଉ ଉପଲବ୍ଧ ନାହିଁ।",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "ଅନ୍ୟ ମଡେଲ ବାଛନ୍ତୁ",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "ପ୍ରଦାତା ଦେଖାଯାଇଥିବା ଠାରୁ ଅଧିକ ମଡେଲ ଫେରାଇଛନ୍ତି",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

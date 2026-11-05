@@ -558,23 +558,9 @@
     "message": "번역 실패",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(레거시)"
-  },
-  "settings_advanced": {
-    "message": "고급"
-  },
   "settings_customModel": {
     "message": "사용자 지정 모델 이름",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "사용자 지정 모델 ID 입력",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "사용자 지정 모델 이름을 입력하십시오",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "예: 사용자-모델-ID",
@@ -761,41 +747,13 @@
     "message": "텍스트를 바꾸지 못했습니다. 대신 복사하세요.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "모델 검색",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "목록 새로 고침",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "모델 목록이 업데이트됨",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "모델 목록을 새로 고칠 수 없습니다",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "모델 목록을 새로고침하는 중…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "검색과 일치하는 모델이 없습니다",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "최신 모델을 표시합니다. 입력하여 나머지를 검색하세요",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "더 이상 제공되지 않음",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "내장 모델 목록 사용 중",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "이 모델은 더 이상 제공되지 않습니다.",
@@ -804,9 +762,5 @@
   "overlay_change_model": {
     "message": "다른 모델 선택",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "제공자가 표시된 것보다 많은 모델을 반환했습니다",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

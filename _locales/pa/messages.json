@@ -650,25 +650,9 @@
     "message": "ਅਨੁਵਾਦ ਫੇਲ੍ਹ ਹੋਇਆ",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(ਪੁਰਾਣਾ)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "ਉੱਨਤ",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "ਕਸਟਮ ਮਾਡਲ ਨਾਮ",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "ਕਸਟਮ ਮਾਡਲ ID ਦਰਜ ਕਰੋ",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "ਕਿਰਪਾ ਕਰਕੇ ਕਸਟਮ ਮਾਡਲ ਨਾਮ ਦਰਜ ਕਰੋ",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ਜਿਵੇਂ: your-model-id",
@@ -775,41 +759,13 @@
     "message": "ਟੈਕਸਟ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ। ਇਸਦੀ ਬਜਾਏ ਇਸਨੂੰ ਕਾਪੀ ਕਰੋ।",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "ਮਾਡਲ ਖੋਜੋ",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "ਸੂਚੀ ਤਾਜ਼ਾ ਕਰੋ",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "ਮਾਡਲ ਸੂਚੀ ਅੱਪਡੇਟ ਹੋਈ",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "ਮਾਡਲ ਸੂਚੀ ਤਾਜ਼ਾ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "ਮਾਡਲ ਸੂਚੀ ਰਿਫ੍ਰੈਸ਼ ਹੋ ਰਹੀ ਹੈ…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਮਾਡਲ ਨਹੀਂ ਮਿਲਦਾ",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "ਨਵੇਂ ਮਾਡਲ ਦਿਖਾਏ ਜਾ ਰਹੇ ਹਨ, ਬਾਕੀ ਖੋਜਣ ਲਈ ਟਾਈਪ ਕਰੋ",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ਹੁਣ ਉਪਲਬਧ ਨਹੀਂ",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "ਬਿਲਟ-ਇਨ ਮਾਡਲ ਸੂਚੀ ਵਰਤੀ ਜਾ ਰਹੀ ਹੈ",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "ਇਹ ਮਾਡਲ ਹੁਣ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "ਹੋਰ ਮਾਡਲ ਚੁਣੋ",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "ਪ੍ਰਦਾਤਾ ਨੇ ਦਿਖਾਏ ਨਾਲੋਂ ਵੱਧ ਮਾਡਲ ਵਾਪਸ ਕੀਤੇ",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

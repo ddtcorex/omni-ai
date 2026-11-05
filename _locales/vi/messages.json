@@ -611,23 +611,9 @@
     "message": "Dịch thất bại",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Cũ)"
-  },
-  "settings_advanced": {
-    "message": "Nâng cao"
-  },
   "settings_customModel": {
     "message": "Tên mô hình tùy chỉnh",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Nhập mã mô hình tùy chỉnh",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Vui lòng nhập tên mô hình tùy chỉnh",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "vd: mã-mô-hình-của-bạn",
@@ -761,41 +747,13 @@
     "message": "Không thể thay thế văn bản. Hãy sao chép thay vào đó.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Tìm model",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Làm mới danh sách",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Danh sách model đã cập nhật",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Không làm mới được danh sách model",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Đang làm mới danh sách model…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Không có model nào khớp với tìm kiếm",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Đang hiện các model mới nhất, gõ để tìm phần còn lại",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "không còn được cung cấp",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Đang dùng danh sách model có sẵn",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Model này không còn khả dụng.",
@@ -804,9 +762,5 @@
   "overlay_change_model": {
     "message": "Chọn model khác",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Provider trả về nhiều model hơn số đang hiện",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

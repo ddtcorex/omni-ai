@@ -650,25 +650,9 @@
     "message": "Käännös epäonnistui",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Vanha)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Lisäasetukset",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Mukautetun mallin nimi",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Syötä mukautetun mallin tunnus",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Syötä mukautetun mallin nimi",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "esim. oma-mallitunnus",
@@ -775,41 +759,13 @@
     "message": "Tekstiä ei voitu korvata. Kopioi se sen sijaan.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Hae malleja",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Päivitä luettelo",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Malliluettelo päivitetty",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Malliluetteloa ei voitu päivittää",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Päivitetään malliluetteloa…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Mikään malli ei vastaa hakuasi",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Uusimmat mallit näytetään, kirjoita hakeaksesi loput",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "ei enää tarjolla",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Käytetään sisäänrakennettua malliluetteloa",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Tämä malli ei ole enää saatavilla.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Valitse toinen malli",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Palvelu palautti enemmän malleja kuin näytetään",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

@@ -650,25 +650,9 @@
     "message": "Překlad se nezdařil",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Zastaralé)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Pokročilé",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Název vlastního modelu",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Zadejte ID vlastního modelu",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Zadejte prosím název vlastního modelu",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "např. your-model-id",
@@ -775,41 +759,13 @@
     "message": "Text se nepodařilo nahradit. Místo toho ho zkopírujte.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "Hledat modely",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "Obnovit seznam",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "Seznam modelů aktualizován",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "Seznam modelů se nepodařilo obnovit",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "Aktualizuje se seznam modelů…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "Žádný model neodpovídá hledání",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "Zobrazeny nejnovější modely, psaním vyhledejte ostatní",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "již není nabízen",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "Používá se vestavěný seznam modelů",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "Tento model už není k dispozici.",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "Vyberte jiný model",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "Poskytovatel vrátil více modelů, než je zobrazeno",
-    "description": "Source line note when the provider catalog was capped"
   }
 }

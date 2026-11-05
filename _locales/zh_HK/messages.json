@@ -650,25 +650,9 @@
     "message": "翻譯失敗",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(舊版)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "進階",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "自訂模型名稱",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "輸入自訂模型 ID",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "請輸入自訂模型名稱",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "例如：您的模型 ID",
@@ -775,41 +759,13 @@
     "message": "無法取代文字。請改為複製。",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
   },
-  "settings_modelsSearch": {
-    "message": "搜尋模型",
-    "description": "Placeholder and label of the model search box"
-  },
   "settings_modelsRefresh": {
     "message": "重新整理清單",
     "description": "Button that refetches the provider model list"
   },
-  "settings_modelsUpdated": {
-    "message": "模型清單已更新",
-    "description": "Shown before the date the list was fetched"
-  },
-  "settings_modelsRefreshFailed": {
-    "message": "無法重新整理模型清單",
-    "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
-  },
-  "settings_modelsRefreshing": {
-    "message": "正在重新整理模型列表…",
-    "description": "Shown under the model picker while the provider's model list is being fetched"
-  },
-  "settings_modelsNoMatch": {
-    "message": "沒有符合的模型",
-    "description": "Shown when the search filters every model out"
-  },
-  "settings_modelsCapped": {
-    "message": "正在顯示最新模型，輸入以搜尋其餘模型",
-    "description": "Shown when the list is capped"
-  },
   "settings_modelNoLongerOffered": {
     "message": "已不再提供",
     "description": "Suffix on a saved model the provider no longer lists"
-  },
-  "settings_modelsBundled": {
-    "message": "正在使用內建模型清單",
-    "description": "Shown under the model picker when no provider catalog has been fetched"
   },
   "error_modelNotAvailable": {
     "message": "此模型已不再提供。",
@@ -818,9 +774,5 @@
   "overlay_change_model": {
     "message": "選擇其他模型",
     "description": "Overlay button that opens Settings on the model picker"
-  },
-  "settings_modelsTruncated": {
-    "message": "提供方傳回的模型多於所顯示的",
-    "description": "Source line note when the provider catalog was capped"
   }
 }
