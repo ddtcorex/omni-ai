@@ -151,7 +151,10 @@ let savedProviderForPicker = null;
 let modelSearchQuery = "";
 let modelSourceCounts = { visible: 0, total: 0, query: "" };
 let modelSourceByProvider = new Map();
-let modelSourceFailure = false;
+/** Providers whose last refresh failed; the line says so only for its own provider. */
+const failedProviders = new Set();
+/** The provider a listing is in flight for, so its line and control show it. */
+let refreshingProvider = null;
 let modelSearchBound = false;
 let selectedModelForPicker = null;
 let selectedProviderForPicker = null;
@@ -188,45 +191,52 @@ function paintModelSource() {
   if (!el) return;
 
   const selectedProviderId = elements.apiModel?.selectedOptions?.[0]?.dataset.provider;
+  const provider = selectedProviderId ? AI_PROVIDERS[selectedProviderId] : null;
   const catalog = selectedProviderId ? modelCatalogs.get(selectedProviderId) : null;
   // A catalog entry with no list means "we asked and got nothing usable", which
   // renders exactly like the bundled case.
   const hasList = Boolean(catalog && Array.isArray(catalog.listed));
+  const busy = Boolean(selectedProviderId) && refreshingProvider === selectedProviderId;
 
-  const kind = hasList ? (catalog.fromCache ? "cache" : "live") : "bundled";
-  el.dataset.source = kind;
+  el.dataset.source = hasList ? (catalog.fromCache ? "cache" : "live") : "bundled";
+  el.dataset.state = busy
+    ? "busy"
+    : selectedProviderId && failedProviders.has(selectedProviderId)
+      ? "failed"
+      : "idle";
 
-  if (modelSourceCounts.query && modelSourceCounts.visible === 0) {
-    el.textContent = i18n.getMessage("settings_modelsNoMatch");
-    return;
-  }
-  if (modelSourceFailure) {
-    const suffix = catalog?.fetchedAt ? ` ${formatCatalogDate(catalog.fetchedAt)}` : "";
-    el.textContent = `${i18n.getMessage("settings_modelsRefreshFailed")}${suffix}`;
-    return;
-  }
-  if (catalog?.fetchedAt) {
-    const shown = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
-    const tail = shown && shown.visible < shown.total ? ` (${shown.visible}/${shown.total})` : "";
-    const truncated = catalog.truncated ? ` ${i18n.getMessage("settings_modelsTruncated")}` : "";
-    const when = formatCatalogDate(catalog.fetchedAt);
-    el.textContent = `${i18n.getMessage("settings_modelsUpdated")}${
-      when ? ` (${when})` : ""
-    }${tail}${truncated}`;
-    return;
-  }
+  // The control follows the selected provider on every paint, whatever the
+  // line below says: a credential can appear or vanish between two paints.
   if (elements.modelRefresh) {
-    const provider = selectedProviderId ? AI_PROVIDERS[selectedProviderId] : null;
     const hasCredential = provider
-      ? Boolean(keyFieldValue(provider.keySetting)) || provider.id === "customGateway"
+      ? provider.id === "customGateway" || Boolean(keyFieldValue(provider.keySetting))
       : false;
     elements.modelRefresh.disabled = !hasCredential;
+    elements.modelRefresh.setAttribute("aria-busy", String(busy));
   }
 
-  const counts = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
-  const ratio =
-    counts && counts.visible < counts.total ? ` (${counts.visible}/${counts.total})` : "";
-  el.textContent = `${i18n.getMessage("settings_modelsBundled")}${ratio}`;
+  const shown = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
+  const ratio = shown && shown.visible < shown.total ? `${shown.visible}/${shown.total}` : "";
+  const when = catalog?.fetchedAt ? formatCatalogDate(catalog.fetchedAt) : "";
+  const parts = [];
+
+  if (modelSourceCounts.query && modelSourceCounts.visible === 0) {
+    parts.push(i18n.getMessage("settings_modelsNoMatch"));
+  } else if (busy) {
+    parts.push(i18n.getMessage("settings_modelsRefreshing"));
+  } else if (el.dataset.state === "failed") {
+    parts.push(i18n.getMessage("settings_modelsRefreshFailed"));
+    if (when) parts.push(`${i18n.getMessage("settings_modelsUpdated")} ${when}`);
+  } else if (catalog?.fetchedAt) {
+    parts.push(`${i18n.getMessage("settings_modelsUpdated")}${when ? ` ${when}` : ""}`);
+    if (ratio) parts.push(ratio);
+    if (catalog.truncated) parts.push(i18n.getMessage("settings_modelsTruncated"));
+  } else {
+    parts.push(i18n.getMessage("settings_modelsBundled"));
+    if (ratio) parts.push(ratio);
+  }
+
+  el.textContent = parts.join(" · ");
 }
 
 /**
@@ -266,7 +276,7 @@ export function renderModelPicker({
       fromCache,
       truncated: Boolean(truncated),
     });
-    modelSourceFailure = false;
+    failedProviders.delete(providerId);
   }
 
   if (elements.modelSearch && !modelSearchBound) {
@@ -395,11 +405,15 @@ export function populateModelSelect(currentApiModel) {
 }
 
 /**
- * Mark the catalog refresh as failed without dropping the rows on screen.
+ * Mark a provider's catalog refresh as failed without dropping the rows on
+ * screen. The notice belongs to that provider: another group never shows it.
  * @param {boolean} failed
+ * @param {string} [providerId] defaults to the selected model's provider
  */
-export function setModelCatalogFailure(failed) {
-  modelSourceFailure = Boolean(failed);
+export function setModelCatalogFailure(failed, providerId = selectedModelProvider()?.id) {
+  if (!providerId) return;
+  if (failed) failedProviders.add(providerId);
+  else failedProviders.delete(providerId);
   paintModelSource();
 }
 
@@ -491,6 +505,9 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
     return;
   }
   modelRefreshInFlight = true;
+  refreshingProvider = providerId;
+  paintModelSource();
+  let timer;
 
   try {
     const payload = { provider: providerId };
@@ -499,15 +516,21 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
 
     const response = await Promise.race([
       chrome.runtime.sendMessage({ type: "LIST_MODELS", payload }),
-      new Promise((resolve) =>
-        setTimeout(() => resolve({ success: false, timedOut: true }), MODEL_REFRESH_TIMEOUT_MS),
-      ),
+      new Promise((resolve) => {
+        timer = setTimeout(
+          () => resolve({ success: false, timedOut: true }),
+          MODEL_REFRESH_TIMEOUT_MS,
+        );
+      }),
     ]);
 
     if (!response || !response.success) {
-      setModelCatalogFailure(true);
+      refreshingProvider = null;
+      setModelCatalogFailure(true, providerId);
       return;
     }
+
+    refreshingProvider = null;
 
     if (response.cached === false) uncachedProviders.add(providerId);
     else uncachedProviders.delete(providerId);
@@ -519,9 +542,13 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
       truncated: Boolean(response.truncated),
     });
   } catch {
-    setModelCatalogFailure(true);
+    refreshingProvider = null;
+    setModelCatalogFailure(true, providerId);
   } finally {
+    clearTimeout(timer);
     modelRefreshInFlight = false;
+    refreshingProvider = null;
+    paintModelSource();
     const queued = pendingRefreshProvider;
     pendingRefreshProvider = null;
     if (queued) void refreshModelCatalog(queued.providerId, queued);

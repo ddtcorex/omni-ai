@@ -732,6 +732,10 @@
     "message": "Could not refresh the model list",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "Refreshing the model list…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "No models match your search",
     "description": "Shown when the search filters every model out"

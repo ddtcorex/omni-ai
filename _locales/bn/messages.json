@@ -732,6 +732,10 @@
     "message": "মডেল তালিকা রিফ্রেশ করা যায়নি",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "মডেলের তালিকা রিফ্রেশ হচ্ছে…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "কোনো মডেল আপনার অনুসন্ধানের সাথে মেলে না",
     "description": "Shown when the search filters every model out"

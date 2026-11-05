@@ -718,6 +718,10 @@
     "message": "Não foi possível atualizar a lista de modelos",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "Atualizando a lista de modelos…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "Nenhum modelo corresponde à sua pesquisa",
     "description": "Shown when the search filters every model out"

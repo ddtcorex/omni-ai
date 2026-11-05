@@ -732,6 +732,10 @@
     "message": "Не удалось обновить список моделей",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "Обновление списка моделей…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "Ни одна модель не соответствует запросу",
     "description": "Shown when the search filters every model out"

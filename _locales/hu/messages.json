@@ -732,6 +732,10 @@
     "message": "A modellista frissítése nem sikerült",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "A modelllista frissítése…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "Egyetlen modell sem felel meg a keresésnek",
     "description": "Shown when the search filters every model out"

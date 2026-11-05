@@ -678,6 +678,55 @@ describe("localizeDOM", () => {
       expect(document.getElementById("modelRefresh").disabled).toBe(false);
     });
 
+    it("re-enables the refresh control once the selected provider has a list", () => {
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      expect(document.getElementById("modelRefresh").disabled).toBe(true);
+
+      document.getElementById("openaiApiKey").value = "sk";
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: [{ id: "gpt-5.7-nova", label: "gpt-5.7-nova", createdAt: 1, state: "active" }],
+        savedModelId: "gpt-5.7-nova",
+        savedProviderId: "openai",
+        fetchedAt: 1,
+      });
+      expect(document.getElementById("modelRefresh").disabled).toBe(false);
+    });
+
+    it("marks the refresh control busy while a listing is in flight", async () => {
+      let release;
+      chrome.runtime.sendMessage.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            release = () => resolve({ success: true, models: [], fetchedAt: 1 });
+          }),
+      );
+      document.getElementById("geminiApiKey").value = "k";
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+
+      const pending = Settings.refreshModelCatalog("google");
+      const button = document.getElementById("modelRefresh");
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      expect(document.getElementById("modelSource").textContent).toContain(
+        "settings_modelsRefreshing",
+      );
+
+      release();
+      await pending;
+      expect(button.getAttribute("aria-busy")).toBe("false");
+    });
+
+    it("a failed refresh for one provider leaves another provider's line alone", async () => {
+      chrome.runtime.sendMessage.mockResolvedValue({ success: false, error: "boom" });
+      document.getElementById("geminiApiKey").value = "k";
+      Settings.renderModelPicker({ providerId: "google", listed: null, savedModelId: null });
+      await Settings.refreshModelCatalog("openai", { key: "sk" });
+
+      const line = document.getElementById("modelSource");
+      expect(line.textContent).not.toContain("settings_modelsRefreshFailed");
+      expect(line.dataset.state).toBe("idle");
+    });
+
     it("says so when the provider catalog was truncated", async () => {
       chrome.storage.local.get.mockResolvedValue({
         apiModel: "gemini-3.6-flash",

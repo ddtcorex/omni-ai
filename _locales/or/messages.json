@@ -732,6 +732,10 @@
     "message": "ମଡେଲ ତାଲିକା ରିଫ୍ରେଶ କରାଯାଇପାରିଲା ନାହିଁ",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "ମଡେଲ ତାଲିକା ରିଫ୍ରେସ୍ ହେଉଛି…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "ଆପଣଙ୍କ ଖୋଜ ସହିତ କୌଣସି ମଡେଲ ମେଳ ଖାଉନାହିଁ",
     "description": "Shown when the search filters every model out"

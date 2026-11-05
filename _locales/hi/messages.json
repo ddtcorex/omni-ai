@@ -732,6 +732,10 @@
     "message": "मॉडल सूची रीफ़्रेश नहीं हो सकी",
     "description": "Shown when a provider catalog refresh failed, before the date of the cached copy when there is one"
   },
+  "settings_modelsRefreshing": {
+    "message": "मॉडल सूची रीफ़्रेश हो रही है…",
+    "description": "Shown under the model picker while the provider's model list is being fetched"
+  },
   "settings_modelsNoMatch": {
     "message": "कोई मॉडल आपकी खोज से मेल नहीं खाता",
     "description": "Shown when the search filters every model out"
