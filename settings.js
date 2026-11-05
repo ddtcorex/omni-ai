@@ -14,7 +14,7 @@ import {
   pickerRows,
   FILTER_THRESHOLD,
 } from "./lib/model-catalog.js";
-import { selectionFromStored } from "./lib/model-selection.js";
+import { selectionFromStored, selectionToStored } from "./lib/model-selection.js";
 import {
   getSyncPreferences,
   setSyncPreferences,
@@ -155,6 +155,8 @@ let selection = { providerId: null, modelId: null, customName: "" };
 /** @type {Map<string, { modelId: string|null, customName: string }>} */
 const drafts = new Map();
 /** Whether the model list shows past its first view, and the filter text. */
+/** The AI keys as loaded or last saved; Save maps the selection against it. */
+let storedAiConfig = {};
 let modelListExpanded = false;
 let modelFilterQuery = "";
 
@@ -1000,6 +1002,7 @@ export async function loadSettings() {
     if (elements.customGatewayApiKey)
       elements.customGatewayApiKey.value = config.customGatewayApiKey || "";
 
+    storedAiConfig = { ...config };
     // The provider card shows the stored choice. An install that only ever
     // saved a Gemini key runs Gemini's default model, so it shows that.
     const saved = selectionFromStored(
@@ -1077,7 +1080,19 @@ export async function saveSettings() {
       },
     };
 
+    // The provider card's choice, in the keys the runtime reads. A provider
+    // picked with no model yet is not saved: the stored model keeps working
+    // and the rest of the page still saves.
+    const mapped = selectionToStored(selection, storedAiConfig);
+    if (mapped.ok) Object.assign(aiConfig, mapped.values);
     await setLocalAiConfig(aiConfig);
+    storedAiConfig = { ...storedAiConfig, ...aiConfig };
+
+    // The list on screen came from a credential that was not saved yet; now it
+    // is, so one more listing lets the worker cache it for the next visit.
+    if (mapped.ok && selection.providerId && uncachedProviders.has(selection.providerId)) {
+      void refreshModelCatalog(selection.providerId);
+    }
 
     // Primary Language may have just changed: re-run i18n and re-localize
     // this page's own UI immediately (content.js's onPrimaryLanguageChanged
@@ -1090,7 +1105,13 @@ export async function saveSettings() {
     if (elements.defaultLanguage) {
       populateLanguageSelect(elements.defaultLanguage, "", preferences.defaultLanguage);
     }
+    paintKeyStatus();
+    renderModelArea();
 
+    if (!mapped.ok) {
+      showSaveStatus(i18n.getMessage("settings_errorChooseModel"), "error");
+      return;
+    }
     showSaveStatus(i18n.getMessage("settings_saved"), "success");
   } catch (error) {
     console.error("Failed to save settings:", error);

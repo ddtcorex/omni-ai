@@ -508,3 +508,154 @@ describe("model buttons", () => {
     expect(terra.title).toBe("gpt-5.6-terra");
   });
 });
+
+const saveStatus = () => document.getElementById("saveStatus");
+const validation = () => document.getElementById("validationStatus");
+async function clickSave() {
+  document.getElementById("saveBtn").click();
+  await flush();
+  await flush();
+}
+
+describe("save and check", () => {
+  test("a model button saves its API name with the provider", async () => {
+    const local = await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+    modelButtons()
+      .find((b) => b.dataset.model === "gpt-5.6-terra")
+      .click();
+    await clickSave();
+
+    expect(local.apiProvider).toBe("openai");
+    expect(local.apiModel).toBe("gpt-5.6-terra");
+    expect(saveStatus().classList.contains("ds-notice--success")).toBe(true);
+  });
+
+  test("an untouched open and save keeps a shipped id byte for byte", async () => {
+    const local = await boot({
+      apiProvider: "openai",
+      apiModel: "openai-gpt-5.6-terra",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+    await clickSave();
+
+    expect(local.apiModel).toBe("openai-gpt-5.6-terra");
+    expect(local.apiProvider).toBe("openai");
+  });
+
+  test("a gateway custom name saves the gateway entry", async () => {
+    const local = await boot({ customGatewayBaseUrl: "https://gw.example/v1" });
+    providerButton("customGateway").click();
+    const custom = document.getElementById("customModelName");
+    custom.value = "qwen3.8-27b";
+    custom.dispatchEvent(new Event("input", { bubbles: true }));
+    await clickSave();
+
+    expect(local).toMatchObject({
+      apiProvider: "customGateway",
+      apiModel: "custom-gateway",
+      customGatewayModelName: "qwen3.8-27b",
+    });
+  });
+
+  test("save after switching provider with no model refuses the AI config", async () => {
+    const local = await boot({
+      apiProvider: "google",
+      apiModel: "gemini-3.6-flash",
+      geminiApiKey: "AIza",
+    });
+    chrome.storage.sync.set.mockClear();
+    providerButton("groq").click();
+    document.getElementById("groqApiKey").value = "gsk-new";
+    await clickSave();
+
+    expect(local.apiModel).toBe("gemini-3.6-flash");
+    expect(local.apiProvider).toBe("google");
+    expect(local.groqApiKey).toBe("gsk-new");
+    expect(chrome.storage.sync.set).toHaveBeenCalled();
+    expect(saveStatus().classList.contains("ds-notice--error")).toBe(true);
+    expect(saveStatus().textContent).toBe("settings_errorChooseModel");
+  });
+
+  test("a fresh install saves without a provider and writes no model", async () => {
+    const local = await boot({});
+    await clickSave();
+
+    expect(local.apiModel).toBeUndefined();
+    expect(saveStatus().classList.contains("ds-notice--success")).toBe(true);
+  });
+
+  test("save after a listing with unsaved credentials lists once more", async () => {
+    let cachedFlag = false;
+    await boot(
+      {},
+      {
+        listModels: () => ({ ...listReply("gpt-5.7-nova"), cached: cachedFlag }),
+      },
+    );
+    providerButton("openai").click();
+    typeAndBlur("openaiApiKey", "sk-typed");
+    await flush();
+    modelButtons()[0].click();
+    cachedFlag = true;
+    chrome.runtime.sendMessage.mockClear();
+    await clickSave();
+
+    expect(sent("LIST_MODELS").map(([m]) => m.payload)).toEqual([{ provider: "openai" }]);
+  });
+
+  test("check configuration sends the typed custom name", async () => {
+    await boot({ apiProvider: "openai", apiModel: "gpt-5.7-nova", openaiApiKey: "sk" });
+    const custom = document.getElementById("customModelName");
+    custom.value = "ft:my-model";
+    custom.dispatchEvent(new Event("input", { bubbles: true }));
+    document.getElementById("validateBtn").click();
+    await flush();
+
+    expect(sent("VALIDATE_CONFIG")[0][0].payload).toEqual({
+      provider: "openai",
+      model: "ft:my-model",
+      key: "sk",
+    });
+  });
+
+  test("check sends the API name of a saved shipped id", async () => {
+    await boot({ apiProvider: "openai", apiModel: "openai-gpt-5.6-terra", openaiApiKey: "sk" });
+    document.getElementById("validateBtn").click();
+    await flush();
+
+    expect(sent("VALIDATE_CONFIG")[0][0].payload.model).toBe("gpt-5.6-terra");
+  });
+
+  test("check with no model shows the choose a model error", async () => {
+    await boot({});
+    providerButton("openai").click();
+    document.getElementById("openaiApiKey").value = "sk";
+    document.getElementById("validateBtn").click();
+    await flush();
+
+    expect(sent("VALIDATE_CONFIG")).toHaveLength(0);
+    expect(validation().classList.contains("ds-notice--error")).toBe(true);
+    expect(validation().textContent).toBe("settings_errorChooseModel");
+  });
+
+  test("a provider's validation error is shown as text, not markup", async () => {
+    await boot({ apiProvider: "openai", apiModel: "gpt-5.7-nova", openaiApiKey: "sk" });
+    chrome.runtime.sendMessage.mockImplementation(async (msg) =>
+      msg.type === "VALIDATE_CONFIG"
+        ? { success: false, error: '<img src=x onerror="alert(1)">' }
+        : { success: true },
+    );
+    document.getElementById("validateBtn").click();
+    await flush();
+
+    expect(validation().querySelector("img")).toBeNull();
+    expect(validation().textContent).toBe('<img src=x onerror="alert(1)">');
+    expect(validation().classList.contains("ds-notice--error")).toBe(true);
+  });
+});
