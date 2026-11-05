@@ -82,6 +82,18 @@ function buildFixture() {
       // fixture made every Save click throw after the language had been written.
       return `<input id="${id}" />`;
     }
+    // Key groups as settings.html marks them, so updateModelVisibility() can
+    // find the group of the selected model's provider.
+    const keyGroups = {
+      googleKeyGroup: "google",
+      groqKeyGroup: "groq",
+      openaiKeyGroup: "openai",
+      anthropicKeyGroup: "anthropic",
+      customGatewayKeyGroup: "customGateway",
+    };
+    if (keyGroups[id]) {
+      return `<div id="${id}" class="setting-item hidden" data-provider="${keyGroups[id]}"></div>`;
+    }
     if (id === "flashActionsList") {
       const boxes = FLASH_ACTION_IDS.map(
         (action) => `<label><input type="checkbox" data-flash-action="${action}" /></label>`,
@@ -635,6 +647,47 @@ describe("localizeDOM", () => {
 
       Settings.renderModelPicker();
       expect(select.selectedOptions[0].dataset.provider).toBe("customGateway");
+    });
+
+    it("shows the owning provider's key field for a model only the live list has", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "gemini-3.6-flash",
+        savedProviderId: "google",
+        fetchedAt: 1,
+      });
+      Settings.setupEventListeners();
+      const select = document.getElementById("apiModel");
+      select.value = "gpt-5.7-nova";
+      select.dispatchEvent(new Event("change"));
+
+      expect(document.getElementById("openaiKeyGroup").classList.contains("hidden")).toBe(false);
+      expect(document.getElementById("googleKeyGroup").classList.contains("hidden")).toBe(true);
+    });
+
+    it("validates a model only the live list has against its own provider", async () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "gpt-5.7-nova",
+        savedProviderId: "openai",
+        fetchedAt: 1,
+      });
+      document.getElementById("openaiApiKey").value = "sk-test";
+      chrome.runtime.sendMessage.mockReset();
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true });
+
+      await Settings.validateConfiguration();
+
+      const call = chrome.runtime.sendMessage.mock.calls.find(
+        ([m]) => m.type === "VALIDATE_CONFIG",
+      );
+      expect(call?.[0].payload).toEqual({
+        provider: "openai",
+        model: "gpt-5.7-nova",
+        key: "sk-test",
+      });
     });
 
     it("writes apiProvider next to apiModel when the picker is saved", async () => {

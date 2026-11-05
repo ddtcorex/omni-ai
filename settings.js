@@ -894,7 +894,9 @@ function toggleApiKeyVisibility() {
  */
 function updateModelVisibility() {
   const modelId = elements.apiModel.value;
-  const provider = getProviderByModel(modelId);
+  // The selected option knows its provider; a fetched id is unknown to the
+  // registry, so getProviderByModel() alone hid the key field for it.
+  const provider = selectedModelProvider();
 
   // Hide all groups first
   const groups = document.querySelectorAll(".setting-item[data-provider]");
@@ -926,7 +928,9 @@ function updateModelVisibility() {
  */
 export async function validateConfiguration() {
   const modelId = elements.apiModel.value;
-  const provider = getProviderByModel(modelId);
+  // Same as above: a fetched id only has a provider through its option, and
+  // without one the button silently did nothing.
+  const provider = selectedModelProvider();
   if (!provider) return;
 
   let validModelId = modelId;
