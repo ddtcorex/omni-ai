@@ -4,8 +4,13 @@ describe("renderNotice", () => {
   let el;
 
   beforeEach(() => {
-    document.body.innerHTML = `<div id="n" class="save-status ds-notice hidden"></div>`;
-    el = document.getElementById("n");
+    // Add the notice beside what the page already holds, as a real page does,
+    // instead of replacing the body and the live regions the module created.
+    document.getElementById("n")?.remove();
+    el = document.createElement("div");
+    el.id = "n";
+    el.className = "save-status ds-notice hidden";
+    document.body.appendChild(el);
   });
 
   test.each(NOTICE_TYPES)("a %s notice carries its modifier, an icon and the text", (type) => {
@@ -34,11 +39,30 @@ describe("renderNotice", () => {
     expect(el.textContent).toBe('<img src=x onerror="alert(1)">');
   });
 
-  test("an error is announced as an alert, the rest as a status", () => {
-    renderNotice(el, "error", "Bad");
-    expect(el.getAttribute("role")).toBe("alert");
-    renderNotice(el, "processing", "Working");
-    expect(el.getAttribute("role")).toBe("status");
+  test("the page has both live regions before any notice is shown", () => {
+    const polite = document.querySelector('[data-ds-announcer="polite"]');
+    const assertive = document.querySelector('[data-ds-announcer="assertive"]');
+    expect(polite.getAttribute("aria-live")).toBe("polite");
+    expect(polite.getAttribute("role")).toBe("status");
+    expect(assertive.getAttribute("aria-live")).toBe("assertive");
+    expect(assertive.getAttribute("role")).toBe("alert");
+  });
+
+  test("an error is spoken assertively, the rest politely, through the live regions", () => {
+    jest.useFakeTimers();
+    try {
+      renderNotice(el, "error", "Bad");
+      jest.runAllTimers();
+      expect(document.querySelector('[data-ds-announcer="assertive"]').textContent).toBe("Bad");
+
+      renderNotice(el, "success", "Saved");
+      jest.runAllTimers();
+      expect(document.querySelector('[data-ds-announcer="polite"]').textContent).toBe("Saved");
+      // The visible notice is not a second live region, so nothing is read twice.
+      expect(el.hasAttribute("role")).toBe(false);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   test("the processing icon spins", () => {
