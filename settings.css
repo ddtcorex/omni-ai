@@ -220,6 +220,13 @@ body {
   list-style: none;
 }
 
+/* The same accent ring as every other control, not the browser outline. */
+.advanced-settings > summary:focus-visible {
+  outline: none;
+  border-radius: var(--omni-radius-sm);
+  box-shadow: 0 0 0 2px var(--omni-accent);
+}
+
 .advanced-settings > summary::-webkit-details-marker {
   display: none;
 }

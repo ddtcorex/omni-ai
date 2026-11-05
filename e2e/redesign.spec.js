@@ -576,3 +576,29 @@ test("the panel tabs carry their label as a tooltip for clipped locales", async 
     await context.close();
   }
 });
+
+test("the Advanced toggle in Settings uses the accent focus ring, not the browser outline", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const page = await openSettings(context, sw, "light");
+    // A key press first: Chromium then treats the scripted focus as keyboard
+    // focus and matches :focus-visible.
+    await page.keyboard.press("Tab");
+    const ring = await page.evaluate(() => {
+      const el = document.querySelector(".advanced-settings > summary");
+      el.focus();
+      const style = getComputedStyle(el);
+      return {
+        matches: el.matches(":focus-visible"),
+        outline: style.outlineStyle,
+        shadow: style.boxShadow,
+      };
+    });
+
+    expect(ring.matches).toBe(true);
+    expect(ring.outline).toBe("none");
+    expect(ring.shadow).not.toBe("none");
+  } finally {
+    await context.close();
+  }
+});
