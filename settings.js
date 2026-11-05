@@ -1003,6 +1003,22 @@ function setButtonLoading(isLoading) {
 function showValidationStatus(message, type) {
   // One notice shape everywhere, and the provider's text is set as text.
   renderNotice(elements.validationStatus, type, message);
+  if (message) revealAboveSaveBar(elements.validationStatus);
+}
+
+/**
+ * The save bar floats over the page bottom on a tall window, so a notice that
+ * appears under the button the user just clicked can land behind it. Scroll
+ * just enough to show the whole notice above the bar.
+ * @param {HTMLElement|null} el
+ */
+function revealAboveSaveBar(el) {
+  const bar = document.querySelector(".save-actions");
+  if (!el || !bar || getComputedStyle(bar).position !== "fixed") return;
+  const overlap = el.getBoundingClientRect().bottom - bar.getBoundingClientRect().top;
+  if (overlap <= 0) return;
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  window.scrollBy({ top: overlap + 12, behavior: reduce ? "auto" : "smooth" });
 }
 
 export async function loadSettings() {

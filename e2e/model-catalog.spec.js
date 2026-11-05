@@ -178,3 +178,62 @@ test("the provider row is one tab stop that arrow keys move through", async () =
     await context.close();
   }
 });
+
+test("a check result is not hidden under the floating save bar", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    await context.route("https://api.openai.com/v1/chat/completions", (route) =>
+      route.fulfill({ json: { choices: [{ message: { content: "OK" } }] } }),
+    );
+    const page = await openSettings(context, sw, {
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk-test",
+      modelCatalog: {
+        openai: {
+          fetchedAt: Date.now(),
+          models: [{ id: "gpt-5.7-nova", label: "gpt-5.7-nova", createdAt: 1, state: "active" }],
+          truncated: false,
+        },
+      },
+    });
+    await page.setViewportSize({ width: 1000, height: 800 });
+    // The sections slide in; measure once they have settled.
+    await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .every(
+          (animation) =>
+            animation.playState !== "running" ||
+            animation.effect?.getTiming().iterations === Infinity,
+        ),
+    );
+    // Put the Validate button just above the bar, where the user clicks it.
+    await page.evaluate(() => {
+      const button = document.getElementById("validateBtn").getBoundingClientRect();
+      const bar = document.querySelector(".save-actions").getBoundingClientRect();
+      window.scrollBy(0, button.bottom - bar.top + 8);
+    });
+    await page.evaluate(() => document.getElementById("validateBtn").click());
+    await expect(page.locator("#validationStatus")).toHaveClass(/ds-notice--success/);
+    await page.waitForTimeout(600);
+
+    const boxes = await page.evaluate(() => ({
+      notice: document.getElementById("validationStatus").getBoundingClientRect().bottom,
+      bar: document.querySelector(".save-actions").getBoundingClientRect().top,
+    }));
+    console.log(
+      "DBG",
+      JSON.stringify(boxes),
+      await page.evaluate(() => [
+        scrollY,
+        document.documentElement.scrollHeight,
+        innerHeight,
+        document.getElementById("validateBtn").getBoundingClientRect().bottom,
+      ]),
+    );
+    expect(boxes.notice).toBeLessThanOrEqual(boxes.bar);
+  } finally {
+    await context.close();
+  }
+});
