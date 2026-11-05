@@ -23,6 +23,7 @@ import {
   getModelCatalogCache,
 } from "./lib/storage.js";
 import { buildLanguageOptionGroups, LANGUAGES } from "./lib/languages.js";
+import { renderNotice } from "./lib/notice.js";
 
 /**
  * Omni AI: Options Page Script
@@ -992,7 +993,8 @@ export async function validateConfiguration() {
     if (response.success) {
       showValidationStatus(i18n.getMessage("settings_configValid"), "success");
     } else {
-      showValidationStatus(i18n.getMessage("error_prefix") + response.error, "error");
+      // The icon and colour already say it failed; the provider's words follow.
+      showValidationStatus(response.error, "error");
     }
   } catch (err) {
     setButtonLoading(false);
@@ -1030,41 +1032,8 @@ function setButtonLoading(isLoading) {
  * Show validation status
  */
 function showValidationStatus(message, type) {
-  const el = elements.validationStatus;
-  if (!el) return;
-
-  // One notification shape everywhere: .ds-notice plus its status modifier.
-  el.className = "ds-notice visible";
-  const typeClass =
-    type === "success"
-      ? "ds-notice--success"
-      : type === "error"
-        ? "ds-notice--error"
-        : type === "processing"
-          ? "ds-notice--processing"
-          : "";
-  if (typeClass) el.classList.add(typeClass);
-
-  // Icon based on type
-  let icon = "";
-  if (type === "success")
-    icon =
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-  else if (type === "error")
-    icon =
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-  else if (type === "processing")
-    icon =
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
-
-  el.innerHTML = `${icon}<span>${message}</span>`;
-
-  // Auto hide after 5s if success
-  if (type === "success") {
-    setTimeout(() => {
-      el.classList.remove("visible");
-    }, 5000);
-  }
+  // One notice shape everywhere, and the provider's text is set as text.
+  renderNotice(elements.validationStatus, type, message);
 }
 
 export async function loadSettings() {
@@ -1228,18 +1197,15 @@ export async function saveSettings() {
  * Show save status message
  */
 function showSaveStatus(message, type = "success") {
-  elements.saveStatus.textContent = message;
-  // Colour comes from settings.css (.save-status / .save-status.error): an
-  // inline colour cannot be overridden by the reduced-motion or theme rules,
-  // and the status text now sits on the glass surface.
-  elements.saveStatus.classList.toggle("ds-notice--error", type !== "success");
-  elements.saveStatus.classList.toggle("ds-notice--success", type === "success");
-  elements.saveStatus.classList.add("visible");
+  renderNotice(elements.saveStatus, type === "success" ? "success" : "error", message);
 
-  setTimeout(() => {
+  clearTimeout(saveStatusTimer);
+  saveStatusTimer = setTimeout(() => {
     elements.saveStatus.classList.remove("visible");
   }, 3000);
 }
+
+let saveStatusTimer;
 
 // Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", init);

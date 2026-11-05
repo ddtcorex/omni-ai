@@ -287,6 +287,23 @@ describe("settings.js", () => {
     jest.useRealTimers();
   });
 
+  it("renders a provider's validation error as text, not markup", async () => {
+    chrome.storage.local.get.mockResolvedValue({});
+    await Settings.loadSettings();
+    chrome.runtime.sendMessage.mockResolvedValue({
+      success: false,
+      error: '<img src=x onerror="alert(1)">',
+    });
+    document.getElementById("apiModel").value = "gemini-3.6-flash";
+    document.getElementById("geminiApiKey").value = "k";
+
+    await Settings.validateConfiguration();
+
+    const el = document.getElementById("validationStatus");
+    expect(el.querySelector("img")).toBeNull();
+    expect(el.textContent).toContain('<img src=x onerror="alert(1)">');
+  });
+
   it("uses the shared ds-notice class for the validation message, not the old validation-message-only class", async () => {
     chrome.storage.local.get.mockResolvedValue({});
     await Settings.loadSettings();
