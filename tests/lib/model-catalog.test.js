@@ -239,6 +239,28 @@ test("the custom model sentinels survive a live catalog", () => {
   expect(model.recent.map((x) => x.id)).toContain("openai-custom");
 });
 
+test.each([
+  ["openai", "openai-custom", "OpenAI Custom Model..."],
+  ["customGateway", "custom-gateway", "Custom Gateway"],
+])(
+  "a saved %s sentinel is never pinned as no longer offered by a live catalog",
+  (providerId, sentinelId, label) => {
+    const model = buildPickerModel({
+      providerId,
+      listed,
+      savedModelId: sentinelId,
+      bundled: [...bundled, { id: sentinelId, name: label }],
+      recommended: [],
+      toApiName,
+      sentinels: [{ id: sentinelId, label }],
+    });
+
+    expect(model.pinned).toBeNull();
+    const rows = [...model.recommended, ...model.recent].filter((x) => x.id === sentinelId);
+    expect(rows).toHaveLength(1);
+  },
+);
+
 test("a provider that is not the saved model's owner never pins it", () => {
   const model = buildPickerModel({
     providerId: "openai",
