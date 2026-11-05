@@ -28,6 +28,52 @@ test("openai filter keeps chat families and drops everything else", () => {
   expect(ids).toEqual(["gpt-5.7-nova", "o4-mini"]);
 });
 
+test("openai filter drops families that the chat completions endpoint cannot serve", () => {
+  // Every one of these starts with a chat prefix but answers images, audio,
+  // realtime sessions or the Responses API only.
+  const ids = filterChatModels("openai", [
+    m("gpt-image-1"),
+    m("gpt-4o-mini-tts"),
+    m("gpt-4o-transcribe"),
+    m("gpt-realtime"),
+    m("gpt-4o-audio-preview"),
+    m("gpt-4o-mini-search-preview"),
+    m("codex-mini-latest"),
+    m("gpt-5-codex"),
+    m("o1-pro"),
+    m("o3-pro-2025-06-10"),
+    m("o3-deep-research"),
+    m("gpt-3.5-turbo-instruct"),
+    m("chatgpt-4o-latest"),
+    m("gpt-5.6-terra"),
+  ]).map((x) => x.id);
+
+  expect(ids).toEqual(["chatgpt-4o-latest", "gpt-5.6-terra"]);
+});
+
+test("gemini filter drops speech, image and live models that still list generateContent", () => {
+  const gen = { methods: ["generateContent"] };
+  const ids = filterChatModels("google", [
+    m("gemini-2.5-flash-preview-tts", gen),
+    m("gemini-2.5-flash-image", gen),
+    m("gemini-2.5-flash-native-audio-preview", gen),
+    m("gemini-2.0-flash-live-001", gen),
+    m("gemini-3.6-flash", gen),
+  ]).map((x) => x.id);
+
+  expect(ids).toEqual(["gemini-3.6-flash"]);
+});
+
+test("groq filter drops its speech models", () => {
+  const ids = filterChatModels("groq", [
+    m("canopylabs/orpheus-v1-english"),
+    m("whisper-large-v3"),
+    m("llama-3.3-70b-versatile"),
+  ]).map((x) => x.id);
+
+  expect(ids).toEqual(["llama-3.3-70b-versatile"]);
+});
+
 test("gemini filter requires generateContent", () => {
   const ids = filterChatModels("google", [
     m("gemini-3.6-flash", { methods: ["generateContent"] }),
