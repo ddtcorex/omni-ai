@@ -254,3 +254,30 @@ test("an empty live catalog keeps the bundled list instead of emptying the group
   expect(model.source).toBe("bundled");
   expect(model.recommended.length + model.recent.length).toBeGreaterThan(0);
 });
+
+test("a search keeps the selected model in its group so the select never blanks", () => {
+  const live = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: "openai-gpt-5.6-sol",
+    bundled,
+    toApiName,
+    query: "nova",
+    keepId: "openai-gpt-5.6-sol",
+  });
+  const liveIds = [...live.recommended, ...live.recent].map((x) => x.id);
+  expect(liveIds).toEqual(expect.arrayContaining(["gpt-5.6-sol", "gpt-5.7-nova"]));
+  expect(live.matches).toBe(1);
+
+  const offline = buildPickerModel({
+    providerId: "openai",
+    listed: null,
+    savedModelId: null,
+    bundled,
+    toApiName,
+    query: "zzz",
+    keepId: "openai-gpt-5.6-sol",
+  });
+  expect(offline.recent.map((x) => x.id)).toEqual(["openai-gpt-5.6-sol"]);
+  expect(offline.matches).toBe(0);
+});

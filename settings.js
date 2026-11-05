@@ -154,6 +154,7 @@ let modelSourceByProvider = new Map();
 let modelSourceFailure = false;
 let modelSearchBound = false;
 let selectedModelForPicker = null;
+let selectedProviderForPicker = null;
 let pendingRefreshProvider = null;
 
 /**
@@ -280,6 +281,12 @@ export function renderModelPicker({
   const ownerId = savedModelForPicker
     ? savedProviderForPicker || getProviderByModel(savedModelForPicker)?.id || null
     : null;
+  // What the select holds right now: an in progress choice, else the saved one.
+  // Both the id and its provider, because two groups can list the same id.
+  const currentId = selectedModelForPicker || savedModelForPicker;
+  const currentProvider = selectedModelForPicker
+    ? selectedProviderForPicker || getProviderByModel(selectedModelForPicker)?.id || null
+    : ownerId;
   select.textContent = "";
 
   let visible = 0;
@@ -301,6 +308,7 @@ export function renderModelPicker({
       query,
       sentinels,
       ownsSavedModel: provider.id === ownerId,
+      keepId: provider.id === currentProvider ? currentId : null,
     });
 
     // Values are always the API model name, so a fetched id and its shipped
@@ -349,17 +357,33 @@ export function renderModelPicker({
     visible += matching.length;
   });
 
-  const preferred = selectedModelForPicker || savedModelForPicker;
-  if (preferred) {
-    // Bundled options carry the shipped id, fetched ones the API name: try both
-    // so a selection survives whichever list happens to be rendered.
-    select.value = normalizeSavedIdForPicker(preferred);
-    if (!select.value) select.value = preferred;
+  if (currentId && !selectPickerOption(select, currentId, currentProvider)) {
+    selectedModelForPicker = null;
+    selectedProviderForPicker = null;
   }
-  if (!select.value) selectedModelForPicker = null;
 
   modelSourceCounts = { visible, total, query };
   paintModelSource();
+}
+
+/**
+ * Select the option for a model inside its own provider's group. Bundled
+ * options carry the shipped id and fetched ones the API name, so both are
+ * tried; the provider comes first because two groups can list the same id.
+ * @param {HTMLSelectElement} select
+ * @param {string} modelId
+ * @param {string|null} providerId
+ * @returns {boolean} whether an option was selected
+ */
+function selectPickerOption(select, modelId, providerId) {
+  const values = [normalizeSavedIdForPicker(modelId), modelId];
+  const options = Array.from(select.options);
+  const match =
+    options.find((o) => o.dataset.provider === providerId && values.includes(o.value)) ||
+    options.find((o) => values.includes(o.value));
+  if (!match) return false;
+  match.selected = true;
+  return true;
 }
 
 /**
@@ -631,6 +655,7 @@ export function setupEventListeners() {
   // Model change listener
   elements.apiModel.addEventListener("change", () => {
     selectedModelForPicker = elements.apiModel.value || null;
+    selectedProviderForPicker = elements.apiModel.selectedOptions?.[0]?.dataset.provider || null;
     updateModelVisibility();
     paintModelSource();
 
@@ -999,8 +1024,9 @@ export async function loadSettings() {
     // Load custom model name for selected provider
     const savedModel = config.apiModel || DEFAULT_MODEL;
     savedProviderForPicker = config.apiProvider || null;
+    // populateModelSelect selects the saved model inside its saved provider's
+    // group; setting .value here would pick the first group with that id.
     populateModelSelect(savedModel);
-    elements.apiModel.value = savedModel;
     if (!config.apiModel && !config.geminiApiKey) {
       elements.geminiApiKey?.focus();
     }

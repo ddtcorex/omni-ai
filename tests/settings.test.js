@@ -538,6 +538,66 @@ describe("localizeDOM", () => {
       );
     });
 
+    it("keeps the selected model while a search hides its neighbours", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "gpt-5.6-sol",
+        savedProviderId: "openai",
+        fetchedAt: 1,
+      });
+      const input = document.getElementById("modelSearch");
+      const select = document.getElementById("apiModel");
+
+      input.value = "nova";
+      input.dispatchEvent(new Event("input"));
+      expect(select.value).toBe("gpt-5.6-sol");
+      expect(select.selectedOptions[0].dataset.provider).toBe("openai");
+
+      input.value = "";
+      input.dispatchEvent(new Event("input"));
+      expect(select.value).toBe("gpt-5.6-sol");
+    });
+
+    it("keeps a gateway model selected when another provider lists the same id", () => {
+      // A self hosted gateway can list a vendor's own id. The select holds the
+      // same value twice, so the provider decides which option is the saved one.
+      Settings.renderModelPicker({
+        providerId: "customGateway",
+        listed: [{ id: "claude-sonnet-5", label: "claude-sonnet-5", createdAt: 1, state: "active" }],
+        savedModelId: "claude-sonnet-5",
+        savedProviderId: "customGateway",
+        fetchedAt: 1,
+      });
+      const select = document.getElementById("apiModel");
+      expect(select.selectedOptions[0].dataset.provider).toBe("customGateway");
+
+      const input = document.getElementById("modelSearch");
+      input.value = "claude";
+      input.dispatchEvent(new Event("input"));
+      expect(select.selectedOptions[0].dataset.provider).toBe("customGateway");
+    });
+
+    it("a change to the duplicate in another group follows that group", () => {
+      Settings.renderModelPicker({
+        providerId: "customGateway",
+        listed: [{ id: "claude-sonnet-5", label: "claude-sonnet-5", createdAt: 1, state: "active" }],
+        savedModelId: "gemini-3.6-flash",
+        savedProviderId: "google",
+        fetchedAt: 1,
+      });
+      Settings.setupEventListeners();
+      const select = document.getElementById("apiModel");
+      const gatewayOption = select.querySelector(
+        "optgroup[label='Custom Gateway'] option[value='claude-sonnet-5']",
+      );
+      gatewayOption.selected = true;
+      select.dispatchEvent(new Event("change"));
+
+      Settings.renderModelPicker();
+      expect(select.selectedOptions[0].dataset.provider).toBe("customGateway");
+    });
+
     it("writes apiProvider next to apiModel when the picker is saved", async () => {
       Settings.renderModelPicker({
         providerId: "openai",
