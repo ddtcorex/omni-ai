@@ -247,7 +247,20 @@ describe("message keys used by the source", () => {
   // A key read by the code but absent from the catalogue renders as an empty
   // string, which is how settings_errorNoGatewayUrl shipped as a blank notice.
   const root = path.join(__dirname, "..");
-  const SKIP = new Set(["node_modules", "tests", "e2e", "scripts", "coverage", "_locales", ".git"]);
+  // Tests, tooling and anything .gitignore keeps out of the repo (build
+  // output, reports): an old dist/ build reads keys that no longer exist.
+  const SKIP = new Set([
+    "node_modules",
+    "tests",
+    "e2e",
+    "scripts",
+    "coverage",
+    "_locales",
+    "dist",
+    "build",
+    "test-results",
+    "playwright-report",
+  ]);
 
   const sourceFiles = (dir) =>
     fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
