@@ -78,7 +78,8 @@ test("settings fields, flash pills and save bar wear the new material", async ()
   const { context, sw } = await launchWithExtension();
   try {
     const page = await openSettings(context, sw);
-    await expect(page.locator("#apiModel")).toHaveClass(/ds-field/);
+    await expect(page.locator("#customModelName")).toHaveClass(/ds-field/);
+    await expect(page.locator("#providerPicker .choice").first()).toHaveClass(/ds-pill/);
     await expect(page.locator("#saveBtn")).toHaveClass(/ds-btn-primary/);
 
     const barFilter = await page.evaluate(
@@ -649,27 +650,93 @@ test("the panel tabs carry their label as a tooltip for clipped locales", async 
   }
 });
 
-test("the Advanced toggle in Settings uses the accent focus ring, not the browser outline", async () => {
+test("the provider and model buttons use the accent focus ring", async () => {
   const { context, sw } = await launchWithExtension();
   try {
+    await sw.evaluate(() =>
+      chrome.storage.local.set({
+        apiProvider: "openai",
+        apiModel: "gpt-5.7-nova",
+        modelCatalog: {
+          openai: {
+            fetchedAt: Date.now(),
+            models: [{ id: "gpt-5.7-nova", label: "gpt-5.7-nova", createdAt: 1, state: "active" }],
+          },
+        },
+      }),
+    );
     const page = await openSettings(context, sw, "light");
+    // init() is async: wait for both rows before focusing into them.
+    await expect(page.locator("#modelPicker .choice")).toHaveCount(1);
     // A key press first: Chromium then treats the scripted focus as keyboard
     // focus and matches :focus-visible.
     await page.keyboard.press("Tab");
-    const ring = await page.evaluate(() => {
-      const el = document.querySelector(".advanced-settings > summary");
-      el.focus();
-      const style = getComputedStyle(el);
-      return {
-        matches: el.matches(":focus-visible"),
-        outline: style.outlineStyle,
-        shadow: style.boxShadow,
-      };
-    });
+    for (const selector of ['#providerPicker [data-provider="groq"]', "#modelPicker .choice"]) {
+      const ring = await page.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        el.focus();
+        const style = getComputedStyle(el);
+        return {
+          matches: el.matches(":focus-visible"),
+          outline: style.outlineStyle,
+          shadow: style.boxShadow,
+        };
+      }, selector);
+      expect(ring.matches, selector).toBe(true);
+      expect(ring.outline, selector).toBe("none");
+      expect(ring.shadow, selector).not.toBe("none");
+    }
+  } finally {
+    await context.close();
+  }
+});
 
-    expect(ring.matches).toBe(true);
-    expect(ring.outline).toBe("none");
-    expect(ring.shadow).not.toBe("none");
+test("choice button outlines hold 3:1 and checked labels 4.5:1 in both themes", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    for (const theme of ["light", "dark"]) {
+      const page = await openSettings(context, sw, theme);
+      await expect(page.locator("#providerPicker [role=radio]")).toHaveCount(5);
+      const colors = await page.evaluate(() => {
+        const pick = (el, prop) => getComputedStyle(el)[prop];
+        const card = document.querySelector(".setting-card");
+        const [unchecked, checked] = ["google", "openai"].map((id) =>
+          document.querySelector(`#providerPicker [data-provider="${id}"]`),
+        );
+        checked.setAttribute("aria-checked", "true");
+        return {
+          body: pick(document.body, "backgroundColor"),
+          card: pick(card, "backgroundColor"),
+          line: pick(unchecked, "borderTopColor"),
+          fill: pick(checked, "backgroundColor"),
+          text: pick(checked, "color"),
+        };
+      });
+      const parse = (value) => {
+        const m = value.match(/rgba?\(([^)]+)\)/);
+        const [r, g, b, a = 1] = m[1].split(",").map((v) => parseFloat(v));
+        return { rgb: [r, g, b], a };
+      };
+      const over = (layers) =>
+        layers.reduce((acc, { rgb, a }) => rgb.map((c, i) => c * a + acc[i] * (1 - a)), [0, 0, 0]);
+      const ratio = (x, y) => {
+        const lum = (rgb) =>
+          rgb
+            .map((c) => c / 255)
+            .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+            .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+        const [hi, lo] = [lum(x), lum(y)].sort((p, q) => q - p);
+        return (hi + 0.05) / (lo + 0.05);
+      };
+      const ground = over([parse(colors.body), parse(colors.card)].filter((l) => l.a > 0));
+      const line = over([{ rgb: ground, a: 1 }, parse(colors.line)]);
+      const fill = over([{ rgb: ground, a: 1 }, parse(colors.fill)]);
+      expect(ratio(line, ground), `${theme} outline`).toBeGreaterThanOrEqual(3);
+      expect(ratio(parse(colors.text).rgb, fill), `${theme} checked label`).toBeGreaterThanOrEqual(
+        4.5,
+      );
+      await page.close();
+    }
   } finally {
     await context.close();
   }

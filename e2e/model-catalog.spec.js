@@ -1,131 +1,179 @@
 const { test, expect } = require("@playwright/test");
 const { launchWithExtension } = require("./extension.fixtures");
 
-// The model picker renders five provider groups at once, which the jsdom tests
-// never did: each of them rendered a single provider. These specs cover the
-// cross-group behaviour a user actually meets, plus the apiProvider contract
-// that keeps a fetched model id routable.
+// The provider first model picker in the real extension: the worker lists a
+// provider's models through a routed vendor endpoint, Settings renders them
+// as buttons, and Save writes the keys the runtime reads.
 
-const CACHED_OPENAI = [
-  { id: "gpt-5.6-sol", label: "gpt-5.6-sol", createdAt: 2, state: "active", methods: null },
-  { id: "gpt-5.7-nova", label: "gpt-5.7-nova", createdAt: 1, state: "active", methods: null },
-];
+const openaiList = (ids) => ({
+  object: "list",
+  data: ids.map((id, i) => ({ id, created: 2000 - i })),
+});
 
-async function openSettings(context, sw, seed) {
+async function openSettings(context, sw, seed = {}) {
   // Seed through the service worker: a fresh page has no chrome.* API until it
-  // is an extension page.
-  await sw.evaluate((values) => chrome.storage.local.set(values), {
-    geminiApiKey: "",
-    openaiApiKey: "",
-    apiModel: "gemini-3.6-flash",
-    apiProvider: "google",
-    ...seed,
+  // is an extension page. Wait for the install defaults first: they are a
+  // read, merge and write, and a seed landing in between is overwritten.
+  await sw.evaluate(async () => {
+    for (let i = 0; i < 100; i++) {
+      const { currentPreset } = await chrome.storage.local.get("currentPreset");
+      if (currentPreset) return;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
   });
-
+  await sw.evaluate((values) => chrome.storage.local.set(values), seed);
   const page = await context.newPage();
   const extId = new URL(sw.url()).host;
   await page.goto(`chrome-extension://${extId}/settings.html`);
-  // init() is async, and <optgroup> never counts as "visible" to Playwright
-  // (a native select renders its options outside the DOM box model).
-  await page.waitForFunction(() => document.querySelectorAll("#apiModel optgroup").length > 0);
+  await expect(page.locator("#providerPicker [role=radio]")).toHaveCount(5);
   return page;
 }
 
-test("renders every provider group plus the custom model escape hatches", async () => {
+const modelButtons = (page) => page.locator("#modelPicker [role=radio]");
+
+test("provider first: a key blur lists the provider's models as buttons", async () => {
   const { context, sw } = await launchWithExtension();
   try {
-    const page = await openSettings(context, sw, {
-      modelCatalog: { openai: { fetchedAt: Date.now(), models: CACHED_OPENAI, truncated: false } },
+    const listed = [];
+    await context.route("https://api.openai.com/v1/models", (route) => {
+      listed.push(route.request().headers().authorization);
+      return route.fulfill({
+        json: openaiList(["gpt-5.7-nova", "gpt-5.6-terra", "gpt-image-2", "o5-mini"]),
+      });
     });
+    const page = await openSettings(context, sw);
 
-    const groups = await page.evaluate(() =>
-      Array.from(document.querySelectorAll("#apiModel optgroup")).map((group) => group.label),
-    );
-    expect(groups).toEqual([
-      "Google Gemini",
-      "OpenAI",
-      "Groq",
-      "Anthropic Claude",
-      "Custom Gateway",
-    ]);
+    await expect(page.locator("#modelHint")).not.toBeEmpty();
+    await page.locator('#providerPicker [data-provider="openai"]').click();
+    await page.fill("#openaiApiKey", "sk-e2e-key");
+    await page.locator("#openaiApiKey").blur();
 
-    const openaiOptions = await page.evaluate(() =>
-      Array.from(document.querySelectorAll("#apiModel optgroup[label='OpenAI'] option")).map(
-        (option) => option.value,
-      ),
-    );
-    // Nothing fetched for this provider yet, so the bundled catalog renders, and
-    // its custom escape hatch appears exactly once.
-    expect(openaiOptions).toContain("openai-gpt-5.6-sol");
-    expect(openaiOptions.filter((value) => value === "openai-custom")).toHaveLength(1);
+    await expect(page.locator("#keyStatus")).toHaveAttribute("data-state", "ok");
+    expect(listed).toEqual(["Bearer sk-e2e-key"]);
+    const ids = await modelButtons(page).evaluateAll((els) => els.map((el) => el.dataset.model));
+    // The recommended model leads; the image model is filtered out.
+    expect(ids[0]).toBe("gpt-5.6-terra");
+    expect(ids).toContain("gpt-5.7-nova");
+    expect(ids).not.toContain("gpt-image-2");
+    await expect(page.locator("#modelHint")).toBeEmpty();
   } finally {
     await context.close();
   }
 });
 
-test("the saved model stays selected after a catalog renders", async () => {
+test("a 288 model gateway shows twelve buttons, More and a filter", async () => {
+  const { context, sw } = await launchWithExtension();
+  try {
+    const ids = ["qwen3.8-27b", ...Array.from({ length: 287 }, (_, i) => `vendor/model-${i}`)];
+    await context.route("https://gw.example.test/v1/models", (route) =>
+      route.fulfill({ json: openaiList(ids) }),
+    );
+    const page = await openSettings(context, sw);
+    await page.locator('#providerPicker [data-provider="customGateway"]').click();
+    await page.fill("#customGatewayBaseUrl", "https://gw.example.test/v1");
+    await page.locator("#customGatewayBaseUrl").blur();
+
+    await expect(modelButtons(page)).toHaveCount(12);
+    await expect(page.locator("#modelFilterRow")).toBeVisible();
+    await page.locator("#modelMore").click();
+    await expect(modelButtons(page)).toHaveCount(288);
+    await page.locator("#modelMore").click();
+    await page.fill("#modelFilter", "model-286");
+    await expect(modelButtons(page)).toHaveCount(1);
+    await expect(modelButtons(page).first()).toHaveAttribute("data-model", "vendor/model-286");
+  } finally {
+    await context.close();
+  }
+});
+
+test("saving writes the provider beside the chosen model", async () => {
   const { context, sw } = await launchWithExtension();
   try {
     const page = await openSettings(context, sw, {
-      apiModel: "openai-gpt-5.6-sol",
       apiProvider: "openai",
+      apiModel: "gpt-5.6-terra",
       openaiApiKey: "sk-test",
-      modelCatalog: { openai: { fetchedAt: Date.now(), models: CACHED_OPENAI, truncated: false } },
+      modelCatalog: {
+        openai: {
+          fetchedAt: Date.now(),
+          models: ["gpt-5.6-terra", "gpt-5.7-nova"].map((id) => ({
+            id,
+            label: id,
+            createdAt: 1,
+            state: "active",
+            methods: null,
+          })),
+          truncated: false,
+        },
+      },
     });
 
-    // The shipped id and the fetched id address one model, so the select holds
-    // the API name and must not be blank.
-    await expect(page.locator("#apiModel")).toHaveValue("gpt-5.6-sol");
+    await page.locator('#modelPicker [data-model="gpt-5.7-nova"]').click();
+    await page.click("#saveBtn");
+    await expect(page.locator("#saveStatus")).toHaveClass(/ds-notice--success/);
+
+    const stored = await page.evaluate(() => chrome.storage.local.get(["apiModel", "apiProvider"]));
+    expect(stored).toEqual({ apiModel: "gpt-5.7-nova", apiProvider: "openai" });
   } finally {
     await context.close();
   }
 });
 
-test("the search box reaches a model past the visible cap", async () => {
+test("a saved gateway custom name opens filled in, from the cache, with no request", async () => {
   const { context, sw } = await launchWithExtension();
   try {
-    const many = Array.from({ length: 40 }, (_, i) => ({
-      id: `gpt-5.${i}-model`,
-      label: `gpt-5.${i}-model`,
-      createdAt: 100 - i,
+    let requests = 0;
+    await context.route("https://gw.example.test/**", (route) => {
+      requests += 1;
+      return route.fulfill({ json: openaiList(["x"]) });
+    });
+    const models = ["qwen3.8-27b", "deepseek-v4"].map((id) => ({
+      id,
+      label: id,
+      createdAt: 1,
       state: "active",
       methods: null,
     }));
     const page = await openSettings(context, sw, {
-      apiModel: "openai-gpt-5.6-sol",
-      apiProvider: "openai",
-      openaiApiKey: "sk-test",
-      modelCatalog: { openai: { fetchedAt: Date.now(), models: many, truncated: false } },
+      apiProvider: "customGateway",
+      apiModel: "custom-gateway",
+      customGatewayModelName: "qwen3.8-27b",
+      customGatewayBaseUrl: "https://gw.example.test/v1",
+      modelCatalog: {
+        customGateway: {
+          fetchedAt: Date.now(),
+          models,
+          truncated: false,
+          baseUrl: "https://gw.example.test/v1",
+        },
+      },
     });
 
-    await page.fill("#modelSearch", "gpt-5.39");
-    const values = await page.evaluate(() =>
-      Array.from(document.querySelectorAll("#apiModel option")).map((option) => option.value),
-    );
-    // The saved model keeps its pinned row; the search reaches the match past the cap.
-    expect(values).toEqual(["gpt-5.6-sol", "gpt-5.39-model"]);
+    await expect(page.locator("#customModelName")).toHaveValue("qwen3.8-27b");
+    await expect(modelButtons(page)).toHaveCount(2);
+    await expect(page.locator('#modelPicker [aria-checked="true"]')).toHaveCount(0);
+    expect(requests).toBe(0);
   } finally {
     await context.close();
   }
 });
 
-test("saving writes the provider beside the model", async () => {
+test("the provider row is one tab stop that arrow keys move through", async () => {
   const { context, sw } = await launchWithExtension();
   try {
     const page = await openSettings(context, sw, {
-      apiModel: "openai-gpt-5.6-sol",
-      apiProvider: "openai",
-      openaiApiKey: "sk-test",
-      modelCatalog: { openai: { fetchedAt: Date.now(), models: CACHED_OPENAI, truncated: false } },
+      apiProvider: "google",
+      apiModel: "gemini-3.6-flash",
     });
-
-    await page.selectOption("#apiModel", "gpt-5.7-nova");
-    await page.click("#saveBtn");
-    await expect(page.locator("#saveStatus")).not.toBeEmpty();
-
-    const stored = await page.evaluate(() => chrome.storage.local.get(["apiModel", "apiProvider"]));
-    expect(stored.apiModel).toBe("gpt-5.7-nova");
-    expect(stored.apiProvider).toBe("openai");
+    await page.locator('#providerPicker [data-provider="google"]').focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator('#providerPicker [data-provider="openai"]')).toBeFocused();
+    await page.keyboard.press("Space");
+    await expect(page.locator('#providerPicker [data-provider="openai"]')).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    await expect(page.locator("#openaiKeyGroup")).toBeVisible();
   } finally {
     await context.close();
   }
