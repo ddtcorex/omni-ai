@@ -187,6 +187,20 @@
     "message": "Najprej izberite model ali vnesite ime modela.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "Preverjanje ključa in nalaganje modelov…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Ključ je veljaven · modelov: $COUNT$",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Modelov ni bilo mogoče naložiti: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "Izberite model AI, ki ga želite uporabljati",
     "description": "AI model hint"

@@ -7,6 +7,7 @@ import {
   setThemePreference,
 } from "./lib/theme-manager.js";
 import { AI_PROVIDERS, getApiModelName, DEFAULT_MODEL } from "./lib/ai-providers.js";
+import { filterChatModels, isCacheFresh } from "./lib/model-catalog.js";
 import { selectionFromStored } from "./lib/model-selection.js";
 import {
   getSyncPreferences,
@@ -14,6 +15,7 @@ import {
   getLocalAiConfig,
   setLocalAiConfig,
   getSettingsBag,
+  getModelCatalogCache,
 } from "./lib/storage.js";
 import { buildLanguageOptionGroups, LANGUAGES } from "./lib/languages.js";
 import { renderNotice } from "./lib/notice.js";
@@ -132,6 +134,7 @@ export async function init() {
   await loadSettings();
   await loadStats();
   setupEventListeners();
+  await hydrateModelCatalog(selection.providerId);
 }
 
 /**
@@ -219,7 +222,7 @@ function keepDraft() {
  * Show a provider: its row checked, its credentials, its models.
  * @param {string} providerId
  */
-export function selectProvider(providerId, { focus = true } = {}) {
+export function selectProvider(providerId, { focus = true, hydrate = true } = {}) {
   if (!AI_PROVIDERS[providerId]) return;
   keepDraft();
   const draft = drafts.get(providerId) || { modelId: null, customName: "" };
@@ -232,7 +235,9 @@ export function selectProvider(providerId, { focus = true } = {}) {
   }
   showKeyGroup();
   if (elements.customModelName) elements.customModelName.value = selection.customName;
+  paintKeyStatus();
   renderModelArea();
+  if (hydrate) void hydrateModelCatalog(providerId);
 }
 
 /** Show only the selected provider's credential fields. */
@@ -245,16 +250,228 @@ function showKeyGroup() {
   });
 }
 
+/** Each provider's fetched list for this page's lifetime. */
+/** @type {Map<string, { listed: Array<Object>, fetchedAt: number|null, truncated: boolean }>} */
+const modelCatalogs = new Map();
+/** What the last listing said, per provider. */
+/** @type {Map<string, { state: "busy"|"ok"|"failed", message?: string }>} */
+const listingStates = new Map();
+/**
+ * Providers whose list on screen came from a credential the worker did not
+ * cache (still unsaved). A Save asks once more so the saved one is cached.
+ */
+const uncachedProviders = new Set();
+let listingInFlight = false;
+/** @type {{ providerId: string, credential: { key?: string, baseUrl?: string } }|null} */
+let queuedListing = null;
+/** How long one listing may take before it counts as failed. */
+const LISTING_TIMEOUT_MS = 15000;
+
+/**
+ * The provider that owns a key or base URL field.
+ * @param {HTMLElement|null} input
+ * @returns {{ id: string, keySetting?: string }|null}
+ */
+function providerForField(input) {
+  if (!input) return null;
+  // The base URL is half of the gateway's credential.
+  if (input.id === "customGatewayBaseUrl") return AI_PROVIDERS.customGateway;
+  return Object.values(AI_PROVIDERS).find((provider) => provider.keySetting === input.id) || null;
+}
+
+/**
+ * Read the current value of a key or base URL field.
+ * @param {string} fieldId
+ * @returns {string}
+ */
+function keyFieldValue(fieldId) {
+  const field = /** @type {HTMLInputElement|null} */ (document.getElementById(fieldId));
+  return field?.value?.trim() || "";
+}
+
+/** A base URL with its trailing slashes dropped, so two spellings compare equal. */
+function normalizeBaseUrl(url) {
+  return String(url || "").replace(/\/+$/, "");
+}
+
+/**
+ * The credential a provider's fields hold right now, saved or not. A gateway
+ * key always travels with its base URL: the worker must never pair a key typed
+ * for one gateway with the URL of another.
+ * @param {string} providerId
+ * @returns {{ key?: string, baseUrl?: string }}
+ */
+function formCredential(providerId) {
+  const provider = AI_PROVIDERS[providerId];
+  if (!provider) return {};
+  const credential = {};
+  const key = keyFieldValue(provider.keySetting);
+  if (key) credential.key = key;
+  if (providerId === "customGateway") {
+    const baseUrl = keyFieldValue("customGatewayBaseUrl");
+    if (baseUrl) credential.baseUrl = baseUrl;
+  }
+  return credential;
+}
+
+/**
+ * Whether a provider's fields hold enough to list its models: a key, or for
+ * the gateway a base URL (its key is optional).
+ * @param {string} providerId
+ * @returns {boolean}
+ */
+function hasCredential(providerId) {
+  if (providerId === "customGateway") return Boolean(keyFieldValue("customGatewayBaseUrl"));
+  const keySetting = AI_PROVIDERS[providerId]?.keySetting;
+  return Boolean(keySetting && keyFieldValue(keySetting));
+}
+
+/**
+ * Repaint the card when a provider's listing changed, but only if that
+ * provider is the one shown: a late reply never paints over another one.
+ * @param {string} providerId
+ */
+function paintIfShown(providerId) {
+  if (providerId !== selection.providerId) return;
+  paintKeyStatus();
+  renderModelArea();
+}
+
+/** The line under the credentials: checking, valid with a count, or failed. */
+function paintKeyStatus() {
+  const el = elements.keyStatus;
+  const providerId = selection.providerId;
+  if (elements.keyStatusRow) elements.keyStatusRow.hidden = !providerId;
+  if (!el || !providerId) return;
+
+  const listing = listingStates.get(providerId);
+  const catalog = modelCatalogs.get(providerId);
+  const state = listing?.state || (catalog ? "ok" : "idle");
+  el.dataset.state = state;
+  if (state === "busy") {
+    el.textContent = i18n.getMessage("settings_keyChecking");
+  } else if (state === "failed") {
+    el.textContent = i18n.getMessage("settings_modelsLoadFailed", [listing?.message || ""]);
+  } else if (state === "ok" && catalog) {
+    const chat = filterChatModels(providerId, catalog.listed);
+    const count = (chat.length ? chat : catalog.listed).length;
+    el.textContent = i18n.getMessage("settings_keyValid", [String(count)]);
+  } else {
+    el.textContent = "";
+  }
+
+  if (elements.modelRefresh) {
+    elements.modelRefresh.disabled = state === "busy" || !hasCredential(providerId);
+    elements.modelRefresh.setAttribute("aria-busy", String(state === "busy"));
+  }
+}
+
+/**
+ * List one provider's models through the worker. A listing is the key check:
+ * it succeeds only with a credential the provider accepts. A failure keeps
+ * any list already on screen and shows the provider's own words.
+ * @param {string} providerId
+ * @param {{ key?: string, baseUrl?: string }} [credential] form values not yet saved;
+ *   empty means the saved ones
+ */
+export async function refreshModelCatalog(providerId, credential = {}) {
+  if (!providerId) return;
+  if (listingInFlight) {
+    // The newer intent runs next instead of being dropped.
+    queuedListing = { providerId, credential };
+    return;
+  }
+  listingInFlight = true;
+  listingStates.set(providerId, { state: "busy" });
+  paintIfShown(providerId);
+  let timer;
+
+  try {
+    const payload = { provider: providerId };
+    if (credential.key) payload.key = credential.key;
+    if (credential.baseUrl) payload.baseUrl = credential.baseUrl;
+    const response = await Promise.race([
+      chrome.runtime.sendMessage({ type: "LIST_MODELS", payload }),
+      new Promise((resolve) => {
+        timer = setTimeout(
+          () => resolve({ success: false, error: i18n.getMessage("settings_connectionFailed") }),
+          LISTING_TIMEOUT_MS,
+        );
+      }),
+    ]);
+
+    if (!response?.success) {
+      listingStates.set(providerId, { state: "failed", message: String(response?.error || "") });
+      return;
+    }
+    if (response.cached === false) uncachedProviders.add(providerId);
+    else uncachedProviders.delete(providerId);
+    modelCatalogs.set(providerId, {
+      listed: Array.isArray(response.models) ? response.models : [],
+      fetchedAt: response.fetchedAt || Date.now(),
+      truncated: Boolean(response.truncated),
+    });
+    listingStates.set(providerId, { state: "ok" });
+  } catch (error) {
+    listingStates.set(providerId, { state: "failed", message: String(error?.message || "") });
+  } finally {
+    clearTimeout(timer);
+    listingInFlight = false;
+    paintIfShown(providerId);
+    const queued = queuedListing;
+    queuedListing = null;
+    if (queued) void refreshModelCatalog(queued.providerId, queued.credential);
+  }
+}
+
+/**
+ * Show a provider's cached list, then list it again when the cache is
+ * missing or stale and its saved credential is filled in. Runs once per
+ * provider per page load.
+ * @param {string|null} providerId
+ */
+async function hydrateModelCatalog(providerId) {
+  if (!providerId || modelCatalogs.has(providerId) || listingStates.has(providerId)) return;
+
+  let cache = await getModelCatalogCache(providerId);
+  // A gateway catalog lists what one base URL offers. Once the URL points
+  // elsewhere it describes the wrong gateway, however fresh it is.
+  if (
+    cache &&
+    providerId === "customGateway" &&
+    normalizeBaseUrl(cache.baseUrl) !== normalizeBaseUrl(keyFieldValue("customGatewayBaseUrl"))
+  ) {
+    cache = null;
+  }
+  if (cache && !modelCatalogs.has(providerId)) {
+    modelCatalogs.set(providerId, {
+      listed: Array.isArray(cache.models) ? cache.models : [],
+      fetchedAt: cache.fetchedAt || null,
+      truncated: Boolean(cache.truncated),
+    });
+    paintIfShown(providerId);
+  }
+  // The cache read yields, and a key typed meanwhile may already have
+  // started (or queued) this provider's listing: never list it twice.
+  const listingStarted = listingStates.has(providerId) || queuedListing?.providerId === providerId;
+  if (!listingStarted && !isCacheFresh(cache?.fetchedAt) && hasCredential(providerId)) {
+    await refreshModelCatalog(providerId);
+  }
+}
+
 /** The model area for the selected provider. */
 function renderModelArea() {
+  const hasList = Boolean(selection.providerId && modelCatalogs.has(selection.providerId));
   if (elements.modelHint) {
-    elements.modelHint.textContent = selection.providerId
-      ? i18n.getMessage(
-          selection.providerId === "customGateway"
-            ? "settings_modelsEnterGatewayUrl"
-            : "settings_modelsEnterKey",
-        )
-      : i18n.getMessage("settings_modelsChooseProvider");
+    elements.modelHint.textContent = hasList
+      ? ""
+      : selection.providerId
+        ? i18n.getMessage(
+            selection.providerId === "customGateway"
+              ? "settings_modelsEnterGatewayUrl"
+              : "settings_modelsEnterKey",
+          )
+        : i18n.getMessage("settings_modelsChooseProvider");
   }
 }
 
@@ -386,6 +603,36 @@ async function loadStats() {
  * Set up event listeners
  */
 export function setupEventListeners() {
+  // Leaving a key or base URL field with a new value lists that provider's
+  // models: the listing is the key check, and it costs no model call.
+  const credentialInputs = [
+    elements.geminiApiKey,
+    elements.groqApiKey,
+    elements.openaiApiKey,
+    elements.anthropicApiKey,
+    elements.customGatewayApiKey,
+    elements.customGatewayBaseUrl,
+  ];
+  credentialInputs.forEach((input) => {
+    if (!input) return;
+    let lastValue = (input.value || "").trim();
+    input.addEventListener("blur", () => {
+      const value = (input.value || "").trim();
+      if (value === lastValue) return;
+      lastValue = value;
+      const provider = providerForField(input);
+      if (provider && hasCredential(provider.id)) {
+        void refreshModelCatalog(provider.id, formCredential(provider.id));
+      }
+    });
+  });
+
+  elements.modelRefresh?.addEventListener("click", () => {
+    if (selection.providerId) {
+      void refreshModelCatalog(selection.providerId, formCredential(selection.providerId));
+    }
+  });
+
   // A typed model name replaces the buttons' choice for this provider.
   elements.customModelName?.addEventListener("input", () => {
     selection.customName = elements.customModelName.value;
@@ -637,7 +884,7 @@ export async function loadSettings() {
     selection = { providerId: null, modelId: null, customName: "" };
     if (saved.providerId) {
       drafts.set(saved.providerId, { modelId: saved.modelId, customName: saved.customName });
-      selectProvider(saved.providerId, { focus: false });
+      selectProvider(saved.providerId, { focus: false, hydrate: false });
     } else {
       renderProviderPicker();
       showKeyGroup();

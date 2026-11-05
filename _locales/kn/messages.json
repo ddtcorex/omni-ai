@@ -187,6 +187,20 @@
     "message": "ಮೊದಲು ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಮಾದರಿಯ ಹೆಸರನ್ನು ಟೈಪ್ ಮಾಡಿ.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "ಕೀ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ ಮತ್ತು ಮಾದರಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "ಕೀ ಮಾನ್ಯವಾಗಿದೆ · $COUNT$ ಮಾದರಿಗಳು",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "ಮಾದರಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "ಬಳಸಬೇಕಾದ AI ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     "description": "AI model hint"

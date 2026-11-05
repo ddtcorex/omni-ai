@@ -143,6 +143,20 @@
     "message": "먼저 모델을 선택하거나 모델 이름을 입력하세요.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "키를 확인하고 모델을 불러오는 중…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "유효한 키 · 모델 $COUNT$개",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "모델을 불러오지 못했습니다: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "사용할 AI 모델 선택",
     "description": "AI 모델 힌트"

@@ -187,6 +187,20 @@
     "message": "Najprv vyberte model alebo zadajte jeho názov.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "Kontroluje sa kľúč a načítavajú modely…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Kľúč je platný · modelov: $COUNT$",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Modely sa nepodarilo načítať: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "Vyberte model AI, ktorý chcete použiť",
     "description": "AI model hint"

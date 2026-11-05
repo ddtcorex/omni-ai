@@ -143,6 +143,20 @@
     "message": "Wähle zuerst ein Modell oder gib einen Modellnamen ein.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "Schlüssel wird geprüft, Modelle werden geladen…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Schlüssel gültig · $COUNT$ Modelle",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Modelle konnten nicht geladen werden: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "Wählen Sie das zu verwendende KI-Modell aus",
     "description": "KI-Modell-Hinweis"

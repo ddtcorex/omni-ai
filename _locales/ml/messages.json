@@ -187,6 +187,20 @@
     "message": "ആദ്യം ഒരു മോഡൽ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ മോഡലിന്റെ പേര് ടൈപ്പ് ചെയ്യുക.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "കീ പരിശോധിച്ച് മോഡലുകൾ ലോഡ് ചെയ്യുന്നു…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "കീ സാധുവാണ് · $COUNT$ മോഡലുകൾ",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "മോഡലുകൾ ലോഡ് ചെയ്യാനായില്ല: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "ഉപയോഗിക്കേണ്ട AI മോഡൽ തിരഞ്ഞെടുക്കുക",
     "description": "AI model hint"

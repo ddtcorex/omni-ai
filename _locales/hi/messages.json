@@ -187,6 +187,20 @@
     "message": "पहले कोई मॉडल चुनें या मॉडल का नाम लिखें।",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "कुंजी जाँची जा रही है और मॉडल लोड हो रहे हैं…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "कुंजी मान्य है · $COUNT$ मॉडल",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "मॉडल लोड नहीं हो सके: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "इस्तेमाल के लिए AI मॉडल चुनें",
     "description": "AI model hint"

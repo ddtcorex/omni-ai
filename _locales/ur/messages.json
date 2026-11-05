@@ -187,6 +187,20 @@
     "message": "پہلے کوئی ماڈل منتخب کریں یا ماڈل کا نام لکھیں۔",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "کلید کی جانچ اور ماڈل لوڈ ہو رہے ہیں…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "کلید درست ہے · $COUNT$ ماڈل",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "ماڈل لوڈ نہیں ہو سکے: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "استعمال کے لیے AI ماڈل منتخب کریں",
     "description": "AI model hint"

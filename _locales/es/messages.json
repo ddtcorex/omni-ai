@@ -143,6 +143,20 @@
     "message": "Primero elige un modelo o escribe el nombre de uno.",
     "description": "Error when checking or saving a provider with no model chosen"
   },
+  "settings_keyChecking": {
+    "message": "Comprobando la clave y cargando los modelos…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Clave válida · $COUNT$ modelos",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "No se pudieron cargar los modelos: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
   "settings_modelHint": {
     "message": "Seleccione el modelo de AI a utilizar",
     "description": "Sugerencia para el modelo de IA"

@@ -128,6 +128,8 @@ describe("messages that take a substitution", () => {
     expect([...parameterised].sort()).toEqual([
       "error_apiKeyNotConfiguredFor",
       "overlay_loading_action",
+      "settings_keyValid",
+      "settings_modelsLoadFailed",
       "ui_to",
     ]);
   });
