@@ -154,6 +154,16 @@ describe("provider row", () => {
     expect(document.activeElement).toBe(terra());
   });
 
+  test("the custom name field belongs to the provider that saved it", async () => {
+    await boot({ apiProvider: "openai", apiModel: "openai-custom", customModelName: "ft:x" });
+    const custom = document.getElementById("customModelName");
+    expect(custom.value).toBe("ft:x");
+    providerButton("groq").click();
+    expect(custom.value).toBe("");
+    providerButton("openai").click();
+    expect(custom.value).toBe("ft:x");
+  });
+
   test("switching provider changes no stored value", async () => {
     await boot({ apiProvider: "google", apiModel: "gemini-3.6-flash", geminiApiKey: "AIza-k" });
     chrome.storage.local.set.mockClear();

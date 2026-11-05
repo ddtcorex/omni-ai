@@ -41,7 +41,6 @@ const elements = {
   modelFilter: /** @type {HTMLInputElement|null} */ (document.getElementById("modelFilter")),
   modelFilterRow: document.getElementById("modelFilterRow"),
   modelMore: /** @type {HTMLButtonElement|null} */ (document.getElementById("modelMore")),
-  modelShown: document.getElementById("modelShown"),
   keyStatus: document.getElementById("keyStatus"),
   keyStatusRow: document.getElementById("keyStatusRow"),
   modelRefresh: /** @type {HTMLButtonElement|null} */ (document.getElementById("modelRefresh")),
@@ -154,13 +153,13 @@ export async function init() {
 let selection = { providerId: null, modelId: null, customName: "" };
 /** @type {Map<string, { modelId: string|null, customName: string }>} */
 const drafts = new Map();
-/** Whether the model list shows past its first view, and the filter text. */
 /** The AI keys as loaded or last saved; Save maps the selection against it. */
 let storedAiConfig = {};
+/** Whether the model list shows past its first view, and the filter text. */
 let modelListExpanded = false;
+let modelFilterQuery = "";
 /** The model a typed custom name replaced, restored when the name is cleared. */
 let modelBeforeCustom = null;
-let modelFilterQuery = "";
 
 /**
  * Make a row of role="radio" buttons one tab stop: arrows move the focus,

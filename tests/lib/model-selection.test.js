@@ -1,7 +1,6 @@
 import {
   selectionFromStored,
   selectionToStored,
-  customNameFor,
   customSentinelFor,
 } from "../../lib/model-selection.js";
 
@@ -59,25 +58,6 @@ describe("selectionFromStored", () => {
 
   test("nothing saved selects nothing", () => {
     expect(selectionFromStored({})).toEqual({ providerId: null, modelId: null, customName: "" });
-  });
-});
-
-describe("customNameFor", () => {
-  const config = { apiProvider: "openai", apiModel: "openai-custom", customModelName: "ft:x" };
-
-  test("the custom field belongs to the saved provider", () => {
-    expect(customNameFor("openai", config)).toBe("ft:x");
-    expect(customNameFor("groq", config)).toBe("");
-  });
-
-  test("a saved listed model leaves the field empty", () => {
-    expect(
-      customNameFor("openai", {
-        apiProvider: "openai",
-        apiModel: "gpt-5.7-nova",
-        customModelName: "x",
-      }),
-    ).toBe("");
   });
 });
 
