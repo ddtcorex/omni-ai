@@ -974,8 +974,8 @@ export async function loadSettings() {
       "en",
     );
     // Render the language pickers from the shared registry right before the
-    // saved value is applied, the same order populateModelSelect() uses, so a
-    // saved code the registry does not know still gets an option to land on.
+    // saved value is applied, so a saved code the registry does not know
+    // still gets an option to land on.
     const desiredPrimaryLanguage = prefs.primaryLanguage || detectedLocale;
     const desiredDefaultLanguage = prefs.defaultLanguage || "en";
     if (elements.primaryLanguage) {

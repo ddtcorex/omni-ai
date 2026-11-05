@@ -75,7 +75,7 @@ function buildFixture() {
       // fixture made every Save click throw after the language had been written.
       return `<input id="${id}" />`;
     }
-    // Key groups as settings.html marks them, so updateModelVisibility() can
+    // Key groups as settings.html marks them, so showKeyGroup() can
     // find the group of the selected model's provider.
     const keyGroups = {
       googleKeyGroup: "google",
