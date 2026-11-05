@@ -437,6 +437,24 @@ describe("model buttons", () => {
     expect(checkedModel()).toBe("gpt-5.6-terra");
   });
 
+  test("clearing a typed custom name brings back the model it replaced", async () => {
+    const local = await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+    const custom = document.getElementById("customModelName");
+    for (const value of ["f", "ft", ""]) {
+      custom.value = value;
+      custom.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    expect(checkedModel()).toBe("gpt-5.7-nova");
+    await clickSave();
+    expect(local.apiModel).toBe("gpt-5.7-nova");
+  });
+
   test("spaces in the custom field leave the button checked", async () => {
     await boot({
       apiProvider: "openai",

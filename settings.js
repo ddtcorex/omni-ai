@@ -158,6 +158,8 @@ const drafts = new Map();
 /** The AI keys as loaded or last saved; Save maps the selection against it. */
 let storedAiConfig = {};
 let modelListExpanded = false;
+/** The model a typed custom name replaced, restored when the name is cleared. */
+let modelBeforeCustom = null;
 let modelFilterQuery = "";
 
 /**
@@ -246,6 +248,7 @@ export function selectProvider(providerId, { focus = true, hydrate = true } = {}
   selection = { providerId, modelId: draft.modelId, customName: draft.customName };
   modelListExpanded = false;
   modelFilterQuery = "";
+  modelBeforeCustom = null;
   if (elements.modelFilter) elements.modelFilter.value = "";
   renderProviderPicker();
   if (focus) {
@@ -602,6 +605,7 @@ function renderModelArea() {
  * @param {string} modelId
  */
 function chooseModel(modelId) {
+  modelBeforeCustom = null;
   if (modelId !== selection.modelId || selection.customName) clearValidationStatus();
   selection.modelId = modelId;
   selection.customName = "";
@@ -784,7 +788,14 @@ export function setupEventListeners() {
   elements.customModelName?.addEventListener("input", () => {
     selection.customName = elements.customModelName.value;
     clearValidationStatus();
-    if (selection.customName.trim()) selection.modelId = null;
+    if (selection.customName.trim()) {
+      // The button the name replaces comes back if the name is cleared again.
+      if (selection.modelId) modelBeforeCustom = selection.modelId;
+      selection.modelId = null;
+    } else if (!selection.modelId && modelBeforeCustom) {
+      selection.modelId = modelBeforeCustom;
+      modelBeforeCustom = null;
+    }
     renderModelArea();
   });
 
