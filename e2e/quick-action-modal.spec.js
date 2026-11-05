@@ -993,3 +993,68 @@ test("a model the provider dropped offers a route to the picker", async () => {
     server.close();
   }
 });
+
+test("a model change in Settings is not answered from the old model's cached result", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // The reply names the model the request went to.
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname.endsWith("/models")) {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
+      }
+      const model = url.pathname.includes("gemini-3.5-flash-lite") ? "LITE" : "FLASH";
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: `FROM-${model}` }] } }] }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    const runGrammar = async () => {
+      await page.evaluate(() => {
+        const el = document.getElementById("target");
+        el.focus();
+        el.setSelectionRange(0, el.value.length);
+      });
+      await page.locator("#target").dispatchEvent("mouseup");
+      await page.locator(".omni-ai-quick-btn").click();
+      const grammar = page.locator('[data-action="grammar"]');
+      await expect(grammar).toBeVisible();
+      await page.waitForTimeout(200);
+      await grammar.click();
+    };
+
+    await runGrammar();
+    await expect(page.locator(".omni-ai-result-text, .omni-ai-content-area").first()).toContainText(
+      "FROM-FLASH",
+      { timeout: 8000 },
+    );
+    await page.locator("#omniAiClose").click();
+
+    await sw.evaluate(() =>
+      chrome.storage.local.set({ apiModel: "gemini-3.5-flash-lite", apiProvider: "google" }),
+    );
+    await page.waitForTimeout(200);
+
+    await runGrammar();
+    await expect(page.locator(".omni-ai-result-text, .omni-ai-content-area").first()).toContainText(
+      "FROM-LITE",
+      { timeout: 8000 },
+    );
+  } finally {
+    await context.close();
+    server.close();
+  }
+});

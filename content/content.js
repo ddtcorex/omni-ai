@@ -140,6 +140,14 @@ let overlay = null;
 let quickActionBtn = null;
 let activeInputElement = null; // Track input element for replacement when focus is lost
 const resultCache = new Map();
+/** Storage keys that decide which model answers; a change empties resultCache. */
+const MODEL_CONFIG_KEYS = [
+  "apiModel",
+  "apiProvider",
+  "customModelName",
+  "customGatewayModelName",
+  "customGatewayBaseUrl",
+];
 
 // Flash Actions: hovering the floating quick-action icon reveals a row of
 // user-configured shortcuts (Settings > Flash Actions) that skip straight to
@@ -990,7 +998,11 @@ function setupFloatingButtonPreference() {
 
   // eslint-disable-next-line no-restricted-syntax -- observes changes to the "settings" bag lib/storage.js owns; a generic onChanged listener doesn't fit a per-key typed accessor.
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== "local" || !changes.settings) return;
+    if (area !== "local") return;
+    // A result belongs to the model that wrote it. Picking another model (or
+    // another custom name or gateway) must not be answered from the cache.
+    if (MODEL_CONFIG_KEYS.some((key) => key in changes)) resultCache.clear();
+    if (!changes.settings) return;
     floatingButtonEnabled =
       /** @type {any} */ (changes.settings.newValue).showFloatingButton !== false;
     if (!floatingButtonEnabled) hideQuickActionButton();
