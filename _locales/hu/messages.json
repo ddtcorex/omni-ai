@@ -201,6 +201,19 @@
     "description": "Status when listing the models failed; $REASON$ is the provider's own message",
     "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
   },
+  "settings_modelsMore": {
+    "message": "További $COUNT$ megjelenítése",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Kevesebb",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "ajánlott",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Válaszd ki a használni kívánt AI-modellt",
     "description": "AI model hint"

@@ -157,6 +157,19 @@
     "description": "Status when listing the models failed; $REASON$ is the provider's own message",
     "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
   },
+  "settings_modelsMore": {
+    "message": "再显示 $COUNT$ 个",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "收起",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "推荐",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "选择要使用的 AI 模型",
     "description": "AI 模型提示"

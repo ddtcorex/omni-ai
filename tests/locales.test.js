@@ -130,6 +130,7 @@ describe("messages that take a substitution", () => {
       "overlay_loading_action",
       "settings_keyValid",
       "settings_modelsLoadFailed",
+      "settings_modelsMore",
       "ui_to",
     ]);
   });

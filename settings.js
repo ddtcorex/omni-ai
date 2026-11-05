@@ -7,7 +7,13 @@ import {
   setThemePreference,
 } from "./lib/theme-manager.js";
 import { AI_PROVIDERS, getApiModelName, DEFAULT_MODEL } from "./lib/ai-providers.js";
-import { filterChatModels, isCacheFresh } from "./lib/model-catalog.js";
+import {
+  buildPickerModel,
+  filterChatModels,
+  isCacheFresh,
+  pickerRows,
+  FILTER_THRESHOLD,
+} from "./lib/model-catalog.js";
 import { selectionFromStored } from "./lib/model-selection.js";
 import {
   getSyncPreferences,
@@ -148,6 +154,9 @@ export async function init() {
 let selection = { providerId: null, modelId: null, customName: "" };
 /** @type {Map<string, { modelId: string|null, customName: string }>} */
 const drafts = new Map();
+/** Whether the model list shows past its first view, and the filter text. */
+let modelListExpanded = false;
+let modelFilterQuery = "";
 
 /**
  * Make a row of role="radio" buttons one tab stop: arrows move the focus,
@@ -227,6 +236,9 @@ export function selectProvider(providerId, { focus = true, hydrate = true } = {}
   keepDraft();
   const draft = drafts.get(providerId) || { modelId: null, customName: "" };
   selection = { providerId, modelId: draft.modelId, customName: draft.customName };
+  modelListExpanded = false;
+  modelFilterQuery = "";
+  if (elements.modelFilter) elements.modelFilter.value = "";
   renderProviderPicker();
   if (focus) {
     /** @type {HTMLElement|null|undefined} */ (
@@ -459,20 +471,125 @@ async function hydrateModelCatalog(providerId) {
   }
 }
 
-/** The model area for the selected provider. */
+/**
+ * @param {string|null} modelId
+ * @returns {string}
+ */
+function apiNameOf(modelId) {
+  return modelId ? getApiModelName(modelId) || modelId : "";
+}
+
+/**
+ * The rows of the selected provider's model buttons: its fetched list when
+ * there is one, else only the selected model's own button.
+ * @param {string} providerId
+ * @returns {{ rows: Array<{ id: string, label: string, state: string, recommended: boolean }>, hidden: number, total: number }}
+ */
+function modelRowsFor(providerId) {
+  const provider = AI_PROVIDERS[providerId];
+  const catalog = modelCatalogs.get(providerId);
+  const current = apiNameOf(selection.modelId);
+  if (!catalog) {
+    if (!current) return { rows: [], hidden: 0, total: 0 };
+    const shipped = provider.models.find((m) => apiNameOf(m.id) === current);
+    return {
+      rows: [
+        { id: current, label: shipped?.name || current, state: "unlisted", recommended: false },
+      ],
+      hidden: 0,
+      total: 0,
+    };
+  }
+  const picker = buildPickerModel({
+    providerId,
+    listed: catalog.listed,
+    savedModelId: selection.modelId,
+    bundled: provider.models,
+    recommended: provider.recommended || [],
+    toApiName: getApiModelName,
+    cap: Infinity,
+    query: modelFilterQuery,
+    sentinels: [],
+    keepId: current || null,
+  });
+  const { rows, hidden } = pickerRows(picker, {
+    expanded: modelListExpanded || Boolean(modelFilterQuery.trim()),
+    keepId: current || null,
+  });
+  return { rows, hidden, total: picker.total };
+}
+
+/** The model area for the selected provider: hint, filter, buttons, More. */
 function renderModelArea() {
-  const hasList = Boolean(selection.providerId && modelCatalogs.has(selection.providerId));
+  const providerId = selection.providerId;
+  const hasList = Boolean(providerId && modelCatalogs.has(providerId));
   if (elements.modelHint) {
     elements.modelHint.textContent = hasList
       ? ""
-      : selection.providerId
+      : providerId
         ? i18n.getMessage(
-            selection.providerId === "customGateway"
+            providerId === "customGateway"
               ? "settings_modelsEnterGatewayUrl"
               : "settings_modelsEnterKey",
           )
         : i18n.getMessage("settings_modelsChooseProvider");
   }
+
+  const picker = elements.modelPicker;
+  if (!picker) return;
+  picker.textContent = "";
+  const { rows, hidden, total } = providerId
+    ? modelRowsFor(providerId)
+    : { rows: [], hidden: 0, total: 0 };
+
+  if (elements.modelFilterRow) {
+    elements.modelFilterRow.hidden = !(total > FILTER_THRESHOLD || modelFilterQuery);
+  }
+
+  // A typed name is the choice while it holds text, so no button is checked.
+  const current = selection.customName.trim() ? "" : apiNameOf(selection.modelId);
+  rows.forEach((row) => {
+    const label =
+      row.state === "missing"
+        ? `${row.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`
+        : row.label;
+    const button = choiceButton(label, row.id === current);
+    button.dataset.model = row.id;
+    button.dataset.state = row.state;
+    if (row.label !== row.id) button.title = row.id;
+    if (row.recommended) {
+      const tag = document.createElement("span");
+      tag.className = "choice-tag";
+      tag.textContent = `· ${i18n.getMessage("settings_modelRecommended")}`;
+      button.appendChild(tag);
+    }
+    button.addEventListener("click", () => chooseModel(row.id));
+    picker.appendChild(button);
+  });
+  bindRadioGroup(picker, (button) => chooseModel(button.dataset.model));
+
+  if (elements.modelMore) {
+    const collapsible = modelListExpanded && !modelFilterQuery.trim();
+    elements.modelMore.hidden = !(hidden > 0 || collapsible);
+    elements.modelMore.textContent =
+      hidden > 0
+        ? i18n.getMessage("settings_modelsMore", [String(hidden)])
+        : i18n.getMessage("settings_modelsLess");
+  }
+}
+
+/**
+ * Pick a model button: it becomes the choice and the typed name is cleared.
+ * @param {string} modelId
+ */
+function chooseModel(modelId) {
+  selection.modelId = modelId;
+  selection.customName = "";
+  if (elements.customModelName) elements.customModelName.value = "";
+  renderModelArea();
+  /** @type {HTMLElement|null|undefined} */ (
+    elements.modelPicker?.querySelector('[aria-checked="true"]')
+  )?.focus({ preventScroll: true });
 }
 
 /**
@@ -631,6 +748,16 @@ export function setupEventListeners() {
     if (selection.providerId) {
       void refreshModelCatalog(selection.providerId, formCredential(selection.providerId));
     }
+  });
+
+  elements.modelMore?.addEventListener("click", () => {
+    modelListExpanded = !modelListExpanded;
+    renderModelArea();
+  });
+
+  elements.modelFilter?.addEventListener("input", () => {
+    modelFilterQuery = elements.modelFilter.value;
+    renderModelArea();
   });
 
   // A typed model name replaces the buttons' choice for this provider.

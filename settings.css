@@ -865,14 +865,14 @@ body {
 .model-more-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--omni-spacing-sm);
   margin-top: var(--omni-spacing-sm);
   font-size: 12px;
   color: var(--omni-glass-text-tertiary);
 }
 
-.model-more-row:has(> .model-shown:empty):has(> .model-more[hidden]) {
+.model-more-row:has(> .model-more[hidden]) {
   display: none;
 }
 

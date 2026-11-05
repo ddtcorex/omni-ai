@@ -328,3 +328,183 @@ describe("key check on blur", () => {
     expect(keyStatus().textContent).toBe("settings_keyValid:2");
   });
 });
+
+const modelButtons = () => Array.from(document.querySelectorAll("#modelPicker [role=radio]"));
+const checkedModel = () =>
+  modelButtons().find((b) => b.getAttribute("aria-checked") === "true")?.dataset.model;
+const cached = (providerId, ids, extra = {}) => ({
+  modelCatalog: { [providerId]: { fetchedAt: Date.now(), models: models(...ids), ...extra } },
+});
+const many = (n) => Array.from({ length: n }, (_, i) => `model-${String(i).padStart(3, "0")}`);
+const filter = () => document.getElementById("modelFilter");
+const more = () => document.getElementById("modelMore");
+
+describe("model buttons", () => {
+  test("forty models show twelve buttons and More shows all", async () => {
+    await boot({
+      apiProvider: "customGateway",
+      apiModel: "model-000",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      ...cached("customGateway", many(40), { baseUrl: "https://gw.example/v1" }),
+    });
+
+    expect(modelButtons()).toHaveLength(12);
+    expect(more().hidden).toBe(false);
+    expect(more().textContent).toBe("settings_modelsMore:28");
+    more().click();
+    expect(modelButtons()).toHaveLength(40);
+    expect(more().textContent).toBe("settings_modelsLess");
+  });
+
+  test("the filter appears past thirty models and searches the whole list", async () => {
+    await boot({
+      apiProvider: "customGateway",
+      apiModel: "model-000",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      ...cached("customGateway", many(31), { baseUrl: "https://gw.example/v1" }),
+    });
+
+    expect(document.getElementById("modelFilterRow").hidden).toBe(false);
+    filter().value = "model-030";
+    filter().dispatchEvent(new Event("input", { bubbles: true }));
+    expect(modelButtons().map((b) => b.dataset.model)).toEqual(["model-000", "model-030"]);
+  });
+
+  test("thirty models or fewer get no filter", async () => {
+    await boot({
+      apiProvider: "customGateway",
+      apiModel: "model-000",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      ...cached("customGateway", many(30), { baseUrl: "https://gw.example/v1" }),
+    });
+
+    expect(document.getElementById("modelFilterRow").hidden).toBe(true);
+  });
+
+  test("typing a custom name unchecks the buttons, clicking a button clears it", async () => {
+    await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+    const custom = document.getElementById("customModelName");
+    expect(checkedModel()).toBe("gpt-5.7-nova");
+
+    custom.value = "ft:my-model";
+    custom.dispatchEvent(new Event("input", { bubbles: true }));
+    expect(checkedModel()).toBeUndefined();
+
+    modelButtons()
+      .find((b) => b.dataset.model === "gpt-5.6-terra")
+      .click();
+    expect(custom.value).toBe("");
+    expect(checkedModel()).toBe("gpt-5.6-terra");
+  });
+
+  test("spaces in the custom field leave the button checked", async () => {
+    await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova"]),
+    });
+    const custom = document.getElementById("customModelName");
+    custom.value = "   ";
+    custom.dispatchEvent(new Event("input", { bubbles: true }));
+
+    expect(checkedModel()).toBe("gpt-5.7-nova");
+  });
+
+  test("a provider switch opens collapsed with an empty filter", async () => {
+    await boot({
+      apiProvider: "customGateway",
+      apiModel: "model-000",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      openaiApiKey: "sk",
+      modelCatalog: {
+        customGateway: {
+          fetchedAt: Date.now(),
+          models: models(...many(40)),
+          baseUrl: "https://gw.example/v1",
+        },
+        openai: { fetchedAt: Date.now(), models: models(...many(40)) },
+      },
+    });
+    more().click();
+    filter().value = "model-01";
+    filter().dispatchEvent(new Event("input", { bubbles: true }));
+
+    providerButton("openai").click();
+    await flush();
+
+    expect(filter().value).toBe("");
+    expect(modelButtons()).toHaveLength(12);
+  });
+
+  test("a saved model the list no longer has stays checked with its label", async () => {
+    await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.8-orion",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova"]),
+    });
+
+    const gone = modelButtons()[0];
+    expect(gone.dataset.model).toBe("gpt-5.8-orion");
+    expect(gone.getAttribute("aria-checked")).toBe("true");
+    expect(gone.dataset.state).toBe("missing");
+    expect(gone.textContent).toContain("settings_modelNoLongerOffered");
+  });
+
+  test("a saved gateway custom name shows in the field with no button checked", async () => {
+    await boot({
+      apiProvider: "customGateway",
+      apiModel: "custom-gateway",
+      customGatewayModelName: "qwen3.8-27b",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      ...cached("customGateway", ["qwen3.8-27b", ...many(287)], {
+        baseUrl: "https://gw.example/v1",
+      }),
+    });
+
+    expect(document.getElementById("customModelName").value).toBe("qwen3.8-27b");
+    expect(checkedModel()).toBeUndefined();
+    expect(modelButtons().some((b) => b.dataset.model === "custom-gateway")).toBe(false);
+    expect(modelButtons().some((b) => b.dataset.state === "missing")).toBe(false);
+  });
+
+  test("a saved shipped id checks its API name button", async () => {
+    await boot({
+      apiProvider: "openai",
+      apiModel: "openai-gpt-5.6-terra",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+
+    expect(checkedModel()).toBe("gpt-5.6-terra");
+    expect(modelButtons().filter((b) => b.dataset.model === "gpt-5.6-terra")).toHaveLength(1);
+  });
+
+  test("a saved model with no list yet shows as its own checked button", async () => {
+    await boot({ apiProvider: "openai", apiModel: "gpt-5.7-nova" });
+
+    expect(modelButtons().map((b) => b.dataset.model)).toEqual(["gpt-5.7-nova"]);
+    expect(checkedModel()).toBe("gpt-5.7-nova");
+    expect(document.getElementById("modelHint").textContent).toBe("settings_modelsEnterKey");
+  });
+
+  test("the recommended model says so and a named model keeps its id as a tooltip", async () => {
+    await boot({
+      apiProvider: "openai",
+      apiModel: "gpt-5.7-nova",
+      openaiApiKey: "sk",
+      ...cached("openai", ["gpt-5.7-nova", "gpt-5.6-terra"]),
+    });
+    const terra = modelButtons().find((b) => b.dataset.model === "gpt-5.6-terra");
+
+    expect(terra.textContent).toContain("GPT-5.6 Terra");
+    expect(terra.textContent).toContain("settings_modelRecommended");
+    expect(terra.title).toBe("gpt-5.6-terra");
+  });
+});
