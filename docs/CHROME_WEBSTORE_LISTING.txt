@@ -29,12 +29,12 @@ Most AI extensions lock you into a subscription and a single model. Omni AI does
 • Clean, Focused UI: a glassmorphic floating button appears where you are working and gets out of the way when you do not need it (it can be turned off entirely in Settings).
 
 QUICK SETUP
-Omni AI needs one API key to work. Pick a provider:
+Omni AI needs one API key to work. In Settings, choose your provider, paste its key (Omni AI checks it by loading that provider's own model list), pick a model, then Validate and Save. Where to get a key:
 • Google Gemini: aistudio.google.com/app/apikey (free tier available)
 • OpenAI: platform.openai.com/api-keys
 • Groq: console.groq.com/keys (fast inference, free tier available)
 • Anthropic Claude: console.anthropic.com/settings/keys
-• Custom Gateway: enter your base URL, key, and model in Settings
+• Custom Gateway: enter your base URL (the key is optional) and pick from the gateway's own models
 
 KEYBOARD SHORTCUTS
 • Alt+O: Show the Quick Actions menu at the current selection
@@ -113,8 +113,9 @@ the workflow a reviewer and a new user both look for:
 2. A rewrite result with the Replace action visible, beside the draft it edits.
 3. The side panel docked beside the page, on its Page tools tab with Summarize,
    Smart Translate and Explain.
-4. The settings page from its header down: model, provider key, validate, then
-   the preferences section.
+4. The settings page from its header down: provider buttons, provider key with
+   its "Key valid" line, model buttons, validate, then the preferences section.
+   The v2.6.0 capture shows the old model dropdown; retake it for v2.7.0.
 5. Quick Ask on a selection, with the selected text as context.
 
 Keep the two fields consistent: same five scenes, same theme. The v2.6.0 upload
