@@ -276,8 +276,12 @@ const listingStates = new Map();
  */
 const uncachedProviders = new Set();
 let listingInFlight = false;
-/** @type {{ providerId: string, credential: { key?: string, baseUrl?: string } }|null} */
-let queuedListing = null;
+/**
+ * Listings waiting behind the one in flight, one per provider: a newer intent
+ * replaces that provider's own entry and never another provider's.
+ * @type {Map<string, { key?: string, baseUrl?: string }>}
+ */
+const queuedListings = new Map();
 /** How long one listing may take before it counts as failed. */
 const LISTING_TIMEOUT_MS = 15000;
 
@@ -391,8 +395,8 @@ function paintKeyStatus() {
 export async function refreshModelCatalog(providerId, credential = {}) {
   if (!providerId) return;
   if (listingInFlight) {
-    // The newer intent runs next instead of being dropped.
-    queuedListing = { providerId, credential };
+    // The newer intent for this provider runs later instead of being dropped.
+    queuedListings.set(providerId, credential);
     return;
   }
   listingInFlight = true;
@@ -432,9 +436,11 @@ export async function refreshModelCatalog(providerId, credential = {}) {
     clearTimeout(timer);
     listingInFlight = false;
     paintIfShown(providerId);
-    const queued = queuedListing;
-    queuedListing = null;
-    if (queued) void refreshModelCatalog(queued.providerId, queued.credential);
+    const [next] = queuedListings.entries();
+    if (next) {
+      queuedListings.delete(next[0]);
+      void refreshModelCatalog(next[0], next[1]);
+    }
   }
 }
 
@@ -467,7 +473,7 @@ async function hydrateModelCatalog(providerId) {
   }
   // The cache read yields, and a key typed meanwhile may already have
   // started (or queued) this provider's listing: never list it twice.
-  const listingStarted = listingStates.has(providerId) || queuedListing?.providerId === providerId;
+  const listingStarted = listingStates.has(providerId) || queuedListings.has(providerId);
   if (!listingStarted && !isCacheFresh(cache?.fetchedAt) && hasCredential(providerId)) {
     await refreshModelCatalog(providerId);
   }

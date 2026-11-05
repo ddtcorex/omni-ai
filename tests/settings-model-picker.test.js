@@ -311,6 +311,39 @@ describe("key check on blur", () => {
     expect(sent("LIST_MODELS").map(([m]) => m.payload.key)).toEqual(["sk-one", "sk-two"]);
   });
 
+  test("listings queued behind a slow one all run, each with its own credential", async () => {
+    let releaseFirst;
+    let calls = 0;
+    await boot(
+      {
+        apiProvider: "google",
+        apiModel: "gemini-3.6-flash",
+        anthropicApiKey: "ant-saved",
+        modelCatalog: {
+          anthropic: { fetchedAt: 1, models: models("claude-sonnet-5") },
+        },
+      },
+      {
+        listModels: () => {
+          calls += 1;
+          return calls === 1 ? new Promise((resolve) => (releaseFirst = resolve)) : listReply("m");
+        },
+      },
+    );
+    providerButton("google").click();
+    typeAndBlur("geminiApiKey", "AIza-slow");
+    providerButton("openai").click();
+    typeAndBlur("openaiApiKey", "sk-typed");
+    providerButton("anthropic").click();
+    await flush();
+    releaseFirst(listReply("g"));
+    for (let i = 0; i < 6; i++) await flush();
+
+    const payloads = sent("LIST_MODELS").map(([m]) => m.payload);
+    expect(payloads).toContainEqual({ provider: "openai", key: "sk-typed" });
+    expect(payloads.some((p) => p.provider === "anthropic")).toBe(true);
+  });
+
   test("the refresh control lists the shown provider again", async () => {
     await boot(
       {
