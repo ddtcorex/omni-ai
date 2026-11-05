@@ -115,6 +115,34 @@
     "message": "AI 모델",
     "description": "AI 모델 라벨"
   },
+  "settings_providerLabel": {
+    "message": "제공자",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "제공자를 선택하면 모델이 표시됩니다",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "API 키를 입력하면 모델이 표시됩니다",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "게이트웨이 기본 URL을 입력하면 모델이 표시됩니다",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "모델 필터",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "또는 목록에 없는 모델 이름을 입력하세요",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "먼저 모델을 선택하거나 모델 이름을 입력하세요.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "사용할 AI 모델 선택",
     "description": "AI 모델 힌트"

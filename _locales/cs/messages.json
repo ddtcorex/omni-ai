@@ -159,6 +159,34 @@
     "message": "Model AI",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Poskytovatel",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Vyberte poskytovatele a zobrazí se jeho modely",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Zadejte klíč API a zobrazí se modely",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Zadejte základní URL brány a zobrazí se její modely",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtrovat modely",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Nebo zadejte název modelu, který v seznamu není",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Nejprve vyberte model nebo zadejte jeho název.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "Vyberte model AI, který chcete použít",
     "description": "AI model hint"

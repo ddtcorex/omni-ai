@@ -159,6 +159,34 @@
     "message": "AI ମଡେଲ୍",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "ପ୍ରଦାନକାରୀ",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "ମଡେଲ ଦେଖିବା ପାଇଁ ଏକ ପ୍ରଦାନକାରୀ ବାଛନ୍ତୁ",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "ମଡେଲ ଦେଖିବା ପାଇଁ ଆପଣଙ୍କ API କି ପ୍ରବେଶ କରନ୍ତୁ",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "ମଡେଲ ଦେଖିବା ପାଇଁ ଗେଟୱେର ବେସ୍ URL ପ୍ରବେଶ କରନ୍ତୁ",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "ମଡେଲ ଫିଲ୍ଟର କରନ୍ତୁ",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "କିମ୍ବା ତାଲିକାରେ ନଥିବା ଏକ ମଡେଲର ନାମ ଟାଇପ କରନ୍ତୁ",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "ପ୍ରଥମେ ଏକ ମଡେଲ ବାଛନ୍ତୁ କିମ୍ବା ମଡେଲର ନାମ ଟାଇପ କରନ୍ତୁ।",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "ବ୍ୟବହାର କରିବାକୁ AI ମଡେଲ୍ ଚୟନ କରନ୍ତୁ",
     "description": "AI model hint"

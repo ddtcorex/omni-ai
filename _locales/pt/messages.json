@@ -115,6 +115,34 @@
     "message": "Modelo de IA",
     "description": "Etiqueta do modelo de IA"
   },
+  "settings_providerLabel": {
+    "message": "Provedor",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Escolha um provedor para ver os modelos dele",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Insira sua chave de API para ver os modelos",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Insira a URL base do gateway para ver os modelos dele",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtrar modelos",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Ou digite o nome de um modelo que não está na lista",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Escolha um modelo ou digite o nome de um modelo primeiro.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "Selecione o modelo de IA para usar",
     "description": "Dica do modelo de IA"

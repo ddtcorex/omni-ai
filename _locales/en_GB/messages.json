@@ -159,6 +159,34 @@
     "message": "AI Model",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Provider",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Choose a provider to see its models",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Enter your API key to see the models",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Enter the gateway's base URL to see its models",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filter models",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Or type a model name the list does not show",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Choose a model or type a model name first.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "Select the AI model to use",
     "description": "AI model hint"

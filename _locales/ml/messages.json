@@ -159,6 +159,34 @@
     "message": "AI മോഡൽ",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "ദാതാവ്",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "മോഡലുകൾ കാണാൻ ഒരു ദാതാവിനെ തിരഞ്ഞെടുക്കുക",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "മോഡലുകൾ കാണാൻ നിങ്ങളുടെ API കീ നൽകുക",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "മോഡലുകൾ കാണാൻ ഗേറ്റ്‌വേയുടെ ബേസ് URL നൽകുക",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "മോഡലുകൾ ഫിൽട്ടർ ചെയ്യുക",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "അല്ലെങ്കിൽ പട്ടികയിൽ ഇല്ലാത്ത മോഡലിന്റെ പേര് ടൈപ്പ് ചെയ്യുക",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "ആദ്യം ഒരു മോഡൽ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ മോഡലിന്റെ പേര് ടൈപ്പ് ചെയ്യുക.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "ഉപയോഗിക്കേണ്ട AI മോഡൽ തിരഞ്ഞെടുക്കുക",
     "description": "AI model hint"

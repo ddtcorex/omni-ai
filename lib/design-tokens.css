@@ -112,6 +112,11 @@
   --omni-info-ring: rgba(167, 139, 250, 0.36);
   /* Off track of a switch: 3:1 against the card (WCAG 1.4.11). */
   --omni-switch-track: rgba(255, 255, 255, 0.4);
+  /* Settings choice pills: the unchecked hairline holds 3:1 on the card, the
+     checked fill carries white text at AA. */
+  --omni-pill-line: rgba(255, 255, 255, 0.4);
+  --omni-choice-checked: #6d48e5;
+  --omni-on-accent: #ffffff;
   --omni-diff-del: #fdba74;
   --omni-diff-ins: #4ade80;
   --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
@@ -173,6 +178,9 @@
   --omni-info-surface: rgba(139, 92, 246, 0.08);
   --omni-info-ring: rgba(124, 90, 240, 0.32);
   --omni-switch-track: rgba(20, 20, 40, 0.54);
+  --omni-pill-line: rgba(20, 20, 40, 0.54);
+  --omni-choice-checked: #6d48e5;
+  --omni-on-accent: #ffffff;
   --omni-diff-del: #c2410c;
   --omni-diff-ins: #16a34a;
   --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);
@@ -243,6 +251,9 @@
   --omni-info-surface: rgba(139, 92, 246, 0.08);
   --omni-info-ring: rgba(124, 90, 240, 0.32);
   --omni-switch-track: rgba(20, 20, 40, 0.54);
+  --omni-pill-line: rgba(20, 20, 40, 0.54);
+  --omni-choice-checked: #6d48e5;
+  --omni-on-accent: #ffffff;
   --omni-diff-del: #c2410c;
   --omni-diff-ins: #16a34a;
   --omni-diff-ins-bg: rgba(34, 197, 94, 0.16);

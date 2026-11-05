@@ -56,21 +56,293 @@
             __MSG_settings_provider__
           </h2>
           <div class="setting-card ds-surface">
-            <!-- AI Model Selector (Top) -->
+            <!-- 1. Provider: everything below follows this choice -->
             <div class="setting-item">
-              <label class="setting-label" for="apiModel">
-                <span class="label-text">__MSG_settings_model__</span>
-                <span class="label-hint">__MSG_settings_modelHint__</span>
-              </label>
-              <div class="select-field">
-                <select id="apiModel" class="setting-select ds-field">
-                  <!-- Populated by JS -->
-                </select>
+              <div class="setting-label">
+                <span class="label-text" id="providerLabel">__MSG_settings_providerLabel__</span>
               </div>
+              <div
+                id="providerPicker"
+                class="choice-row"
+                role="radiogroup"
+                aria-labelledby="providerLabel"
+              ></div>
+            </div>
 
-              <!-- Shown once a provider's own list is loaded: the bundled
-                   list is short enough to scan without it. -->
-              <div class="model-search" id="modelSearchRow" hidden>
+            <!-- 2. Credentials of the chosen provider -->
+            <!-- Gemini API Key -->
+            <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
+              <label class="setting-label" for="geminiApiKey">
+                <div class="label-header">
+                  <span class="label-text">__MSG_settings_geminiApiKey__</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>__MSG_settings_tooltip_gemini__</p>
+                      <ol>
+                        <li>
+                          <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                            >__MSG_settings_tooltip_gemini_s1__</a
+                          >
+                        </li>
+                        <li>__MSG_settings_tooltip_gemini_s2__</li>
+                        <li>__MSG_settings_tooltip_gemini_s3__</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                <span class="label-hint">__MSG_settings_geminiApiKeyHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="geminiApiKey"
+                  class="setting-input ds-field"
+                  placeholder="__MSG_settings_geminiApiKeyPlaceholder__"
+                />
+                <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Groq API Key -->
+            <div class="setting-item hidden" id="groqKeyGroup" data-provider="groq">
+              <label class="setting-label" for="groqApiKey">
+                <div class="label-header">
+                  <span class="label-text">__MSG_settings_groqKey__</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>__MSG_settings_tooltip_groq__</p>
+                      <ol>
+                        <li>
+                          <a href="https://console.groq.com/keys" target="_blank"
+                            >__MSG_settings_tooltip_groq_s1__</a
+                          >
+                        </li>
+                        <li>__MSG_settings_tooltip_groq_s2__</li>
+                        <li>__MSG_settings_tooltip_groq_s3__</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                <span class="label-hint">__MSG_settings_groqKeyHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="groqApiKey"
+                  class="setting-input ds-field"
+                  placeholder="gsk_..."
+                />
+              </div>
+            </div>
+
+            <!-- OpenAI API Key -->
+            <div class="setting-item hidden" id="openaiKeyGroup" data-provider="openai">
+              <label class="setting-label" for="openaiApiKey">
+                <div class="label-header">
+                  <span class="label-text">__MSG_settings_openaiKey__</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>__MSG_settings_tooltip_openai__</p>
+                      <ol>
+                        <li>
+                          <a href="https://platform.openai.com/api-keys" target="_blank"
+                            >__MSG_settings_tooltip_openai_s1__</a
+                          >
+                        </li>
+                        <li>__MSG_settings_tooltip_openai_s2__</li>
+                        <li>__MSG_settings_tooltip_openai_s3__</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                <span class="label-hint">__MSG_settings_openaiKeyHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="openaiApiKey"
+                  class="setting-input ds-field"
+                  placeholder="sk-..."
+                />
+              </div>
+            </div>
+
+            <!-- Anthropic API Key -->
+            <div class="setting-item hidden" id="anthropicKeyGroup" data-provider="anthropic">
+              <label class="setting-label" for="anthropicApiKey">
+                <div class="label-header">
+                  <span class="label-text">__MSG_settings_anthropicKey__</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>__MSG_settings_tooltip_anthropic__</p>
+                      <ol>
+                        <li>
+                          <a href="https://console.anthropic.com/settings/keys" target="_blank"
+                            >__MSG_settings_tooltip_anthropic_s1__</a
+                          >
+                        </li>
+                        <li>__MSG_settings_tooltip_anthropic_s2__</li>
+                        <li>__MSG_settings_tooltip_anthropic_s3__</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                <span class="label-hint">__MSG_settings_anthropicKeyHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="anthropicApiKey"
+                  class="setting-input ds-field"
+                  placeholder="sk-ant-..."
+                />
+              </div>
+            </div>
+
+            <!-- Custom Gateway: the base URL comes first, its key is optional -->
+            <div
+              class="setting-item hidden"
+              id="customGatewayKeyGroup"
+              data-provider="customGateway"
+            >
+              <label class="setting-label" for="customGatewayBaseUrl">
+                <div class="label-header">
+                  <span class="label-text">__MSG_settings_customGatewayTitle__</span>
+                  <div class="tooltip-trigger">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div class="tooltip-popup">
+                      <p>__MSG_settings_tooltip_customGateway__</p>
+                    </div>
+                  </div>
+                </div>
+                <span class="label-hint">__MSG_settings_customGatewayHint__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="customGatewayBaseUrl"
+                  class="setting-input ds-field"
+                  placeholder="__MSG_settings_customGatewayUrlPlaceholder__"
+                />
+              </div>
+              <p class="field-note">__MSG_settings_customGatewayUrlNote__</p>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="customGatewayApiKey"
+                  class="setting-input ds-field"
+                  placeholder="__MSG_settings_customGatewayKeyPlaceholder__"
+                  aria-label="__MSG_settings_customGatewayKeyPlaceholder__"
+                />
+              </div>
+              <p class="field-note">__MSG_settings_customGatewayKeyNote__</p>
+            </div>
+
+            <!-- What the last listing said about the credential -->
+            <div class="key-status" id="keyStatusRow" hidden>
+              <p id="keyStatus" class="key-status-text" data-state="idle" aria-live="polite"></p>
+              <button
+                type="button"
+                id="modelRefresh"
+                class="model-refresh"
+                title="__MSG_settings_modelsRefresh__"
+                aria-label="__MSG_settings_modelsRefresh__"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                  <path d="M21 3v6h-6"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- 3. Model: buttons from the provider's own list -->
+            <div class="setting-item" id="modelGroup">
+              <div class="setting-label">
+                <span class="label-text" id="modelLabel">__MSG_settings_model__</span>
+                <span class="label-hint">__MSG_settings_modelHint__</span>
+              </div>
+              <div class="model-search" id="modelFilterRow" hidden>
                 <svg
                   class="model-search-icon"
                   width="16"
@@ -88,321 +360,61 @@
                 </svg>
                 <input
                   type="search"
-                  id="modelSearch"
+                  id="modelFilter"
                   class="setting-input ds-field"
-                  placeholder="__MSG_settings_modelsSearch__"
-                  aria-label="__MSG_settings_modelsSearch__"
+                  placeholder="__MSG_settings_modelsFilter__"
+                  aria-label="__MSG_settings_modelsFilter__"
                   autocomplete="off"
                 />
               </div>
-              <div class="model-meta">
-                <p id="modelSource" class="model-source" aria-live="polite"></p>
-                <button
-                  type="button"
-                  id="modelRefresh"
-                  class="model-refresh"
-                  title="__MSG_settings_modelsRefresh__"
-                  aria-label="__MSG_settings_modelsRefresh__"
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
-                    <path d="M21 3v6h-6"></path>
-                  </svg>
-                </button>
-              </div>
-
-              <!-- Gemini API Key -->
-              <div class="setting-item hidden" id="googleKeyGroup" data-provider="google">
-                <label class="setting-label" for="geminiApiKey">
-                  <div class="label-header">
-                    <span class="label-text">__MSG_settings_geminiApiKey__</span>
-                    <div class="tooltip-trigger">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
-                      <div class="tooltip-popup">
-                        <p>__MSG_settings_tooltip_gemini__</p>
-                        <ol>
-                          <li>
-                            <a href="https://aistudio.google.com/app/apikey" target="_blank"
-                              >__MSG_settings_tooltip_gemini_s1__</a
-                            >
-                          </li>
-                          <li>__MSG_settings_tooltip_gemini_s2__</li>
-                          <li>__MSG_settings_tooltip_gemini_s3__</li>
-                        </ol>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="label-hint">__MSG_settings_geminiApiKeyHint__</span>
-                </label>
-                <div class="input-group">
-                  <input
-                    type="password"
-                    id="geminiApiKey"
-                    class="setting-input ds-field"
-                    placeholder="__MSG_settings_geminiApiKeyPlaceholder__"
-                  />
-                  <button id="toggleApiKey" class="toggle-btn" title="Show/Hide">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Groq API Key -->
-              <div class="setting-item hidden" id="groqKeyGroup" data-provider="groq">
-                <label class="setting-label" for="groqApiKey">
-                  <div class="label-header">
-                    <span class="label-text">__MSG_settings_groqKey__</span>
-                    <div class="tooltip-trigger">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
-                      <div class="tooltip-popup">
-                        <p>__MSG_settings_tooltip_groq__</p>
-                        <ol>
-                          <li>
-                            <a href="https://console.groq.com/keys" target="_blank"
-                              >__MSG_settings_tooltip_groq_s1__</a
-                            >
-                          </li>
-                          <li>__MSG_settings_tooltip_groq_s2__</li>
-                          <li>__MSG_settings_tooltip_groq_s3__</li>
-                        </ol>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="label-hint">__MSG_settings_groqKeyHint__</span>
-                </label>
-                <div class="input-group">
-                  <input
-                    type="password"
-                    id="groqApiKey"
-                    class="setting-input ds-field"
-                    placeholder="gsk_..."
-                  />
-                </div>
-              </div>
-
-              <!-- OpenAI API Key -->
-              <div class="setting-item hidden" id="openaiKeyGroup" data-provider="openai">
-                <label class="setting-label" for="openaiApiKey">
-                  <div class="label-header">
-                    <span class="label-text">__MSG_settings_openaiKey__</span>
-                    <div class="tooltip-trigger">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
-                      <div class="tooltip-popup">
-                        <p>__MSG_settings_tooltip_openai__</p>
-                        <ol>
-                          <li>
-                            <a href="https://platform.openai.com/api-keys" target="_blank"
-                              >__MSG_settings_tooltip_openai_s1__</a
-                            >
-                          </li>
-                          <li>__MSG_settings_tooltip_openai_s2__</li>
-                          <li>__MSG_settings_tooltip_openai_s3__</li>
-                        </ol>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="label-hint">__MSG_settings_openaiKeyHint__</span>
-                </label>
-                <div class="input-group">
-                  <input
-                    type="password"
-                    id="openaiApiKey"
-                    class="setting-input ds-field"
-                    placeholder="sk-..."
-                  />
-                </div>
-              </div>
-
-              <!-- Anthropic API Key -->
-              <div class="setting-item hidden" id="anthropicKeyGroup" data-provider="anthropic">
-                <label class="setting-label" for="anthropicApiKey">
-                  <div class="label-header">
-                    <span class="label-text">__MSG_settings_anthropicKey__</span>
-                    <div class="tooltip-trigger">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
-                      <div class="tooltip-popup">
-                        <p>__MSG_settings_tooltip_anthropic__</p>
-                        <ol>
-                          <li>
-                            <a href="https://console.anthropic.com/settings/keys" target="_blank"
-                              >__MSG_settings_tooltip_anthropic_s1__</a
-                            >
-                          </li>
-                          <li>__MSG_settings_tooltip_anthropic_s2__</li>
-                          <li>__MSG_settings_tooltip_anthropic_s3__</li>
-                        </ol>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="label-hint">__MSG_settings_anthropicKeyHint__</span>
-                </label>
-                <div class="input-group">
-                  <input
-                    type="password"
-                    id="anthropicApiKey"
-                    class="setting-input ds-field"
-                    placeholder="sk-ant-..."
-                  />
-                </div>
-              </div>
-
-              <details class="advanced-settings" id="advancedProviderSettings">
-                <summary>__MSG_settings_advanced__</summary>
-
-                <!-- Custom Model Input (moved here from right after the model select) -->
-                <div class="setting-item hidden" id="customModelGroup">
-                  <label class="setting-label" for="customModelName">
-                    <span class="label-text">__MSG_settings_customModel__</span>
-                    <span class="label-hint">__MSG_settings_customModelHint__</span>
-                  </label>
-                  <div class="input-group">
-                    <input
-                      type="text"
-                      id="customModelName"
-                      class="setting-input ds-field"
-                      placeholder="__MSG_settings_customModelPlaceholder__"
-                    />
-                  </div>
-                </div>
-
-                <!-- Custom Gateway (moved here, unchanged internals) -->
-                <div
-                  class="setting-item hidden"
-                  id="customGatewayKeyGroup"
-                  data-provider="customGateway"
-                >
-                  <label class="setting-label">
-                    <div class="label-header">
-                      <span class="label-text">__MSG_settings_customGatewayTitle__</span>
-                      <div class="tooltip-trigger">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="12" y1="16" x2="12" y2="12"></line>
-                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <div class="tooltip-popup">
-                          <p>__MSG_settings_tooltip_customGateway__</p>
-                        </div>
-                      </div>
-                    </div>
-                    <span class="label-hint">__MSG_settings_customGatewayHint__</span>
-                  </label>
-
-                  <!-- Base URL -->
-                  <div class="input-group" style="margin-bottom: 8px">
-                    <input
-                      type="text"
-                      id="customGatewayBaseUrl"
-                      class="setting-input ds-field"
-                      placeholder="__MSG_settings_customGatewayUrlPlaceholder__"
-                    />
-                  </div>
-                  <p class="field-note">__MSG_settings_customGatewayUrlNote__</p>
-
-                  <!-- API Key -->
-                  <div class="input-group" style="margin-bottom: 8px">
-                    <input
-                      type="password"
-                      id="customGatewayApiKey"
-                      class="setting-input ds-field"
-                      placeholder="__MSG_settings_customGatewayKeyPlaceholder__"
-                    />
-                  </div>
-                  <p class="field-note">__MSG_settings_customGatewayKeyNote__</p>
-                </div>
-              </details>
-
-              <!-- Validation -->
-              <div class="setting-item">
-                <button id="validateBtn" class="validate-btn">
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                  <span>__MSG_settings_validate__</span>
-                </button>
-                <div id="validationStatus" class="ds-notice hidden"></div>
+              <p id="modelHint" class="model-hint"></p>
+              <div
+                id="modelPicker"
+                class="choice-row"
+                role="radiogroup"
+                aria-labelledby="modelLabel"
+              ></div>
+              <div class="model-more-row">
+                <span id="modelShown" class="model-shown"></span>
+                <button type="button" id="modelMore" class="model-more" hidden></button>
               </div>
             </div>
-            <!-- closes .setting-item opened above; browser previously implied this close; do not move -->
+
+            <!-- 4. Or a model name the list does not show -->
+            <div class="setting-item" id="customModelRow">
+              <label class="setting-label" for="customModelName">
+                <span class="label-text">__MSG_settings_customModel__</span>
+                <span class="label-hint">__MSG_settings_customModelOr__</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="customModelName"
+                  class="setting-input ds-field"
+                  placeholder="__MSG_settings_customModelPlaceholder__"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <!-- 5. Check the whole configuration -->
+            <div class="setting-item">
+              <button id="validateBtn" class="validate-btn">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>__MSG_settings_validate__</span>
+              </button>
+              <div id="validationStatus" class="ds-notice hidden"></div>
+            </div>
           </div>
         </section>
 

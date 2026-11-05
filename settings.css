@@ -204,48 +204,6 @@ body {
   border-bottom: none;
 }
 
-/* Advanced settings disclosure (custom model / custom gateway) */
-/* No border-top here: the provider key group right above always ends in
-   its own .setting-item border-bottom, so a second line here would double up. */
-.advanced-settings {
-  margin-top: 12px;
-  padding-top: 12px;
-}
-
-.advanced-settings > summary {
-  cursor: pointer;
-  color: var(--omni-accent);
-  font-weight: 600;
-  font-size: 13px;
-  list-style: none;
-}
-
-/* The same accent ring as every other control, not the browser outline. */
-.advanced-settings > summary:focus-visible {
-  outline: none;
-  border-radius: var(--omni-radius-sm);
-  box-shadow: 0 0 0 2px var(--omni-accent);
-}
-
-.advanced-settings > summary::-webkit-details-marker {
-  display: none;
-}
-
-.advanced-settings > summary::before {
-  content: "▸";
-  display: inline-block;
-  margin-right: 6px;
-  transition: transform 0.15s ease;
-}
-
-.advanced-settings[open] > summary::before {
-  transform: rotate(90deg);
-}
-
-.advanced-settings > .setting-item:first-of-type {
-  margin-top: 12px;
-}
-
 .setting-toggle {
   display: flex;
   align-items: center;
@@ -805,8 +763,68 @@ body {
   }
 }
 
-/* Model picker: search box, then one quiet line saying where the list came
-   from, with the refresh control at its end. */
+/* Provider and model choices: rows of radio pills that wrap. Unchecked
+   pills carry a hairline that holds 3:1 on the card; the checked one takes
+   the accent fill. */
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--omni-spacing-sm);
+  margin-top: var(--omni-spacing-sm);
+}
+
+.choice-row:empty {
+  display: none;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 6px 13px;
+  border: 1px solid var(--omni-pill-line);
+  background: var(--omni-pill-bg);
+  color: var(--omni-glass-text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.choice:hover {
+  background: var(--omni-pill-hover);
+}
+
+.choice[aria-checked="true"] {
+  border-color: var(--omni-choice-checked);
+  background: var(--omni-choice-checked);
+  color: var(--omni-on-accent);
+}
+
+.choice:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--omni-accent);
+}
+
+.choice[aria-checked="true"]:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--omni-glass-surface),
+    0 0 0 4px var(--omni-accent);
+}
+
+.choice-tag {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.choice[data-state="missing"][aria-checked="true"] {
+  border-color: var(--omni-error-ring);
+  background: var(--omni-error-surface);
+  color: var(--omni-error-text);
+}
+
+/* The filter over a long model list. */
 .model-search {
   position: relative;
   margin-top: var(--omni-spacing-sm);
@@ -825,29 +843,83 @@ body {
   pointer-events: none;
 }
 
-.model-search #modelSearch {
+.model-search #modelFilter {
   padding: 8px 12px 8px 36px;
   font-size: 13px;
 }
 
-.model-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--omni-spacing-sm);
-  min-height: 28px;
-  margin-top: 4px;
+.model-hint {
+  margin: var(--omni-spacing-sm) 0 0;
+  padding: 12px;
+  border: 1px dashed var(--omni-pill-line);
+  border-radius: var(--omni-radius-md);
+  font-size: 13px;
+  color: var(--omni-glass-text-secondary);
+  text-align: center;
 }
 
-.model-source {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
+.model-hint:empty {
+  display: none;
+}
+
+.model-more-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--omni-spacing-sm);
+  margin-top: var(--omni-spacing-sm);
   font-size: 12px;
   color: var(--omni-glass-text-tertiary);
 }
 
-.model-source[data-state="failed"] {
-  color: var(--omni-error);
+.model-more-row:has(> .model-shown:empty):has(> .model-more[hidden]) {
+  display: none;
+}
+
+.model-more {
+  border: none;
+  background: none;
+  padding: 2px 4px;
+  border-radius: var(--omni-radius-sm);
+  color: var(--omni-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.model-more:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--omni-accent);
+}
+
+/* What the last listing said about the key, with the refresh control. */
+.key-status {
+  display: flex;
+  align-items: center;
+  gap: var(--omni-spacing-sm);
+  min-height: 28px;
+  padding-top: var(--omni-spacing-sm);
+}
+
+.key-status[hidden] {
+  display: none;
+}
+
+.key-status-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--omni-glass-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.key-status-text[data-state="ok"] {
+  color: var(--omni-success-text);
+}
+
+.key-status-text[data-state="failed"] {
+  color: var(--omni-error-text);
 }
 
 .model-refresh {

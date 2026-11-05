@@ -115,6 +115,34 @@
     "message": "AI 模型",
     "description": "AI 模型标签"
   },
+  "settings_providerLabel": {
+    "message": "提供商",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "选择提供商以查看其模型",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "输入 API 密钥以查看模型",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "输入网关的基础 URL 以查看其模型",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "筛选模型",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "或输入列表中没有的模型名称",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "请先选择模型或输入模型名称。",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
   "settings_modelHint": {
     "message": "选择要使用的 AI 模型",
     "description": "AI 模型提示"

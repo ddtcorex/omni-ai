@@ -6,21 +6,14 @@ import {
   getThemePreference,
   setThemePreference,
 } from "./lib/theme-manager.js";
-import {
-  AI_PROVIDERS,
-  getProviderByModel,
-  getApiModelName,
-  LEGACY_MODELS,
-  DEFAULT_MODEL,
-} from "./lib/ai-providers.js";
-import { buildPickerModel, isCacheFresh } from "./lib/model-catalog.js";
+import { AI_PROVIDERS, getApiModelName, DEFAULT_MODEL } from "./lib/ai-providers.js";
+import { selectionFromStored } from "./lib/model-selection.js";
 import {
   getSyncPreferences,
   setSyncPreferences,
   getLocalAiConfig,
   setLocalAiConfig,
   getSettingsBag,
-  getModelCatalogCache,
 } from "./lib/storage.js";
 import { buildLanguageOptionGroups, LANGUAGES } from "./lib/languages.js";
 import { renderNotice } from "./lib/notice.js";
@@ -34,13 +27,17 @@ import { renderNotice } from "./lib/notice.js";
 const elements = {
   extVersion: document.getElementById("extVersion"),
   geminiApiKey: /** @type {HTMLInputElement} */ (document.getElementById("geminiApiKey")), // Google Key
-  apiModel: /** @type {HTMLSelectElement} */ (document.getElementById("apiModel")),
-  modelSearch: /** @type {HTMLInputElement|null} */ (document.getElementById("modelSearch")),
-  modelSearchRow: document.getElementById("modelSearchRow"),
-  modelSource: document.getElementById("modelSource"),
+  providerPicker: document.getElementById("providerPicker"),
+  modelPicker: document.getElementById("modelPicker"),
+  modelHint: document.getElementById("modelHint"),
+  modelFilter: /** @type {HTMLInputElement|null} */ (document.getElementById("modelFilter")),
+  modelFilterRow: document.getElementById("modelFilterRow"),
+  modelMore: /** @type {HTMLButtonElement|null} */ (document.getElementById("modelMore")),
+  modelShown: document.getElementById("modelShown"),
+  keyStatus: document.getElementById("keyStatus"),
+  keyStatusRow: document.getElementById("keyStatusRow"),
   modelRefresh: /** @type {HTMLButtonElement|null} */ (document.getElementById("modelRefresh")),
   customModelName: /** @type {HTMLInputElement} */ (document.getElementById("customModelName")),
-  customModelGroup: document.getElementById("customModelGroup"),
   googleKeyGroup: document.getElementById("googleKeyGroup"), // Renamed from geminiKeyGroup to match provider
   groqApiKey: /** @type {HTMLInputElement} */ (document.getElementById("groqApiKey")),
   groqKeyGroup: document.getElementById("groqKeyGroup"),
@@ -54,9 +51,6 @@ const elements = {
   ),
   customGatewayApiKey: /** @type {HTMLInputElement} */ (
     document.getElementById("customGatewayApiKey")
-  ),
-  advancedDetails: /** @type {HTMLDetailsElement} */ (
-    document.getElementById("advancedProviderSettings")
   ),
   toggleApiKey: document.getElementById("toggleApiKey"),
   validateBtn: /** @type {HTMLButtonElement} */ (document.getElementById("validateBtn")),
@@ -138,487 +132,129 @@ export async function init() {
   await loadSettings();
   await loadStats();
   setupEventListeners();
-  updateModelVisibility(); // Initial check
-  await hydrateModelCatalog();
 }
 
 /**
- * Populate AI Models dropdown
- */
-/** Fetched catalogs for this page's lifetime, one entry per provider. */
-const modelCatalogs = new Map();
-
-let savedModelForPicker = null;
-let savedProviderForPicker = null;
-let modelSearchQuery = "";
-let modelSourceCounts = { visible: 0, total: 0, matches: 0, query: "" };
-let modelSourceByProvider = new Map();
-/** Providers whose last refresh failed; the line says so only for its own provider. */
-const failedProviders = new Set();
-/** The provider's own words for its last failure, shown as the line's tooltip. */
-const failureReasons = new Map();
-/** The provider a listing is in flight for, so its line and control show it. */
-let refreshingProvider = null;
-let modelSearchBound = false;
-let selectedModelForPicker = null;
-let selectedProviderForPicker = null;
-let pendingRefreshProvider = null;
-
-/**
- * The picker holds API model names, so a shipped id addresses its own model
- * through the same alias the request would use.
- * @param {string} savedModelId
- * @returns {string}
- */
-function normalizeSavedIdForPicker(savedModelId) {
-  return getApiModelName(savedModelId) || savedModelId;
-}
-
-/**
- * @param {number} timestamp
- * @returns {string}
- */
-function formatCatalogDate(timestamp) {
-  try {
-    return new Date(timestamp).toLocaleDateString();
-  } catch {
-    return "";
-  }
-}
-
-/**
- * Paint the line under the picker: where this list came from, or why it is
- * empty. `data-source` carries the same fact for tests and styling.
- */
-function paintModelSource() {
-  const el = elements.modelSource;
-  if (!el) return;
-
-  const selectedProviderId = elements.apiModel?.selectedOptions?.[0]?.dataset.provider;
-  const provider = selectedProviderId ? AI_PROVIDERS[selectedProviderId] : null;
-  const catalog = selectedProviderId ? modelCatalogs.get(selectedProviderId) : null;
-  // A catalog entry with no list means "we asked and got nothing usable", which
-  // renders exactly like the bundled case.
-  const hasList = Boolean(catalog && Array.isArray(catalog.listed));
-  const busy = Boolean(selectedProviderId) && refreshingProvider === selectedProviderId;
-
-  el.dataset.source = hasList ? (catalog.fromCache ? "cache" : "live") : "bundled";
-  el.dataset.state = busy
-    ? "busy"
-    : selectedProviderId && failedProviders.has(selectedProviderId)
-      ? "failed"
-      : "idle";
-
-  // The control follows the selected provider on every paint, whatever the
-  // line below says: a credential can appear or vanish between two paints.
-  if (elements.modelRefresh) {
-    const hasCredential = provider
-      ? provider.id === "customGateway" || Boolean(keyFieldValue(provider.keySetting))
-      : false;
-    elements.modelRefresh.disabled = !hasCredential;
-    elements.modelRefresh.setAttribute("aria-busy", String(busy));
-  }
-
-  // Search earns its row once some provider's own list is loaded; the bundled
-  // list is short enough to scan. A query in progress keeps it open.
-  if (elements.modelSearchRow) {
-    const anyList = Array.from(modelCatalogs.values()).some(
-      (entry) => Array.isArray(entry.listed) && entry.listed.length > 0,
-    );
-    elements.modelSearchRow.hidden = !anyList && !modelSourceCounts.query;
-  }
-
-  const shown = selectedProviderId ? modelSourceByProvider.get(selectedProviderId) : null;
-  const ratio = shown && shown.visible < shown.total ? `${shown.visible}/${shown.total}` : "";
-  const when = catalog?.fetchedAt ? formatCatalogDate(catalog.fetchedAt) : "";
-  const parts = [];
-
-  // The selected row stays listed through any search, so "nothing matches" is
-  // judged on the matches alone.
-  if (modelSourceCounts.query && modelSourceCounts.matches === 0) {
-    parts.push(i18n.getMessage("settings_modelsNoMatch"));
-  } else if (busy) {
-    parts.push(i18n.getMessage("settings_modelsRefreshing"));
-  } else if (el.dataset.state === "failed") {
-    parts.push(i18n.getMessage("settings_modelsRefreshFailed"));
-    el.title = failureReasons.get(selectedProviderId) || "";
-    if (when) parts.push(`${i18n.getMessage("settings_modelsUpdated")} ${when}`);
-  } else if (catalog?.fetchedAt) {
-    parts.push(`${i18n.getMessage("settings_modelsUpdated")}${when ? ` ${when}` : ""}`);
-    if (ratio) parts.push(ratio);
-    if (catalog.truncated) parts.push(i18n.getMessage("settings_modelsTruncated"));
-  } else {
-    parts.push(i18n.getMessage("settings_modelsBundled"));
-    if (ratio) parts.push(ratio);
-  }
-
-  if (el.dataset.state !== "failed") el.title = "";
-  el.textContent = parts.join(" · ");
-}
-
-/**
- * Render every provider group of the model picker.
+ * The AI provider card: provider, its credentials, then a model.
  *
- * The saved value stays the select's value, so loadSettings, saveSettings and
- * the storage contract are untouched. Passing a providerId records that
- * provider's fetched list; every other provider keeps rendering its bundled
- * catalog until it is fetched in turn.
- * @param {Object} [args]
- * @param {string} [args.providerId]
- * @param {Array<Object>|null} [args.listed]
- * @param {string|null} [args.savedModelId]
- * @param {string|null} [args.savedProviderId]
- * @param {number|null} [args.fetchedAt]
- * @param {boolean} [args.fromCache]
- * @param {boolean} [args.truncated] the provider returned more than it lists
+ * `selection` is what the card shows right now; nothing reaches storage
+ * before Save. `drafts` keeps each provider's own choice for this page's
+ * lifetime, so switching away and back restores it.
  */
-export function renderModelPicker({
-  providerId,
-  listed,
-  savedModelId,
-  savedProviderId,
-  fetchedAt = null,
-  fromCache = false,
-  truncated = false,
-} = {}) {
-  const select = elements.apiModel;
-  if (!select) return;
+/** @type {import("./lib/model-selection.js").Selection} */
+let selection = { providerId: null, modelId: null, customName: "" };
+/** @type {Map<string, { modelId: string|null, customName: string }>} */
+const drafts = new Map();
 
-  if (savedModelId !== undefined) savedModelForPicker = savedModelId;
-  if (savedProviderId !== undefined) savedProviderForPicker = savedProviderId;
-  if (providerId) {
-    modelCatalogs.set(providerId, {
-      listed: Array.isArray(listed) ? listed : null,
-      fetchedAt,
-      fromCache,
-      truncated: Boolean(truncated),
-    });
-    failedProviders.delete(providerId);
-  }
-
-  if (elements.modelSearch && !modelSearchBound) {
-    modelSearchBound = true;
-    elements.modelSearch.addEventListener("input", () => {
-      modelSearchQuery = elements.modelSearch?.value || "";
-      renderModelPicker();
-    });
-  }
-
-  const query = modelSearchQuery.trim().toLowerCase();
-  const ownerId = savedModelForPicker
-    ? savedProviderForPicker || getProviderByModel(savedModelForPicker)?.id || null
-    : null;
-  // What the select holds right now: an in progress choice, else the saved one.
-  // Both the id and its provider, because two groups can list the same id.
-  const currentId = selectedModelForPicker || savedModelForPicker;
-  const currentProvider = selectedModelForPicker
-    ? selectedProviderForPicker || getProviderByModel(selectedModelForPicker)?.id || null
-    : ownerId;
-  select.textContent = "";
-
-  let visible = 0;
-  let matches = 0;
-  let total = 0;
-
-  Object.values(AI_PROVIDERS).forEach((provider) => {
-    const catalog = modelCatalogs.get(provider.id);
-    const sentinels = (provider.models || [])
-      .filter((model) => model.id.endsWith("-custom") || model.id === "custom-gateway")
-      .map((model) => ({ id: model.id, label: model.name }));
-
-    const picker = buildPickerModel({
-      providerId: provider.id,
-      listed: catalog ? catalog.listed : null,
-      savedModelId: savedModelForPicker,
-      bundled: provider.models,
-      recommended: provider.recommended || [],
-      toApiName: getApiModelName,
-      query,
-      sentinels,
-      ownsSavedModel: provider.id === ownerId,
-      keepId: provider.id === currentProvider ? currentId : null,
-    });
-
-    // Values are always the API model name, so a fetched id and its shipped
-    // alias address the same option and the select can hold either.
-    const entries = [];
-    const legacy = savedModelForPicker ? LEGACY_MODELS[savedModelForPicker] : null;
-    const legacyHere = Boolean(legacy && legacy.provider === provider.id);
-
-    if (picker.pinned) {
-      entries.push({
-        value: picker.pinned.id,
-        label: legacyHere
-          ? `${i18n.getMessage("settings_legacyModelPrefix")} ${picker.pinned.id}`
-          : picker.pinned.state === "missing"
-            ? `${picker.pinned.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`
-            : picker.pinned.label,
-      });
-    } else if (legacyHere) {
-      // A retired id the bundled list no longer carries: keep it selectable so
-      // an upgrade never blanks the picker.
-      entries.push({
-        value: savedModelForPicker,
-        label: `${i18n.getMessage("settings_legacyModelPrefix")} ${savedModelForPicker}`,
-      });
+/**
+ * Make a row of role="radio" buttons one tab stop: arrows move the focus,
+ * Space and Enter choose.
+ * @param {HTMLElement|null} container
+ * @param {(button: HTMLElement) => void} onSelect
+ */
+function bindRadioGroup(container, onSelect) {
+  if (!container) return;
+  const radios = () =>
+    /** @type {HTMLElement[]} */ (Array.from(container.querySelectorAll('[role="radio"]')));
+  const items = radios();
+  const active = items.find((el) => el.getAttribute("aria-checked") === "true") || items[0];
+  items.forEach((el) => (el.tabIndex = el === active ? 0 : -1));
+  if (container.dataset.radioBound) return;
+  container.dataset.radioBound = "true";
+  container.addEventListener("keydown", (event) => {
+    const list = radios();
+    const index = list.indexOf(/** @type {HTMLElement} */ (document.activeElement));
+    if (index < 0) return;
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+    if (step) {
+      event.preventDefault();
+      list[(index + step + list.length) % list.length].focus();
+    } else if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      onSelect(list[index]);
     }
-    picker.recommended.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
-    picker.recent.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
-
-    total += picker.total;
-    matches += picker.matches;
-
-    const matching = entries;
-    modelSourceByProvider.set(provider.id, {
-      visible: matching.length,
-      total: picker.total,
-    });
-    if (!matching.length) return;
-
-    const group = document.createElement("optgroup");
-    group.label = provider.name;
-    matching.forEach((entry) => {
-      const option = document.createElement("option");
-      option.value = entry.value;
-      option.textContent = entry.label;
-      option.dataset.provider = provider.id;
-      group.appendChild(option);
-    });
-    select.appendChild(group);
-    visible += matching.length;
   });
-
-  if (currentId && !selectPickerOption(select, currentId, currentProvider)) {
-    selectedModelForPicker = null;
-    selectedProviderForPicker = null;
-  }
-
-  modelSourceCounts = { visible, total, matches, query };
-  paintModelSource();
-  // The key fields follow whatever ended up selected: a first paint without
-  // the provider's list, then the cached list, can change the selection.
-  updateModelVisibility({ openAdvanced: false });
 }
 
 /**
- * Select the option for a model inside its own provider's group. Bundled
- * options carry the shipped id and fetched ones the API name, so both are
- * tried; the provider comes first because two groups can list the same id.
- * @param {HTMLSelectElement} select
- * @param {string} modelId
- * @param {string|null} providerId
- * @returns {boolean} whether an option was selected
+ * @param {string} label
+ * @param {boolean} checked
+ * @returns {HTMLButtonElement}
  */
-function selectPickerOption(select, modelId, providerId) {
-  const values = [normalizeSavedIdForPicker(modelId), modelId];
-  const options = Array.from(select.options);
-  const match =
-    options.find((o) => o.dataset.provider === providerId && values.includes(o.value)) ||
-    options.find((o) => values.includes(o.value));
-  if (!match) return false;
-  match.selected = true;
-  return true;
+function choiceButton(label, checked) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "choice ds-pill";
+  button.setAttribute("role", "radio");
+  button.setAttribute("aria-checked", String(checked));
+  button.textContent = label;
+  return button;
 }
 
-/**
- * Backwards compatible entry point: render the picker for an already saved id.
- * @param {string} [currentApiModel]
- */
-export function populateModelSelect(currentApiModel) {
-  renderModelPicker({ savedModelId: currentApiModel || null });
+/** Render the provider row from the registry. */
+function renderProviderPicker() {
+  const row = elements.providerPicker;
+  if (!row) return;
+  row.textContent = "";
+  Object.values(AI_PROVIDERS).forEach((provider) => {
+    const button = choiceButton(provider.name, provider.id === selection.providerId);
+    button.dataset.provider = provider.id;
+    button.addEventListener("click", () => selectProvider(provider.id));
+    row.appendChild(button);
+  });
+  bindRadioGroup(row, (button) => selectProvider(button.dataset.provider));
 }
 
-/**
- * Mark a provider's catalog refresh as failed without dropping the rows on
- * screen. The notice belongs to that provider: another group never shows it.
- * @param {boolean} failed
- * @param {string} [providerId] defaults to the selected model's provider
- */
-export function setModelCatalogFailure(failed, providerId = selectedModelProvider()?.id) {
-  if (!providerId) return;
-  if (failed) failedProviders.add(providerId);
-  else failedProviders.delete(providerId);
-  paintModelSource();
-}
-
-let modelRefreshInFlight = false;
-
-/**
- * Providers whose list on screen came from a credential the worker did not
- * cache (still unsaved). A Save asks once more so the saved one is cached.
- */
-const uncachedProviders = new Set();
-
-/** How long one provider listing may take before the source line reports a failure. */
-const MODEL_REFRESH_TIMEOUT_MS = 15000;
-
-/**
- * The provider that owns a key or base URL field.
- * @param {HTMLElement|null} input
- * @returns {{ id: string, keySetting?: string }|null}
- */
-function providerForField(input) {
-  if (!input) return null;
-  // The base URL is half of the gateway's credential, so it refreshes too.
-  if (input.id === "customGatewayBaseUrl") return AI_PROVIDERS.customGateway;
-  return Object.values(AI_PROVIDERS).find((provider) => provider.keySetting === input.id) || null;
-}
-
-/**
- * The credential a provider's fields hold right now, saved or not. A gateway
- * key always travels with its base URL: the worker must never pair a key typed
- * for one gateway with the URL of another.
- * @param {string} providerId
- * @returns {{ key?: string, baseUrl?: string }}
- */
-function formCredential(providerId) {
-  const provider = AI_PROVIDERS[providerId];
-  if (!provider) return {};
-  const credential = {};
-  const key = keyFieldValue(provider.keySetting);
-  if (key) credential.key = key;
-  if (providerId === "customGateway") {
-    const baseUrl = keyFieldValue("customGatewayBaseUrl");
-    if (baseUrl) credential.baseUrl = baseUrl;
-  }
-  return credential;
-}
-
-/** A base URL with its trailing slashes dropped, so two spellings compare equal. */
-function normalizeBaseUrl(url) {
-  return String(url || "").replace(/\/+$/, "");
-}
-
-/**
- * Read the current value of a provider's key or base URL field.
- * @param {string} fieldId
- * @returns {string}
- */
-function keyFieldValue(fieldId) {
-  const field = /** @type {HTMLInputElement|null} */ (document.getElementById(fieldId));
-  return field?.value?.trim() || "";
-}
-
-/**
- * The provider that owns the model currently selected in the picker.
- * @returns {{ id: string, keySetting?: string }|null}
- */
-function selectedModelProvider() {
-  const selectedProviderId = elements.apiModel?.selectedOptions?.[0]?.dataset.provider;
-  if (selectedProviderId && AI_PROVIDERS[selectedProviderId]) {
-    return AI_PROVIDERS[selectedProviderId];
-  }
-  const value = elements.apiModel?.value;
-  return value ? getProviderByModel(value) : null;
-}
-
-/**
- * Ask the worker for one provider's catalog and render whatever comes back.
- * A failure keeps the rows already on screen and marks the source line: an
- * unreachable provider must never empty the picker.
- * @param {string} providerId
- * @param {{ key?: string, baseUrl?: string }} [options] `key` and `baseUrl` are in form
- *   values not yet saved
- */
-export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
-  if (!providerId) return;
-  if (modelRefreshInFlight) {
-    // A second request while one is in flight is the newer intent, so it runs
-    // next instead of being dropped.
-    pendingRefreshProvider = { providerId, key, baseUrl };
-    return;
-  }
-  modelRefreshInFlight = true;
-  refreshingProvider = providerId;
-  paintModelSource();
-  let timer;
-
-  try {
-    const payload = { provider: providerId };
-    if (key) payload.key = key;
-    if (baseUrl) payload.baseUrl = baseUrl;
-
-    const response = await Promise.race([
-      chrome.runtime.sendMessage({ type: "LIST_MODELS", payload }),
-      new Promise((resolve) => {
-        timer = setTimeout(
-          () => resolve({ success: false, timedOut: true }),
-          MODEL_REFRESH_TIMEOUT_MS,
-        );
-      }),
-    ]);
-
-    if (!response || !response.success) {
-      refreshingProvider = null;
-      failureReasons.set(providerId, String(response?.error || ""));
-      setModelCatalogFailure(true, providerId);
-      return;
-    }
-
-    refreshingProvider = null;
-
-    if (response.cached === false) uncachedProviders.add(providerId);
-    else uncachedProviders.delete(providerId);
-
-    renderModelPicker({
-      providerId,
-      listed: Array.isArray(response.models) ? response.models : [],
-      fetchedAt: response.fetchedAt || Date.now(),
-      truncated: Boolean(response.truncated),
-    });
-  } catch (error) {
-    refreshingProvider = null;
-    failureReasons.set(providerId, String(error?.message || ""));
-    setModelCatalogFailure(true, providerId);
-  } finally {
-    clearTimeout(timer);
-    modelRefreshInFlight = false;
-    refreshingProvider = null;
-    paintModelSource();
-    const queued = pendingRefreshProvider;
-    pendingRefreshProvider = null;
-    if (queued) void refreshModelCatalog(queued.providerId, queued);
-  }
-}
-
-/**
- * Render the cached catalog for the saved model's provider, then refresh it
- * when the cache is missing or stale. At most one request per page load.
- */
-async function hydrateModelCatalog() {
-  const savedModel = savedModelForPicker || elements.apiModel?.value;
-  const provider = savedProviderForPicker
-    ? AI_PROVIDERS[savedProviderForPicker]
-    : savedModel
-      ? getProviderByModel(savedModel)
-      : null;
-  if (!provider) return;
-
-  let cache = await getModelCatalogCache(provider.id);
-  // A gateway catalog lists what one base URL offers. Once the saved URL points
-  // elsewhere it describes the wrong gateway, however fresh it is.
-  if (
-    cache &&
-    provider.id === "customGateway" &&
-    normalizeBaseUrl(cache.baseUrl) !== normalizeBaseUrl(keyFieldValue("customGatewayBaseUrl"))
-  ) {
-    cache = null;
-  }
-
-  if (cache) {
-    renderModelPicker({
-      providerId: provider.id,
-      listed: cache.models,
-      fetchedAt: cache.fetchedAt,
-      fromCache: true,
-      truncated: Boolean(cache.truncated),
+/** Remember the shown provider's choice before another one replaces it. */
+function keepDraft() {
+  if (selection.providerId) {
+    drafts.set(selection.providerId, {
+      modelId: selection.modelId,
+      customName: selection.customName,
     });
   }
+}
 
-  const storedKey = keyFieldValue(provider.keySetting);
-  const needsRefresh = !isCacheFresh(cache?.fetchedAt);
-  if (needsRefresh && (storedKey || provider.id === "customGateway")) {
-    await refreshModelCatalog(provider.id);
+/**
+ * Show a provider: its row checked, its credentials, its models.
+ * @param {string} providerId
+ */
+export function selectProvider(providerId, { focus = true } = {}) {
+  if (!AI_PROVIDERS[providerId]) return;
+  keepDraft();
+  const draft = drafts.get(providerId) || { modelId: null, customName: "" };
+  selection = { providerId, modelId: draft.modelId, customName: draft.customName };
+  renderProviderPicker();
+  if (focus) {
+    /** @type {HTMLElement|null|undefined} */ (
+      elements.providerPicker?.querySelector(`[data-provider="${providerId}"]`)
+    )?.focus({ preventScroll: true });
+  }
+  showKeyGroup();
+  if (elements.customModelName) elements.customModelName.value = selection.customName;
+  renderModelArea();
+}
+
+/** Show only the selected provider's credential fields. */
+function showKeyGroup() {
+  document.querySelectorAll(".setting-item[data-provider]").forEach((group) => {
+    group.classList.toggle(
+      "hidden",
+      /** @type {HTMLElement} */ (group).dataset.provider !== selection.providerId,
+    );
+  });
+}
+
+/** The model area for the selected provider. */
+function renderModelArea() {
+  if (elements.modelHint) {
+    elements.modelHint.textContent = selection.providerId
+      ? i18n.getMessage(
+          selection.providerId === "customGateway"
+            ? "settings_modelsEnterGatewayUrl"
+            : "settings_modelsEnterKey",
+        )
+      : i18n.getMessage("settings_modelsChooseProvider");
   }
 }
 
@@ -750,22 +386,11 @@ async function loadStats() {
  * Set up event listeners
  */
 export function setupEventListeners() {
-  // Model change listener
-  elements.apiModel.addEventListener("change", () => {
-    selectedModelForPicker = elements.apiModel.value || null;
-    selectedProviderForPicker = elements.apiModel.selectedOptions?.[0]?.dataset.provider || null;
-    updateModelVisibility();
-    paintModelSource();
-
-    const provider = selectedModelProvider();
-    const credential = provider ? formCredential(provider.id) : {};
-    if (
-      provider &&
-      (credential.key || provider.id === "customGateway") &&
-      !modelCatalogs.has(provider.id)
-    ) {
-      refreshModelCatalog(provider.id, credential);
-    }
+  // A typed model name replaces the buttons' choice for this provider.
+  elements.customModelName?.addEventListener("input", () => {
+    selection.customName = elements.customModelName.value;
+    if (selection.customName.trim()) selection.modelId = null;
+    renderModelArea();
   });
 
   // Theme preview listener
@@ -783,47 +408,6 @@ export function setupEventListeners() {
   // Flash Actions cap: re-evaluate on every checkbox change
   if (elements.flashActionsList) {
     elements.flashActionsList.addEventListener("change", updateFlashActionCap);
-  }
-
-  // Auto-validate on key blur (debounced; only when the value actually
-  // changed from what was loaded/last validated for that field). Tracked
-  // per-input (seeded from the value loadSettings() already populated) so a
-  // blur on an untouched, already-saved key never re-triggers a call.
-  const keyInputsForAutoValidate = [
-    elements.geminiApiKey,
-    elements.groqApiKey,
-    elements.openaiApiKey,
-    elements.anthropicApiKey,
-    elements.customGatewayApiKey,
-    elements.customGatewayBaseUrl,
-  ];
-
-  let autoValidateTimer;
-  const lastValidatedValues = new Map();
-
-  keyInputsForAutoValidate.forEach((input) => {
-    if (!input) return;
-    lastValidatedValues.set(input, (input.value || "").trim());
-    input.addEventListener("blur", () => {
-      const value = (input.value || "").trim();
-      if (!value || value === lastValidatedValues.get(input)) return;
-      clearTimeout(autoValidateTimer);
-      autoValidateTimer = setTimeout(() => {
-        lastValidatedValues.set(input, value);
-        validateConfiguration();
-        const provider = providerForField(input);
-        if (provider) refreshModelCatalog(provider.id, formCredential(provider.id));
-      }, 500);
-    });
-  });
-
-  // Refresh the fetched model list for the selected provider
-  if (elements.modelRefresh) {
-    elements.modelRefresh.addEventListener("click", () => {
-      const provider = selectedModelProvider();
-      if (!provider) return;
-      refreshModelCatalog(provider.id, formCredential(provider.id));
-    });
   }
 
   // Toggle API key visibility
@@ -858,7 +442,6 @@ export function setupEventListeners() {
     elements.anthropicApiKey,
     elements.customGatewayBaseUrl,
     elements.customGatewayApiKey,
-    elements.apiModel,
     elements.defaultPreset,
     elements.primaryLanguage,
     elements.defaultLanguage,
@@ -895,72 +478,19 @@ function toggleApiKeyVisibility() {
 }
 
 /**
- * Update model visibility based on selection
- */
-/**
- * Show the key fields of the selected model's provider.
- * @param {{ openAdvanced?: boolean }} [options] false on a plain re-render
- *   (a search keystroke), so Advanced is opened only by a real selection and
- *   never re-opened after the user folded it.
- */
-function updateModelVisibility({ openAdvanced = true } = {}) {
-  const modelId = elements.apiModel.value;
-  // The selected option knows its provider; a fetched id is unknown to the
-  // registry, so getProviderByModel() alone hid the key field for it.
-  const provider = selectedModelProvider();
-
-  // Hide all groups first
-  const groups = document.querySelectorAll(".setting-item[data-provider]");
-  groups.forEach((el) => el.classList.add("hidden"));
-
-  // Handle Custom Model Input
-  if (modelId.endsWith("-custom") || modelId === "custom-gateway") {
-    elements.customModelGroup.classList.remove("hidden");
-  } else {
-    elements.customModelGroup.classList.add("hidden");
-  }
-
-  const needsAdvanced = modelId.endsWith("-custom") || modelId === "custom-gateway";
-  if (openAdvanced && needsAdvanced && elements.advancedDetails) {
-    elements.advancedDetails.open = true;
-  }
-
-  if (provider) {
-    // Show matching group based on data-provider attribute
-    const activeGroup = document.querySelector(`.setting-item[data-provider="${provider.id}"]`);
-    if (activeGroup) {
-      activeGroup.classList.remove("hidden");
-    }
-  }
-}
-
-/**
  * Validate current configuration
  */
 export async function validateConfiguration() {
-  const modelId = elements.apiModel.value;
-  // Same as above: a fetched id only has a provider through its option, and
-  // without one the button silently did nothing.
-  const provider = selectedModelProvider();
+  const provider = selection.providerId ? AI_PROVIDERS[selection.providerId] : null;
   if (!provider) return;
 
-  let validModelId = modelId;
-
-  // Custom Model handling
-  if (modelId.endsWith("-custom")) {
-    const customName = elements.customModelName.value.trim();
-    if (!customName) {
-      showValidationStatus(i18n.getMessage("settings_errorNoCustomModel"), "error");
-      return;
-    }
-    validModelId = customName;
-  } else if (modelId === "custom-gateway") {
-    const customName = elements.customModelName.value.trim();
-    if (!customName) {
-      showValidationStatus(i18n.getMessage("settings_errorNoCustomModel"), "error");
-      return;
-    }
-    validModelId = customName;
+  const customName = selection.customName.trim();
+  const validModelId =
+    customName ||
+    (selection.modelId ? getApiModelName(selection.modelId) || selection.modelId : "");
+  if (!validModelId) {
+    showValidationStatus(i18n.getMessage("settings_errorChooseModel"), "error");
+    return;
   }
 
   // Get the Key and extra config for Custom Gateway
@@ -1089,7 +619,6 @@ export async function loadSettings() {
     if (config.groqApiKey) elements.groqApiKey.value = config.groqApiKey;
     if (config.openaiApiKey) elements.openaiApiKey.value = config.openaiApiKey;
     if (config.anthropicApiKey) elements.anthropicApiKey.value = config.anthropicApiKey;
-    if (config.customModelName) elements.customModelName.value = config.customModelName;
 
     // Custom Gateway config
     if (elements.customGatewayBaseUrl)
@@ -1097,17 +626,22 @@ export async function loadSettings() {
     if (elements.customGatewayApiKey)
       elements.customGatewayApiKey.value = config.customGatewayApiKey || "";
 
-    // Load custom model name for selected provider
-    const savedModel = config.apiModel || DEFAULT_MODEL;
-    savedProviderForPicker = config.apiProvider || null;
-    // populateModelSelect selects the saved model inside its saved provider's
-    // group; setting .value here would pick the first group with that id.
-    populateModelSelect(savedModel);
-    if (!config.apiModel && !config.geminiApiKey) {
-      elements.geminiApiKey?.focus();
-    }
-    if (savedModel === "custom-gateway" && config.customGatewayModelName) {
-      elements.customModelName.value = config.customGatewayModelName;
+    // The provider card shows the stored choice. An install that only ever
+    // saved a Gemini key runs Gemini's default model, so it shows that.
+    const saved = selectionFromStored(
+      config.apiModel || !config.geminiApiKey
+        ? config
+        : { ...config, apiModel: DEFAULT_MODEL, apiProvider: "google" },
+    );
+    drafts.clear();
+    selection = { providerId: null, modelId: null, customName: "" };
+    if (saved.providerId) {
+      drafts.set(saved.providerId, { modelId: saved.modelId, customName: saved.customName });
+      selectProvider(saved.providerId, { focus: false });
+    } else {
+      renderProviderPicker();
+      showKeyGroup();
+      renderModelArea();
     }
     const validPresets = ["professional", "casual", "friendly", "direct", "confident"];
     if (config.currentPreset && validPresets.includes(config.currentPreset)) {
@@ -1127,8 +661,6 @@ export async function loadSettings() {
       });
       updateFlashActionCap();
     }
-
-    updateModelVisibility();
   } catch (error) {
     console.error("Failed to load settings:", error);
   }
@@ -1155,12 +687,6 @@ export async function saveSettings() {
       groqApiKey: elements.groqApiKey.value.trim(),
       openaiApiKey: elements.openaiApiKey.value.trim(),
       anthropicApiKey: elements.anthropicApiKey.value.trim(),
-      apiModel: elements.apiModel.value,
-      apiProvider:
-        elements.apiModel.selectedOptions?.[0]?.dataset.provider ||
-        getProviderByModel(elements.apiModel.value)?.id ||
-        "",
-      customModelName: elements.customModelName.value.trim(),
       currentPreset: elements.defaultPreset.value,
       customGatewayBaseUrl: elements.customGatewayBaseUrl.value.trim(),
       customGatewayApiKey: elements.customGatewayApiKey.value.trim(),
@@ -1177,17 +703,7 @@ export async function saveSettings() {
       },
     };
 
-    // Save custom model name to gateway-specific key if custom gateway is selected
-    if (elements.apiModel.value === "custom-gateway") {
-      aiConfig.customGatewayModelName = elements.customModelName.value.trim();
-    }
     await setLocalAiConfig(aiConfig);
-
-    // The list on screen came from a credential that was not saved yet; now it
-    // is, so one more listing lets the worker cache it for the next visit.
-    if (aiConfig.apiProvider && uncachedProviders.has(aiConfig.apiProvider)) {
-      void refreshModelCatalog(aiConfig.apiProvider);
-    }
 
     // Primary Language may have just changed: re-run i18n and re-localize
     // this page's own UI immediately (content.js's onPrimaryLanguageChanged
