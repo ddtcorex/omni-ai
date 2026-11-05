@@ -559,6 +559,22 @@ describe("localizeDOM", () => {
       expect(select.value).toBe("gpt-5.6-sol");
     });
 
+    it("says nothing matches even though the selected row stays listed", () => {
+      Settings.renderModelPicker({
+        providerId: "openai",
+        listed: liveOpenai,
+        savedModelId: "gpt-5.6-sol",
+        savedProviderId: "openai",
+        fetchedAt: 1,
+      });
+      const input = document.getElementById("modelSearch");
+      input.value = "zzz";
+      input.dispatchEvent(new Event("input"));
+
+      expect(document.getElementById("apiModel").value).toBe("gpt-5.6-sol");
+      expect(document.getElementById("modelSource").textContent).toContain("settings_modelsNoMatch");
+    });
+
     it("keeps a gateway model selected when another provider lists the same id", () => {
       // A self hosted gateway can list a vendor's own id. The select holds the
       // same value twice, so the provider decides which option is the saved one.

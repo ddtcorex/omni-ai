@@ -149,7 +149,7 @@ const modelCatalogs = new Map();
 let savedModelForPicker = null;
 let savedProviderForPicker = null;
 let modelSearchQuery = "";
-let modelSourceCounts = { visible: 0, total: 0, query: "" };
+let modelSourceCounts = { visible: 0, total: 0, matches: 0, query: "" };
 let modelSourceByProvider = new Map();
 /** Providers whose last refresh failed; the line says so only for its own provider. */
 const failedProviders = new Set();
@@ -220,7 +220,9 @@ function paintModelSource() {
   const when = catalog?.fetchedAt ? formatCatalogDate(catalog.fetchedAt) : "";
   const parts = [];
 
-  if (modelSourceCounts.query && modelSourceCounts.visible === 0) {
+  // The selected row stays listed through any search, so "nothing matches" is
+  // judged on the matches alone.
+  if (modelSourceCounts.query && modelSourceCounts.matches === 0) {
     parts.push(i18n.getMessage("settings_modelsNoMatch"));
   } else if (busy) {
     parts.push(i18n.getMessage("settings_modelsRefreshing"));
@@ -300,6 +302,7 @@ export function renderModelPicker({
   select.textContent = "";
 
   let visible = 0;
+  let matches = 0;
   let total = 0;
 
   Object.values(AI_PROVIDERS).forEach((provider) => {
@@ -346,6 +349,7 @@ export function renderModelPicker({
     picker.recent.forEach((entry) => entries.push({ value: entry.id, label: entry.label }));
 
     total += picker.total;
+    matches += picker.matches;
 
     const matching = entries;
     modelSourceByProvider.set(provider.id, {
@@ -372,7 +376,7 @@ export function renderModelPicker({
     selectedProviderForPicker = null;
   }
 
-  modelSourceCounts = { visible, total, query };
+  modelSourceCounts = { visible, total, matches, query };
   paintModelSource();
 }
 
