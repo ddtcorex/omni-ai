@@ -926,6 +926,16 @@ describe("Service Worker Integration", () => {
     expect(config).toMatchObject({ provider: "customGateway", model: "typed/model" });
   });
 
+  it("omni chat on an install with no saved model uses Gemini's default", async () => {
+    const config = await chatConfigFor({ geminiApiKey: "g-key" });
+
+    expect(config).toMatchObject({
+      provider: "google",
+      apiKey: "g-key",
+      model: "gemini-3.6-flash",
+    });
+  });
+
   it("omni chat sends a gateway model named like a shipped id to the gateway", async () => {
     const config = await chatConfigFor({
       apiModel: "claude-sonnet-5",

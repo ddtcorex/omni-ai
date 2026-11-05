@@ -21,7 +21,7 @@ import {
 } from "../lib/ai-service.js";
 import { generateContentStream, listModels } from "../lib/providers/index.js";
 import { createOmniChatHandler } from "../lib/omni-chat-port.js";
-import { AI_PROVIDERS, getProviderByModel } from "../lib/ai-providers.js";
+import { AI_PROVIDERS, DEFAULT_MODEL, getProviderByModel } from "../lib/ai-providers.js";
 
 /**
  * Omni AI: Service Worker
@@ -805,7 +805,8 @@ async function getApiKey() {
 // ============================================
 
 async function getChatConfig(modelId, temperature) {
-  const model = modelId || (await getApiModel());
+  // An install that never saved a model runs the default one, as page actions do.
+  const model = modelId || (await getApiModel()) || DEFAULT_MODEL;
   const storedModel = modelId ? null : model;
   const storedProvider = storedModel ? await getApiProvider() : null;
   const providerInfo = getProviderByModel(model);
