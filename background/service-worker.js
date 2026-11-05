@@ -21,7 +21,12 @@ import {
 } from "../lib/ai-service.js";
 import { generateContentStream, listModels } from "../lib/providers/index.js";
 import { createOmniChatHandler } from "../lib/omni-chat-port.js";
-import { AI_PROVIDERS, DEFAULT_MODEL, getProviderByModel } from "../lib/ai-providers.js";
+import {
+  AI_PROVIDERS,
+  DEFAULT_MODEL,
+  getProviderByModel,
+  isCustomModelEntry,
+} from "../lib/ai-providers.js";
 
 /**
  * Omni AI: Service Worker
@@ -829,7 +834,7 @@ async function getChatConfig(modelId, temperature) {
     if (model === "custom-gateway" && gw.customGatewayModelName) {
       config.model = gw.customGatewayModelName;
     }
-  } else if (model.endsWith("-custom")) {
+  } else if (isCustomModelEntry(model)) {
     // Same for a provider's custom entry: the request needs the typed name,
     // never the "<provider>-custom" placeholder.
     const typed = await getCustomModelName();

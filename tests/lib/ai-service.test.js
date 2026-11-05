@@ -201,6 +201,22 @@ describe("AI Service", () => {
     expect(mockProvider.generateContent.mock.calls[0][0]).toContain("Chinese (Simplified)");
   });
 
+  it("sends a listed model whose id ends in -custom as itself", async () => {
+    store["apiModel"] = "acme/llama-custom";
+    store["apiProvider"] = "customGateway";
+    store["customGatewayBaseUrl"] = "https://gw.example/v1";
+    store["customGatewayModelName"] = "typed-name";
+    store["customModelName"] = "other-typed-name";
+    mockProvider.generateContent.mockResolvedValue("ok");
+
+    await generateContent("Test Prompt");
+
+    expect(mockProvider.generateContent).toHaveBeenCalledWith(
+      "Test Prompt",
+      expect.objectContaining({ model: "acme/llama-custom" }),
+    );
+  });
+
   it("routes a raw fetched model id through the stored provider, not the Gemini fallback", async () => {
     store["apiModel"] = "gpt-5.7-nova";
     store["apiProvider"] = "openai";

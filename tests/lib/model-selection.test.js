@@ -47,6 +47,16 @@ describe("selectionFromStored", () => {
     ).toEqual({ providerId: "customGateway", modelId: null, customName: "qwen3.8-27b" });
   });
 
+  test("a listed model whose id ends in -custom is a model, not the custom entry", () => {
+    expect(
+      selectionFromStored({
+        apiProvider: "customGateway",
+        apiModel: "acme/llama-custom",
+        customModelName: "x",
+      }),
+    ).toEqual({ providerId: "customGateway", modelId: "acme/llama-custom", customName: "" });
+  });
+
   test("nothing saved selects nothing", () => {
     expect(selectionFromStored({})).toEqual({ providerId: null, modelId: null, customName: "" });
   });

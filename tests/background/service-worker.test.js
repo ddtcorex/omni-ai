@@ -953,6 +953,17 @@ describe("Service Worker Integration", () => {
     });
   });
 
+  it("omni chat sends a listed model whose id ends in -custom as itself", async () => {
+    const config = await chatConfigFor({
+      apiModel: "llama-3-custom",
+      apiProvider: "groq",
+      groqApiKey: "gsk",
+      customModelName: "typed-name",
+    });
+
+    expect(config).toMatchObject({ provider: "groq", model: "llama-3-custom" });
+  });
+
   it("getChatConfig sends the typed name for a provider's custom entry", async () => {
     const config = await chatConfigFor({
       apiModel: "openai-custom",

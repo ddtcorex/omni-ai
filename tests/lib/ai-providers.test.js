@@ -4,6 +4,7 @@ import {
   DEFAULT_MODEL,
   getApiModelName,
   getProviderByModel,
+  isCustomModelEntry,
 } from "../../lib/ai-providers";
 
 describe("AI_PROVIDERS registry", () => {
@@ -73,5 +74,15 @@ describe("defaultApiModel", () => {
     expect(defaultApiModel("groq")).toBe("llama-3.3-70b-versatile");
     expect(defaultApiModel("anthropic")).toBe("claude-sonnet-5");
     Object.keys(providers).forEach((id) => expect(defaultApiModel(id)).toBeTruthy());
+  });
+});
+
+describe("isCustomModelEntry", () => {
+  it("matches the registry's custom entries exactly", () => {
+    expect(isCustomModelEntry("openai-custom")).toBe(true);
+    expect(isCustomModelEntry("custom-gateway")).toBe(true);
+    expect(isCustomModelEntry("acme/llama-custom")).toBe(false);
+    expect(isCustomModelEntry("gpt-5.7-nova")).toBe(false);
+    expect(isCustomModelEntry(undefined)).toBe(false);
   });
 });
