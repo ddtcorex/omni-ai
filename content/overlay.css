@@ -701,7 +701,7 @@
   padding: 4px 2px;
   border: none;
   background: transparent;
-  color: var(--omni-glass-text-tertiary);
+  color: var(--omni-glass-text-secondary);
   font-family: inherit;
   font-size: 11.5px;
   cursor: pointer;
@@ -720,8 +720,9 @@
   width: 24px;
   height: 14px;
   border-radius: var(--omni-radius-full);
-  background: var(--omni-pill-top);
-  box-shadow: inset 0 0 0 1px var(--omni-glass-ring);
+  /* A white track under a white knob vanished on a light card: the off track
+     is a grey that holds 3:1 against the card in both themes. */
+  background: var(--omni-switch-track);
   transition: background-color 200ms var(--omni-motion-ease-out);
 }
 

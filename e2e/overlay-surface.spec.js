@@ -827,6 +827,7 @@ for (const theme of ["light", "dark"]) {
             placeholder: cs(".omni-ai-input", "::placeholder")?.color,
             send: stops("#omniAiInputBtn"),
             toggleText: cs(".omni-ai-toggle")?.color,
+            switchTrack: cs(".omni-ai-switch")?.backgroundColor,
             closeText: cs("#omniAiClose")?.color,
             backText: cs("#omniAiBack")?.color,
             tertiary: (() => {
@@ -863,6 +864,11 @@ for (const theme of ["light", "dark"]) {
         check(`close glyph on ${pn}`, parseRgba(result.closeText).rgb, rc);
         check(`back glyph on ${pn}`, parseRgba(result.backText).rgb, rc);
         check(`tertiary token on ${pn}`, parseRgba(result.tertiary).rgb, rc);
+        // WCAG 1.4.11: the switch is a control, so its off track must stand
+        // out from the card at 3:1, or the Show changes switch reads as text.
+        const track = composite([{ rgb: rc, a: 1 }, parseRgba(result.switchTrack)]);
+        ratios[`switch track on ${pn}`] = contrast(track, rc);
+        expect(ratios[`switch track on ${pn}`], `switch track on ${pn}`).toBeGreaterThanOrEqual(3);
       }
       expect(menu.send.length).toBe(2);
       expect(result.replace.length).toBe(2);
