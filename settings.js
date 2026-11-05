@@ -350,7 +350,9 @@ export function renderModelPicker({
         value: picker.pinned.id,
         label: legacyHere
           ? `${i18n.getMessage("settings_legacyModelPrefix")} ${picker.pinned.id}`
-          : `${picker.pinned.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`,
+          : picker.pinned.state === "missing"
+            ? `${picker.pinned.label} (${i18n.getMessage("settings_modelNoLongerOffered")})`
+            : picker.pinned.label,
       });
     } else if (legacyHere) {
       // A retired id the bundled list no longer carries: keep it selectable so
@@ -393,6 +395,9 @@ export function renderModelPicker({
 
   modelSourceCounts = { visible, total, matches, query };
   paintModelSource();
+  // The key fields follow whatever ended up selected: a first paint without
+  // the provider's list, then the cached list, can change the selection.
+  updateModelVisibility({ openAdvanced: false });
 }
 
 /**
@@ -892,7 +897,13 @@ function toggleApiKeyVisibility() {
 /**
  * Update model visibility based on selection
  */
-function updateModelVisibility() {
+/**
+ * Show the key fields of the selected model's provider.
+ * @param {{ openAdvanced?: boolean }} [options] false on a plain re-render
+ *   (a search keystroke), so Advanced is opened only by a real selection and
+ *   never re-opened after the user folded it.
+ */
+function updateModelVisibility({ openAdvanced = true } = {}) {
   const modelId = elements.apiModel.value;
   // The selected option knows its provider; a fetched id is unknown to the
   // registry, so getProviderByModel() alone hid the key field for it.
@@ -910,7 +921,7 @@ function updateModelVisibility() {
   }
 
   const needsAdvanced = modelId.endsWith("-custom") || modelId === "custom-gateway";
-  if (needsAdvanced && elements.advancedDetails) {
+  if (openAdvanced && needsAdvanced && elements.advancedDetails) {
     elements.advancedDetails.open = true;
   }
 

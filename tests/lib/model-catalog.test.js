@@ -323,3 +323,15 @@ test("a vendor display name wins over the shipped name", () => {
 
   expect(model.recent[0].label).toBe("Sol (vendor)");
 });
+
+test("the bundled list keeps a saved model it does not carry, without calling it gone", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: null,
+    savedModelId: "gpt-5.7-nova",
+    bundled,
+    toApiName,
+  });
+
+  expect(model.pinned).toEqual({ id: "gpt-5.7-nova", label: "gpt-5.7-nova", state: "unlisted" });
+});

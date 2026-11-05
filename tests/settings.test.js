@@ -690,6 +690,39 @@ describe("localizeDOM", () => {
       });
     });
 
+    it("keeps a saved fetched model selectable before its provider's list loads", () => {
+      // No catalog yet (first paint, or offline): the bundled list does not
+      // carry the id, and the select must not fall back to Gemini.
+      Settings.renderModelPicker({ savedModelId: "gpt-5.7-nova", savedProviderId: "openai" });
+
+      const select = document.getElementById("apiModel");
+      expect(select.value).toBe("gpt-5.7-nova");
+      expect(select.selectedOptions[0].dataset.provider).toBe("openai");
+      expect(select.selectedOptions[0].textContent).not.toContain("settings_modelNoLongerOffered");
+    });
+
+    it("shows the key field of whatever the picker ends up selecting", () => {
+      Settings.renderModelPicker({ savedModelId: "gpt-5.7-nova", savedProviderId: "openai" });
+
+      expect(document.getElementById("openaiKeyGroup").classList.contains("hidden")).toBe(false);
+      expect(document.getElementById("googleKeyGroup").classList.contains("hidden")).toBe(true);
+    });
+
+    it("a search keystroke does not re-open Advanced the user folded", () => {
+      Settings.renderModelPicker({
+        savedModelId: "custom-gateway",
+        savedProviderId: "customGateway",
+      });
+      const details = document.getElementById("advancedProviderSettings");
+      details.open = false;
+
+      const input = document.getElementById("modelSearch");
+      input.value = "c";
+      input.dispatchEvent(new Event("input"));
+
+      expect(details.open).toBe(false);
+    });
+
     it("writes apiProvider next to apiModel when the picker is saved", async () => {
       Settings.renderModelPicker({
         providerId: "openai",
