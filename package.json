@@ -19,6 +19,7 @@
     "verify": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage",
     "package": "bash scripts/publish.sh",
     "prepare": "husky",
+    "demo:setup": "node scripts/record-setup-demo.cjs",
     "capture:models": "node scripts/capture-model-fixtures.mjs"
   },
   "lint-staged": {
