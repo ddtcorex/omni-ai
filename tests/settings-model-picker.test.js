@@ -726,6 +726,21 @@ describe("save and check", () => {
     expect(saveStatus().classList.contains("ds-notice--error")).toBe(true);
   });
 
+  test("a save error stays on screen, a success fades", async () => {
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await boot({ apiProvider: "google", apiModel: "gemini-3.6-flash", geminiApiKey: "AIza" });
+    providerButton("groq").click();
+    await clickSave();
+    await wait(3200);
+    expect(saveStatus().classList.contains("visible")).toBe(true);
+
+    providerButton("google").click();
+    await clickSave();
+    expect(saveStatus().classList.contains("ds-notice--success")).toBe(true);
+    await wait(3200);
+    expect(saveStatus().classList.contains("visible")).toBe(false);
+  }, 15000);
+
   test("a fresh install saves without a provider and writes no model", async () => {
     const local = await boot({});
     await clickSave();

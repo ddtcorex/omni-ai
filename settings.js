@@ -1186,7 +1186,10 @@ export async function saveSettings() {
 function showSaveStatus(message, type = "success") {
   renderNotice(elements.saveStatus, type === "success" ? "success" : "error", message);
 
+  // A success fades; an error stays until the next Save, since it asks the
+  // user to do something.
   clearTimeout(saveStatusTimer);
+  if (type !== "success") return;
   saveStatusTimer = setTimeout(() => {
     elements.saveStatus.classList.remove("visible");
   }, 3000);
