@@ -827,6 +827,37 @@ describe("Service Worker Integration", () => {
     });
   });
 
+  it("LIST_MODELS lists a keyless gateway at the typed URL without the stored key", async () => {
+    const Providers = await import("../../lib/providers/index");
+    const Storage = await import("../../lib/storage");
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({
+      customGatewayApiKey: "gw-key",
+      customGatewayBaseUrl: "https://old.example/v1",
+    });
+    Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+    const setCache = jest.spyOn(Storage, "setModelCatalogCache");
+
+    const sendResponse = jest.fn();
+    listener(
+      {
+        type: "LIST_MODELS",
+        payload: { provider: "customGateway", baseUrl: "http://localhost:11434/v1", keyless: true },
+      },
+      {},
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+      baseUrl: "http://localhost:11434/v1",
+    });
+    expect(sendResponse.mock.calls[0][0]).toMatchObject({ success: true, cached: false });
+    expect(setCache).not.toHaveBeenCalled();
+  });
+
   it("LIST_MODELS uses the stored Custom Gateway base URL", async () => {
     const Providers = await import("../../lib/providers/index");
     await import("../../background/service-worker");

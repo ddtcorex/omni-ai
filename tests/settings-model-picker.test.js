@@ -239,6 +239,29 @@ describe("key check on blur", () => {
     });
   });
 
+  test("a gateway key cleared for a new URL lists that URL with no key", async () => {
+    await boot(
+      {
+        apiProvider: "customGateway",
+        apiModel: "custom-gateway",
+        customGatewayModelName: "llama3",
+        customGatewayBaseUrl: "https://old.example/v1",
+        customGatewayApiKey: "gw-saved",
+      },
+      { listModels: () => listReply("local-model") },
+    );
+    chrome.runtime.sendMessage.mockClear();
+    document.getElementById("customGatewayApiKey").value = "";
+    typeAndBlur("customGatewayBaseUrl", "http://localhost:11434/v1");
+    await flush();
+
+    expect(sent("LIST_MODELS").at(-1)[0].payload).toEqual({
+      provider: "customGateway",
+      baseUrl: "http://localhost:11434/v1",
+      keyless: true,
+    });
+  });
+
   test("a keyless gateway is listed once its base URL is filled", async () => {
     await boot({}, { listModels: () => listReply("local-model") });
     providerButton("customGateway").click();
@@ -249,6 +272,7 @@ describe("key check on blur", () => {
     expect(sent("LIST_MODELS")[0][0].payload).toEqual({
       provider: "customGateway",
       baseUrl: "http://localhost:11434/v1",
+      keyless: true,
     });
     // No key was checked, so the line does not call one valid.
     expect(keyStatus().textContent).toBe("settings_modelsListed:1");

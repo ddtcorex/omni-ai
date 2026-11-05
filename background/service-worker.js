@@ -603,10 +603,13 @@ function normalizeBaseUrl(url) {
  * call, one provider. Only a listing made with the saved credential is cached:
  * a key or base URL still in the form may never be saved, and the cache would
  * then describe an account the extension does not use.
- * @param {{ provider?: string, key?: string, baseUrl?: string }} [payload]
+ * @param {{ provider?: string, key?: string, baseUrl?: string, keyless?: boolean }} [payload]
  */
 async function handleListModels(payload = {}) {
   const { provider: providerId, key, baseUrl } = payload;
+  // The gateway's key field was left empty on purpose: list the typed URL with
+  // no key at all, never with the one in storage.
+  const keyless = providerId === "customGateway" && Boolean(payload.keyless) && !key;
   const provider = AI_PROVIDERS[providerId];
 
   if (!provider) {
@@ -615,7 +618,7 @@ async function handleListModels(payload = {}) {
 
   const isGateway = providerId === "customGateway";
   const storedKey = /** @type {string|undefined} */ (await getStoredApiKey(provider.keySetting));
-  const apiKey = key || storedKey;
+  const apiKey = keyless ? "" : key || storedKey;
 
   if (!apiKey && !isGateway) {
     throw new Error("API Key is missing");
@@ -632,14 +635,14 @@ async function handleListModels(payload = {}) {
     // is trusted alongside a key from that same caller, or when there is no key
     // at all to send. A stored key never goes to a host somebody else chose,
     // and a key typed for a new gateway never goes to the old one.
-    const callerUrl = key || !storedKey ? normalizeBaseUrl(baseUrl) : "";
+    const callerUrl = key || keyless || !storedKey ? normalizeBaseUrl(baseUrl) : "";
     config.baseUrl = callerUrl || storedBaseUrl || undefined;
   }
 
   const { models, truncated } = await listModels(providerId, config);
   const fetchedAt = Date.now();
   const savedCredential =
-    (!key || key === storedKey) &&
+    (keyless ? !storedKey : !key || key === storedKey) &&
     (!isGateway || normalizeBaseUrl(config.baseUrl) === storedBaseUrl);
 
   if (savedCredential) {

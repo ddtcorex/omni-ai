@@ -291,7 +291,7 @@ let listingInFlight = false;
 /**
  * Listings waiting behind the one in flight, one per provider: a newer intent
  * replaces that provider's own entry and never another provider's.
- * @type {Map<string, { key?: string, baseUrl?: string }>}
+ * @type {Map<string, { key?: string, baseUrl?: string, keyless?: boolean }>}
  */
 const queuedListings = new Map();
 /** How long one listing may take before it counts as failed. */
@@ -329,7 +329,7 @@ function normalizeBaseUrl(url) {
  * key always travels with its base URL: the worker must never pair a key typed
  * for one gateway with the URL of another.
  * @param {string} providerId
- * @returns {{ key?: string, baseUrl?: string }}
+ * @returns {{ key?: string, baseUrl?: string, keyless?: boolean }}
  */
 function formCredential(providerId) {
   const provider = AI_PROVIDERS[providerId];
@@ -340,6 +340,8 @@ function formCredential(providerId) {
   if (providerId === "customGateway") {
     const baseUrl = keyFieldValue("customGatewayBaseUrl");
     if (baseUrl) credential.baseUrl = baseUrl;
+    // An empty key field is a keyless gateway, not "use the saved key".
+    if (!key) credential.keyless = true;
   }
   return credential;
 }
@@ -406,7 +408,7 @@ function paintKeyStatus() {
  * it succeeds only with a credential the provider accepts. A failure keeps
  * any list already on screen and shows the provider's own words.
  * @param {string} providerId
- * @param {{ key?: string, baseUrl?: string }} [credential] form values not yet saved;
+ * @param {{ key?: string, baseUrl?: string, keyless?: boolean }} [credential] form values not yet saved;
  *   empty means the saved ones
  */
 export async function refreshModelCatalog(providerId, credential = {}) {
@@ -425,6 +427,7 @@ export async function refreshModelCatalog(providerId, credential = {}) {
     const payload = { provider: providerId };
     if (credential.key) payload.key = credential.key;
     if (credential.baseUrl) payload.baseUrl = credential.baseUrl;
+    if (credential.keyless) payload.keyless = true;
     const response = await Promise.race([
       chrome.runtime.sendMessage({ type: "LIST_MODELS", payload }),
       new Promise((resolve) => {
