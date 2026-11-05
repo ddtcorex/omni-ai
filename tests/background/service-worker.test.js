@@ -779,6 +779,62 @@ describe("Service Worker Integration", () => {
     );
   });
 
+  async function chatConfigFor(stored) {
+    chromeMock.storage.local.get.mockResolvedValue(stored);
+    const providers = await import("../../lib/providers/index");
+    providers.generateContentStream.mockResolvedValue("ok");
+    await import("../../background/service-worker");
+    const connectListener = chromeMock.runtime.onConnect.addListener.mock.calls[0][0];
+    const port = {
+      name: "omni-chat",
+      onMessage: { addListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn() },
+      postMessage: jest.fn(),
+    };
+    connectListener(port);
+    const onMessage = port.onMessage.addListener.mock.calls[0][0];
+    await onMessage({ type: "chat", message: "hi", pageContext: "", history: [] });
+    return providers.generateContentStream.mock.calls[0][1];
+  }
+
+  it("getChatConfig keeps a fetched gateway model over a stale typed model name", async () => {
+    // The typed name belongs to the "custom-gateway" entry only; it stays in
+    // storage after the user picks a listed gateway model instead.
+    const config = await chatConfigFor({
+      apiModel: "anthropic/claude-haiku-5.5",
+      apiProvider: "customGateway",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      customGatewayModelName: "old/manual-model",
+    });
+
+    expect(config).toMatchObject({
+      provider: "customGateway",
+      model: "anthropic/claude-haiku-5.5",
+      baseUrl: "https://gw.example/v1",
+    });
+  });
+
+  it("getChatConfig still sends the typed name for the custom-gateway entry", async () => {
+    const config = await chatConfigFor({
+      apiModel: "custom-gateway",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      customGatewayModelName: "typed/model",
+    });
+
+    expect(config).toMatchObject({ provider: "customGateway", model: "typed/model" });
+  });
+
+  it("getChatConfig sends the typed name for a provider's custom entry", async () => {
+    const config = await chatConfigFor({
+      apiModel: "openai-custom",
+      apiProvider: "openai",
+      openaiApiKey: "sk-o",
+      customModelName: "gpt-typed",
+    });
+
+    expect(config).toMatchObject({ provider: "openai", model: "gpt-typed", apiKey: "sk-o" });
+  });
+
   it("a model-not-found failure reaches the overlay with its code", async () => {
     const AIService = await import("../../lib/ai-service");
     AIService.improveText.mockRejectedValue(

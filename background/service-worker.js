@@ -5,6 +5,7 @@ import {
   getCustomGatewayConfig,
   getApiModel,
   getApiProvider,
+  getCustomModelName,
   setModelCatalogCache,
 } from "../lib/storage.js";
 import {
@@ -802,7 +803,17 @@ async function getChatConfig(modelId, temperature) {
   if (providerId === "customGateway") {
     const gw = await getCustomGatewayConfig();
     config.baseUrl = gw.customGatewayBaseUrl;
-    if (gw.customGatewayModelName) config.model = gw.customGatewayModelName;
+    // The typed name belongs to the "custom-gateway" entry. A model picked from
+    // the gateway's own list is already the name to send, and the typed name
+    // stays in storage after the user moves off that entry.
+    if (model === "custom-gateway" && gw.customGatewayModelName) {
+      config.model = gw.customGatewayModelName;
+    }
+  } else if (model.endsWith("-custom")) {
+    // Same for a provider's custom entry: the request needs the typed name,
+    // never the "<provider>-custom" placeholder.
+    const typed = await getCustomModelName();
+    if (typed) config.model = typed;
   }
   return config;
 }
