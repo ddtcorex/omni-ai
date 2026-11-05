@@ -1084,7 +1084,20 @@ export async function saveSettings() {
     // picked with no model yet is not saved: the stored model keeps working
     // and the rest of the page still saves.
     const mapped = selectionToStored(selection, storedAiConfig);
-    if (mapped.ok) Object.assign(aiConfig, mapped.values);
+    if (mapped.ok) {
+      Object.assign(aiConfig, mapped.values);
+    } else {
+      // Refused: the provider card writes nothing, so a key or base URL edited
+      // for a model not chosen yet never changes what the saved model runs on.
+      [
+        "geminiApiKey",
+        "groqApiKey",
+        "openaiApiKey",
+        "anthropicApiKey",
+        "customGatewayBaseUrl",
+        "customGatewayApiKey",
+      ].forEach((key) => delete aiConfig[key]);
+    }
     await setLocalAiConfig(aiConfig);
     storedAiConfig = { ...storedAiConfig, ...aiConfig };
 

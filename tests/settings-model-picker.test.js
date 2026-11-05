@@ -576,10 +576,31 @@ describe("save and check", () => {
 
     expect(local.apiModel).toBe("gemini-3.6-flash");
     expect(local.apiProvider).toBe("google");
-    expect(local.groqApiKey).toBe("gsk-new");
+    expect(local.groqApiKey).toBeUndefined();
     expect(chrome.storage.sync.set).toHaveBeenCalled();
     expect(saveStatus().classList.contains("ds-notice--error")).toBe(true);
     expect(saveStatus().textContent).toBe("settings_errorChooseModel");
+  });
+
+  test("a refused save keeps the stored gateway URL the saved model runs on", async () => {
+    const local = await boot({
+      apiProvider: "customGateway",
+      apiModel: "custom-gateway",
+      customGatewayModelName: "llama3",
+      customGatewayBaseUrl: "https://a.example/v1",
+    });
+    document.getElementById("customGatewayBaseUrl").value = "https://b.example/v1";
+    const custom = document.getElementById("customModelName");
+    custom.value = "";
+    custom.dispatchEvent(new Event("input", { bubbles: true }));
+    document.getElementById("defaultPreset").value = "casual";
+    await clickSave();
+
+    expect(local.customGatewayBaseUrl).toBe("https://a.example/v1");
+    expect(local.apiModel).toBe("custom-gateway");
+    expect(local.customGatewayModelName).toBe("llama3");
+    expect(local.currentPreset).toBe("casual");
+    expect(saveStatus().classList.contains("ds-notice--error")).toBe(true);
   });
 
   test("a fresh install saves without a provider and writes no model", async () => {
