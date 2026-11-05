@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **The model picker now lists what each provider actually offers.** Every provider has a `GET /models` listing call (`lib/providers/model-listing.js` plus one `listModels` per provider, paginated with a five page cap), so a model a vendor ships appears in Settings without a code change, and a retired one stops being offered. Results are filtered down to chat capable models (`lib/model-catalog.js`), ranked with the saved model first, then that provider's recommended tier, then the newest, and cached per provider in `chrome.storage.local` for seven days.
-- **A search box and a refresh control above the model picker**, plus a source line under it that says whether the list is live, cached (with its date), truncated or the bundled fallback. The search reaches the whole fetched catalog, not only the visible window.
-- **A route out of a dead model.** When a provider answers that the saved model is gone, the overlay says so in its own words and offers a button that opens Settings on the picker, instead of printing the provider's raw error.
+- **A search box and a refresh control with the model picker.** The search appears once a provider's own list is loaded and reaches the whole fetched catalog, not only the visible window; the selected model stays listed whatever the query. A quiet line under the picker says whether the list is live, cached (with its date), truncated, being refreshed or the bundled fallback, and ends with an icon button that refreshes it. A failed refresh turns the line to the error colour and keeps the provider's reason as its tooltip.
+- **A route out of a dead model.** When a provider answers that the saved model is gone, the overlay says so in its own words, keeps the provider's message underneath so the user sees which model, and offers a button that opens Settings on the picker. It no longer offers Try again, which would send the same model. A Custom Gateway 404 counts as a missing model only when its body says so, since a 404 at the user's own URL usually means a wrong path.
 
 ### Changed
 
@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - A saved model is no longer offered twice: the stored id is normalized to its API name before the picker compares it with the fetched list, so an upgrade shows one row instead of a false "no longer offered" badge beside a duplicate.
+- **Omni Chat uses the model the picker saved.** It replaced every Custom Gateway model with the name typed for the `custom-gateway` entry, which stays in storage after a listed gateway model is picked, and it sent a provider's `-custom` entry as the literal placeholder instead of the typed name.
+- **The picker drops models the chat endpoint cannot serve.** OpenAI image, speech, transcription, realtime, search and Responses-only models, Gemini speech, image and live models, and Groq speech models no longer appear.
+- **Fetched models keep their shipped names** (GPT-5.6 Terra, not `gpt-5.6-terra`) wherever the bundled list knows the id.
+- **Two providers listing the same id no longer swap the selection.** A gateway that lists a vendor's own id stays selected in the gateway group, and Save keeps its `apiProvider`.
+- **Custom Gateway listing follows the form.** A typed key goes with the typed base URL, never to the saved gateway; a base URL change refreshes the list; a keyless gateway is listed at the typed URL; a cached gateway list is dropped once the saved base URL points elsewhere.
+- **Only a list fetched with the saved credentials is cached**, and a Save after listing with unsaved values fetches once more so the next visit has a cache.
+- The refresh control no longer stays disabled after switching to a provider whose list loads, and a failed refresh shows only on that provider's line.
+- Two catalog cache writes at once no longer drop one provider's entry.
+- Validating a Custom Gateway with no base URL shows a message instead of an empty notice, and a test now fails whenever the source reads a message key the English catalogue lacks.
+- The OpenAI, Groq and Anthropic modules fall back to the registry's recommended model instead of hardcoded names (OpenAI's was the retired `gpt-4o-mini`).
 
 ## [2.6.0] - 2026-11-03
 
