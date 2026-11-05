@@ -2,6 +2,7 @@ import { generateContent as openaiGenerate } from "../../../lib/providers/openai
 import { generateContent as anthropicGenerate } from "../../../lib/providers/anthropic.js";
 import { generateContent as geminiGenerate } from "../../../lib/providers/gemini.js";
 import { listModels as anthropicList } from "../../../lib/providers/anthropic.js";
+import { generateContent as gatewayGenerate } from "../../../lib/providers/custom-gateway.js";
 
 function jsonResponse(body, status = 200) {
   return { ok: status >= 200 && status < 300, status, json: async () => body };
@@ -57,4 +58,30 @@ test("an Anthropic model marked deprecated without a timestamp is still deprecat
 
   const result = await anthropicList({ apiKey: "k" });
   expect(result.models[0].state).toBe("deprecated");
+});
+
+test("a bare 404 from a gateway is a wrong address, not a missing model", async () => {
+  // The base URL is the user's, so a 404 most often means a wrong path. Saying
+  // "this model is gone" would send them to the picker for nothing.
+  global.fetch = jest.fn(async () => ({ ok: false, status: 404, json: async () => ({}) }));
+
+  const error = await gatewayGenerate("hi", {
+    apiKey: "k",
+    model: "m",
+    baseUrl: "https://gw.example/wrong",
+  }).catch((e) => e);
+  expect(error.code).toBeUndefined();
+});
+
+test("a gateway that names the missing model still tags it", async () => {
+  global.fetch = jest.fn(async () =>
+    jsonResponse(
+      { error: { message: "Model gone-model not found", code: "model_not_found" } },
+      404,
+    ),
+  );
+
+  await expect(
+    gatewayGenerate("hi", { apiKey: "k", model: "gone-model", baseUrl: "https://gw.example/v1" }),
+  ).rejects.toMatchObject({ code: "model_not_found" });
 });
