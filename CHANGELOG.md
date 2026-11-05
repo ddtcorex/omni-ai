@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Two catalog cache writes at once no longer drop one provider's entry.
 - Validating a Custom Gateway with no base URL shows a message instead of an empty notice, and a test now fails whenever the source reads a message key the English catalogue lacks.
 - The OpenAI, Groq and Anthropic modules fall back to the registry's recommended model instead of hardcoded names (OpenAI's was the retired `gpt-4o-mini`).
+- **Every status notice shares one look.** Validation, Save, the side panel's status line and chat error now come from one helper (`lib/notice.js`): success, warning, error and progress are each a tinted surface, a hairline ring and text of one hue with a matching icon, and the overlay's error box takes the same ring. The validation notice no longer puts a provider's error text into the page as markup.
+- **The Show changes switch is visible on a light card.** Its off track was white under a white knob (1.0:1 against the card); it now holds at least 3:1 in both themes, and its label is no longer the faintest text colour.
+- **The side panel chat scrolls in a proper frame.** A long conversation fades out under the context row and the input instead of being cut against their lines, a thin themed scrollbar sits at the panel's edge in place of a white track over the separators, and user bubbles stay visible on the light panel.
 
 ## [2.6.0] - 2026-11-03
 
