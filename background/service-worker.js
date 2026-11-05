@@ -585,12 +585,19 @@ async function handleQuickAction(payload) {
   return { response: result };
 }
 
+/** A base URL with its trailing slashes dropped, so two spellings compare equal. */
+function normalizeBaseUrl(url) {
+  return String(url || "").replace(/\/+$/, "");
+}
+
 /**
  * Answer a directory listing for one provider, and cache it.
  *
  * The key is taken from the payload when the settings page has one in its form
  * (a key typed but not yet saved), otherwise from storage. No fan out: one
- * call, one provider.
+ * call, one provider. Only a listing made with the saved credential is cached:
+ * a key or base URL still in the form may never be saved, and the cache would
+ * then describe an account the extension does not use.
  * @param {{ provider?: string, key?: string, baseUrl?: string }} [payload]
  */
 async function handleListModels(payload = {}) {
@@ -601,30 +608,45 @@ async function handleListModels(payload = {}) {
     throw new Error(`Unknown provider: ${providerId}`);
   }
 
+  const isGateway = providerId === "customGateway";
   const storedKey = /** @type {string|undefined} */ (await getStoredApiKey(provider.keySetting));
   const apiKey = key || storedKey;
 
-  if (!apiKey && providerId !== "customGateway") {
+  if (!apiKey && !isGateway) {
     throw new Error("API Key is missing");
   }
 
   /** @type {{ apiKey?: string, baseUrl?: string }} */
   const config = {};
   if (apiKey) config.apiKey = apiKey;
-  if (providerId === "customGateway") {
+  let storedBaseUrl = "";
+  if (isGateway) {
     const gateway = await getCustomGatewayConfig();
+    storedBaseUrl = normalizeBaseUrl(gateway.customGatewayBaseUrl);
     // A key and a base URL are one credential pair. A caller supplied base URL
-    // is only trusted alongside a key from that same caller, so a stored key is
-    // never sent to a host somebody else chose.
-    const origin = key ? baseUrl : undefined;
-    config.baseUrl = origin || /** @type {string} */ (gateway.customGatewayBaseUrl) || undefined;
+    // is trusted alongside a key from that same caller, or when there is no key
+    // at all to send. A stored key never goes to a host somebody else chose,
+    // and a key typed for a new gateway never goes to the old one.
+    const callerUrl = key || !storedKey ? normalizeBaseUrl(baseUrl) : "";
+    config.baseUrl = callerUrl || storedBaseUrl || undefined;
   }
 
   const { models, truncated } = await listModels(providerId, config);
   const fetchedAt = Date.now();
-  await setModelCatalogCache(providerId, { fetchedAt, models, truncated });
+  const savedCredential =
+    (!key || key === storedKey) &&
+    (!isGateway || normalizeBaseUrl(config.baseUrl) === storedBaseUrl);
 
-  return { models, truncated, fetchedAt };
+  if (savedCredential) {
+    // A gateway catalog belongs to one base URL; Settings drops it once the
+    // saved URL moves elsewhere.
+    const entry = isGateway
+      ? { fetchedAt, models, truncated, baseUrl: storedBaseUrl }
+      : { fetchedAt, models, truncated };
+    await setModelCatalogCache(providerId, entry);
+  }
+
+  return { models, truncated, fetchedAt, cached: savedCredential };
 }
 
 /**

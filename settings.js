@@ -405,6 +405,12 @@ export function setModelCatalogFailure(failed) {
 
 let modelRefreshInFlight = false;
 
+/**
+ * Providers whose list on screen came from a credential the worker did not
+ * cache (still unsaved). A Save asks once more so the saved one is cached.
+ */
+const uncachedProviders = new Set();
+
 /** How long one provider listing may take before the source line reports a failure. */
 const MODEL_REFRESH_TIMEOUT_MS = 15000;
 
@@ -415,7 +421,34 @@ const MODEL_REFRESH_TIMEOUT_MS = 15000;
  */
 function providerForField(input) {
   if (!input) return null;
+  // The base URL is half of the gateway's credential, so it refreshes too.
+  if (input.id === "customGatewayBaseUrl") return AI_PROVIDERS.customGateway;
   return Object.values(AI_PROVIDERS).find((provider) => provider.keySetting === input.id) || null;
+}
+
+/**
+ * The credential a provider's fields hold right now, saved or not. A gateway
+ * key always travels with its base URL: the worker must never pair a key typed
+ * for one gateway with the URL of another.
+ * @param {string} providerId
+ * @returns {{ key?: string, baseUrl?: string }}
+ */
+function formCredential(providerId) {
+  const provider = AI_PROVIDERS[providerId];
+  if (!provider) return {};
+  const credential = {};
+  const key = keyFieldValue(provider.keySetting);
+  if (key) credential.key = key;
+  if (providerId === "customGateway") {
+    const baseUrl = keyFieldValue("customGatewayBaseUrl");
+    if (baseUrl) credential.baseUrl = baseUrl;
+  }
+  return credential;
+}
+
+/** A base URL with its trailing slashes dropped, so two spellings compare equal. */
+function normalizeBaseUrl(url) {
+  return String(url || "").replace(/\/+$/, "");
 }
 
 /**
@@ -476,6 +509,9 @@ export async function refreshModelCatalog(providerId, { key, baseUrl } = {}) {
       return;
     }
 
+    if (response.cached === false) uncachedProviders.add(providerId);
+    else uncachedProviders.delete(providerId);
+
     renderModelPicker({
       providerId,
       listed: Array.isArray(response.models) ? response.models : [],
@@ -505,7 +541,16 @@ async function hydrateModelCatalog() {
       : null;
   if (!provider) return;
 
-  const cache = await getModelCatalogCache(provider.id);
+  let cache = await getModelCatalogCache(provider.id);
+  // A gateway catalog lists what one base URL offers. Once the saved URL points
+  // elsewhere it describes the wrong gateway, however fresh it is.
+  if (
+    cache &&
+    provider.id === "customGateway" &&
+    normalizeBaseUrl(cache.baseUrl) !== normalizeBaseUrl(keyFieldValue("customGatewayBaseUrl"))
+  ) {
+    cache = null;
+  }
 
   if (cache) {
     renderModelPicker({
@@ -660,9 +705,13 @@ export function setupEventListeners() {
     paintModelSource();
 
     const provider = selectedModelProvider();
-    const key = provider ? keyFieldValue(provider.keySetting) : "";
-    if (provider && (key || provider.id === "customGateway") && !modelCatalogs.has(provider.id)) {
-      refreshModelCatalog(provider.id, { key: key || undefined });
+    const credential = provider ? formCredential(provider.id) : {};
+    if (
+      provider &&
+      (credential.key || provider.id === "customGateway") &&
+      !modelCatalogs.has(provider.id)
+    ) {
+      refreshModelCatalog(provider.id, credential);
     }
   });
 
@@ -710,7 +759,7 @@ export function setupEventListeners() {
         lastValidatedValues.set(input, value);
         validateConfiguration();
         const provider = providerForField(input);
-        if (provider) refreshModelCatalog(provider.id, { key: value });
+        if (provider) refreshModelCatalog(provider.id, formCredential(provider.id));
       }, 500);
     });
   });
@@ -720,11 +769,7 @@ export function setupEventListeners() {
     elements.modelRefresh.addEventListener("click", () => {
       const provider = selectedModelProvider();
       if (!provider) return;
-      const key = keyFieldValue(provider.keySetting);
-      refreshModelCatalog(provider.id, {
-        key: key || undefined,
-        baseUrl: keyFieldValue("customGatewayBaseUrl") || undefined,
-      });
+      refreshModelCatalog(provider.id, formCredential(provider.id));
     });
   }
 
@@ -1106,6 +1151,12 @@ export async function saveSettings() {
       aiConfig.customGatewayModelName = elements.customModelName.value.trim();
     }
     await setLocalAiConfig(aiConfig);
+
+    // The list on screen came from a credential that was not saved yet; now it
+    // is, so one more listing lets the worker cache it for the next visit.
+    if (aiConfig.apiProvider && uncachedProviders.has(aiConfig.apiProvider)) {
+      void refreshModelCatalog(aiConfig.apiProvider);
+    }
 
     // Primary Language may have just changed: re-run i18n and re-localize
     // this page's own UI immediately (content.js's onPrimaryLanguageChanged

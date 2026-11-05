@@ -564,7 +564,9 @@ describe("localizeDOM", () => {
       // same value twice, so the provider decides which option is the saved one.
       Settings.renderModelPicker({
         providerId: "customGateway",
-        listed: [{ id: "claude-sonnet-5", label: "claude-sonnet-5", createdAt: 1, state: "active" }],
+        listed: [
+          { id: "claude-sonnet-5", label: "claude-sonnet-5", createdAt: 1, state: "active" },
+        ],
         savedModelId: "claude-sonnet-5",
         savedProviderId: "customGateway",
         fetchedAt: 1,
@@ -581,7 +583,9 @@ describe("localizeDOM", () => {
     it("a change to the duplicate in another group follows that group", () => {
       Settings.renderModelPicker({
         providerId: "customGateway",
-        listed: [{ id: "claude-sonnet-5", label: "claude-sonnet-5", createdAt: 1, state: "active" }],
+        listed: [
+          { id: "claude-sonnet-5", label: "claude-sonnet-5", createdAt: 1, state: "active" },
+        ],
         savedModelId: "gemini-3.6-flash",
         savedProviderId: "google",
         fetchedAt: 1,
@@ -781,6 +785,89 @@ describe("localizeDOM", () => {
         .filter(([m]) => m.type === "LIST_MODELS")
         .pop();
       expect(list[0].payload).toMatchObject({ provider: "google", key: "typed" });
+    });
+
+    function lastListCall() {
+      return chrome.runtime.sendMessage.mock.calls.filter(([m]) => m.type === "LIST_MODELS").pop();
+    }
+
+    it("a base URL blur refreshes the gateway with the in form URL and key", async () => {
+      storageWith({ apiModel: "custom-gateway", apiProvider: "customGateway" });
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 1 });
+      await Settings.init();
+      Settings.setupEventListeners();
+
+      document.getElementById("customGatewayApiKey").value = "gw-typed";
+      const url = document.getElementById("customGatewayBaseUrl");
+      url.value = "https://new.example/v1";
+      url.dispatchEvent(new Event("blur"));
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      expect(lastListCall()[0].payload).toEqual({
+        provider: "customGateway",
+        key: "gw-typed",
+        baseUrl: "https://new.example/v1",
+      });
+    });
+
+    it("a gateway key blur sends the in form base URL with the key", async () => {
+      storageWith({ apiModel: "custom-gateway", apiProvider: "customGateway" });
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 1 });
+      await Settings.init();
+      Settings.setupEventListeners();
+
+      document.getElementById("customGatewayBaseUrl").value = "https://new.example/v1";
+      const key = document.getElementById("customGatewayApiKey");
+      key.value = "gw-typed";
+      key.dispatchEvent(new Event("blur"));
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      expect(lastListCall()[0].payload).toMatchObject({
+        key: "gw-typed",
+        baseUrl: "https://new.example/v1",
+      });
+    });
+
+    it("drops a gateway cache that came from another base URL", async () => {
+      storageWith({
+        apiModel: "custom-gateway",
+        apiProvider: "customGateway",
+        customGatewayBaseUrl: "https://new.example/v1",
+        modelCatalog: {
+          customGateway: {
+            fetchedAt: Date.now(),
+            models: [{ id: "old-gateway-model", label: "old-gateway-model", state: "active" }],
+            truncated: false,
+            baseUrl: "https://old.example/v1",
+          },
+        },
+      });
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 1 });
+
+      await Settings.init();
+
+      const values = Array.from(document.querySelectorAll("#apiModel option")).map((o) => o.value);
+      expect(values).not.toContain("old-gateway-model");
+      expect(lastListCall()[0].payload.provider).toBe("customGateway");
+    });
+
+    it("saving a key that was only listed refreshes once more so the list is cached", async () => {
+      storageWith({ apiModel: "gemini-3.6-flash", apiProvider: "google" });
+      chrome.runtime.sendMessage.mockResolvedValue({
+        success: true,
+        models: [],
+        fetchedAt: 1,
+        cached: false,
+      });
+      await Settings.init();
+      await Settings.refreshModelCatalog("google", { key: "typed" });
+      chrome.runtime.sendMessage.mockClear();
+      chrome.runtime.sendMessage.mockResolvedValue({ success: true, models: [], fetchedAt: 2 });
+
+      await Settings.saveSettings();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(lastListCall()[0].payload).toEqual({ provider: "google" });
     });
 
     it("a failed refresh keeps the previous list and shows the notice", async () => {
