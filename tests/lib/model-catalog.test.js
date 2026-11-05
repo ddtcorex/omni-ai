@@ -134,6 +134,18 @@ test("a genuinely absent saved model is pinned and still selectable", () => {
   expect(model.pinned).toEqual({ id: "gpt-4o", label: "gpt-4o", state: "missing" });
 });
 
+test("a missing saved model keeps its shipped name in the pinned row", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: [listed[1]],
+    savedModelId: "openai-gpt-5.6-sol",
+    bundled,
+    toApiName,
+  });
+
+  expect(model.pinned).toEqual({ id: "gpt-5.6-sol", label: "GPT-5.6 Sol", state: "missing" });
+});
+
 test("recommended comes first and recent is capped newest first", () => {
   const model = buildPickerModel({
     providerId: "openai",
@@ -280,4 +292,34 @@ test("a search keeps the selected model in its group so the select never blanks"
   });
   expect(offline.recent.map((x) => x.id)).toEqual(["openai-gpt-5.6-sol"]);
   expect(offline.matches).toBe(0);
+});
+
+test("a fetched id the bundled list knows keeps its shipped name", () => {
+  // OpenAI-shaped listings carry no display name, so the row would read as a
+  // raw id right next to rows that read as names.
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed,
+    savedModelId: null,
+    bundled,
+    toApiName,
+  });
+  const labels = Object.fromEntries(
+    [...model.recommended, ...model.recent].map((x) => [x.id, x.label]),
+  );
+
+  expect(labels["gpt-5.6-sol"]).toBe("GPT-5.6 Sol");
+  expect(labels["gpt-5.7-nova"]).toBe("gpt-5.7-nova");
+});
+
+test("a vendor display name wins over the shipped name", () => {
+  const model = buildPickerModel({
+    providerId: "openai",
+    listed: [{ id: "gpt-5.6-sol", label: "Sol (vendor)", createdAt: 1, state: "active" }],
+    savedModelId: null,
+    bundled,
+    toApiName,
+  });
+
+  expect(model.recent[0].label).toBe("Sol (vendor)");
 });
