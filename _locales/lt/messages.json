@@ -159,6 +159,66 @@
     "message": "AI modelis",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Teikėjas",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Pasirinkite teikėją, kad pamatytumėte jo modelius",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Įveskite API raktą, kad pamatytumėte modelius",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Įveskite šliuzo bazinį URL, kad pamatytumėte jo modelius",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtruoti modelius",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Arba įveskite modelio, kurio nėra sąraše, pavadinimą",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Pirmiausia pasirinkite modelį arba įveskite modelio pavadinimą.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Tikrinamas raktas ir įkeliami modeliai…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Raktas galioja · modelių: $COUNT$",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "Modelių: $COUNT$",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Nepavyko įkelti modelių: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Rodyti dar $COUNT$",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Rodyti mažiau",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "rekomenduojama",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Pasirinkite naudojamą AI modelį",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Pirmiausia įveskite API raktą arba prieigos tašką.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Pirmiausia įveskite šliuzo bazinį URL.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Tikrinama...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Vertimas nepavyko",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Senasis)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Išplėstiniai",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Pasirinktinio modelio pavadinimas",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Įveskite pasirinktinio modelio ID",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Įveskite pasirinktinio modelio pavadinimą",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "pvz., jusu-modelio-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Nepavyko pakeisti teksto. Vietoj to jį nukopijuokite.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Atnaujinti sąrašą",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "nebeteikiamas",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Šis modelis nebepasiekiamas.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Pasirinkti kitą modelį",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

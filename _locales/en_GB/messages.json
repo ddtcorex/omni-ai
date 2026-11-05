@@ -159,6 +159,66 @@
     "message": "AI Model",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Provider",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Choose a provider to see its models",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Enter your API key to see the models",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Enter the gateway's base URL to see its models",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filter models",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Or type a model name the list does not show",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Choose a model or type a model name first.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Checking the key and loading models…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Key valid · $COUNT$ models",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ models",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Could not load models: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Show $COUNT$ more",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Show less",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "recommended",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Select the AI model to use",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Please enter an API Key/Endpoint first.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Please enter the gateway base URL first.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validating...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Translation failed",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Legacy)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Advanced",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Custom Model Name",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Enter the custom model ID",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Please enter a Custom Model Name",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "e.g. your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Couldn't replace the text. Copy it instead.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Refresh list",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "no longer offered",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "This model is no longer available.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Choose another model",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

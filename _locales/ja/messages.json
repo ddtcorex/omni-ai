@@ -115,6 +115,66 @@
     "message": "AIモデル",
     "description": "AIモデルのラベル"
   },
+  "settings_providerLabel": {
+    "message": "プロバイダー",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "プロバイダーを選ぶとモデルが表示されます",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "API キーを入力するとモデルが表示されます",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "ゲートウェイのベース URL を入力するとモデルが表示されます",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "モデルを絞り込む",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "または一覧にないモデル名を入力",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "先にモデルを選ぶか、モデル名を入力してください。",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "キーを確認してモデルを読み込んでいます…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "キーは有効です · $COUNT$ 個のモデル",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ 個のモデル",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "モデルを読み込めませんでした: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "さらに $COUNT$ 件を表示",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "表示を減らす",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "おすすめ",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "使用するAIモデルを選択してください",
     "description": "AIモデルのヒント"
@@ -440,6 +500,10 @@
     "message": "まずAPIキーまたはエンドポイントを入力してください。",
     "description": "未入力エラー"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "先にゲートウェイのベース URL を入力してください。",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "検証中...",
     "description": "検証中ステータス"
@@ -499,23 +563,9 @@
     "message": "翻訳に失敗しました",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(旧)"
-  },
-  "settings_advanced": {
-    "message": "詳細設定"
-  },
   "settings_customModel": {
     "message": "カスタムモデル名",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "カスタムモデルIDを入力してください",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "カスタムモデル名を入力してください",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "例: モデルID",
@@ -701,5 +751,21 @@
   "overlay_replace_failed": {
     "message": "テキストを置き換えられませんでした。代わりにコピーしてください。",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "リストを更新",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "提供終了",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "このモデルは提供終了しました。",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "別のモデルを選ぶ",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

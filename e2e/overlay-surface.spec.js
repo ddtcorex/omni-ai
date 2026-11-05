@@ -30,6 +30,8 @@ async function seedConfig(sw) {
 
 function stubGemini(context, replyText) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+    if (new URL(route.request().url()).pathname.endsWith("/models"))
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -271,6 +273,12 @@ test("opening the menu in an editor sends no AI request", async () => {
     await seedConfig(sw);
     let aiRequests = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       aiRequests += 1;
       await route.fulfill({
         status: 200,
@@ -517,6 +525,12 @@ test("closing the card mid flash action leaves no spinner on the toolbar", async
       });
     });
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       await new Promise((r) => setTimeout(r, 1500));
       await route.fulfill({
         status: 200,
@@ -813,6 +827,7 @@ for (const theme of ["light", "dark"]) {
             placeholder: cs(".omni-ai-input", "::placeholder")?.color,
             send: stops("#omniAiInputBtn"),
             toggleText: cs(".omni-ai-toggle")?.color,
+            switchTrack: cs(".omni-ai-switch")?.backgroundColor,
             closeText: cs("#omniAiClose")?.color,
             backText: cs("#omniAiBack")?.color,
             tertiary: (() => {
@@ -849,6 +864,11 @@ for (const theme of ["light", "dark"]) {
         check(`close glyph on ${pn}`, parseRgba(result.closeText).rgb, rc);
         check(`back glyph on ${pn}`, parseRgba(result.backText).rgb, rc);
         check(`tertiary token on ${pn}`, parseRgba(result.tertiary).rgb, rc);
+        // WCAG 1.4.11: the switch is a control, so its off track must stand
+        // out from the card at 3:1, or the Show changes switch reads as text.
+        const track = composite([{ rgb: rc, a: 1 }, parseRgba(result.switchTrack)]);
+        ratios[`switch track on ${pn}`] = contrast(track, rc);
+        expect(ratios[`switch track on ${pn}`], `switch track on ${pn}`).toBeGreaterThanOrEqual(3);
       }
       expect(menu.send.length).toBe(2);
       expect(result.replace.length).toBe(2);
@@ -965,6 +985,11 @@ test("German labels are never truncated in the menu", async () => {
 function stubGeminiCounted(context, { delayMs = 0, reply = () => "OK", status = 200 } = {}) {
   const state = { hits: 0, bodies: [] };
   const handler = async (route) => {
+    // The extension also asks this host for its model directory; that request
+    // is not a generation call and must not consume a counted reply.
+    if (new URL(route.request().url()).pathname.endsWith("/models")) {
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
+    }
     state.hits += 1;
     const n = state.hits;
     state.bodies.push(route.request().postData() || "");
@@ -1286,6 +1311,12 @@ test("two quick tone clicks show the last one", async () => {
     await context.unrouteAll({ behavior: "ignoreErrors" });
     let hits = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       hits += 1;
       const n = hits;
       const body = route.request().postData() || "";

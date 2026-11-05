@@ -159,6 +159,66 @@
     "message": "Model d'IA",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Proveïdor",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Trieu un proveïdor per veure'n els models",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Introduïu la clau d'API per veure els models",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Introduïu l'URL base de la passarel·la per veure'n els models",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtra els models",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "O escriviu el nom d'un model que no surt a la llista",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Primer trieu un model o escriviu-ne el nom.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "S'està comprovant la clau i carregant els models…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Clau vàlida · $COUNT$ models",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ models",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "No s'han pogut carregar els models: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Mostra'n $COUNT$ més",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Mostra'n menys",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "recomanat",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Selecciona el model d'IA que vols utilitzar",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Introdueix primer una clau API o un endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Introduïu primer l'URL base de la passarel·la.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validant...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "La traducció ha fallat",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Antic)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Avançat",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Nom del model personalitzat",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Introdueix l'ID del model personalitzat",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Introdueix un nom de model personalitzat",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "p. ex. el-teu-id-de-model",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "No s'ha pogut substituir el text. Copia'l en lloc d'això.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Actualitza la llista",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ja no s'ofereix",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Aquest model ja no està disponible.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Triar un altre model",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

@@ -1,9 +1,11 @@
 const FIXTURE_IDS = [
   "extVersion",
   "geminiApiKey",
-  "apiModel",
+  "providerPicker",
+  "modelPicker",
+  "modelHint",
+  "modelRefresh",
   "customModelName",
-  "customModelGroup",
   "googleKeyGroup",
   "groqApiKey",
   "groqKeyGroup",
@@ -14,7 +16,6 @@ const FIXTURE_IDS = [
   "customGatewayKeyGroup",
   "customGatewayBaseUrl",
   "customGatewayApiKey",
-  "advancedProviderSettings",
   "toggleApiKey",
   "validateBtn",
   "validationStatus",
@@ -50,9 +51,7 @@ const FLASH_ACTION_IDS = [
 
 function buildFixture() {
   document.body.innerHTML = FIXTURE_IDS.map((id) => {
-    if (id === "apiModel") return `<select id="${id}"></select>`;
-    if (id === "advancedProviderSettings")
-      return `<details id="${id}"><summary></summary></details>`;
+    if (id === "modelRefresh") return `<button id="${id}"></button>`;
     if (["primaryLanguage", "defaultLanguage"].includes(id)) {
       // The options are rendered from lib/languages.js at runtime, which is
       // exactly what these tests exercise, so the fixture ships an empty select.
@@ -75,6 +74,18 @@ function buildFixture() {
       // Real inputs, not divs: saveSettings() calls .trim() on these, so a div
       // fixture made every Save click throw after the language had been written.
       return `<input id="${id}" />`;
+    }
+    // Key groups as settings.html marks them, so showKeyGroup() can
+    // find the group of the selected model's provider.
+    const keyGroups = {
+      googleKeyGroup: "google",
+      groqKeyGroup: "groq",
+      openaiKeyGroup: "openai",
+      anthropicKeyGroup: "anthropic",
+      customGatewayKeyGroup: "customGateway",
+    };
+    if (keyGroups[id]) {
+      return `<div id="${id}" class="setting-item hidden" data-provider="${keyGroups[id]}"></div>`;
     }
     if (id === "flashActionsList") {
       const boxes = FLASH_ACTION_IDS.map(
@@ -108,28 +119,6 @@ describe("settings.js", () => {
     chrome.storage.sync.get.mockResolvedValue({});
     chrome.storage.local.get.mockResolvedValue({});
     Settings = await import("../settings.js");
-  });
-
-  it("populateModelSelect renders every current model plus a legacy option for an unknown saved id", () => {
-    Settings.populateModelSelect("gemini-2.0-flash");
-    const options = Array.from(document.getElementById("apiModel").options).map((o) => o.value);
-    expect(options).toContain("gemini-2.0-flash");
-    const legacyOption = Array.from(document.getElementById("apiModel").options).find(
-      (o) => o.value === "gemini-2.0-flash",
-    );
-    expect(legacyOption.textContent).toContain("settings_legacyModelPrefix");
-  });
-
-  it("loadSettings selects the legacy option instead of leaving the select blank", async () => {
-    chrome.storage.local.get.mockResolvedValue({ apiModel: "gemini-2.0-flash" });
-    await Settings.loadSettings();
-    expect(document.getElementById("apiModel").value).toBe("gemini-2.0-flash");
-  });
-
-  it("loadSettings selects the real current model when nothing is legacy", async () => {
-    chrome.storage.local.get.mockResolvedValue({ apiModel: "gemini-3.6-flash" });
-    await Settings.loadSettings();
-    expect(document.getElementById("apiModel").value).toBe("gemini-3.6-flash");
   });
 
   describe("detectSupportedLocale", () => {
@@ -178,133 +167,6 @@ describe("settings.js", () => {
     chrome.storage.sync.get.mockResolvedValue({ primaryLanguage: "ja" });
     await Settings.loadSettings();
     expect(document.getElementById("primaryLanguage").value).toBe("ja");
-  });
-
-  it("focuses the Gemini key input on a genuinely empty first load", async () => {
-    chrome.storage.local.get.mockResolvedValue({});
-    const focusSpy = jest.spyOn(document.getElementById("geminiApiKey"), "focus");
-    await Settings.loadSettings();
-    expect(focusSpy).toHaveBeenCalled();
-  });
-
-  it("does not steal focus when a Gemini key is already saved", async () => {
-    chrome.storage.local.get.mockResolvedValue({ geminiApiKey: "existing-key" });
-    const focusSpy = jest.spyOn(document.getElementById("geminiApiKey"), "focus");
-    await Settings.loadSettings();
-    expect(focusSpy).not.toHaveBeenCalled();
-  });
-
-  it("auto-validates when a key input loses focus with a new, non-empty value", async () => {
-    jest.useFakeTimers();
-    chrome.storage.local.get.mockResolvedValue({});
-    chrome.runtime.sendMessage.mockResolvedValue({ success: true });
-    await Settings.loadSettings();
-    // Production wiring happens inside init() on "DOMContentLoaded", which
-    // has already fired on jsdom's document by the time this module is
-    // dynamically imported here, so the listener must be attached explicitly.
-    Settings.setupEventListeners();
-
-    const keyInput = document.getElementById("geminiApiKey");
-    keyInput.value = "new-key-value";
-    keyInput.dispatchEvent(new Event("blur"));
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
-
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "VALIDATE_CONFIG" }),
-    );
-    jest.useRealTimers();
-  });
-
-  it("does not auto-validate on blur when the key value is unchanged", async () => {
-    jest.useFakeTimers();
-    chrome.storage.local.get.mockResolvedValue({ geminiApiKey: "same-key" });
-    await Settings.loadSettings();
-    Settings.setupEventListeners();
-    chrome.runtime.sendMessage.mockClear();
-
-    const keyInput = document.getElementById("geminiApiKey");
-    keyInput.dispatchEvent(new Event("blur"));
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
-
-    expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
-    jest.useRealTimers();
-  });
-
-  it("auto-validates on blur for the Custom Gateway API key field too", async () => {
-    jest.useFakeTimers();
-    chrome.storage.local.get.mockResolvedValue({});
-    chrome.runtime.sendMessage.mockResolvedValue({ success: true });
-    await Settings.loadSettings();
-    Settings.setupEventListeners();
-
-    // validateConfiguration() reads the *currently selected* provider off
-    // #apiModel, not off whichever input blurred, so the fixture has to be
-    // in "Custom Gateway is the active provider, with the other required
-    // gateway fields already filled" state for the blur to reach sendMessage.
-    document.getElementById("apiModel").value = "custom-gateway";
-    document.getElementById("customModelName").value = "my-gateway-model";
-    document.getElementById("customGatewayBaseUrl").value = "https://gateway.example.com/v1";
-
-    const keyInput = document.getElementById("customGatewayApiKey");
-    keyInput.value = "new-gateway-key";
-    keyInput.dispatchEvent(new Event("blur"));
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
-
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "VALIDATE_CONFIG" }),
-    );
-    jest.useRealTimers();
-  });
-
-  it("auto-validates on blur for the Custom Gateway base URL field too", async () => {
-    jest.useFakeTimers();
-    chrome.storage.local.get.mockResolvedValue({});
-    chrome.runtime.sendMessage.mockResolvedValue({ success: true });
-    await Settings.loadSettings();
-    Settings.setupEventListeners();
-
-    document.getElementById("apiModel").value = "custom-gateway";
-    document.getElementById("customModelName").value = "my-gateway-model";
-
-    const urlInput = document.getElementById("customGatewayBaseUrl");
-    urlInput.value = "https://gateway.example.com/v1";
-    urlInput.dispatchEvent(new Event("blur"));
-    jest.advanceTimersByTime(500);
-    await Promise.resolve();
-
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "VALIDATE_CONFIG" }),
-    );
-    jest.useRealTimers();
-  });
-
-  it("uses the shared ds-notice class for the validation message, not the old validation-message-only class", async () => {
-    chrome.storage.local.get.mockResolvedValue({});
-    await Settings.loadSettings();
-
-    // Drive validateConfiguration() into its synchronous error branch (no
-    // Custom Gateway base URL set) so showValidationStatus() runs without
-    // needing to mock chrome.runtime.sendMessage.
-    document.getElementById("apiModel").value = "custom-gateway";
-    document.getElementById("customModelName").value = "my-gateway-model";
-    await Settings.validateConfiguration();
-
-    const el = document.getElementById("validationStatus");
-    expect(el.className).toContain("ds-notice");
-    expect(el.className).toContain("ds-notice--error");
-    expect(el.className).not.toContain("validation-message");
-  });
-
-  it("auto-expands Advanced when a -custom model is selected", async () => {
-    await Settings.loadSettings();
-    Settings.setupEventListeners();
-    document.getElementById("apiModel").innerHTML = '<option value="google-custom">x</option>';
-    document.getElementById("apiModel").value = "google-custom";
-    document.getElementById("apiModel").dispatchEvent(new Event("change"));
-    expect(document.getElementById("advancedProviderSettings").open).toBe(true);
   });
 
   describe("Flash Actions", () => {

@@ -128,6 +128,10 @@ describe("messages that take a substitution", () => {
     expect([...parameterised].sort()).toEqual([
       "error_apiKeyNotConfiguredFor",
       "overlay_loading_action",
+      "settings_keyValid",
+      "settings_modelsListed",
+      "settings_modelsLoadFailed",
+      "settings_modelsMore",
       "ui_to",
     ]);
   });
@@ -240,5 +244,55 @@ describe("catalogues translate UI copy, not just brand names", () => {
       .filter((locale) => !locale.startsWith("en"))
       .filter((locale) => readMessages(locale)[key].message === english);
     expect(untranslated).toEqual([]);
+  });
+});
+
+describe("message keys used by the source", () => {
+  // A key read by the code but absent from the catalogue renders as an empty
+  // string, which is how settings_errorNoGatewayUrl shipped as a blank notice.
+  const root = path.join(__dirname, "..");
+  // Tests, tooling and anything .gitignore keeps out of the repo (build
+  // output, reports): an old dist/ build reads keys that no longer exist.
+  const SKIP = new Set([
+    "node_modules",
+    "tests",
+    "e2e",
+    "scripts",
+    "coverage",
+    "_locales",
+    "dist",
+    "build",
+    "test-results",
+    "playwright-report",
+  ]);
+
+  const sourceFiles = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      if (entry.name.startsWith(".") || SKIP.has(entry.name)) return [];
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) return sourceFiles(full);
+      return /\.(js|html)$/.test(entry.name) ? [full] : [];
+    });
+
+  test("every literal key exists in the English catalogue", () => {
+    const en = readMessages("en");
+    const missing = [];
+
+    sourceFiles(root).forEach((file) => {
+      // Comments describe the token form (`__MSG_key__`) without using a key.
+      const text = fs
+        .readFileSync(file, "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/^\s*\/\/.*$/gm, "");
+      const keys = [
+        ...[...text.matchAll(/getMessage\(\s*["']([A-Za-z0-9_]+)["']\s*[,)]/g)].map((m) => m[1]),
+        ...[...text.matchAll(/__MSG_([A-Za-z0-9_]+)__/g)].map((m) => m[1]),
+      ];
+      keys
+        .filter((key) => !key.startsWith("@@") && !(key in en))
+        .forEach((key) => missing.push(`${path.relative(root, file)}: ${key}`));
+    });
+
+    expect(missing).toEqual([]);
   });
 });

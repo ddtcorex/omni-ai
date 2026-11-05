@@ -54,7 +54,7 @@ Track your productivity with the new **Usage Dashboard**:
 
 ### 🛠️ Premium Settings UI
 
-- **Multiple AI Providers**: Support for **Google Gemini** (3.6 Flash, 3.5 Flash Lite, 2.5 Pro), **OpenAI** (GPT-5.6 Luna, Terra, Sol), **Groq** (GPT-OSS 20B, Llama 3.3 70B, GPT-OSS 120B), **Anthropic Claude** (Haiku 4.5, Sonnet 5, Opus 5), and **Custom Gateway** (OpenAI-compatible).
+- **Multiple AI Providers**: **Google Gemini**, **OpenAI**, **Groq**, **Anthropic Claude** and any OpenAI-compatible **Custom Gateway**. Each provider's own model list loads from your key, so a model the vendor ships appears without an update, and a model it retires is flagged.
 - **Glassmorphic Design**: A sleek, modern settings page (`settings.html`) with smooth animations and high-resolution visuals.
 - **Helper Tooltips**: Interactive instructions and links to help you get your API keys quickly.
 - **Context Presets**: Tailor AI responses for Email, Chat, Social Media, Technical, or Academic contexts.
@@ -83,67 +83,45 @@ cd omni-ai
 
 ### 1. AI Provider Configuration (Required)
 
-You can choose between Google Gemini, OpenAI, Groq, Anthropic Claude, or Custom Gateway as your AI provider.
+![Setting up an AI model in Omni AI: choose the provider, paste the key, pick a model, validate and save](docs/assets/ai-model-setup.gif)
 
-#### Option A: Google Gemini
+Open **Settings** (right-click the toolbar icon > **Options**) and work down the **AI Provider** card:
 
-1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey).
-2. Create a new API key.
-3. In Omni AI, go to **Settings** > **AI Model** and select a **Google Gemini** model.
-4. Paste your key and save.
+1. **Choose a provider:** Google Gemini, OpenAI, Groq, Anthropic Claude or Custom Gateway.
+2. **Paste its API key** and click anywhere outside the field. Omni AI checks the key by loading that provider's model list, so no model call is spent. The line under the key says **Key valid** with the number of models, or shows the provider's own error.
+3. **Pick a model** from the buttons. The recommended model comes first, then the newest. A long list shows twelve models and a **Show N more** button, and past thirty models a filter appears.
+4. **Validate Configuration** sends one short test request to the chosen model.
+5. **Save Settings.**
 
-#### Option B: OpenAI (GPT-5.6)
+Where to get a key:
 
-1. Go to [OpenAI Platform](https://platform.openai.com/api-keys).
-2. Create a new API Key.
-3. In Omni AI, select an **OpenAI** model (GPT-5.6 Luna / Terra / Sol).
-4. Paste your key `sk-...` and save.
+| Provider         | Key page                                                         | Key looks like |
+| ---------------- | ---------------------------------------------------------------- | -------------- |
+| Google Gemini    | [Google AI Studio](https://aistudio.google.com/app/apikey)       | `AIza...`      |
+| OpenAI           | [OpenAI Platform](https://platform.openai.com/api-keys)          | `sk-...`       |
+| Groq             | [Groq Console](https://console.groq.com/keys)                    | `gsk_...`      |
+| Anthropic Claude | [Anthropic Console](https://console.anthropic.com/settings/keys) | `sk-ant-...`   |
 
-#### Option C: Groq (fast inference)
+#### Custom Gateway
 
-1. Go to [Groq Console](https://console.groq.com/keys).
-2. Create a new API Key.
-3. In Omni AI, select a **Groq** model (GPT-OSS 20B, Llama 3.3 70B, GPT-OSS 120B).
-4. Paste your key `gsk_...` and save.
+Connect to any OpenAI-compatible endpoint (OpenRouter, LiteLLM, Together AI, Ollama, your own proxy):
 
-#### Option D: Anthropic Claude
+1. Choose **Custom Gateway**.
+2. Enter the **Base URL** (e.g. `https://openrouter.ai/api/v1`, `http://localhost:11434/v1`). Its models load once you leave the field.
+3. Enter the **API Key** if your gateway needs one; leave it empty for a keyless local gateway.
+4. Pick a model, then **Validate Configuration** and **Save Settings**.
 
-1. Go to [Anthropic Console](https://console.anthropic.com/settings/keys).
-2. Create a new API Key.
-3. In Omni AI, select an **Anthropic Claude** model (Haiku 4.5 / Sonnet 5 / Opus 5).
-4. Paste your key `sk-ant-...` and save.
-
-#### Option E: Custom Gateway
-
-Connect to any OpenAI-compatible API endpoint (OpenRouter, LiteLLM, Together AI, your own proxy, etc.):
-
-1. In Omni AI, select **Custom Gateway** from the model dropdown.
-2. Enter your **Base URL** (e.g., `https://openrouter.ai/api/v1`, `https://your-gateway.com/v1`).
-3. Enter your **API Key** (optional for some gateways).
-4. Enter the **Model Name** (e.g., `anthropic/claude-sonnet-5`).
-5. Click **Validate Configuration** to test.
+The model lists are cached for seven days; the refresh icon on the key line loads a fresh one.
 
 ---
 
-### 2. Custom Model Configuration
+### 2. A Model the List Does Not Show
 
-Omni AI allows you to use any model provided by your chosen AI provider, even if it's not in the default list.
+Under the model buttons, **Custom Model Name** takes any model ID your provider accepts, for example a fine-tuned model or a gateway alias.
 
-#### How to use Custom Models
-
-1. In **Settings**, find the **AI Model** dropdown.
-2. Select the **"Custom Model..."** option for your preferred provider (e.g., _OpenAI Custom Model..._).
-3. A new field **Custom Model Name** will appear.
-4. Enter the Model ID **exactly** as the AI platform documents it. It is sent to the provider verbatim, with no short-name expansion or fuzzy matching.
-5. Click **Save Settings**.
-
-#### Common Custom Model IDs
-
-- **Groq:** `llama-3.1-8b-instant`, `deepseek-r1-distill-llama-70b`, `openai/gpt-oss-120b`.
-- **OpenAI:** `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-5.6-sol`.
-- **Google:** `gemini-2.5-pro`, `gemini-3.6-flash`.
-- **Anthropic Claude:** `claude-opus-5`, `claude-sonnet-5`, `claude-haiku-4-5-20251001`.
-- **Custom Gateway:** Varies by provider (e.g., OpenRouter: `anthropic/claude-sonnet-5`).
+1. Choose the provider and fill in its key as above.
+2. Type the model ID **exactly** as the platform documents it. It is sent verbatim, with no short-name expansion or fuzzy matching. While the field holds a name, no model button is selected; clearing it brings back the model you had picked.
+3. **Validate Configuration**, then **Save Settings**.
 
 ---
 

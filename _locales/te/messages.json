@@ -159,6 +159,66 @@
     "message": "AI మోడల్",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "ప్రదాత",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "మోడల్‌లను చూడటానికి ప్రదాతను ఎంచుకోండి",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "మోడల్‌లను చూడటానికి మీ API కీని నమోదు చేయండి",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "మోడల్‌లను చూడటానికి గేట్‌వే బేస్ URL నమోదు చేయండి",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "మోడల్‌లను ఫిల్టర్ చేయండి",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "లేదా జాబితాలో లేని మోడల్ పేరును టైప్ చేయండి",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "ముందుగా మోడల్‌ను ఎంచుకోండి లేదా మోడల్ పేరును టైప్ చేయండి.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "కీని తనిఖీ చేసి మోడల్‌లను లోడ్ చేస్తోంది…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "కీ చెల్లుబాటు అవుతుంది · $COUNT$ మోడల్‌లు",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ మోడల్‌లు",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "మోడల్‌లను లోడ్ చేయడం సాధ్యం కాలేదు: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "మరో $COUNT$ చూపు",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "తక్కువ చూపు",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "సిఫార్సు చేయబడింది",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "ఉపయోగించాల్సిన AI మోడల్ను ఎంచుకోండి",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "దయచేసి ముందుగా API కీ/ఎండ్‌పాయింట్‌ను నమోదు చేయండి.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "దయచేసి ముందుగా గేట్‌వే బేస్ URL నమోదు చేయండి.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "ధృవీకరిస్తోంది...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "అనువాదం విఫలమైంది",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(పాత)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "అధునాతన",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "అనుకూల మోడల్ పేరు",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "అనుకూల మోడల్ IDని నమోదు చేయండి",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "దయచేసి అనుకూల మోడల్ పేరును నమోదు చేయండి",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ఉదా. your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "టెక్స్ట్‌ను భర్తీ చేయలేకపోయాము. బదులుగా దాన్ని కాపీ చేయండి.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "జాబితాను రిఫ్రెష్ చేయండి",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ఇక అందుబాటులో లేదు",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "ఈ మోడల్ ఇక అందుబాటులో లేదు.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "మరో మోడల్ ఎంచుకోండి",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

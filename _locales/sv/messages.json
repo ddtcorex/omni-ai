@@ -159,6 +159,66 @@
     "message": "AI-modell",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Leverantör",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Välj en leverantör för att se dess modeller",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Ange din API-nyckel för att se modellerna",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Ange gatewayens bas-URL för att se dess modeller",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtrera modeller",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Eller skriv namnet på en modell som inte finns i listan",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Välj en modell eller skriv ett modellnamn först.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Kontrollerar nyckeln och läser in modeller…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Nyckeln är giltig · $COUNT$ modeller",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ modeller",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Det gick inte att läsa in modeller: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Visa $COUNT$ till",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Visa färre",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "rekommenderas",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Välj vilken AI-modell som ska användas",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Ange en API-nyckel/endpoint först.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Ange gatewayens bas-URL först.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validerar...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Översättningen misslyckades",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Äldre)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Avancerat",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Anpassat modellnamn",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Ange det anpassade modell-ID:t",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Ange ett anpassat modellnamn",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "t.ex. ditt-modell-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Det gick inte att ersätta texten. Kopiera den i stället.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Uppdatera listan",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "erbjuds inte längre",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Den här modellen är inte längre tillgänglig.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Välj en annan modell",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

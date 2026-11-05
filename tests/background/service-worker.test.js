@@ -663,4 +663,409 @@ describe("Service Worker Integration", () => {
       expect.any(Object),
     );
   });
+
+  describe("LIST_MODELS", () => {
+    it("uses the in form key when present but does not cache an unsaved key", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      Providers.listModels.mockResolvedValue({
+        models: [{ id: "gpt-5.7-nova" }],
+        truncated: false,
+      });
+      chromeMock.storage.local.get.mockResolvedValue({});
+
+      const sendResponse = jest.fn();
+      const returned = listener(
+        { type: "LIST_MODELS", payload: { provider: "openai", key: "sk-inform" } },
+        {},
+        sendResponse,
+      );
+
+      expect(returned).toBe(true);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Providers.listModels).toHaveBeenCalledWith("openai", { apiKey: "sk-inform" });
+      // The key may never be saved, and the cache would then describe an
+      // account the extension does not use.
+      expect(chromeMock.storage.local.set).not.toHaveBeenCalled();
+      expect(sendResponse).toHaveBeenCalledWith(
+        expect.objectContaining({ success: true, truncated: false, cached: false }),
+      );
+    });
+
+    it("caches a listing made with the saved key", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({ openaiApiKey: "sk-stored" });
+      Providers.listModels.mockResolvedValue({
+        models: [{ id: "gpt-5.7-nova" }],
+        truncated: false,
+      });
+
+      const sendResponse = jest.fn();
+      listener(
+        { type: "LIST_MODELS", payload: { provider: "openai", key: "sk-stored" } },
+        {},
+        sendResponse,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(chromeMock.storage.local.set).toHaveBeenCalledWith({
+        modelCatalog: {
+          openai: expect.objectContaining({ models: [{ id: "gpt-5.7-nova" }], truncated: false }),
+        },
+      });
+      expect(sendResponse.mock.calls[0][0].cached).toBe(true);
+    });
+
+    it("sends an in form gateway key to the in form base URL, never the stored one", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({
+        customGatewayApiKey: "old-key",
+        customGatewayBaseUrl: "https://old.example/v1",
+      });
+      Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+      listener(
+        {
+          type: "LIST_MODELS",
+          payload: { provider: "customGateway", key: "new-key", baseUrl: "https://new.example/v1" },
+        },
+        {},
+        jest.fn(),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+        apiKey: "new-key",
+        baseUrl: "https://new.example/v1",
+      });
+      expect(chromeMock.storage.local.set).not.toHaveBeenCalled();
+    });
+
+    it("lists a keyless gateway at the in form base URL", async () => {
+      // No key exists to leak, so the URL the user is typing is the one to ask.
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({ customGatewayBaseUrl: "" });
+      Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+      listener(
+        {
+          type: "LIST_MODELS",
+          payload: { provider: "customGateway", baseUrl: "http://localhost:11434/v1" },
+        },
+        {},
+        jest.fn(),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+        baseUrl: "http://localhost:11434/v1",
+      });
+    });
+
+    it("records the base URL a gateway catalog came from", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({
+        customGatewayApiKey: "gw-key",
+        customGatewayBaseUrl: "https://gw.example/v1/",
+      });
+      Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+      listener({ type: "LIST_MODELS", payload: { provider: "customGateway" } }, {}, jest.fn());
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(chromeMock.storage.local.set).toHaveBeenCalledWith({
+        modelCatalog: {
+          customGateway: expect.objectContaining({ baseUrl: "https://gw.example/v1" }),
+        },
+      });
+    });
+
+    it("falls back to the stored key and reports a failure without throwing", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({ openaiApiKey: "sk-stored" });
+      Providers.listModels.mockRejectedValue(new Error("bad key"));
+
+      const sendResponse = jest.fn();
+      listener({ type: "LIST_MODELS", payload: { provider: "openai" } }, {}, sendResponse);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Providers.listModels).toHaveBeenCalledWith("openai", { apiKey: "sk-stored" });
+      expect(sendResponse).toHaveBeenCalledWith({ success: false, error: "bad key" });
+    });
+
+    it("answers a missing key without calling the provider", async () => {
+      const Providers = await import("../../lib/providers/index");
+      await import("../../background/service-worker");
+      const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+      chromeMock.storage.local.get.mockResolvedValue({});
+      Providers.listModels.mockReset();
+
+      const sendResponse = jest.fn();
+      listener({ type: "LIST_MODELS", payload: { provider: "openai" } }, {}, sendResponse);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(Providers.listModels).not.toHaveBeenCalled();
+      expect(sendResponse.mock.calls[0][0].success).toBe(false);
+    });
+  });
+
+  it("LIST_MODELS lists a keyless gateway at the typed URL without the stored key", async () => {
+    const Providers = await import("../../lib/providers/index");
+    const Storage = await import("../../lib/storage");
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({
+      customGatewayApiKey: "gw-key",
+      customGatewayBaseUrl: "https://old.example/v1",
+    });
+    Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+    const setCache = jest.spyOn(Storage, "setModelCatalogCache");
+
+    const sendResponse = jest.fn();
+    listener(
+      {
+        type: "LIST_MODELS",
+        payload: { provider: "customGateway", baseUrl: "http://localhost:11434/v1", keyless: true },
+      },
+      {},
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+      baseUrl: "http://localhost:11434/v1",
+    });
+    expect(sendResponse.mock.calls[0][0]).toMatchObject({ success: true, cached: false });
+    expect(setCache).not.toHaveBeenCalled();
+  });
+
+  it("LIST_MODELS uses the stored Custom Gateway base URL", async () => {
+    const Providers = await import("../../lib/providers/index");
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({
+      customGatewayApiKey: "gw-key",
+      customGatewayBaseUrl: "https://gw.example/v1",
+    });
+    Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+    const sendResponse = jest.fn();
+    listener({ type: "LIST_MODELS", payload: { provider: "customGateway" } }, {}, sendResponse);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+      apiKey: "gw-key",
+      baseUrl: "https://gw.example/v1",
+    });
+  });
+
+  it("getChatConfig routes a raw fetched model id through the stored provider", async () => {
+    chromeMock.storage.local.get.mockResolvedValue({
+      apiModel: "gpt-5.7-nova",
+      apiProvider: "openai",
+      openaiApiKey: "sk-o",
+      geminiApiKey: "should-not-be-used",
+    });
+
+    const providers = await import("../../lib/providers/index");
+    providers.generateContentStream.mockResolvedValue("assistant reply");
+
+    await import("../../background/service-worker");
+    const connectListener = chromeMock.runtime.onConnect.addListener.mock.calls[0][0];
+    const port = {
+      name: "omni-chat",
+      onMessage: { addListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn() },
+      postMessage: jest.fn(),
+    };
+
+    connectListener(port);
+    const onMessage = port.onMessage.addListener.mock.calls[0][0];
+    await onMessage({ type: "chat", message: "hi", pageContext: "", history: [] });
+
+    const AIService = providers;
+    expect(AIService.generateContentStream).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ provider: "openai", apiKey: "sk-o" }),
+      expect.anything(),
+      expect.anything(),
+    );
+  });
+
+  async function chatConfigFor(stored) {
+    chromeMock.storage.local.get.mockResolvedValue(stored);
+    const providers = await import("../../lib/providers/index");
+    providers.generateContentStream.mockResolvedValue("ok");
+    await import("../../background/service-worker");
+    const connectListener = chromeMock.runtime.onConnect.addListener.mock.calls[0][0];
+    const port = {
+      name: "omni-chat",
+      onMessage: { addListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn() },
+      postMessage: jest.fn(),
+    };
+    connectListener(port);
+    const onMessage = port.onMessage.addListener.mock.calls[0][0];
+    await onMessage({ type: "chat", message: "hi", pageContext: "", history: [] });
+    return providers.generateContentStream.mock.calls[0][1];
+  }
+
+  it("getChatConfig keeps a fetched gateway model over a stale typed model name", async () => {
+    // The typed name belongs to the "custom-gateway" entry only; it stays in
+    // storage after the user picks a listed gateway model instead.
+    const config = await chatConfigFor({
+      apiModel: "anthropic/claude-haiku-5.5",
+      apiProvider: "customGateway",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      customGatewayModelName: "old/manual-model",
+    });
+
+    expect(config).toMatchObject({
+      provider: "customGateway",
+      model: "anthropic/claude-haiku-5.5",
+      baseUrl: "https://gw.example/v1",
+    });
+  });
+
+  it("getChatConfig still sends the typed name for the custom-gateway entry", async () => {
+    const config = await chatConfigFor({
+      apiModel: "custom-gateway",
+      customGatewayBaseUrl: "https://gw.example/v1",
+      customGatewayModelName: "typed/model",
+    });
+
+    expect(config).toMatchObject({ provider: "customGateway", model: "typed/model" });
+  });
+
+  it("omni chat on an install with no saved model uses Gemini's default", async () => {
+    const config = await chatConfigFor({ geminiApiKey: "g-key" });
+
+    expect(config).toMatchObject({
+      provider: "google",
+      apiKey: "g-key",
+      model: "gemini-3.6-flash",
+    });
+  });
+
+  it("omni chat sends a gateway model named like a shipped id to the gateway", async () => {
+    const config = await chatConfigFor({
+      apiModel: "claude-sonnet-5",
+      apiProvider: "customGateway",
+      customGatewayBaseUrl: "https://gw.example.com/v1",
+      customGatewayApiKey: "gw-k",
+      anthropicApiKey: "ant-k",
+    });
+
+    expect(config).toMatchObject({
+      provider: "customGateway",
+      apiKey: "gw-k",
+      baseUrl: "https://gw.example.com/v1",
+      model: "claude-sonnet-5",
+    });
+  });
+
+  it("omni chat sends a listed model whose id ends in -custom as itself", async () => {
+    const config = await chatConfigFor({
+      apiModel: "llama-3-custom",
+      apiProvider: "groq",
+      groqApiKey: "gsk",
+      customModelName: "typed-name",
+    });
+
+    expect(config).toMatchObject({ provider: "groq", model: "llama-3-custom" });
+  });
+
+  it("getChatConfig sends the typed name for a provider's custom entry", async () => {
+    const config = await chatConfigFor({
+      apiModel: "openai-custom",
+      apiProvider: "openai",
+      openaiApiKey: "sk-o",
+      customModelName: "gpt-typed",
+    });
+
+    expect(config).toMatchObject({ provider: "openai", model: "gpt-typed", apiKey: "sk-o" });
+  });
+
+  it("a model-not-found failure reaches the overlay with its code", async () => {
+    const AIService = await import("../../lib/ai-service");
+    AIService.improveText.mockRejectedValue(
+      Object.assign(new Error("The model does not exist"), { code: "model_not_found" }),
+    );
+
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    const sendResponse = jest.fn();
+    listener(
+      { type: "QUICK_ACTION", payload: { action: "grammar", text: "hi" } },
+      { tab: { id: 5 }, frameId: 0 },
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // The overlay reads this reply, so the code has to survive the failure path.
+    expect(sendResponse).toHaveBeenCalledWith(
+      expect.objectContaining({ success: false, errorCode: "model_not_found" }),
+    );
+  });
+
+  it("OPEN_SETTINGS opens the options page", async () => {
+    chromeMock.runtime.openOptionsPage = jest.fn();
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    const sendResponse = jest.fn();
+    listener({ type: "OPEN_SETTINGS" }, {}, sendResponse);
+
+    expect(chromeMock.runtime.openOptionsPage).toHaveBeenCalled();
+    expect(sendResponse).toHaveBeenCalledWith({ success: true });
+  });
+
+  it("LIST_MODELS never pairs a stored key with a caller supplied base URL", async () => {
+    const Providers = await import("../../lib/providers/index");
+    await import("../../background/service-worker");
+    const listener = chromeMock.runtime.onMessage.addListener.mock.calls[0][0];
+
+    chromeMock.storage.local.get.mockResolvedValue({
+      customGatewayApiKey: "gw-key",
+      customGatewayBaseUrl: "https://stored.example/v1",
+    });
+    Providers.listModels.mockResolvedValue({ models: [], truncated: false });
+
+    const sendResponse = jest.fn();
+    listener(
+      {
+        type: "LIST_MODELS",
+        payload: { provider: "customGateway", baseUrl: "https://evil.example" },
+      },
+      {},
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(Providers.listModels).toHaveBeenCalledWith("customGateway", {
+      apiKey: "gw-key",
+      baseUrl: "https://stored.example/v1",
+    });
+  });
 });

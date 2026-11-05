@@ -311,3 +311,70 @@ test("page context stays current across tab switches without any manual interact
     serverB.close();
   }
 });
+
+// A long conversation scrolls inside the transcript with a scrollbar a user
+// can see at the panel's edge, the transcript fades out under its edges
+// instead of cutting text against a line, and a user bubble stands off the
+// panel in both themes.
+for (const theme of ["light", "dark"]) {
+  test(`a long ${theme} conversation scrolls in a framed transcript`, async () => {
+    const { context, sw } = await launchWithExtension();
+    try {
+      await sw.evaluate((t) => chrome.storage.sync.set({ omni_ai_theme: t }), theme);
+      const page = await context.newPage();
+      await page.setViewportSize({ width: 400, height: 640 });
+      await stubChatPort(page);
+      const extId = new URL(sw.url()).host;
+      await page.goto(`chrome-extension://${extId}/sidepanel/sidepanel.html`);
+
+      const reply = "A long answer that keeps going. ".repeat(40);
+      for (let i = 0; i < 3; i++) {
+        await page.locator("#chatInput").fill(`Question ${i + 1}`);
+        await page.locator("#chatSend").click();
+        await page.evaluate((t) => window.__sendFakeChatMessage({ type: "chunk", text: t }), reply);
+        await page.evaluate((t) => window.__sendFakeChatMessage({ type: "done", text: t }), reply);
+      }
+
+      const s = await page.evaluate(() => {
+        const list = document.getElementById("chatMessages");
+        const cs = getComputedStyle(list);
+        const bubble = getComputedStyle(document.querySelector(".chat-msg.user"));
+        const panel = document.querySelector(".sidepanel-container").getBoundingClientRect();
+        return {
+          overflows: list.scrollHeight > list.clientHeight,
+          overflowY: cs.overflowY,
+          scrollbarWidth: cs.scrollbarWidth,
+          scrollbarColor: cs.scrollbarColor,
+          mask: cs.maskImage || cs.webkitMaskImage,
+          rightGap: panel.right - list.getBoundingClientRect().right,
+          // The point a few pixels inside the panel's right edge, where the
+          // scrollbar sits, must hit the transcript: a parent that clips it
+          // would answer there instead. (Playwright hides scrollbars, so their
+          // width cannot be measured here.)
+          edgeHitsList: (() => {
+            const box = list.getBoundingClientRect();
+            return document.elementFromPoint(panel.right - 3, box.top + box.height / 2) === list;
+          })(),
+          pageScrolls: document.documentElement.scrollHeight > innerHeight,
+          bubbleBg: bubble.backgroundColor,
+          bubbleRing: bubble.boxShadow,
+        };
+      });
+
+      expect(s.overflows).toBe(true);
+      expect(s.overflowY).toBe("auto");
+      expect(s.pageScrolls).toBe(false);
+      // A themed thin scrollbar, never the overlay one that only shows while
+      // scrolling, and it sits at the panel's edge rather than inside the gutter.
+      expect(s.scrollbarWidth).toBe("thin");
+      expect(s.scrollbarColor).not.toBe("auto");
+      expect(s.rightGap).toBeLessThanOrEqual(1);
+      expect(s.edgeHitsList).toBe(true);
+      expect(s.mask).toContain("linear-gradient");
+      expect(s.bubbleRing).not.toBe("none");
+      expect(s.bubbleBg).not.toBe("rgb(255, 255, 255)");
+    } finally {
+      await context.close();
+    }
+  });
+}

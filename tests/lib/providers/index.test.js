@@ -1,5 +1,6 @@
 import {
   getProvider,
+  listModels,
   getProviderModule,
   Gemini,
   OpenAI,
@@ -47,5 +48,31 @@ describe("Provider routing", () => {
     expect(getProvider("openai-gpt-4o")).toBe(OpenAI);
     expect(getProvider("groq-llama-3.1-8b")).toBe(Groq);
     expect(getProvider("gemini-2.0-flash")).toBe(Gemini);
+  });
+});
+
+describe("Model listing dispatch", () => {
+  it("dispatches listModels through the provider module map", async () => {
+    global.fetch = jest.fn(async (u) => ({
+      ok: true,
+      status: 200,
+      json: async () =>
+        String(u).includes("anthropic") ? { data: [], has_more: false } : { data: [] },
+    }));
+
+    await expect(listModels("anthropic", { apiKey: "k" })).resolves.toEqual({
+      models: [],
+      truncated: false,
+    });
+    await expect(listModels("openai", { apiKey: "k" })).resolves.toEqual({
+      models: [],
+      truncated: false,
+    });
+  });
+
+  it("throws for a provider id that is not in the module map instead of falling back to Gemini", async () => {
+    await expect(listModels("nope", { apiKey: "k" })).rejects.toThrow(
+      "Model listing is not supported",
+    );
   });
 });

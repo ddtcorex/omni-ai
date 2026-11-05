@@ -56,9 +56,9 @@ test("settings page loads and renders provider configuration", async () => {
 
     // <title>__MSG_extName__ - __MSG_settings_title__</title> resolves via chrome.i18n
     await expect(page).toHaveTitle(/Omni AI/);
-    await expect(page.locator("#apiModel")).toBeVisible();
+    await expect(page.locator("#providerPicker [role=radio]")).toHaveCount(5);
     // Provider key groups start collapsed (class "hidden") until their
-    // provider tab is selected, so assert DOM attachment, not visibility.
+    // provider is chosen, so assert DOM attachment, not visibility.
     await expect(page.locator("#geminiApiKey")).toBeAttached();
     await expect(page.locator("#customGatewayBaseUrl")).toBeAttached();
   } finally {

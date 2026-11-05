@@ -115,6 +115,66 @@
     "message": "AI 模型",
     "description": "AI 模型标签"
   },
+  "settings_providerLabel": {
+    "message": "提供商",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "选择提供商以查看其模型",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "输入 API 密钥以查看模型",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "输入网关的基础 URL 以查看其模型",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "筛选模型",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "或输入列表中没有的模型名称",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "请先选择模型或输入模型名称。",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "正在检查密钥并加载模型…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "密钥有效 · $COUNT$ 个模型",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ 个模型",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "无法加载模型：$REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "再显示 $COUNT$ 个",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "收起",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "推荐",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "选择要使用的 AI 模型",
     "description": "AI 模型提示"
@@ -440,6 +500,10 @@
     "message": "请先输入 API 密钥或端点。",
     "description": "未输入密钥错误"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "请先输入网关的基础 URL。",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "正在验证...",
     "description": "验证状态提示"
@@ -499,23 +563,9 @@
     "message": "翻译失败",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(旧版)"
-  },
-  "settings_advanced": {
-    "message": "高级"
-  },
   "settings_customModel": {
     "message": "自定义模型名称",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "输入自定义模型ID",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "请输入自定义模型名称",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "例如: 模型ID",
@@ -701,5 +751,21 @@
   "overlay_replace_failed": {
     "message": "无法替换文本。请改为复制。",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "刷新列表",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "已不再提供",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "此模型已不再提供。",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "选择其他模型",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

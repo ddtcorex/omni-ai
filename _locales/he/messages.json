@@ -159,6 +159,66 @@
     "message": "מודל AI",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "ספק",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "יש לבחור ספק כדי לראות את המודלים שלו",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "יש להזין מפתח API כדי לראות את המודלים",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "יש להזין את כתובת ה-URL הבסיסית של השער כדי לראות את המודלים שלו",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "סינון מודלים",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "או להקליד שם של מודל שאינו ברשימה",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "יש לבחור קודם מודל או להקליד שם מודל.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "בודק את המפתח וטוען מודלים…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "המפתח תקין · $COUNT$ מודלים",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ מודלים",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "לא ניתן לטעון את המודלים: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "הצג עוד $COUNT$",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "הצג פחות",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "מומלץ",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "בחר את מודל ה-AI שבו תשתמש",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "אנא הזן תחילה מפתח API או כתובת Endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "יש להזין קודם את כתובת ה-URL הבסיסית של השער.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "מאמת...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "התרגום נכשל",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(מיושן)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "מתקדם",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "שם מודל מותאם אישית",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "הזן את מזהה המודל המותאם אישית",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "אנא הזן שם מודל מותאם אישית",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "למשל your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "לא ניתן היה להחליף את הטקסט. העתק אותו במקום זאת.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "רענון הרשימה",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "אינו מוצע עוד",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "המודל הזה אינו זמין עוד.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "בחירת מודל אחר",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

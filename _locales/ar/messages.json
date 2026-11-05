@@ -159,6 +159,66 @@
     "message": "نموذج الذكاء الاصطناعي",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "المزوّد",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "اختر مزوّدًا لعرض نماذجه",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "أدخل مفتاح API لعرض النماذج",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "أدخل عنوان URL الأساسي للبوابة لعرض نماذجها",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "تصفية النماذج",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "أو اكتب اسم نموذج غير موجود في القائمة",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "اختر نموذجًا أو اكتب اسم نموذج أولاً.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "جارٍ التحقق من المفتاح وتحميل النماذج…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "المفتاح صالح · $COUNT$ نموذج",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ نموذج",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "تعذّر تحميل النماذج: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "عرض $COUNT$ أخرى",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "عرض أقل",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "مقترح",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "اختر نموذج الذكاء الاصطناعي المراد استخدامه",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "يرجى إدخال مفتاح API أو نقطة نهاية أولاً.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "يُرجى إدخال عنوان URL الأساسي للبوابة أولاً.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "جارٍ التحقق...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "فشلت الترجمة",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(قديم)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "متقدّم",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "اسم النموذج المخصّص",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "أدخل معرّف النموذج المخصّص",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "يرجى إدخال اسم نموذج مخصّص",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "مثال: your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "تعذّر استبدال النص. انسخه بدلاً من ذلك.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "تحديث القائمة",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "لم يعد متاحًا",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "هذا النموذج لم يعد متاحًا.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "اختر نموذجًا آخر",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

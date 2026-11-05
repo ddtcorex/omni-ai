@@ -58,15 +58,17 @@ async function seedConfig(sw, flashActions = []) {
 
 function stubGemini(context, reply) {
   return context.route("**/generativelanguage.googleapis.com/**", (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        candidates: [
-          { content: { parts: [{ text: typeof reply === "function" ? reply() : reply }] } },
-        ],
-      }),
-    }),
+    new URL(route.request().url()).pathname.endsWith("/models")
+      ? route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' })
+      : route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            candidates: [
+              { content: { parts: [{ text: typeof reply === "function" ? reply() : reply }] } },
+            ],
+          }),
+        }),
   );
 }
 

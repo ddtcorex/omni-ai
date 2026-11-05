@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **A setup walkthrough in the README.** An animated capture (`docs/assets/ai-model-setup.gif`) shows choosing a provider, pasting a key, picking a model, validating and saving, and the Configuration section is rewritten for the provider first Settings.
+- **The model picker now lists what each provider actually offers.** Every provider has a `GET /models` listing call (`lib/providers/model-listing.js` plus one `listModels` per provider, paginated with a five page cap), so a model a vendor ships appears in Settings without a code change, and a retired one stops being offered. Results are filtered down to chat capable models (`lib/model-catalog.js`), ranked with the saved model first, then that provider's recommended tier, then the newest, and cached per provider in `chrome.storage.local` for seven days.
+- **Settings picks the provider first, then the model.** A row of provider buttons comes first, then only that provider's credentials (for Custom Gateway, its base URL above an optional key). Leaving a key or base URL field lists that provider's models, which is also the key check, so no model call is spent; a line under the credentials says checking, valid with the model count, or the provider's own error, and carries the refresh control. The models appear as buttons: the recommended one first and tagged, then the newest, twelve at first with a More button, and a filter once a list passes thirty. A custom model name field sits under them for a name the list does not show; it and the buttons exclude each other. Check configuration then tests the chosen model. Both button rows are keyboard radio groups. The dropdown, its search box and the Advanced disclosure are gone; saved configurations load unchanged, with no migration.
+- **A route out of a dead model.** When a provider answers that the saved model is gone, the overlay says so in its own words, keeps the provider's message underneath so the user sees which model, and offers a button that opens Settings on the picker. It no longer offers Try again, which would send the same model. A Custom Gateway 404 counts as a missing model only when its body says so, since a 404 at the user's own URL usually means a wrong path.
+
+### Changed
+
+- **`AI_PROVIDERS[].models` is frozen, not deleted.** It maps a shipped id to its provider and API name for values already in storage, names fetched ids it knows, holds the custom model entries the runtime routes through, and seeds the new `recommended` tier; it is never rendered as a list of choices. New models reach users through the listing call, not through this file.
+- **Saving the picker now writes `apiProvider` next to `apiModel`**, so routing reads the provider directly instead of re-deriving it from an id string.
+
+### Fixed
+
+- **A model whose id ends in `-custom` runs as itself.** Page actions, Omni Chat and Settings took any such id for a provider's custom entry and swapped in the typed custom name; only the registry's own custom entries count now.
+- **A Save error stays on screen** until the next Save instead of fading after three seconds, and status notices are spoken through live regions that exist before the first one, so screen readers announce them.
+- **Omni Chat sends a gateway model to the gateway.** A Custom Gateway model listed under a vendor's own id (`claude-sonnet-5`) went to that vendor with its key, because the chat resolved the provider from the model id before the saved provider. Page actions already used the saved provider.
+- **Saving with a provider but no model keeps the working configuration.** Save stores the keys and preferences and asks for a model instead of writing an empty one.
+- A saved model is no longer offered twice: the stored id is normalized to its API name before the picker compares it with the fetched list, so an upgrade shows one row instead of a false "no longer offered" badge beside a duplicate.
+- **Omni Chat uses the model the picker saved.** It replaced every Custom Gateway model with the name typed for the `custom-gateway` entry, which stays in storage after a listed gateway model is picked, and it sent a provider's `-custom` entry as the literal placeholder instead of the typed name.
+- **The picker drops models the chat endpoint cannot serve.** OpenAI image, speech, transcription, realtime, search and Responses-only models, Gemini speech, image and live models, and Groq speech models no longer appear.
+- **Fetched models keep their shipped names** (GPT-5.6 Terra, not `gpt-5.6-terra`) wherever the bundled list knows the id.
+- **Custom Gateway listing follows the form.** A typed key goes with the typed base URL, never to the saved gateway; a base URL change refreshes the list; a keyless gateway is listed at the typed URL; a cached gateway list is dropped once the saved base URL points elsewhere.
+- **Only a list fetched with the saved credentials is cached**, and a Save after listing with unsaved values fetches once more so the next visit has a cache.
+- Two catalog cache writes at once no longer drop one provider's entry.
+- Validating a Custom Gateway with no base URL shows a message instead of an empty notice, and a test now fails whenever the source reads a message key the English catalogue lacks.
+- The OpenAI, Groq and Anthropic modules fall back to the registry's recommended model instead of hardcoded names (OpenAI's was the retired `gpt-4o-mini`).
+- **Every status notice shares one look.** Validation, Save, the side panel's status line and chat error now come from one helper (`lib/notice.js`): success, warning, error and progress are each a tinted surface, a hairline ring and text of one hue with a matching icon, and the overlay's error box takes the same ring. The validation notice no longer puts a provider's error text into the page as markup.
+- **The Show changes switch is visible on a light card.** Its off track was white under a white knob (1.0:1 against the card); it now holds at least 3:1 in both themes, and its label is no longer the faintest text colour.
+- **The side panel chat scrolls in a proper frame.** A long conversation fades out under the context row and the input instead of being cut against their lines, a thin themed scrollbar sits at the panel's edge in place of a white track over the separators, and user bubbles stay visible on the light panel.
+- **Changing the model drops cached results on open pages**, so the next action runs on the new model instead of answering from the old one.
+- **A long result in the side panel's Tools tab scrolls.** Its end was cut off with no scrollbar, and the result card's sides and shadow were shaved by the same clipping; the card also gets a hairline that shows on the light panel.
+
 ## [2.6.0] - 2026-11-03
 
 ### Changed

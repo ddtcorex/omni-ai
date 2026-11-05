@@ -159,6 +159,66 @@
     "message": "AI ماڈل",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "فراہم کنندہ",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "ماڈل دیکھنے کے لیے فراہم کنندہ منتخب کریں",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "ماڈل دیکھنے کے لیے اپنی API کلید درج کریں",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "ماڈل دیکھنے کے لیے گیٹ وے کا بیس URL درج کریں",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "ماڈل فلٹر کریں",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "یا ایسے ماڈل کا نام لکھیں جو فہرست میں نہیں ہے",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "پہلے کوئی ماڈل منتخب کریں یا ماڈل کا نام لکھیں۔",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "کلید کی جانچ اور ماڈل لوڈ ہو رہے ہیں…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "کلید درست ہے · $COUNT$ ماڈل",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ ماڈل",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "ماڈل لوڈ نہیں ہو سکے: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "مزید $COUNT$ دکھائیں",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "کم دکھائیں",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "تجویز کردہ",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "استعمال کے لیے AI ماڈل منتخب کریں",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "براہ کرم پہلے API کلید/اینڈ پوائنٹ درج کریں۔",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "براہ کرم پہلے گیٹ وے کا بیس URL درج کریں۔",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "جانچ جاری ہے...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "ترجمہ ناکام رہا",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(پرانا)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "ایڈوانسڈ",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "کسٹم ماڈل کا نام",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "کسٹم ماڈل کی ID درج کریں",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "براہ کرم کسٹم ماڈل کا نام درج کریں",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "مثلاً your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "متن تبدیل نہیں ہو سکا۔ اس کے بجائے اسے کاپی کریں۔",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "فہرست تازہ کریں",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "اب دستیاب نہیں",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "یہ ماڈل اب دستیاب نہیں۔",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "دوسرا ماڈل منتخب کریں",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

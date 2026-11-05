@@ -6,6 +6,7 @@
 import { i18n } from "../lib/i18n.js";
 import { initTheme } from "../lib/theme-manager.js";
 import { buildPageContextString } from "../lib/sidebar-chat.js";
+import { renderNotice } from "../lib/notice.js";
 
 const elements = {
   extVersion: /** @type {HTMLElement | null} */ (document.getElementById("extVersion")),
@@ -124,15 +125,9 @@ function setupEventListeners() {
 
 function setStatus(text, isError = false) {
   if (!elements.statusLine) return;
-  if (!text) {
-    elements.statusLine.classList.add("hidden");
-    elements.statusLine.textContent = "";
-    return;
-  }
-  elements.statusLine.textContent = text;
-  elements.statusLine.classList.remove("hidden");
-  elements.statusLine.classList.toggle("error", isError);
-  elements.statusLine.classList.toggle("ds-notice--error", isError);
+  // The shared notice: same shape, icon and colours as the settings page.
+  renderNotice(elements.statusLine, isError ? "error" : "processing", text);
+  elements.statusLine.classList.toggle("error", Boolean(text) && isError);
 }
 
 function setButtonsDisabled(disabled) {
@@ -212,7 +207,7 @@ async function runPageAction(action) {
         payload: { action, text: page.text },
       });
     } catch (err) {
-      setStatus(i18n.getMessage("error_prefix") + (err?.message || "Unknown error"), true);
+      setStatus(err?.message || i18n.getMessage("sidebar_chat_error"), true);
       return;
     }
 
@@ -220,7 +215,7 @@ async function runPageAction(action) {
       setStatus("");
       showResult(response.data.response, page.title);
     } else {
-      setStatus(i18n.getMessage("error_prefix") + (response?.error || "Unknown error"), true);
+      setStatus(response?.error || i18n.getMessage("sidebar_chat_error"), true);
     }
   } finally {
     setButtonsDisabled(false);
@@ -384,10 +379,7 @@ function sendChatMessage() {
       // now-pointless empty/thinking bubble instead of leaving it dangling.
       assistantBubble.remove();
       currentAssistantBubble = null;
-      if (elements.chatError) {
-        elements.chatError.textContent = msg.error || i18n.getMessage("sidebar_chat_error");
-        elements.chatError.classList.remove("hidden");
-      }
+      renderNotice(elements.chatError, "error", msg.error || i18n.getMessage("sidebar_chat_error"));
       port.onMessage.removeListener(handler);
       setStreamingUI(false);
     }

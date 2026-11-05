@@ -44,6 +44,18 @@ describe("OpenAI Provider", () => {
     expect(body.max_tokens).toBeUndefined();
   });
 
+  it("falls back to the registry's recommended model, not a retired literal", async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      headers: { get: () => "application/json" },
+      json: async () => ({ choices: [{ message: { content: "ok" } }] }),
+    });
+    await generateContent("prompt", { apiKey: "sk-test" });
+
+    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(body.model).toBe("gpt-5.6-terra");
+  });
+
   it("throws on http error payloads", async () => {
     global.fetch.mockResolvedValue({
       ok: false,

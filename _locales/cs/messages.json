@@ -159,6 +159,66 @@
     "message": "Model AI",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Poskytovatel",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Vyberte poskytovatele a zobrazí se jeho modely",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Zadejte klíč API a zobrazí se modely",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Zadejte základní URL brány a zobrazí se její modely",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtrovat modely",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Nebo zadejte název modelu, který v seznamu není",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Nejprve vyberte model nebo zadejte jeho název.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Kontroluje se klíč a načítají modely…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Klíč je platný · modelů: $COUNT$",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "Modelů: $COUNT$",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Modely se nepodařilo načíst: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Zobrazit dalších $COUNT$",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Zobrazit méně",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "doporučeno",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Vyberte model AI, který chcete použít",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Nejprve prosím zadejte klíč API nebo koncový bod.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Nejprve zadejte základní URL brány.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Ověřování...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Překlad se nezdařil",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Zastaralé)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Pokročilé",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Název vlastního modelu",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Zadejte ID vlastního modelu",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Zadejte prosím název vlastního modelu",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "např. your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Text se nepodařilo nahradit. Místo toho ho zkopírujte.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Obnovit seznam",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "již není nabízen",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Tento model už není k dispozici.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Vyberte jiný model",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

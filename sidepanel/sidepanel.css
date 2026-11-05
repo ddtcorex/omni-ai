@@ -165,6 +165,9 @@ body {
      own explicit spacing -- match .action-buttons' own inter-button gap
      (var(--omni-spacing-sm)) for a consistent rhythm down the column. */
   margin-top: var(--omni-spacing-sm);
+  /* The glass border is a white highlight, made for a card floating over a
+     page; on the panel's own white surface it vanished. */
+  border-color: var(--omni-border);
 }
 
 .result-label {
@@ -270,9 +273,16 @@ body {
   white-space: nowrap;
 }
 
+/* Tools grow with their content and .page-tools scrolls them: clipping here
+   cut a long result off and shaved the result card's sides and shadow. */
 .tab-view {
   display: flex;
   flex-direction: column;
+  flex: none;
+}
+
+/* Chat fills the panel and scrolls its transcript inside it instead. */
+#chatView {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
@@ -283,10 +293,24 @@ body {
 }
 
 /* ---- Chat ---- */
+/* The transcript runs to the panel's right edge so its scrollbar sits there.
+   A negative margin would not do: .page-tools is a scroll container itself
+   and clips whatever reaches into its padding, scrollbar included. */
+.page-tools:has(> #chatView:not(.hidden)) {
+  padding-right: 0;
+}
+
+#chatView > :not(.chat-messages) {
+  margin-right: var(--omni-spacing-lg);
+}
+
+/* The context row and the input are toolbars around the transcript, not
+   boxes: no hairlines of their own, so text scrolling under them fades out
+   (see .chat-messages) instead of being cut against a line. */
 .chat-page-context {
-  padding: var(--omni-spacing-sm) var(--omni-spacing-md);
-  border-bottom: 1px solid var(--omni-border);
+  padding: 0 var(--omni-spacing-xs) var(--omni-spacing-sm);
   font-size: 12px;
+  color: var(--omni-glass-text-secondary);
 }
 
 .chat-context-row {
@@ -303,12 +327,21 @@ body {
   cursor: pointer;
 }
 
+.chat-context-toggle input {
+  accent-color: var(--omni-accent);
+}
+
 .chat-context-details {
   margin-top: 6px;
 }
 
 .chat-context-details summary {
   cursor: pointer;
+  color: var(--omni-glass-text-tertiary);
+}
+
+.chat-context-details summary:hover {
+  color: var(--omni-glass-text);
 }
 
 .chat-context-preview {
@@ -328,10 +361,33 @@ body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--omni-spacing-md);
+  /* The page padding is dropped on this side (below), so the scrollbar sits
+     at the panel's edge; the text keeps its inset through this padding. */
+  padding: var(--omni-spacing-md) var(--omni-spacing-lg) var(--omni-spacing-md)
+    var(--omni-spacing-xs);
   display: flex;
   flex-direction: column;
-  gap: var(--omni-spacing-sm);
+  gap: var(--omni-spacing-md);
+  /* A scrollbar that is always there and themed, never the overlay kind that
+     only appears mid scroll. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--omni-glass-scrollbar-thumb) transparent;
+  /* Text fades out under the context row and the input instead of stopping
+     hard at their edge. A mask reads only alpha, so #fff stands for opaque. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #fff var(--omni-spacing-md),
+    #fff calc(100% - var(--omni-spacing-md)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #fff var(--omni-spacing-md),
+    #fff calc(100% - var(--omni-spacing-md)),
+    transparent 100%
+  );
 }
 
 .chat-empty {
@@ -355,9 +411,12 @@ body {
   word-break: break-word;
 }
 
+/* A pill tint plus a hairline ring: the white pill top alone vanished on
+   the light panel. */
 .chat-msg.user {
   align-self: flex-end;
-  background: var(--omni-pill-top);
+  background: var(--omni-pill-bg);
+  box-shadow: inset 0 0 0 1px var(--omni-glass-ring);
   color: var(--omni-glass-text);
   border-radius: var(--omni-radius-lg);
 }
@@ -366,6 +425,7 @@ body {
    card, so the transcript reads as one surface rather than stacked bubbles. */
 .chat-msg.assistant {
   align-self: stretch;
+  max-width: none;
   padding: 0;
   background: transparent;
   color: var(--omni-glass-text);
@@ -456,12 +516,11 @@ body {
 }
 
 .chat-error {
-  margin: 0 var(--omni-spacing-md);
+  margin-left: var(--omni-spacing-xs);
 }
 
 .chat-input-row {
-  padding: var(--omni-spacing-sm) var(--omni-spacing-md);
-  border-top: 1px solid var(--omni-border);
+  padding: var(--omni-spacing-sm) 0 0;
   flex-shrink: 0;
 }
 

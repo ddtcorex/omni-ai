@@ -4,6 +4,7 @@ import {
   DEFAULT_MODEL,
   getApiModelName,
   getProviderByModel,
+  isCustomModelEntry,
 } from "../../lib/ai-providers";
 
 describe("AI_PROVIDERS registry", () => {
@@ -49,5 +50,39 @@ describe("AI_PROVIDERS registry", () => {
     // "70b" alone used to risk matching "groq-llama-3.3-70b" via the removed
     // substring-fallback tier; it must now just pass through unchanged.
     expect(getApiModelName("70b")).toBe("70b");
+  });
+});
+
+describe("recommended tier", () => {
+  it("gives every provider one or two recommended ids that exist in its own catalog", () => {
+    Object.values(AI_PROVIDERS).forEach((provider) => {
+      expect(Array.isArray(provider.recommended)).toBe(true);
+      expect(provider.recommended.length).toBeGreaterThan(0);
+      expect(provider.recommended.length).toBeLessThanOrEqual(2);
+
+      const ids = new Set(provider.models.map((model) => model.id));
+      provider.recommended.forEach((id) => expect(ids.has(id)).toBe(true));
+    });
+  });
+});
+
+describe("defaultApiModel", () => {
+  const { defaultApiModel, AI_PROVIDERS: providers } = require("../../lib/ai-providers.js");
+
+  it("answers each provider's recommended model as its API name", () => {
+    expect(defaultApiModel("openai")).toBe("gpt-5.6-terra");
+    expect(defaultApiModel("groq")).toBe("llama-3.3-70b-versatile");
+    expect(defaultApiModel("anthropic")).toBe("claude-sonnet-5");
+    Object.keys(providers).forEach((id) => expect(defaultApiModel(id)).toBeTruthy());
+  });
+});
+
+describe("isCustomModelEntry", () => {
+  it("matches the registry's custom entries exactly", () => {
+    expect(isCustomModelEntry("openai-custom")).toBe(true);
+    expect(isCustomModelEntry("custom-gateway")).toBe(true);
+    expect(isCustomModelEntry("acme/llama-custom")).toBe(false);
+    expect(isCustomModelEntry("gpt-5.7-nova")).toBe(false);
+    expect(isCustomModelEntry(undefined)).toBe(false);
   });
 });

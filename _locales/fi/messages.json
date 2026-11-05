@@ -159,6 +159,66 @@
     "message": "AI-malli",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Palveluntarjoaja",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Valitse palveluntarjoaja nähdäksesi sen mallit",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Anna API-avaimesi nähdäksesi mallit",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Anna yhdyskäytävän perus-URL nähdäksesi sen mallit",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Suodata malleja",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Tai kirjoita mallin nimi, jota luettelossa ei ole",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Valitse ensin malli tai kirjoita mallin nimi.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Tarkistetaan avainta ja ladataan malleja…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Avain kelpaa · $COUNT$ mallia",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ mallia",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Malleja ei voitu ladata: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Näytä $COUNT$ lisää",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Näytä vähemmän",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "suositeltu",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Valitse käytettävä AI-malli",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Syötä ensin API-avain tai päätepiste.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Anna ensin yhdyskäytävän perus-URL.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Tarkistetaan...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Käännös epäonnistui",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Vanha)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Lisäasetukset",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Mukautetun mallin nimi",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Syötä mukautetun mallin tunnus",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Syötä mukautetun mallin nimi",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "esim. oma-mallitunnus",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Tekstiä ei voitu korvata. Kopioi se sen sijaan.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Päivitä luettelo",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ei enää tarjolla",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Tämä malli ei ole enää saatavilla.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Valitse toinen malli",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

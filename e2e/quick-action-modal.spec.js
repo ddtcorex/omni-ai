@@ -27,6 +27,8 @@ async function seedConfig(sw) {
 
 function stubGemini(context, replyText) {
   return context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+    if (new URL(route.request().url()).pathname.endsWith("/models"))
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"models":[]}' });
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -403,6 +405,12 @@ test("the auto Smart Translation card re-calls the AI after a language-setting c
 
     let callCount = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       callCount += 1;
       const replyText =
         callCount === 1 ? "FIRST-TRANSLATION-EN" : "SECOND-TRANSLATION-AFTER-SETTING-CHANGE";
@@ -797,6 +805,12 @@ test("a worker retry left with Back does not overwrite the next action", async (
     // Call 1 is the worker re-run, call 2 the content-path action after it.
     let hits = 0;
     await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models"))
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
       hits += 1;
       const n = hits;
       await new Promise((r) => setTimeout(r, n === 1 ? 1200 : 2500));
@@ -910,6 +924,135 @@ test("the floating icon sits outside the field being edited, never over its text
       return Math.max(0, overlapX) * Math.max(0, overlapY);
     });
     expect(dragged).toBe(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a model the provider dropped offers a route to the picker", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // 404 on the generation call: the provider says the model is gone.
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith("/models")) {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: "application/json",
+        body: JSON.stringify({ error: { code: 404, message: "models/gone is not found" } }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+
+    await page.evaluate(() => {
+      const el = document.getElementById("target");
+      el.focus();
+      el.setSelectionRange(6, 11);
+    });
+    await page.locator("#target").dispatchEvent("mouseup");
+
+    const quickBtn = page.locator(".omni-ai-quick-btn");
+    await expect(quickBtn).toHaveCount(1, { timeout: 5000 });
+    await quickBtn.click();
+
+    const grammarBtn = page.locator('[data-action="grammar"]');
+    await expect(grammarBtn).toBeVisible();
+    await page.waitForTimeout(200);
+    await grammarBtn.click();
+
+    const chip = page.locator("#omniAiChangeModel");
+    await expect(chip).toBeVisible({ timeout: 8000 });
+    await expect(chip).toHaveText("Choose another model");
+
+    // The card says its own sentence instead of the provider's raw text. The
+    // click posts OPEN_SETTINGS; that half is pinned by the service worker test
+    // (openOptionsPage focuses the settings tab the extension opened on
+    // install rather than creating a page this context would see).
+    await expect(page.locator(".omni-ai-error-text")).toHaveText(
+      "This model is no longer available.",
+    );
+    // The provider's own words stay underneath, so the user sees which model.
+    await expect(page.locator(".omni-ai-error-detail")).toHaveText("models/gone is not found");
+    // Running the same model again cannot help, so the card does not offer it.
+    await expect(page.locator("#omniAiRetry")).toHaveCount(0);
+  } finally {
+    await context.close();
+    server.close();
+  }
+});
+
+test("a model change in Settings is not answered from the old model's cached result", async () => {
+  const FIXTURE = `<!doctype html><html><body>
+    <input id="target" type="text" value="Hello world, this is a test." />
+  </body></html>`;
+  const { server, port } = await serveFixtureHtml(FIXTURE);
+  const { context, sw } = await launchWithExtension();
+  try {
+    await seedConfig(sw);
+    // The reply names the model the request went to.
+    await context.route("**/generativelanguage.googleapis.com/**", async (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname.endsWith("/models")) {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: '{"models":[]}',
+        });
+      }
+      const model = url.pathname.includes("gemini-3.5-flash-lite") ? "LITE" : "FLASH";
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ candidates: [{ content: { parts: [{ text: `FROM-${model}` }] } }] }),
+      });
+    });
+
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    const runGrammar = async () => {
+      await page.evaluate(() => {
+        const el = document.getElementById("target");
+        el.focus();
+        el.setSelectionRange(0, el.value.length);
+      });
+      await page.locator("#target").dispatchEvent("mouseup");
+      await page.locator(".omni-ai-quick-btn").click();
+      const grammar = page.locator('[data-action="grammar"]');
+      await expect(grammar).toBeVisible();
+      await page.waitForTimeout(200);
+      await grammar.click();
+    };
+
+    await runGrammar();
+    await expect(page.locator(".omni-ai-result-text, .omni-ai-content-area").first()).toContainText(
+      "FROM-FLASH",
+      { timeout: 8000 },
+    );
+    await page.locator("#omniAiClose").click();
+
+    await sw.evaluate(() =>
+      chrome.storage.local.set({ apiModel: "gemini-3.5-flash-lite", apiProvider: "google" }),
+    );
+    await page.waitForTimeout(200);
+
+    await runGrammar();
+    await expect(page.locator(".omni-ai-result-text, .omni-ai-content-area").first()).toContainText(
+      "FROM-LITE",
+      { timeout: 8000 },
+    );
   } finally {
     await context.close();
     server.close();

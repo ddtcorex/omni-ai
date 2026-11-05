@@ -159,6 +159,66 @@
     "message": "AI ମଡେଲ୍",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "ପ୍ରଦାନକାରୀ",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "ମଡେଲ ଦେଖିବା ପାଇଁ ଏକ ପ୍ରଦାନକାରୀ ବାଛନ୍ତୁ",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "ମଡେଲ ଦେଖିବା ପାଇଁ ଆପଣଙ୍କ API କି ପ୍ରବେଶ କରନ୍ତୁ",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "ମଡେଲ ଦେଖିବା ପାଇଁ ଗେଟୱେର ବେସ୍ URL ପ୍ରବେଶ କରନ୍ତୁ",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "ମଡେଲ ଫିଲ୍ଟର କରନ୍ତୁ",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "କିମ୍ବା ତାଲିକାରେ ନଥିବା ଏକ ମଡେଲର ନାମ ଟାଇପ କରନ୍ତୁ",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "ପ୍ରଥମେ ଏକ ମଡେଲ ବାଛନ୍ତୁ କିମ୍ବା ମଡେଲର ନାମ ଟାଇପ କରନ୍ତୁ।",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "କି ଯାଞ୍ଚ କରାଯାଉଛି ଏବଂ ମଡେଲ ଲୋଡ ହେଉଛି…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "କି ବୈଧ · $COUNT$ ଟି ମଡେଲ",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ ଟି ମଡେଲ",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "ମଡେଲ ଲୋଡ କରାଯାଇପାରିଲା ନାହିଁ: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "ଆଉ $COUNT$ ଟି ଦେଖାନ୍ତୁ",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "କମ୍ ଦେଖାନ୍ତୁ",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "ସୁପାରିଶ କରାଯାଇଛି",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "ବ୍ୟବହାର କରିବାକୁ AI ମଡେଲ୍ ଚୟନ କରନ୍ତୁ",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "ଦୟାକରି ପ୍ରଥମେ ଏକ API କୀ/ଏଣ୍ଡପଏଣ୍ଟ ଦିଅନ୍ତୁ।",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "ଦୟାକରି ପ୍ରଥମେ ଗେଟୱେର ବେସ୍ URL ପ୍ରବେଶ କରନ୍ତୁ।",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "ଯାଞ୍ଚ ଚାଲିଛି...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "ଅନୁବାଦ ବିଫଳ ହେଲା",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(ପୁରାତନ)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "ଉନ୍ନତ",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "କଷ୍ଟମ୍ ମଡେଲ୍ ନାମ",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "କଷ୍ଟମ୍ ମଡେଲ୍ ID ଲେଖନ୍ତୁ",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "ଦୟାକରି ଏକ କଷ୍ଟମ୍ ମଡେଲ୍ ନାମ ଲେଖନ୍ତୁ",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ଯଥା: your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "ଟେକ୍ସଟ୍ ବଦଳାଯାଇପାରିଲା ନାହିଁ। ଏହା ବଦଳରେ ଏହାକୁ କପି କରନ୍ତୁ।",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "ତାଲିକା ରିଫ୍ରେଶ କରନ୍ତୁ",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ଆଉ ଉପଲବ୍ଧ ନାହିଁ",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "ଏହି ମଡେଲ ଆଉ ଉପଲବ୍ଧ ନାହିଁ।",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "ଅନ୍ୟ ମଡେଲ ବାଛନ୍ତୁ",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

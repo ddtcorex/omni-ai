@@ -4,6 +4,9 @@ import {
   getApiKey as getStoredApiKey,
   getCustomGatewayConfig,
   getApiModel,
+  getApiProvider,
+  getCustomModelName,
+  setModelCatalogCache,
 } from "../lib/storage.js";
 import {
   quickAsk,
@@ -16,9 +19,14 @@ import {
   generateContent,
   smartTranslate,
 } from "../lib/ai-service.js";
-import { generateContentStream } from "../lib/providers/index.js";
+import { generateContentStream, listModels } from "../lib/providers/index.js";
 import { createOmniChatHandler } from "../lib/omni-chat-port.js";
-import { getProviderByModel } from "../lib/ai-providers.js";
+import {
+  AI_PROVIDERS,
+  DEFAULT_MODEL,
+  getProviderByModel,
+  isCustomModelEntry,
+} from "../lib/ai-providers.js";
 
 /**
  * Omni AI: Service Worker
@@ -323,7 +331,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "QUICK_ACTION":
       handleQuickAction(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
-        .catch((error) => sendResponse({ success: false, error: error.message }));
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message, errorCode: error.code || "" }),
+        );
       return true;
 
     case "GET_API_KEY":
@@ -357,6 +367,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "VALIDATE_CONFIG":
       handleValidateConfig(message.payload)
         .then((result) => sendResponse({ success: true, data: result }))
+        .catch((error) => sendResponse({ success: false, error: error.message }));
+      return true;
+
+    case "OPEN_SETTINGS":
+      chrome.runtime.openOptionsPage?.();
+      sendResponse({ success: true });
+      break;
+
+    case "LIST_MODELS":
+      handleListModels(message.payload)
+        .then((data) => sendResponse({ success: true, ...data }))
         .catch((error) => sendResponse({ success: false, error: error.message }));
       return true;
 
@@ -569,6 +590,73 @@ async function handleQuickAction(payload) {
   return { response: result };
 }
 
+/** A base URL with its trailing slashes dropped, so two spellings compare equal. */
+function normalizeBaseUrl(url) {
+  return String(url || "").replace(/\/+$/, "");
+}
+
+/**
+ * Answer a directory listing for one provider, and cache it.
+ *
+ * The key is taken from the payload when the settings page has one in its form
+ * (a key typed but not yet saved), otherwise from storage. No fan out: one
+ * call, one provider. Only a listing made with the saved credential is cached:
+ * a key or base URL still in the form may never be saved, and the cache would
+ * then describe an account the extension does not use.
+ * @param {{ provider?: string, key?: string, baseUrl?: string, keyless?: boolean }} [payload]
+ */
+async function handleListModels(payload = {}) {
+  const { provider: providerId, key, baseUrl } = payload;
+  // The gateway's key field was left empty on purpose: list the typed URL with
+  // no key at all, never with the one in storage.
+  const keyless = providerId === "customGateway" && Boolean(payload.keyless) && !key;
+  const provider = AI_PROVIDERS[providerId];
+
+  if (!provider) {
+    throw new Error(`Unknown provider: ${providerId}`);
+  }
+
+  const isGateway = providerId === "customGateway";
+  const storedKey = /** @type {string|undefined} */ (await getStoredApiKey(provider.keySetting));
+  const apiKey = keyless ? "" : key || storedKey;
+
+  if (!apiKey && !isGateway) {
+    throw new Error("API Key is missing");
+  }
+
+  /** @type {{ apiKey?: string, baseUrl?: string }} */
+  const config = {};
+  if (apiKey) config.apiKey = apiKey;
+  let storedBaseUrl = "";
+  if (isGateway) {
+    const gateway = await getCustomGatewayConfig();
+    storedBaseUrl = normalizeBaseUrl(gateway.customGatewayBaseUrl);
+    // A key and a base URL are one credential pair. A caller supplied base URL
+    // is trusted alongside a key from that same caller, or when there is no key
+    // at all to send. A stored key never goes to a host somebody else chose,
+    // and a key typed for a new gateway never goes to the old one.
+    const callerUrl = key || keyless || !storedKey ? normalizeBaseUrl(baseUrl) : "";
+    config.baseUrl = callerUrl || storedBaseUrl || undefined;
+  }
+
+  const { models, truncated } = await listModels(providerId, config);
+  const fetchedAt = Date.now();
+  const savedCredential =
+    (keyless ? !storedKey : !key || key === storedKey) &&
+    (!isGateway || normalizeBaseUrl(config.baseUrl) === storedBaseUrl);
+
+  if (savedCredential) {
+    // A gateway catalog belongs to one base URL; Settings drops it once the
+    // saved URL moves elsewhere.
+    const entry = isGateway
+      ? { fetchedAt, models, truncated, baseUrl: storedBaseUrl }
+      : { fetchedAt, models, truncated };
+    await setModelCatalogCache(providerId, entry);
+  }
+
+  return { models, truncated, fetchedAt, cached: savedCredential };
+}
+
 /**
  * Handle configuration validation
  */
@@ -696,6 +784,7 @@ async function processSelectedText(tabId, text, action, isInput = false, frameId
           originalText: text,
           result: `Error: ${error.message}`,
           error: true,
+          errorCode: error.code || "",
           isInput,
         },
       },
@@ -723,26 +812,36 @@ async function getApiKey() {
 // Omni Chat (Sidebar) streaming port
 // ============================================
 
-const PROVIDER_KEY_MAP = {
-  google: "geminiApiKey",
-  openai: "openaiApiKey",
-  groq: "groqApiKey",
-  anthropic: "anthropicApiKey",
-  customGateway: "customGatewayApiKey",
-};
-
 async function getChatConfig(modelId, temperature) {
-  const model = modelId || (await getApiModel());
+  // An install that never saved a model runs the default one, as page actions do.
+  const model = modelId || (await getApiModel()) || DEFAULT_MODEL;
+  const storedModel = modelId ? null : model;
+  const storedProvider = storedModel ? await getApiProvider() : null;
   const providerInfo = getProviderByModel(model);
-  const providerId = providerInfo?.id || "google";
-  const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
+  // The saved model goes through the provider saved beside it: a gateway can
+  // list a model under a vendor's own id, which the registry would hand to
+  // that vendor with its key. An explicit model still routes by its id.
+  const providerId = storedProvider || providerInfo?.id || "google";
+  // The registry owns which storage key holds each provider's API key.
+  const keySetting = AI_PROVIDERS[providerId]?.keySetting || "geminiApiKey";
+  const apiKey = (await getStoredApiKey(keySetting)) || "";
 
   const config = { apiKey, model, provider: providerId, temperature: temperature ?? 0.7 };
 
   if (providerId === "customGateway") {
     const gw = await getCustomGatewayConfig();
     config.baseUrl = gw.customGatewayBaseUrl;
-    if (gw.customGatewayModelName) config.model = gw.customGatewayModelName;
+    // The typed name belongs to the "custom-gateway" entry. A model picked from
+    // the gateway's own list is already the name to send, and the typed name
+    // stays in storage after the user moves off that entry.
+    if (model === "custom-gateway" && gw.customGatewayModelName) {
+      config.model = gw.customGatewayModelName;
+    }
+  } else if (isCustomModelEntry(model)) {
+    // Same for a provider's custom entry: the request needs the typed name,
+    // never the "<provider>-custom" placeholder.
+    const typed = await getCustomModelName();
+    if (typed) config.model = typed;
   }
   return config;
 }

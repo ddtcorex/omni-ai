@@ -159,6 +159,66 @@
     "message": "AI മോഡൽ",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "ദാതാവ്",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "മോഡലുകൾ കാണാൻ ഒരു ദാതാവിനെ തിരഞ്ഞെടുക്കുക",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "മോഡലുകൾ കാണാൻ നിങ്ങളുടെ API കീ നൽകുക",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "മോഡലുകൾ കാണാൻ ഗേറ്റ്‌വേയുടെ ബേസ് URL നൽകുക",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "മോഡലുകൾ ഫിൽട്ടർ ചെയ്യുക",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "അല്ലെങ്കിൽ പട്ടികയിൽ ഇല്ലാത്ത മോഡലിന്റെ പേര് ടൈപ്പ് ചെയ്യുക",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "ആദ്യം ഒരു മോഡൽ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ മോഡലിന്റെ പേര് ടൈപ്പ് ചെയ്യുക.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "കീ പരിശോധിച്ച് മോഡലുകൾ ലോഡ് ചെയ്യുന്നു…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "കീ സാധുവാണ് · $COUNT$ മോഡലുകൾ",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ മോഡലുകൾ",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "മോഡലുകൾ ലോഡ് ചെയ്യാനായില്ല: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "$COUNT$ എണ്ണം കൂടി കാണിക്കുക",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "കുറച്ച് കാണിക്കുക",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "ശുപാർശ ചെയ്‌തത്",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "ഉപയോഗിക്കേണ്ട AI മോഡൽ തിരഞ്ഞെടുക്കുക",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "ആദ്യം ഒരു API കീ/എൻഡ്പോയിന്റ് നൽകുക.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "ആദ്യം ഗേറ്റ്‌വേയുടെ ബേസ് URL നൽകുക.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "സാധുത പരിശോധിക്കുന്നു...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "വിവർത്തനം പരാജയപ്പെട്ടു",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(പഴയത്)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "കൂടുതൽ ക്രമീകരണങ്ങൾ",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "ഇഷ്ടാനുസൃത മോഡൽ പേര്",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "ഇഷ്ടാനുസൃത മോഡൽ ഐഡി നൽകുക",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "ഒരു ഇഷ്ടാനുസൃത മോഡൽ പേര് നൽകുക",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "ഉദാ. your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "ടെക്സ്റ്റ് മാറ്റിസ്ഥാപിക്കാനായില്ല. പകരം അത് പകർത്തുക.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "ലിസ്റ്റ് പുതുക്കുക",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ഇനി ലഭ്യമല്ല",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "ഈ മോഡൽ ഇനി ലഭ്യമല്ല.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "മറ്റൊരു മോഡൽ തിരഞ്ഞെടുക്കുക",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

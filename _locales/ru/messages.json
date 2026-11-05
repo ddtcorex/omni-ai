@@ -159,6 +159,66 @@
     "message": "ИИ-модель",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Провайдер",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Выберите провайдера, чтобы увидеть его модели",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Введите ключ API, чтобы увидеть модели",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Введите базовый URL шлюза, чтобы увидеть его модели",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Фильтр моделей",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Или введите название модели, которой нет в списке",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Сначала выберите модель или введите её название.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Проверка ключа и загрузка моделей…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Ключ действителен · моделей: $COUNT$",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "Моделей: $COUNT$",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Не удалось загрузить модели: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Показать ещё $COUNT$",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Свернуть",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "рекомендуется",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Выберите используемую ИИ-модель",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Сначала введите ключ API или эндпоинт.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Сначала введите базовый URL шлюза.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Проверка...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Не удалось перевести",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Устаревшая)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Дополнительно",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Название пользовательской модели",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Введите идентификатор пользовательской модели",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Введите название пользовательской модели",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "например, your-model-id",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Не удалось заменить текст. Скопируйте его.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Обновить список",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "больше не доступна",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Эта модель больше не доступна.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Выбрать другую модель",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

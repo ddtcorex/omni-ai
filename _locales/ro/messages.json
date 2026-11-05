@@ -159,6 +159,66 @@
     "message": "Model AI",
     "description": "AI model label"
   },
+  "settings_providerLabel": {
+    "message": "Furnizor",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Alegeți un furnizor pentru a-i vedea modelele",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Introduceți cheia API pentru a vedea modelele",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Introduceți URL-ul de bază al gateway-ului pentru a-i vedea modelele",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtrați modelele",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "Sau tastați numele unui model care nu apare în listă",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Mai întâi alegeți un model sau tastați numele unui model.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Se verifică cheia și se încarcă modelele…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Cheie validă · $COUNT$ modele",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ modele",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "Modelele nu au putut fi încărcate: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Afișează încă $COUNT$",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Afișează mai puține",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "recomandat",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Selectează modelul AI de utilizat",
     "description": "AI model hint"
@@ -532,6 +592,10 @@
     "message": "Te rugăm să introduci mai întâi o cheie API/un endpoint.",
     "description": "No API key entered error"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Introduceți mai întâi URL-ul de bază al gateway-ului.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Se validează...",
     "description": "Validating status"
@@ -591,25 +655,9 @@
     "message": "Traducerea a eșuat",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Vechi)",
-    "description": "Prefix shown before a model no longer in the active catalog but still selected by an existing user"
-  },
-  "settings_advanced": {
-    "message": "Avansat",
-    "description": "Disclosure label for custom-model / custom-gateway settings, collapsed by default"
-  },
   "settings_customModel": {
     "message": "Nume model personalizat",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Introdu ID-ul modelului personalizat",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Te rugăm să introduci un nume de model personalizat",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "de ex. id-ul-modelului-tău",
@@ -715,5 +763,21 @@
   "overlay_replace_failed": {
     "message": "Textul nu a putut fi înlocuit. Copiază-l în schimb.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Reîmprospătează lista",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "nu mai este disponibil",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Acest model nu mai este disponibil.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Alege alt model",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

@@ -11,6 +11,8 @@ import {
   getCustomModelName,
   getCustomGatewayConfig,
   getSettingsBag,
+  getModelCatalogCache,
+  setModelCatalogCache,
 } from "../../lib/storage.js";
 
 describe("lib/storage.js", () => {
@@ -58,6 +60,7 @@ describe("lib/storage.js", () => {
       "openaiApiKey",
       "anthropicApiKey",
       "apiModel",
+      "apiProvider",
       "customModelName",
       "currentPreset",
       "customGatewayBaseUrl",
@@ -113,5 +116,63 @@ describe("lib/storage.js", () => {
   test("getSettingsBag returns undefined when never saved", async () => {
     chrome.storage.local.get.mockResolvedValue({});
     await expect(getSettingsBag()).resolves.toBeUndefined();
+  });
+});
+
+describe("model catalog cache", () => {
+  test("round-trips one provider and reports a miss for another", async () => {
+    chrome.storage.local.get.mockResolvedValue({
+      modelCatalog: { openai: { fetchedAt: 1, models: [], truncated: false } },
+    });
+
+    await expect(getModelCatalogCache("openai")).resolves.toEqual({
+      fetchedAt: 1,
+      models: [],
+      truncated: false,
+    });
+    await expect(getModelCatalogCache("groq")).resolves.toBeNull();
+  });
+
+  test("two writes at once both survive", async () => {
+    // Each write reads the map before it writes it back, so two providers
+    // listed together used to drop whichever one read first.
+    let store = {};
+    chrome.storage.local.get.mockImplementation(async () => {
+      // The snapshot is taken when the read starts, as a real storage read is.
+      const snapshot = { ...store };
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      return snapshot;
+    });
+    chrome.storage.local.set.mockImplementation(async (values) => {
+      store = { ...store, ...values };
+    });
+
+    await Promise.all([
+      setModelCatalogCache("openai", { fetchedAt: 1, models: [], truncated: false }),
+      setModelCatalogCache("groq", { fetchedAt: 2, models: [], truncated: false }),
+    ]);
+
+    expect(Object.keys(store.modelCatalog).sort()).toEqual(["groq", "openai"]);
+  });
+
+  test("writing one provider keeps the others", async () => {
+    chrome.storage.local.get.mockResolvedValue({
+      modelCatalog: { groq: { fetchedAt: 1, models: [], truncated: false } },
+    });
+
+    await setModelCatalogCache("openai", { fetchedAt: 2, models: [], truncated: false });
+
+    expect(chrome.storage.local.set).toHaveBeenCalledWith({
+      modelCatalog: {
+        groq: { fetchedAt: 1, models: [], truncated: false },
+        openai: { fetchedAt: 2, models: [], truncated: false },
+      },
+    });
+  });
+
+  test("getLocalAiConfig reads apiProvider with the rest of the config", async () => {
+    chrome.storage.local.get.mockResolvedValue({});
+    await getLocalAiConfig();
+    expect(chrome.storage.local.get).toHaveBeenCalledWith(expect.arrayContaining(["apiProvider"]));
   });
 });

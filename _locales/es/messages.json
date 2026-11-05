@@ -115,6 +115,66 @@
     "message": "Modelo de IA",
     "description": "Etiqueta del modelo de IA"
   },
+  "settings_providerLabel": {
+    "message": "Proveedor",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "Elige un proveedor para ver sus modelos",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "Introduce tu clave de API para ver los modelos",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "Introduce la URL base de la pasarela para ver sus modelos",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "Filtrar modelos",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "O escribe el nombre de un modelo que no aparece en la lista",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "Primero elige un modelo o escribe el nombre de uno.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "Comprobando la clave y cargando los modelos…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "Clave válida · $COUNT$ modelos",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "$COUNT$ modelos",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "No se pudieron cargar los modelos: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "Mostrar $COUNT$ más",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "Mostrar menos",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "recomendado",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "Seleccione el modelo de AI a utilizar",
     "description": "Sugerencia para el modelo de IA"
@@ -440,6 +500,10 @@
     "message": "Por favor, introduce primero una clave API o endpoint.",
     "description": "Error por falta de clave"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "Introduce primero la URL base de la pasarela.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "Validando...",
     "description": "Estado de validación"
@@ -499,23 +563,9 @@
     "message": "Error de traducción",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(Antiguo)"
-  },
-  "settings_advanced": {
-    "message": "Avanzado"
-  },
   "settings_customModel": {
     "message": "Nombre del modelo personalizado",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "Ingrese el ID del modelo personalizado",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "Por favor ingrese un nombre de modelo personalizado",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "p. ej. su-id-de-modelo",
@@ -701,5 +751,21 @@
   "overlay_replace_failed": {
     "message": "No se pudo reemplazar el texto. Cópialo en su lugar.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "Actualizar lista",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "ya no disponible",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "Este modelo ya no está disponible.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "Elegir otro modelo",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }

@@ -282,19 +282,35 @@
   flex: none;
 }
 
+.ds-notice-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* One family: every kind is a tinted surface, a hairline ring and text of
+   the same hue, so a success reads as the sibling of an error. */
 .ds-notice--success {
-  color: var(--omni-glass-text);
-  box-shadow: inset 0 0 0 1px var(--omni-success);
+  background: var(--omni-success-surface);
+  box-shadow: inset 0 0 0 1px var(--omni-success-ring);
+  color: var(--omni-success-text);
+}
+
+.ds-notice--warning {
+  background: var(--omni-warning-surface);
+  box-shadow: inset 0 0 0 1px var(--omni-warning-ring);
+  color: var(--omni-warning-text);
 }
 
 .ds-notice--error {
   background: var(--omni-error-surface);
+  box-shadow: inset 0 0 0 1px var(--omni-error-ring);
   color: var(--omni-error-text);
 }
 
 .ds-notice--processing {
-  color: var(--omni-glass-text);
-  box-shadow: inset 0 0 0 1px var(--omni-accent);
+  background: var(--omni-info-surface);
+  box-shadow: inset 0 0 0 1px var(--omni-info-ring);
+  color: var(--omni-accent-text);
 }
 
 .ds-notice.hidden {

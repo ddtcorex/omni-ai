@@ -115,6 +115,66 @@
     "message": "AI 모델",
     "description": "AI 모델 라벨"
   },
+  "settings_providerLabel": {
+    "message": "제공자",
+    "description": "Label of the row of AI provider buttons in Settings"
+  },
+  "settings_modelsChooseProvider": {
+    "message": "제공자를 선택하면 모델이 표시됩니다",
+    "description": "Shown in the model area before any provider is chosen"
+  },
+  "settings_modelsEnterKey": {
+    "message": "API 키를 입력하면 모델이 표시됩니다",
+    "description": "Shown in the model area until the provider's key has listed its models"
+  },
+  "settings_modelsEnterGatewayUrl": {
+    "message": "게이트웨이 기본 URL을 입력하면 모델이 표시됩니다",
+    "description": "Shown in the model area until the custom gateway's base URL has listed its models"
+  },
+  "settings_modelsFilter": {
+    "message": "모델 필터",
+    "description": "Placeholder of the filter input over a long model list"
+  },
+  "settings_customModelOr": {
+    "message": "또는 목록에 없는 모델 이름을 입력하세요",
+    "description": "Hint of the custom model name field"
+  },
+  "settings_errorChooseModel": {
+    "message": "먼저 모델을 선택하거나 모델 이름을 입력하세요.",
+    "description": "Error when checking or saving a provider with no model chosen"
+  },
+  "settings_keyChecking": {
+    "message": "키를 확인하고 모델을 불러오는 중…",
+    "description": "Status while a key is checked by listing the provider's models"
+  },
+  "settings_keyValid": {
+    "message": "유효한 키 · 모델 $COUNT$개",
+    "description": "Status once the key listed the provider's models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "42" } }
+  },
+  "settings_modelsListed": {
+    "message": "모델 $COUNT$개",
+    "description": "Status once a keyless custom gateway listed its models; $COUNT$ is how many",
+    "placeholders": { "count": { "content": "$1", "example": "288" } }
+  },
+  "settings_modelsLoadFailed": {
+    "message": "모델을 불러오지 못했습니다: $REASON$",
+    "description": "Status when listing the models failed; $REASON$ is the provider's own message",
+    "placeholders": { "reason": { "content": "$1", "example": "API key not valid" } }
+  },
+  "settings_modelsMore": {
+    "message": "$COUNT$개 더 보기",
+    "description": "Button that shows the rest of a long model list; $COUNT$ is how many are hidden",
+    "placeholders": { "count": { "content": "$1", "example": "28" } }
+  },
+  "settings_modelsLess": {
+    "message": "간단히 보기",
+    "description": "Button that folds a long model list back to its first view"
+  },
+  "settings_modelRecommended": {
+    "message": "추천",
+    "description": "Tag on the recommended model's button"
+  },
   "settings_modelHint": {
     "message": "사용할 AI 모델 선택",
     "description": "AI 모델 힌트"
@@ -440,6 +500,10 @@
     "message": "먼저 API 키 또는 엔드포인트를 입력해 주세요.",
     "description": "입력 부족 오류"
   },
+  "settings_errorNoGatewayUrl": {
+    "message": "먼저 게이트웨이 기본 URL을 입력하세요.",
+    "description": "Validation error when the Custom Gateway base URL field is empty"
+  },
   "settings_validating": {
     "message": "검증 중...",
     "description": "검증 상태"
@@ -499,23 +563,9 @@
     "message": "번역 실패",
     "description": "Translation failed message"
   },
-  "settings_legacyModelPrefix": {
-    "message": "(레거시)"
-  },
-  "settings_advanced": {
-    "message": "고급"
-  },
   "settings_customModel": {
     "message": "사용자 지정 모델 이름",
     "description": "Custom model label"
-  },
-  "settings_customModelHint": {
-    "message": "사용자 지정 모델 ID 입력",
-    "description": "Custom model hint"
-  },
-  "settings_errorNoCustomModel": {
-    "message": "사용자 지정 모델 이름을 입력하십시오",
-    "description": "No custom model error"
   },
   "settings_customModelPlaceholder": {
     "message": "예: 사용자-모델-ID",
@@ -701,5 +751,21 @@
   "overlay_replace_failed": {
     "message": "텍스트를 바꾸지 못했습니다. 대신 복사하세요.",
     "description": "Inline message in the result card when Replace could not write the result into the field; Copy stays available"
+  },
+  "settings_modelsRefresh": {
+    "message": "목록 새로 고침",
+    "description": "Button that refetches the provider model list"
+  },
+  "settings_modelNoLongerOffered": {
+    "message": "더 이상 제공되지 않음",
+    "description": "Suffix on a saved model the provider no longer lists"
+  },
+  "error_modelNotAvailable": {
+    "message": "이 모델은 더 이상 제공되지 않습니다.",
+    "description": "Overlay error text when the provider says the saved model is gone"
+  },
+  "overlay_change_model": {
+    "message": "다른 모델 선택",
+    "description": "Overlay button that opens Settings on the model picker"
   }
 }
