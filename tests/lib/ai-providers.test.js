@@ -64,3 +64,14 @@ describe("recommended tier", () => {
     });
   });
 });
+
+describe("defaultApiModel", () => {
+  const { defaultApiModel, AI_PROVIDERS: providers } = require("../../lib/ai-providers.js");
+
+  it("answers each provider's recommended model as its API name", () => {
+    expect(defaultApiModel("openai")).toBe("gpt-5.6-terra");
+    expect(defaultApiModel("groq")).toBe("llama-3.3-70b-versatile");
+    expect(defaultApiModel("anthropic")).toBe("claude-sonnet-5");
+    Object.keys(providers).forEach((id) => expect(defaultApiModel(id)).toBeTruthy());
+  });
+});

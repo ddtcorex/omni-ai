@@ -804,21 +804,15 @@ async function getApiKey() {
 // Omni Chat (Sidebar) streaming port
 // ============================================
 
-const PROVIDER_KEY_MAP = {
-  google: "geminiApiKey",
-  openai: "openaiApiKey",
-  groq: "groqApiKey",
-  anthropic: "anthropicApiKey",
-  customGateway: "customGatewayApiKey",
-};
-
 async function getChatConfig(modelId, temperature) {
   const model = modelId || (await getApiModel());
   const storedModel = modelId ? null : model;
   const storedProvider = storedModel ? await getApiProvider() : null;
   const providerInfo = getProviderByModel(model);
   const providerId = providerInfo?.id || storedProvider || "google";
-  const apiKey = (await getStoredApiKey(PROVIDER_KEY_MAP[providerId] || "geminiApiKey")) || "";
+  // The registry owns which storage key holds each provider's API key.
+  const keySetting = AI_PROVIDERS[providerId]?.keySetting || "geminiApiKey";
+  const apiKey = (await getStoredApiKey(keySetting)) || "";
 
   const config = { apiKey, model, provider: providerId, temperature: temperature ?? 0.7 };
 
