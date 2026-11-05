@@ -2871,21 +2871,28 @@ function renderErrorState(inner, data, surf) {
   const title = data.action ? actionTitle(data.action) : i18n.getMessage("overlay_error");
   // A model the provider no longer offers is the one failure with an action
   // that actually helps, so it says its own sentence and offers the route out.
+  // The provider's words stay underneath so the user can see which model, and
+  // Try again is left out: the same model would fail the same way.
   const modelGone = data.errorCode === "model_not_found";
   const message = modelGone
     ? i18n.getMessage("error_modelNotAvailable")
     : data.msg || i18n.getMessage("overlay_error");
+  const detail = modelGone && data.msg ? data.msg : "";
+  const retry = !modelGone && canRerun(data);
 
   inner.innerHTML = `
     ${cardHeader(title, { icon: "error" })}
     <div class="omni-ai-content-area">
       <div class="omni-ai-error" role="alert">
         ${ICONS.warn}
-        <span class="omni-ai-error-text">${escapeHtml(message)}</span>
+        <div class="omni-ai-error-body">
+          <span class="omni-ai-error-text">${escapeHtml(message)}</span>
+          ${detail ? `<span class="omni-ai-error-detail">${escapeHtml(detail)}</span>` : ""}
+        </div>
       </div>
     </div>
     ${
-      modelGone || canRerun(data)
+      modelGone || retry
         ? `<div class="omni-ai-footer-actions">
             <span class="omni-ai-spacer"></span>
             ${
@@ -2894,7 +2901,7 @@ function renderErrorState(inner, data, surf) {
                 : ""
             }
             ${
-              canRerun(data)
+              retry
                 ? `<button class="omni-ai-btn" id="omniAiRetry">${ICONS.retry}<span>${escapeHtml(i18n.getMessage("overlay_try_again"))}</span></button>`
                 : ""
             }

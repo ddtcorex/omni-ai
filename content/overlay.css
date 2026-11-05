@@ -793,6 +793,21 @@
   overflow-wrap: anywhere;
 }
 
+/* The provider's own words under a sentence of ours: same colour, quieter. */
+.omni-ai-error-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.omni-ai-error-detail {
+  overflow-wrap: anywhere;
+  font-size: 11.5px;
+  opacity: 0.75;
+}
+
 /* A failed Replace: the same warning, above the result's actions. */
 .omni-ai-replace-failed {
   margin: 0 10px 6px;

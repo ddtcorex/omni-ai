@@ -984,6 +984,10 @@ test("a model the provider dropped offers a route to the picker", async () => {
     await expect(page.locator(".omni-ai-error-text")).toHaveText(
       "This model is no longer available.",
     );
+    // The provider's own words stay underneath, so the user sees which model.
+    await expect(page.locator(".omni-ai-error-detail")).toHaveText("models/gone is not found");
+    // Running the same model again cannot help, so the card does not offer it.
+    await expect(page.locator("#omniAiRetry")).toHaveCount(0);
   } finally {
     await context.close();
     server.close();
