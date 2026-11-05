@@ -133,6 +133,28 @@ describe("model catalog cache", () => {
     await expect(getModelCatalogCache("groq")).resolves.toBeNull();
   });
 
+  test("two writes at once both survive", async () => {
+    // Each write reads the map before it writes it back, so two providers
+    // listed together used to drop whichever one read first.
+    let store = {};
+    chrome.storage.local.get.mockImplementation(async () => {
+      // The snapshot is taken when the read starts, as a real storage read is.
+      const snapshot = { ...store };
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      return snapshot;
+    });
+    chrome.storage.local.set.mockImplementation(async (values) => {
+      store = { ...store, ...values };
+    });
+
+    await Promise.all([
+      setModelCatalogCache("openai", { fetchedAt: 1, models: [], truncated: false }),
+      setModelCatalogCache("groq", { fetchedAt: 2, models: [], truncated: false }),
+    ]);
+
+    expect(Object.keys(store.modelCatalog).sort()).toEqual(["groq", "openai"]);
+  });
+
   test("writing one provider keeps the others", async () => {
     chrome.storage.local.get.mockResolvedValue({
       modelCatalog: { groq: { fetchedAt: 1, models: [], truncated: false } },
