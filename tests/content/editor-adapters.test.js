@@ -220,3 +220,104 @@ describe("editor adapter registry", () => {
     },
   );
 });
+
+describe("a caret in a document editor stands for its block", () => {
+  let registry;
+  let richText;
+
+  beforeEach(() => {
+    jest.resetModules();
+    document.body.innerHTML = "";
+    global.self = global;
+    require("../../content/editor-adapters.js");
+    registry = global.OMNI_EDITOR_ADAPTERS;
+    richText = registry.ADAPTERS.find((adapter) => adapter.id === "richText");
+  });
+
+  function editor(html) {
+    const host = document.createElement("div");
+    host.setAttribute("contenteditable", "true");
+    host.innerHTML = html;
+    document.body.appendChild(host);
+    return host;
+  }
+
+  function caretIn(node, offset = 1) {
+    const range = document.createRange();
+    range.setStart(node, offset);
+    range.collapse(true);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  }
+
+  test("a caret in one paragraph of several reads that paragraph, not the document", () => {
+    const host = editor("<h2>Title</h2><p>First <b>bold</b> one.</p><p>Second one here.</p>");
+    caretIn(host.querySelectorAll("p")[1].firstChild, 3);
+
+    expect(richText.getText(host)).toEqual({
+      text: "Second one here.",
+      isSelection: false,
+      fullText: false,
+      scope: "block",
+    });
+  });
+
+  test("selectScope selects that block, so the action runs on a selection", () => {
+    const host = editor("<p>First one.</p><ul><li><p>An item here.</p></li></ul>");
+    caretIn(host.querySelector("li p").firstChild, 2);
+
+    expect(richText.selectScope(host)).toBe(true);
+    expect(window.getSelection().toString()).toBe("An item here.");
+    expect(richText.getText(host)).toEqual({
+      text: "An item here.",
+      isSelection: true,
+      fullText: false,
+    });
+  });
+
+  test("an editor with a single block keeps the whole field", () => {
+    const host = editor("<p>Only one paragraph.</p>");
+    caretIn(host.querySelector("p").firstChild, 2);
+
+    expect(richText.getText(host)).toMatchObject({ text: "Only one paragraph.", fullText: true });
+    expect(richText.selectScope(host)).toBe(false);
+  });
+
+  test("lines as plain divs count as blocks too", () => {
+    const host = editor("<div>Dear team,</div><div>Please review this.</div>");
+    caretIn(host.children[1].firstChild, 4);
+
+    expect(richText.getText(host).text).toBe("Please review this.");
+  });
+
+  test("a caret on an empty line reads nothing, so no toolbar shows", () => {
+    const host = editor("<p>First one.</p><p><br></p>");
+    caretIn(host.querySelectorAll("p")[1], 0);
+
+    expect(richText.getText(host).text).toBe("");
+    expect(richText.selectScope(host)).toBe(false);
+  });
+
+  test("a selection is never narrowed or widened", () => {
+    const host = editor("<p>First one.</p><p>Second one.</p>");
+    const range = document.createRange();
+    range.setStart(host.querySelector("p").firstChild, 0);
+    range.setEnd(host.querySelector("p").firstChild, 5);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+
+    expect(richText.getText(host)).toMatchObject({ text: "First", isSelection: true });
+    expect(richText.selectScope(host)).toBe(false);
+  });
+
+  test.each(["app.slack.com", "discord.com"])(
+    "a chat composer on %s keeps the whole message",
+    (hostname) => {
+      const host = editor("<p>Line one.</p><p>Line two.</p>");
+      caretIn(host.querySelectorAll("p")[1].firstChild, 2);
+
+      expect(richText.getText(host, { hostname })).toMatchObject({ fullText: true });
+      expect(richText.selectScope(host, { hostname })).toBe(false);
+    },
+  );
+});
