@@ -45,7 +45,11 @@
     function onKeydown(event) {
       if (event.key !== "Escape" || event.isComposing) return;
       if (!card || closing) return;
+      // The card owns this Escape: no page listener sees it, and neither
+      // does the browser's default, which closes a modal <dialog> the card
+      // may be mounted in (an app's task view, say).
       event.stopPropagation();
+      event.preventDefault();
       surface.close();
     }
 
