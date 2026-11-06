@@ -81,7 +81,7 @@ async function withPage(body, flashActions) {
     await stubGemini(context, "I went to the store.");
     const page = await context.newPage();
     await page.goto(`http://127.0.0.1:${port}/`);
-    await body(page);
+    await body(page, { sw, port });
   } finally {
     await context.close();
     server.close();
@@ -139,5 +139,46 @@ test("a caret in a single-paragraph field still rewrites the whole field", async
     await expect
       .poll(() => page.evaluate(() => document.getElementById("one").innerText.trim()))
       .toBe("I went to the store.");
+  });
+});
+
+// A worker run (keyboard command, context menu) shows its result through
+// PROCESSING_START and SHOW_RESULT. Neither starts an action, so neither may
+// select the caret's block: the user's next keystroke would type over it.
+async function sendWorkerResult(sw, port, result, originalText) {
+  await sw.evaluate(
+    async ({ port, result, originalText }) => {
+      const [tab] = await chrome.tabs.query({ url: `http://127.0.0.1:${port}/*` });
+      await chrome.tabs.sendMessage(tab.id, { type: "PROCESSING_START", action: "grammar" });
+      await chrome.tabs.sendMessage(tab.id, {
+        type: "SHOW_RESULT",
+        payload: { action: "grammar", result, originalText, isInput: true },
+      });
+    },
+    { port, result, originalText },
+  );
+}
+
+test("typing while a result is shown never types over the caret's block", async () => {
+  await withPage(async (page, { sw, port }) => {
+    await placeCaret(page, "#doc li p");
+    await page.keyboard.press("End");
+    await sendWorkerResult(sw, port, "I went to the store.", "I has went to the store.");
+    await page.waitForFunction(
+      () =>
+        document.getElementById("omni-ai-shadow-host")?.shadowRoot?.querySelector("#omniAiReplace"),
+      null,
+      { timeout: 8000 },
+    );
+
+    expect(await page.evaluate(() => getSelection().toString())).toBe("");
+    await page.keyboard.type(" More");
+
+    await expect
+      .poll(() => html(page, "doc"))
+      .toBe(
+        "<h2>Weekly notes</h2> <p>First paragraph with <b>bold</b> text.</p> " +
+          "<ul><li><p>I has went to the store. More</p></li></ul> <p>Last paragraph stays.</p>",
+      );
   });
 });
