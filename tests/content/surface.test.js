@@ -313,6 +313,26 @@ describe("overlay surface", () => {
     expect(pageHandler).not.toHaveBeenCalled();
   });
 
+  test("an Escape the card takes never reaches the browser default, which closes a modal dialog", async () => {
+    await surface.open("menu");
+    const consumed = new KeyboardEvent("keydown", {
+      key: "Escape",
+      bubbles: true,
+      cancelable: true,
+    });
+    document.body.dispatchEvent(consumed);
+    expect(consumed.defaultPrevented).toBe(true);
+
+    await new Promise((r) => setTimeout(r, 0));
+    const pageEscape = new KeyboardEvent("keydown", {
+      key: "Escape",
+      bubbles: true,
+      cancelable: true,
+    });
+    document.body.dispatchEvent(pageEscape);
+    expect(pageEscape.defaultPrevented).toBe(false);
+  });
+
   // An orphaned content script (its extension reloaded) takes its card down
   // at once: no exit animation (motion may be gone with it), no Escape
   // listener left behind, and no state that could bring the card back.

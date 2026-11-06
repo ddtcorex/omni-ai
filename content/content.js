@@ -301,8 +301,31 @@ function applyUiHostStyles(host) {
 // Re-checked on every call: editors often turn the body editable only after
 // this content script has already mounted the host.
 function getUiMountPoint() {
+  const modal = topModalDialog();
+  if (modal) return modal;
   const body = document.body;
   return body && !body.isContentEditable ? body : document.documentElement;
+}
+
+// A modal <dialog> (showModal) sits in the browser's top layer and makes the
+// rest of the page inert. Apps that open a record as a modal (a task, a page)
+// put their editors there, and a host mounted on <body> is then drawn under
+// the dialog and cannot be clicked. Mount inside the dialog the user is
+// working in instead: the one holding the focus, else the last one open.
+// Re-checked on every call, so the host moves back once the dialog closes.
+function topModalDialog() {
+  let modals;
+  try {
+    modals = Array.from(document.querySelectorAll("dialog")).filter(
+      (dialog) => dialog.open && dialog.matches(":modal"),
+    );
+  } catch {
+    return null; // A browser without :modal has no top layer to escape.
+  }
+  if (!modals.length) return null;
+  const active = document.activeElement;
+  const holding = modals.filter((dialog) => dialog.contains(active));
+  return (holding.length ? holding : modals).at(-1) || null;
 }
 
 function ensureUiRoot() {
@@ -645,6 +668,8 @@ function setupMessageListener() {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.type) {
       case "GET_SELECTION": {
+        // A keyboard command or the context menu is starting an action.
+        widenCaretToBlock(document.activeElement);
         const isInput = isTextInput(document.activeElement);
         if (isInput) activeInputElement = document.activeElement;
         sendResponse({
@@ -722,6 +747,7 @@ function setupMessageListener() {
         break;
 
       case "SHOW_QUICK_ASK_OVERLAY": {
+        widenCaretToBlock(document.activeElement);
         const rect = cardAnchorRect();
         const selection = getSelectedText();
         const isInput = isTextInput(document.activeElement);
@@ -736,6 +762,7 @@ function setupMessageListener() {
         // the quick_menu shortcut. Requires a selection: showQuickActionMenu()
         // unconditionally calls text.trim() to auto-trigger Smart Translate
         // for non-input selections, which throws on an undefined/empty text.
+        widenCaretToBlock(document.activeElement);
         const menuText = getSelectedText();
         if (menuText) {
           const isInput = isTextInput(document.activeElement);
@@ -1208,6 +1235,7 @@ function setupQuickBtnEvents(text = null, inputElement = null) {
 
     const isInput = !!inputElement;
     if (isInput) activeInputElement = inputElement;
+    widenCaretToBlock(inputElement);
     const currentText = resolveQuickBtnText(text, inputElement);
     showQuickActionMenu(currentText, cardAnchorRect(), null, isInput);
   });
@@ -1414,6 +1442,7 @@ function triggerFlashAction(action, text, inputElement) {
   // fallback needs this tracked explicitly -- otherwise Replace silently
   // targets the wrong element (or nothing) for input/textarea fields.
   if (isInput) activeInputElement = inputElement;
+  widenCaretToBlock(inputElement);
   // Back from this result goes where the quick button would have gone: the
   // menu in editors, the translation-first card on page text.
   if (!lastMenuContext) {
@@ -2447,6 +2476,22 @@ async function copyTextToClipboard(text) {
 function isTextInput(el) {
   const context = getContext(el);
   return context.id === "standard" || context.id === "richText";
+}
+
+// A caret in a document editor stands for the block it sits in (see the
+// rich-text adapter): when an action starts, select that block so the action
+// and its Replace cover it alone and the user sees what will change. The
+// remembered range follows, since the toolbar captured a bare caret.
+// Only where an action starts: a block selected at any other moment would be
+// typed over by the user's next keystroke.
+function widenCaretToBlock(element) {
+  if (!element) return false;
+  const context = getContext(element);
+  if (!context.selectScope?.(element, { hostname: location.hostname })) return false;
+  const sel = window.getSelection();
+  lastRange = sel && sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+  lastRangeHadText = Boolean(lastRange && !lastRange.collapsed);
+  return true;
 }
 
 function getSelectedText() {

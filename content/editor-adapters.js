@@ -68,6 +68,38 @@
     return range;
   }
 
+  // The blocks a document editor (Tiptap/ProseMirror, CKEditor, Lexical,
+  // Gmail's composer, ...) is made of. A caret in one of them stands for that
+  // block, never for the whole document: rewriting a document as plain text
+  // would drop its headings, lists, links and embedded nodes.
+  const BLOCK_SELECTOR = "p,li,h1,h2,h3,h4,h5,h6,blockquote,pre,td,th,dt,dd";
+
+  function hostnameOf(host, options) {
+    return options?.hostname ?? host?.ownerDocument?.defaultView?.location?.hostname ?? "";
+  }
+
+  // The block holding a collapsed caret in an editor made of several blocks,
+  // or null: a selection, a single-block field or a chat composer (whose
+  // lines are one message) keeps the whole field.
+  function caretBlock(host, options) {
+    const selection = selectionFor(host);
+    if (!host || !selection?.rangeCount || !selection.isCollapsed) return null;
+    if (getSiteHint(hostnameOf(host, options))) return null;
+    const node = selection.anchorNode;
+    if (!node || !host.contains(node)) return null;
+    const start = node.nodeType === 1 ? node : node.parentElement;
+    if (!start) return null;
+
+    const lines = Array.from(host.children).filter((child) => child.tagName !== "BR");
+    const blockCount = Math.max(host.querySelectorAll(BLOCK_SELECTOR).length, lines.length);
+    if (blockCount < 2) return null;
+
+    const block = start.closest(BLOCK_SELECTOR);
+    if (block && block !== host && host.contains(block)) return block;
+    // Lines kept as plain <div>s (Gmail's composer): the host's own child.
+    return lines.find((line) => line.contains(start)) || null;
+  }
+
   function dispatchInput(host) {
     const EventConstructor = host.ownerDocument.defaultView?.Event || Event;
     host.dispatchEvent(new EventConstructor("input", { bubbles: true }));
@@ -112,11 +144,29 @@
     isApplicable(element) {
       return !!getEditableHost(element);
     },
-    getText(element) {
+    getText(element, options) {
       const host = getEditableHost(element);
       const selected = selectionFor(host)?.toString() || "";
       if (selected) return { text: selected, isSelection: true, fullText: false };
+      const block = caretBlock(host, options);
+      if (block) {
+        return { text: editableValue(block), isSelection: false, fullText: false, scope: "block" };
+      }
       return { text: editableValue(host), isSelection: false, fullText: true };
+    },
+    // Select the block a caret stands for, so an action and its Replace run
+    // on that selection and the user sees what will change. False when there
+    // is nothing to widen: a selection, a single-block field, an empty block.
+    selectScope(element, options) {
+      const host = getEditableHost(element);
+      const block = caretBlock(host, options);
+      if (!block || !editableValue(block)) return false;
+      const range = host.ownerDocument.createRange();
+      range.selectNodeContents(block);
+      const selection = selectionFor(host);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      return true;
     },
     getRect(element) {
       const host = getEditableHost(element);

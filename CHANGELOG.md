@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **A caret in a document editor no longer rewrites the whole document.** With no text selected, Omni treated the entire editor as the text to rewrite, so Replace turned a document of headings, lists, links and formatting into one plain block. In an editor made of several blocks (Tiptap/ProseMirror, CKEditor, Lexical, Gmail's composer, ...) it now selects the block the caret is in (a paragraph, list item, heading or table cell) when an action starts, and changes only that block. Inputs, textareas, single-block fields and the chat composers on Slack, Discord, Telegram and Teams keep the whole-field behaviour.
+- **Omni AI works in editors inside a modal dialog.** Apps that open a record as a modal `<dialog>` (a task view, say) put its editors in the browser's top layer and make the rest of the page inert, so the floating button and card were drawn under the dialog and could not be clicked. The Omni UI now mounts inside the open modal dialog, and Escape on an Omni card no longer closes that dialog too.
+
 ## [2.7.0] - 2026-11-05
 
 ### Added
