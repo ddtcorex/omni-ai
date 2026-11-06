@@ -301,8 +301,31 @@ function applyUiHostStyles(host) {
 // Re-checked on every call: editors often turn the body editable only after
 // this content script has already mounted the host.
 function getUiMountPoint() {
+  const modal = topModalDialog();
+  if (modal) return modal;
   const body = document.body;
   return body && !body.isContentEditable ? body : document.documentElement;
+}
+
+// A modal <dialog> (showModal) sits in the browser's top layer and makes the
+// rest of the page inert. Apps that open a record as a modal (a task, a page)
+// put their editors there, and a host mounted on <body> is then drawn under
+// the dialog and cannot be clicked. Mount inside the dialog the user is
+// working in instead: the one holding the focus, else the last one open.
+// Re-checked on every call, so the host moves back once the dialog closes.
+function topModalDialog() {
+  let modals;
+  try {
+    modals = Array.from(document.querySelectorAll("dialog")).filter(
+      (dialog) => dialog.open && dialog.matches(":modal"),
+    );
+  } catch {
+    return null; // A browser without :modal has no top layer to escape.
+  }
+  if (!modals.length) return null;
+  const active = document.activeElement;
+  const holding = modals.filter((dialog) => dialog.contains(active));
+  return (holding.length ? holding : modals).at(-1) || null;
 }
 
 function ensureUiRoot() {
